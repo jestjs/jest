@@ -345,7 +345,12 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     if (propertyPass) {
       received = deepMerge(received, properties);
     } else {
-      const key = snapshotState.fail(fullTestName, received);
+      const key = snapshotState.fail(
+        fullTestName,
+        received,
+        undefined,
+        testRetryOwner,
+      );
       const matched = /(\d+)$/.exec(key);
       const count = matched === null ? 1 : Number(matched[1]);
 

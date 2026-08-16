@@ -55,9 +55,11 @@ type SaveStatus = {
   saved: boolean;
 };
 
-type InlineSnapshotMetadata = {
-  readonly snapshotStatus: 'added' | 'updated';
-  readonly testRetryOwner?: object;
+type SnapshotCounts = {
+  added: number;
+  matched: number;
+  unmatched: number;
+  updated: number;
 };
 
 export default class SnapshotState {
@@ -70,10 +72,8 @@ export default class SnapshotState {
   private readonly _initialData: SnapshotData;
   private readonly _snapshotPath: string;
   private _inlineSnapshots: Array<InlineSnapshot>;
-  private readonly _inlineSnapshotMetadata: WeakMap<
-    InlineSnapshot,
-    InlineSnapshotMetadata
-  >;
+  private readonly _inlineSnapshotOwners: WeakMap<InlineSnapshot, object>;
+  private _snapshotCountsByTest: WeakMap<object, SnapshotCounts>;
   private readonly _uncheckedKeys: Set<string>;
   private readonly _prettierPath: string | null;
   private readonly _rootDir: string;
@@ -97,7 +97,8 @@ export default class SnapshotState {
     this._dirty = dirty;
     this._prettierPath = options.prettierPath ?? null;
     this._inlineSnapshots = [];
-    this._inlineSnapshotMetadata = new WeakMap();
+    this._inlineSnapshotOwners = new WeakMap();
+    this._snapshotCountsByTest = new WeakMap();
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
     this._index = 0;
@@ -125,7 +126,6 @@ export default class SnapshotState {
     options: {
       error?: Error;
       isInline: boolean;
-      snapshotStatus?: InlineSnapshotMetadata['snapshotStatus'];
       testRetryOwner?: object;
     },
   ): void {
@@ -147,10 +147,9 @@ export default class SnapshotState {
         snapshot: receivedSerialized,
       };
       this._inlineSnapshots.push(inlineSnapshot);
-      this._inlineSnapshotMetadata.set(inlineSnapshot, {
-        snapshotStatus: options.snapshotStatus ?? 'added',
-        testRetryOwner: options.testRetryOwner,
-      });
+      if (options.testRetryOwner !== undefined) {
+        this._inlineSnapshotOwners.set(inlineSnapshot, options.testRetryOwner);
+      }
     } else {
       this._snapshotData[key] = receivedSerialized;
     }
@@ -158,30 +157,47 @@ export default class SnapshotState {
 
   clear(testRetryOwner?: object): void {
     this._snapshotData = this._initialData;
-    this._inlineSnapshots =
-      testRetryOwner === undefined
-        ? []
-        : this._inlineSnapshots.filter(
-            snapshot =>
-              this._inlineSnapshotMetadata.get(snapshot)?.testRetryOwner !==
-              testRetryOwner,
-          );
-    let retainedAdded = 0;
-    let retainedUpdated = 0;
-    for (const snapshot of this._inlineSnapshots) {
-      const metadata = this._inlineSnapshotMetadata.get(snapshot);
-      if (metadata?.snapshotStatus === 'added') {
-        retainedAdded++;
-      } else if (metadata?.snapshotStatus === 'updated') {
-        retainedUpdated++;
-      }
-    }
     this._counters = new Map();
     this._index = 0;
-    this.added = retainedAdded;
-    this.matched = 0;
-    this.unmatched = 0;
-    this.updated = retainedUpdated;
+
+    if (testRetryOwner === undefined) {
+      this._inlineSnapshots = [];
+      this._snapshotCountsByTest = new WeakMap();
+      this.added = 0;
+      this.matched = 0;
+      this.unmatched = 0;
+      this.updated = 0;
+      return;
+    }
+
+    this._inlineSnapshots = this._inlineSnapshots.filter(
+      snapshot => this._inlineSnapshotOwners.get(snapshot) !== testRetryOwner,
+    );
+    const counts = this._snapshotCountsByTest.get(testRetryOwner);
+    if (counts !== undefined) {
+      this.added -= counts.added;
+      this.matched -= counts.matched;
+      this.unmatched -= counts.unmatched;
+      this.updated -= counts.updated;
+      this._snapshotCountsByTest.delete(testRetryOwner);
+    }
+  }
+
+  private _incrementSnapshotCount(
+    count: keyof SnapshotCounts,
+    testRetryOwner?: object,
+  ): void {
+    this[count]++;
+    if (testRetryOwner !== undefined) {
+      const counts = this._snapshotCountsByTest.get(testRetryOwner) ?? {
+        added: 0,
+        matched: 0,
+        unmatched: 0,
+        updated: 0,
+      };
+      counts[count]++;
+      this._snapshotCountsByTest.set(testRetryOwner, counts);
+    }
   }
 
   save(): SaveStatus {
@@ -305,17 +321,16 @@ export default class SnapshotState {
     ) {
       if (this._updateSnapshot === 'all') {
         if (pass) {
-          this.matched++;
+          this._incrementSnapshotCount('matched', testRetryOwner);
         } else {
           if (hasSnapshot) {
-            this.updated++;
+            this._incrementSnapshotCount('updated', testRetryOwner);
           } else {
-            this.added++;
+            this._incrementSnapshotCount('added', testRetryOwner);
           }
           this._addSnapshot(key, receivedSerialized, {
             error,
             isInline,
-            snapshotStatus: hasSnapshot ? 'updated' : 'added',
             testRetryOwner,
           });
         }
@@ -323,10 +338,9 @@ export default class SnapshotState {
         this._addSnapshot(key, receivedSerialized, {
           error,
           isInline,
-          snapshotStatus: 'added',
           testRetryOwner,
         });
-        this.added++;
+        this._incrementSnapshotCount('added', testRetryOwner);
       }
 
       return {
@@ -338,7 +352,7 @@ export default class SnapshotState {
       };
     } else {
       if (pass) {
-        this.matched++;
+        this._incrementSnapshotCount('matched', testRetryOwner);
         return {
           actual: '',
           count,
@@ -347,7 +361,7 @@ export default class SnapshotState {
           pass: true,
         };
       } else {
-        this.unmatched++;
+        this._incrementSnapshotCount('unmatched', testRetryOwner);
         return {
           actual: removeExtraLineBreaks(receivedSerialized),
           count,
@@ -362,7 +376,12 @@ export default class SnapshotState {
     }
   }
 
-  fail(testName: string, _received: unknown, key?: string): string {
+  fail(
+    testName: string,
+    _received: unknown,
+    key?: string,
+    testRetryOwner?: object,
+  ): string {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
 
@@ -371,7 +390,7 @@ export default class SnapshotState {
     }
 
     this._uncheckedKeys.delete(key);
-    this.unmatched++;
+    this._incrementSnapshotCount('unmatched', testRetryOwner);
     return key;
   }
 }

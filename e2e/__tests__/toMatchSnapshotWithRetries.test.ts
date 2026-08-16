@@ -58,6 +58,36 @@ test('works with a single snapshot', () => {
   }
 });
 
+test('keeps snapshot counts from other tests when a test retries', () => {
+  const filename = 'counts-across-retries.test.js';
+  const template = makeTemplate(`
+    test('passing snapshot', () => expect('foo').toMatchSnapshot());
+
+    describe('with retries', () => {
+      let index = 0;
+      afterEach(() => {
+        index += 1;
+      });
+      jest.retryTimes(4);
+      test('flaky snapshot', () => expect(index).toMatchSnapshot());
+    });
+  `);
+
+  writeFiles(TESTS_DIR, {
+    [filename]: template([]),
+    [`__snapshots__/${filename}.snap`]: `// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[\`with retries flaky snapshot 1\`] = \`3\`;
+`,
+  });
+
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+
+  expect(exitCode).toBe(0);
+  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+  expect(stderr).toMatch('Snapshots:   1 written, 1 passed, 2 total');
+});
+
 test('works when multiple tests have snapshots but only one of them failed multiple times', () => {
   const filename = 'basic-support.test.js';
   const template = makeTemplate(`
@@ -96,7 +126,7 @@ test('works when multiple tests have snapshots but only one of them failed multi
       [filename]: template(['index', '4' /* retries */]),
     });
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
+    expect(stderr).toMatch('Snapshots:   2 passed, 2 total');
     expect(exitCode).toBe(0);
   }
 });

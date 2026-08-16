@@ -42,6 +42,7 @@ test('clear preserves inline snapshots owned by other tests', () => {
     filename,
     `expect(1).toMatchInlineSnapshot(\`"outdated"\`);
 expect(1).toMatchInlineSnapshot();
+expect(1).toMatchInlineSnapshot(\`"outdated"\`);
 expect(1).toMatchInlineSnapshot();
 `,
   );
@@ -66,23 +67,52 @@ expect(1).toMatchInlineSnapshot();
   });
   snapshotState.match({
     error: makeErrorAt(filename, 3),
+    inlineSnapshot: '"outdated"',
+    isInline: true,
+    received: 'updated on retry',
+    testName: 'updated snapshot on retry',
+    testRetryOwner: retriedOwner,
+  });
+  snapshotState.match({
+    error: makeErrorAt(filename, 4),
     isInline: true,
     received: 'retry',
     testName: 'retried snapshot',
     testRetryOwner: retriedOwner,
   });
+  snapshotState.match({
+    inlineSnapshot: '"matched"',
+    isInline: true,
+    received: 'matched',
+    testName: 'retained match',
+    testRetryOwner: retainedOwner,
+  });
+  snapshotState.match({
+    inlineSnapshot: '"matched"',
+    isInline: true,
+    received: 'matched',
+    testName: 'retried match',
+    testRetryOwner: retriedOwner,
+  });
+  snapshotState.fail('retained failure', undefined, undefined, retainedOwner);
+  snapshotState.fail('retried failure', undefined, undefined, retriedOwner);
 
   expect(snapshotState.added).toBe(2);
-  expect(snapshotState.updated).toBe(1);
+  expect(snapshotState.matched).toBe(2);
+  expect(snapshotState.unmatched).toBe(2);
+  expect(snapshotState.updated).toBe(2);
 
   snapshotState.clear(retriedOwner);
 
   expect(snapshotState.added).toBe(1);
+  expect(snapshotState.matched).toBe(1);
+  expect(snapshotState.unmatched).toBe(1);
   expect(snapshotState.updated).toBe(1);
   expect(snapshotState.save()).toEqual({deleted: false, saved: true});
   expect(fs.readFileSync(filename, 'utf8')).toBe(
     `expect(1).toMatchInlineSnapshot(\`"updated"\`);
 expect(1).toMatchInlineSnapshot(\`"added"\`);
+expect(1).toMatchInlineSnapshot(\`"outdated"\`);
 expect(1).toMatchInlineSnapshot();
 `,
   );

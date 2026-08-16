@@ -119,7 +119,7 @@ test('works when multiple tests have snapshots but only one of them failed multi
       [filename]: template(['index', '4' /* retries */]),
     });
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
+    expect(stderr).toMatch('Snapshots:   2 passed, 2 total');
     expect(exitCode).toBe(0);
   }
 });

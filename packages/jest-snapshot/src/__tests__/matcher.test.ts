@@ -30,3 +30,32 @@ test('returns matcher name, expected and actual values', () => {
   );
   expect(match).toHaveBeenCalledWith(expect.objectContaining({testRetryOwner}));
 });
+
+test('passes the retry owner to failed property snapshots', () => {
+  const testRetryOwner = {};
+  const fail = jest.fn(
+    (
+      _testName: string,
+      _received: unknown,
+      _key?: string,
+      _testRetryOwner?: object,
+    ) => 'test name 1',
+  );
+  const mockedContext = {
+    currentTestName: 'test name',
+    currentTestRetryOwner: () => testRetryOwner,
+    equals: () => false,
+    snapshotState: {expand: false, fail},
+    utils: {iterableEquality: jest.fn(), subsetEquality: jest.fn()},
+  } as unknown as Context;
+  const received = {value: 1};
+
+  toMatchSnapshot.call(mockedContext, received, {value: 2});
+
+  expect(fail).toHaveBeenCalledWith(
+    'test name',
+    received,
+    undefined,
+    testRetryOwner,
+  );
+});
