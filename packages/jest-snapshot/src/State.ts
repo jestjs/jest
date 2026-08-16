@@ -129,7 +129,11 @@ export default class SnapshotState {
 
   markSnapshotsAsCheckedForTest(testName: string): void {
     for (const uncheckedKey of this._uncheckedKeys) {
-      if (keyToTestName(uncheckedKey) === testName) {
+      const keyTestName = keyToTestName(uncheckedKey);
+      // A hint is joined onto the test name with ': ' before the key is built,
+      // so the recovered name of a hinted snapshot is longer than the name the
+      // runner reports for the test that took it.
+      if (keyTestName === testName || keyTestName.startsWith(`${testName}: `)) {
         this._uncheckedKeys.delete(uncheckedKey);
       }
     }

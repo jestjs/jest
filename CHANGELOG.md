@@ -54,6 +54,7 @@
 - `[jest-runtime]` Support older test environments whose `moduleMocker` does not implement `clearMocksOnScope` ([#16169](https://github.com/jestjs/jest/pull/16169))
 - `[jest-reporters]` Fix coverage report table formatting in CI/GitHub Actions environments where `process.stdout.columns` is undefined by falling back to the `COLUMNS` env var or `80` columns in CI, preserving existing behaviour in other non-TTY environments ([#16227](https://github.com/jestjs/jest/pull/16227))
 - `[jest-runtime]` Support CJS-in-ESM exports via `"module.exports"` named exports ([#16277](https://github.com/jestjs/jest/pull/16277))
+- `[jest-snapshot]` Keep a skipped or failed test's hinted snapshots, instead of reporting them obsolete and dropping them under `--updateSnapshot` ([#16348](https://github.com/jestjs/jest/pull/16348))
 - `[pretty-format]` Move the `react-is` aliases into the `@jest` scope, so they cannot be shadowed by unrelated packages published under the alias names ([#16333](https://github.com/jestjs/jest/pull/16333))
 
 ### Chore & Maintenance

@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -139,6 +140,40 @@ test('does not mark snapshots as obsolete in skipped tests', () => {
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).not.toMatch('1 obsolete snapshot found');
     expect(exitCode).toBe(0);
+  }
+});
+
+test('does not mark hinted snapshots as obsolete in skipped tests', () => {
+  const filename = 'no-obsolete-hinted-if-skipped.test.js';
+  const template = makeTemplate(`$1('will be skipped', () => {
+      expect({a: 6}).toMatchSnapshot('hint');
+    });
+    `);
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template(['test'])});
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    expect(exitCode).toBe(0);
+  }
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template(['test.skip'])});
+    const {stderr, exitCode} = runJest(DIR, [
+      '-w=1',
+      '--ci=false',
+      '-u',
+      filename,
+    ]);
+    expect(stderr).not.toMatch('removed');
+    expect(exitCode).toBe(0);
+    // `-u` deletes whatever obsolete detection missed, so the key surviving is
+    // the proof the hint did not hide it from its own test.
+    const snapshot = fs.readFileSync(
+      path.join(TESTS_DIR, '__snapshots__', `${filename}.snap`),
+      'utf8',
+    );
+    expect(snapshot).toContain('exports[`will be skipped: hint 1`]');
   }
 });
 
