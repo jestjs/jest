@@ -62,6 +62,15 @@ type SnapshotCounts = {
   updated: number;
 };
 
+// The dirty flag is monotonic, so undoing it per test needs proof that no
+// other test wrote in between: the value it had before this test's first
+// write, and how many of the writes since then were this test's own.
+type AttemptWrites = {
+  dirtyBefore: boolean;
+  ownWrites: number;
+  writeCountBefore: number;
+};
+
 // Everything a single test contributed since its current attempt began, so a
 // retry can undo exactly that much and leave the other tests' work alone.
 type AttemptRecord = {
@@ -70,6 +79,7 @@ type AttemptRecord = {
   counts: SnapshotCounts;
   fileSnapshots: Map<string, string | undefined>;
   inlineSnapshots: Set<InlineSnapshot>;
+  writes: AttemptWrites | undefined;
 };
 
 export default class SnapshotState {
@@ -80,6 +90,7 @@ export default class SnapshotState {
   private readonly _snapshotPath: string;
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _attemptRecordsByTest: WeakMap<object, AttemptRecord>;
+  private _writeCount: number;
   private readonly _uncheckedKeys: Set<string>;
   private readonly _prettierPath: string | null;
   private readonly _rootDir: string;
@@ -103,6 +114,7 @@ export default class SnapshotState {
     this._prettierPath = options.prettierPath ?? null;
     this._inlineSnapshots = [];
     this._attemptRecordsByTest = new WeakMap();
+    this._writeCount = 0;
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
     this.expand = options.expand || false;
@@ -132,6 +144,16 @@ export default class SnapshotState {
       testIdentity?: object;
     },
   ): void {
+    const record = this._recordFor(options.testIdentity);
+    if (record !== undefined) {
+      record.writes ??= {
+        dirtyBefore: this._dirty,
+        ownWrites: 0,
+        writeCountBefore: this._writeCount,
+      };
+      record.writes.ownWrites++;
+    }
+    this._writeCount++;
     this._dirty = true;
     if (options.isInline) {
       // eslint-disable-next-line unicorn/error-message
@@ -150,17 +172,12 @@ export default class SnapshotState {
         snapshot: receivedSerialized,
       };
       this._inlineSnapshots.push(inlineSnapshot);
-      this._recordFor(options.testIdentity)?.inlineSnapshots.add(
-        inlineSnapshot,
-      );
+      record?.inlineSnapshots.add(inlineSnapshot);
     } else {
       // A retried attempt must not leave its writes behind, or the next attempt
       // sees the key as pre-existing and reports it as matched, not written.
-      const fileSnapshots = this._recordFor(
-        options.testIdentity,
-      )?.fileSnapshots;
-      if (fileSnapshots !== undefined && !fileSnapshots.has(key)) {
-        fileSnapshots.set(key, this._snapshotData[key]);
+      if (record !== undefined && !record.fileSnapshots.has(key)) {
+        record.fileSnapshots.set(key, this._snapshotData[key]);
       }
       this._snapshotData[key] = receivedSerialized;
     }
@@ -178,6 +195,7 @@ export default class SnapshotState {
         counts: {added: 0, matched: 0, unmatched: 0, updated: 0},
         fileSnapshots: new Map(),
         inlineSnapshots: new Set(),
+        writes: undefined,
       };
       this._attemptRecordsByTest.set(testIdentity, record);
     }
@@ -250,6 +268,16 @@ export default class SnapshotState {
       } else {
         this._counters.set(testName, previous);
       }
+    }
+    // The dirty flag can only be undone when every write since this test's
+    // first was its own; a foreign write in between keeps the flag earned.
+    const writes = record.writes;
+    if (
+      writes !== undefined &&
+      this._writeCount - writes.writeCountBefore === writes.ownWrites
+    ) {
+      this._dirty = writes.dirtyBefore;
+      this._writeCount = writes.writeCountBefore;
     }
   }
 

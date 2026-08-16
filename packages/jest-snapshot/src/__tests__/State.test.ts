@@ -118,6 +118,75 @@ expect(1).toMatchInlineSnapshot();
   );
 });
 
+test('does not save when the only writes were rolled back', () => {
+  const snapshotPath = path.join(rootDir, 'example.test.js.snap');
+  fs.writeFileSync(
+    snapshotPath,
+    '// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing\n\nexports[`existing 1`] = `"kept"`;\n',
+  );
+  const snapshotState = new SnapshotState(snapshotPath, {
+    rootDir,
+    snapshotFormat: {},
+    updateSnapshot: 'new',
+  });
+  const retriedTest = {};
+
+  snapshotState.match({
+    isInline: false,
+    received: 'kept',
+    testName: 'existing',
+  });
+  snapshotState.match({
+    isInline: false,
+    received: 'discarded',
+    testIdentity: retriedTest,
+    testName: 'written on retry',
+  });
+  snapshotState.clear(retriedTest);
+
+  const modifiedBefore = fs.statSync(snapshotPath).mtimeMs;
+  expect(snapshotState.save()).toEqual({deleted: false, saved: false});
+  expect(fs.statSync(snapshotPath).mtimeMs).toBe(modifiedBefore);
+});
+
+test('still saves when another test wrote between the rolled-back writes', () => {
+  const snapshotPath = path.join(rootDir, 'example.test.js.snap');
+  fs.writeFileSync(
+    snapshotPath,
+    '// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing\n\nexports[`existing 1`] = `"kept"`;\n',
+  );
+  const snapshotState = new SnapshotState(snapshotPath, {
+    rootDir,
+    snapshotFormat: {},
+    updateSnapshot: 'new',
+  });
+  const retriedTest = {};
+
+  snapshotState.match({
+    isInline: false,
+    received: 'kept',
+    testName: 'existing',
+  });
+  snapshotState.match({
+    isInline: false,
+    received: 'discarded',
+    testIdentity: retriedTest,
+    testName: 'written on retry',
+  });
+  snapshotState.match({
+    isInline: false,
+    received: 'other',
+    testIdentity: {},
+    testName: 'written by another test',
+  });
+  snapshotState.clear(retriedTest);
+
+  expect(snapshotState.save()).toEqual({deleted: false, saved: true});
+  const snapshotFile = fs.readFileSync(snapshotPath, 'utf8');
+  expect(snapshotFile).toContain('exports[`written by another test 1`]');
+  expect(snapshotFile).not.toContain('written on retry');
+});
+
 test('clear without a test identity removes all pending inline snapshots', () => {
   const filename = path.join(rootDir, 'example.test.js');
   fs.writeFileSync(filename, 'expect(1).toMatchInlineSnapshot();\n');
