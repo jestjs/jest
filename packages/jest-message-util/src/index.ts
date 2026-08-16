@@ -43,17 +43,25 @@ export type StackTraceOptions = {
 };
 
 const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
-const PATH_JEST_PACKAGES = `${path.sep}jest${path.sep}packages${path.sep}`;
+// In a checkout of this repo the packages sit next to each other, and frames
+// from any of them — not just the `jest-` prefixed ones — are internal. Derive
+// that directory rather than matching its name, so it holds whatever the
+// checkout is called. An install resolves to `node_modules`, covered above.
+const maybePackagesDir = path.resolve(__dirname, '..', '..');
+const PATH_JEST_PACKAGES =
+  path.basename(maybePackagesDir) === 'packages'
+    ? maybePackagesDir + path.sep
+    : null;
 
 // filter for noisy stack trace lines
 const JASMINE_IGNORE =
   /^\s+at(?:(?:.jasmine-)|\s+jasmine\.buildExpectationResult)/;
 const JEST_INTERNALS_IGNORE =
-  /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
-const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
-const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
-const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
-const NATIVE_NEXT_IGNORE = /^\s+at next \(native\).*$/;
+  /^\s+at(?:.*[/\\])?(?:@jest[/\\][^/\\]+|[^/\\]*jest[^/\\]*)[/\\](?:build|node_modules)[/\\]/;
+const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>/;
+const ANONYMOUS_PROMISE_IGNORE = /^\s+at (?:new )?Promise \(<anonymous>\)/;
+const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator\.next \(<anonymous>\)/;
+const NATIVE_NEXT_IGNORE = /^\s+at next \(native\)/;
 const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
@@ -66,6 +74,19 @@ const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
 
 export const indentAllLines = (lines: string): string =>
   lines.replaceAll(NOT_EMPTY_LINE_REGEXP, MESSAGE_INDENT);
+
+// chalk colours each line of its input separately, so handing it a multi-line
+// string turns the blank ones into escape-code-only lines that no longer compare
+// equal to ''. Colouring line by line keeps blank lines genuinely blank.
+const colorStackLines = (stack: string): string =>
+  stack
+    .split('\n')
+    .map(line => (line === '' ? line : STACK_TRACE_COLOR(line)))
+    .join('\n');
+
+const isJestInternalFrame = (line: string) =>
+  JEST_INTERNALS_IGNORE.test(line) ||
+  (PATH_JEST_PACKAGES !== null && line.includes(PATH_JEST_PACKAGES));
 
 const trim = (string: string) => (string || '').trim();
 
@@ -119,13 +140,11 @@ function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
   );
 }
 
-// ExecError is an error thrown outside of the test suite (not inside an `it` or
-// `before/after each` hooks). If it's thrown, none of the tests in the file
-// are executed.
-export const formatExecError = (
+const formatExecErrorWithSeen = (
   error: Error | TestResult.SerializableError | string | number | undefined,
   config: StackTraceConfig,
   options: StackTraceOptions,
+  seen: Set<unknown>,
   testPath?: string,
   reuseMessage?: boolean,
   noTitle?: boolean,
@@ -149,34 +168,36 @@ export const formatExecError = (
       typeof error.stack === 'string'
         ? error.stack
         : `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
+    // Serialized errors from workers are plain objects, so cycle tracking must
+    // cover any object, not just error-likes.
+    seen.add(error);
     if ('cause' in error) {
       const prefix = '\n\nCause:\n';
       if (typeof error.cause === 'string' || typeof error.cause === 'number') {
         cause += `${prefix}${error.cause}`;
-      } else if (isError(error.cause) || error.cause instanceof Error) {
-        /* `isError` is used, because the error might come from another realm.
-         `instanceof Error` is used because `isError` does return `false` for some
-         things that are `instanceof Error` like the errors provided in
-         [verror](https://www.npmjs.com/package/verror) or [axios](https://axios-http.com).
-        */
-        const formatted = formatExecError(
-          error.cause,
+      } else if (isErrorLike(error.cause)) {
+        const formatted = formatExecErrorWithSeen(
+          markIfCircular(error.cause, 'cause', seen),
           config,
           options,
+          seen,
           testPath,
           reuseMessage,
           true,
         );
-        cause += `${prefix}${formatted}`;
+        // The recursive call ends with a newline of its own; the seam owns
+        // the spacing.
+        cause += `${prefix}${formatted.trimEnd()}`;
       }
     }
     if ('errors' in error && Array.isArray(error.errors)) {
       for (const subError of error.errors) {
         subErrors.push(
-          formatExecError(
-            subError,
+          formatExecErrorWithSeen(
+            seen.has(subError) ? '[Circular errors]' : subError,
             config,
             options,
+            seen,
             testPath,
             reuseMessage,
             true,
@@ -184,6 +205,7 @@ export const formatExecError = (
         );
       }
     }
+    seen.delete(error);
   }
   if (cause !== '') {
     cause = indentAllLines(cause);
@@ -201,10 +223,13 @@ export const formatExecError = (
 
   message = indentAllLines(message);
 
-  stack =
+  const renderedStack =
     stack && !options.noStackTrace
-      ? `\n${formatStackTrace(stack, config, options, testPath)}`
+      ? formatStackTrace(stack, config, options, testPath)
       : '';
+  // A stack whose every frame was filtered out contributes nothing, not a
+  // blank line.
+  stack = renderedStack === '' ? '' : `\n${renderedStack}`;
 
   if (
     typeof stack !== 'string' ||
@@ -225,12 +250,35 @@ export const formatExecError = (
   const subErrorStr =
     subErrors.length > 0
       ? indentAllLines(
-          `\n\nErrors contained in AggregateError:\n${subErrors.join('\n')}`,
+          `\n\nErrors contained in AggregateError:\n${subErrors
+            .map(subError => subError.trimEnd())
+            .join('\n\n')}`,
         )
       : '';
 
   return `${title + messageToUse + stack + cause + subErrorStr}\n`;
 };
+
+// ExecError is an error thrown outside of the test suite (not inside an `it` or
+// `before/after each` hooks). If it's thrown, none of the tests in the file
+// are executed.
+export const formatExecError = (
+  error: Error | TestResult.SerializableError | string | number | undefined,
+  config: StackTraceConfig,
+  options: StackTraceOptions,
+  testPath?: string,
+  reuseMessage?: boolean,
+  noTitle?: boolean,
+): string =>
+  formatExecErrorWithSeen(
+    error,
+    config,
+    options,
+    new Set(),
+    testPath,
+    reuseMessage,
+    noTitle,
+  );
 
 const removeInternalStackEntries = (
   lines: Array<string>,
@@ -279,7 +327,7 @@ const removeInternalStackEntries = (
       return false;
     }
 
-    if (JEST_INTERNALS_IGNORE.test(line)) {
+    if (isJestInternalFrame(line)) {
       return false;
     }
 
@@ -321,7 +369,7 @@ export function getStackTraceLines(
 
 export function getTopFrame(lines: Array<string>): Frame | null {
   for (const line of lines) {
-    if (line.includes(PATH_NODE_MODULES) || line.includes(PATH_JEST_PACKAGES)) {
+    if (line.includes(PATH_NODE_MODULES) || isJestInternalFrame(line)) {
       continue;
     }
 
@@ -338,6 +386,9 @@ export function getTopFrame(lines: Array<string>): Frame | null {
   return null;
 }
 
+// Renders the frames of a stack string: paths made relative, noisy internal
+// frames dropped, and a code frame for the top frame. Takes the stack alone, so
+// callers holding an error usually want `formatErrorStack` instead.
 export function formatStackTrace(
   stack: string,
   config: StackTraceConfig,
@@ -392,50 +443,198 @@ type FailedResults = Array<{
   result: TestResult.AssertionResult;
 }>;
 
+/* `isError` is used, because the error might come from another realm.
+ `instanceof Error` is used because `isError` does return `false` for some
+ things that are `instanceof Error` like the errors provided in
+ [verror](https://www.npmjs.com/package/verror) or
+ [axios](https://axios-http.com).
+*/
+function isErrorLike(error: unknown): error is Error {
+  return isError(error) || error instanceof Error;
+}
+
 function isErrorOrStackWithCause(
   errorOrStack: Error | string,
 ): errorOrStack is Error & {cause: Error | string} {
   return (
     typeof errorOrStack !== 'string' &&
     'cause' in errorOrStack &&
-    (typeof errorOrStack.cause === 'string' ||
-      isError(errorOrStack.cause) ||
-      errorOrStack.cause instanceof Error)
+    (typeof errorOrStack.cause === 'string' || isErrorLike(errorOrStack.cause))
   );
 }
 
-function formatErrorStack(
+function toErrorOrStack(value: unknown): Error | string {
+  return typeof value === 'string' || isErrorLike(value)
+    ? value
+    : `thrown: ${prettyFormat(value, {maxDepth: 3})}`;
+}
+
+function isErrorOrStackWithErrors(
+  errorOrStack: Error | string,
+): errorOrStack is Error & {errors: Array<unknown>} {
+  return (
+    typeof errorOrStack !== 'string' &&
+    'errors' in errorOrStack &&
+    Array.isArray(errorOrStack.errors)
+  );
+}
+
+// Whether an error carries anything the flattener would append: a `cause` (an
+// error or a plain string) or a non-empty `AggregateError.errors`.
+export function hasNestedErrors(value: unknown): value is Error {
+  return (
+    isErrorLike(value) &&
+    (isErrorOrStackWithCause(value) ||
+      (isErrorOrStackWithErrors(value) && value.errors.length > 0))
+  );
+}
+
+// Replaces an error already on the current ancestor path with a marker, so a
+// cyclic `cause` or a self-referential `AggregateError` terminates.
+function markIfCircular(
+  value: Error | string,
+  kind: 'cause' | 'errors',
+  seen: ReadonlySet<unknown>,
+): Error | string {
+  return typeof value === 'string' || !seen.has(value)
+    ? value
+    : `[Circular ${kind}]`;
+}
+
+function flattenErrorStackWithSeen(
+  errorOrStack: Error | string,
+  seen: Set<Error>,
+): string {
+  if (typeof errorOrStack === 'string') {
+    return errorOrStack;
+  }
+
+  const {message, stack} = errorOrStack;
+  let flattened;
+  if (typeof stack === 'string' && stack !== '') {
+    // Some errors (e.g. Angular injection errors) don't embed the message in
+    // the stack; prepend it so it isn't lost.
+    flattened =
+      message && !stack.includes(message)
+        ? message + stack.replace(/^Error:?\s*\n/, '\n')
+        : stack;
+  } else {
+    flattened = message;
+  }
+
+  // Tracks the current ancestor path rather than everything already visited, so
+  // that repeating the same error across sibling branches is not a cycle.
+  seen.add(errorOrStack);
+
+  if (isErrorOrStackWithCause(errorOrStack)) {
+    const cause = markIfCircular(errorOrStack.cause, 'cause', seen);
+    flattened += `\n\n[cause]: ${flattenErrorStackWithSeen(cause, seen)}`;
+  }
+
+  if (isErrorOrStackWithErrors(errorOrStack)) {
+    for (const error of errorOrStack.errors) {
+      const nested = markIfCircular(toErrorOrStack(error), 'errors', seen);
+      flattened += `\n\n[errors]: ${flattenErrorStackWithSeen(nested, seen)}`;
+    }
+  }
+
+  seen.delete(errorOrStack);
+
+  return flattened;
+}
+
+// Flattens an error, its `cause` chain and any `AggregateError` entries into one
+// plain string. Unlike the `format*` renderers this carries no colour or code
+// frames, because it feeds `--json` output and reporter annotations.
+export function flattenErrorStack(error: Error): string {
+  return flattenErrorStackWithSeen(error, new Set());
+}
+
+function formatErrorStackWithSeen(
+  errorOrStack: Error | string,
+  config: StackTraceConfig,
+  options: StackTraceOptions,
+  seen: Set<Error>,
+  testPath?: string,
+): string {
+  // The stack of new Error('message') contains both the message and the stack,
+  // thus we need to sanitize and clean it for proper display using
+  // separateMessageFromStack. An error whose stack was blanked still has its
+  // message, which is better than rendering nothing.
+  const sourceStack =
+    typeof errorOrStack === 'string'
+      ? errorOrStack
+      : errorOrStack.stack || errorOrStack.message || '';
+  let {message, stack} = separateMessageFromStack(sourceStack);
+  const renderedStack = options.noStackTrace
+    ? ''
+    : colorStackLines(formatStackTrace(stack, config, options, testPath));
+  // A stack whose every frame was filtered out contributes nothing, not a
+  // blank line.
+  stack = renderedStack === '' ? '' : `${renderedStack}\n`;
+
+  message = checkForCommonEnvironmentErrors(message);
+  message = indentAllLines(message);
+
+  if (typeof errorOrStack !== 'string') {
+    seen.add(errorOrStack);
+  }
+
+  let cause = '';
+  if (isErrorOrStackWithCause(errorOrStack)) {
+    const nestedCause = formatErrorStackWithSeen(
+      markIfCircular(errorOrStack.cause, 'cause', seen),
+      config,
+      options,
+      seen,
+      testPath,
+    );
+    cause = indentAllLines(`\nCause:\n${nestedCause}`);
+  }
+
+  let subErrors = '';
+  if (
+    isErrorOrStackWithErrors(errorOrStack) &&
+    errorOrStack.errors.length > 0
+  ) {
+    const nestedErrors = errorOrStack.errors.map(error =>
+      formatErrorStackWithSeen(
+        markIfCircular(toErrorOrStack(error), 'errors', seen),
+        config,
+        options,
+        seen,
+        testPath,
+      ),
+    );
+
+    subErrors = indentAllLines(
+      `\nErrors contained in AggregateError:\n${nestedErrors.join('\n')}`,
+    );
+  }
+
+  if (typeof errorOrStack !== 'string') {
+    seen.delete(errorOrStack);
+  }
+
+  return `${message}\n${stack}${cause}${subErrors}`;
+}
+
+// Renders a single error the way a test failure is rendered inside
+// `formatResultsErrors`: message, coloured stack with code frame, and nested
+// `Cause:` / `Errors contained in AggregateError:` sections.
+export function formatErrorStack(
   errorOrStack: Error | string,
   config: StackTraceConfig,
   options: StackTraceOptions,
   testPath?: string,
 ): string {
-  // The stack of new Error('message') contains both the message and the stack,
-  // thus we need to sanitize and clean it for proper display using separateMessageFromStack.
-  const sourceStack =
-    typeof errorOrStack === 'string' ? errorOrStack : errorOrStack.stack || '';
-  let {message, stack} = separateMessageFromStack(sourceStack);
-  stack = options.noStackTrace
-    ? ''
-    : `${STACK_TRACE_COLOR(
-        formatStackTrace(stack, config, options, testPath),
-      )}\n`;
-
-  message = checkForCommonEnvironmentErrors(message);
-  message = indentAllLines(message);
-
-  let cause = '';
-  if (isErrorOrStackWithCause(errorOrStack)) {
-    const nestedCause = formatErrorStack(
-      errorOrStack.cause,
-      config,
-      options,
-      testPath,
-    );
-    cause = `\n${MESSAGE_INDENT}Cause:\n${nestedCause}`;
-  }
-
-  return `${message}\n${stack}${cause}`;
+  return formatErrorStackWithSeen(
+    errorOrStack,
+    config,
+    options,
+    new Set(),
+    testPath,
+  );
 }
 
 function failureDetailsToErrorOrStack(
@@ -445,13 +644,13 @@ function failureDetailsToErrorOrStack(
   if (!failureDetails) {
     return content;
   }
-  if (isError(failureDetails) || failureDetails instanceof Error) {
+  if (isErrorLike(failureDetails)) {
     return failureDetails; // receiving raw errors for jest-circus
   }
   if (
     typeof failureDetails === 'object' &&
     'error' in failureDetails &&
-    (isError(failureDetails.error) || failureDetails.error instanceof Error)
+    isErrorLike(failureDetails.error)
   ) {
     return failureDetails.error; // receiving instances of FailedAssertion for jest-jasmine
   }
@@ -491,10 +690,11 @@ export const formatResultsErrors = (
           result.title,
       )}\n`;
 
-      return `${title}\n${formatErrorStack(
+      return `${title}\n${formatErrorStackWithSeen(
         rootErrorOrStack,
         config,
         options,
+        new Set(),
         testPath,
       )}`;
     })

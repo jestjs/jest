@@ -856,7 +856,7 @@ If you specify a global reference value (like an object or array) here, and some
 
 Default: `undefined`
 
-This option allows the use of a custom global setup module, which must export a function (it can be sync or async). The function will be triggered once before all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/jestjs/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422) and [`projectConfig`](https://github.com/jestjs/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L424-L481).
+This option allows the use of a custom global setup module, which must export a function (it can be sync or async). The function will be triggered once before all test files and it will receive two arguments: Jest's [`globalConfig`](https://github.com/jestjs/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422) and [`projectConfig`](https://github.com/jestjs/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L424-L481).
 
 :::info
 
@@ -891,7 +891,7 @@ module.exports = async function (globalConfig, projectConfig) {
 
 Default: `undefined`
 
-This option allows the use of a custom global teardown module which must export a function (it can be sync or async). The function will be triggered once after all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/jestjs/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422) and [`projectConfig`](https://github.com/jestjs/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L424-L481).
+This option allows the use of a custom global teardown module which must export a function (it can be sync or async). The function will be triggered once after all test files and it will receive two arguments: Jest's [`globalConfig`](https://github.com/jestjs/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422) and [`projectConfig`](https://github.com/jestjs/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L424-L481).
 
 :::info
 
@@ -1492,6 +1492,8 @@ This option allows the use of a custom resolver. This resolver must be a module 
 1. a function expecting a string as the first argument for the path to resolve and an options object as the second argument. The function should either return a path to the module that should be resolved or throw an error if the module can't be found. _or_
 2. an object containing `async` and/or `sync` properties. The `sync` property should be a function with the shape explained above, and the `async` property should also be a function that accepts the same arguments, but returns a promise which resolves with the path to the module or rejects with an error.
 
+The resolver may be written as either CommonJS or an ES module, including one that uses a top-level await. An ES module can export the function or the `sync`/`async` object as its `default` export, or expose `sync` and `async` as named exports.
+
 The options object provided to resolvers has the shape:
 
 ```ts
@@ -1796,7 +1798,7 @@ This option has no effect if you use [native ESM](ECMAScriptModules.md).
 
 Default: `[]`
 
-A list of paths to modules that run some code to configure or set up the testing environment. Each setupFile will be run once per test file. Since every test runs in its own environment, these scripts will be executed in the testing environment before executing [`setupFilesAfterEnv`](#setupfilesafterenv-array) and before the test code itself.
+A list of paths to modules that run some code to configure or set up the testing environment. Each setup file will be run once per test file. Since every test file runs in its own environment, these scripts will be executed in the testing environment before executing [`setupFilesAfterEnv`](#setupfilesafterenv-array) and before the test code itself.
 
 :::tip
 
@@ -1808,7 +1810,7 @@ If your setup script is a CJS module, it may export an async function. Jest will
 
 Default: `[]`
 
-A list of paths to modules that run some code to configure or set up the testing framework before each test file in the suite is executed. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment but before the test code itself.
+A list of paths to modules that run some code to configure or set up the testing framework before each test file is executed. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment but before the test code itself.
 
 In other words, `setupFilesAfterEnv` modules are meant for code which is repeating in each test file. Having the test framework installed makes Jest [globals](GlobalAPI.md), [`jest` object](JestObjectAPI.md) and [`expect`](ExpectAPI.md) accessible in the modules. For example, you can add extra matchers from [`jest-extended`](https://github.com/jest-community/jest-extended) library or call [setup and teardown](SetupAndTeardown.md) hooks:
 

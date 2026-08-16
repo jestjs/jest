@@ -35,7 +35,7 @@ test('triggers unexpected token error message for non-JS assets', () => {
   expect(stderr).toMatch(/Unexpected token ./);
 });
 
-test('triggers unexpected token error message for untranspiled node_modules', () => {
+test('triggers ERR_REQUIRE_ESM for untranspiled node_modules with ESM syntax', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '{}',
     'node_modules/untranspiled-module': 'import {module} from "some-module"',
@@ -50,10 +50,8 @@ test('triggers unexpected token error message for untranspiled node_modules', ()
   const {stdout, stderr} = runJest(DIR, ['']);
 
   expect(stdout).toBe('');
-  expect(stderr).toMatch(/Jest encountered an unexpected token/);
-  expect(stderr).toMatch(/import {module}/);
   expect(stderr).toMatch(
-    /SyntaxError: Cannot use import statement outside a module/,
+    /Must use import to load ES Module.*untranspiled-module/,
   );
 });
 

@@ -16,6 +16,7 @@ import {TestPathPatterns} from '@jest/pattern';
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import Resolver, {
+  preloadResolver,
   resolveRunner,
   resolveSequencer,
   resolveTestEnvironment,
@@ -274,6 +275,7 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
     for (const pattern of [customJSPattern, customTSPattern]) {
       if (pattern) {
         const customTransformer = transform[pattern];
+        /* eslint-disable no-useless-assignment */
         if (Array.isArray(customTransformer)) {
           if (customTransformer[0] === 'babel-jest') {
             babelJest = require.resolve('babel-jest');
@@ -289,6 +291,7 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
             babelJest = customTransformer;
           }
         }
+        /* eslint-enable */
       }
     }
   } else {
@@ -405,8 +408,7 @@ const normalizeReporters = ({
   reporters,
   rootDir,
 }: Config.InitialOptionsWithRootDir):
-  | Array<Config.ReporterConfig>
-  | undefined => {
+  Array<Config.ReporterConfig> | undefined => {
   if (!reporters || !Array.isArray(reporters)) {
     return undefined;
   }
@@ -620,6 +622,9 @@ export default async function normalize(
       key: 'resolver',
       rootDir: options.rootDir,
     });
+    // Resolution itself is synchronous, so the resolver has to be in memory
+    // before it starts. This is the only place it can be awaited.
+    await preloadResolver(newOptions.resolver);
   }
 
   validateExtensionsToTreatAsEsm(options.extensionsToTreatAsEsm);

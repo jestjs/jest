@@ -12,7 +12,7 @@ import path from 'node:path';
 import eslintJs from '@eslint/js';
 import eslintMarkdown from '@eslint/markdown';
 import eslintPluginEslintCommentsConfigs from '@eslint-community/eslint-plugin-eslint-comments/configs';
-import {defineConfig} from 'eslint/config';
+import {defineConfig, globalIgnores} from 'eslint/config';
 import {createTypeScriptImportResolver} from 'eslint-import-resolver-typescript';
 import eslintPluginImportX from 'eslint-plugin-import-x';
 import eslintPluginJest from 'eslint-plugin-jest';
@@ -478,7 +478,6 @@ const config = defineConfig(
 
   {
     files: [
-      'website/docusaurus.config.js',
       'website/fetchSupporters.js',
       'website/src/prism/themeLight.js',
       'website/src/prism/themeDark.js',
@@ -489,6 +488,13 @@ const config = defineConfig(
     languageOptions: {
       sourceType: 'commonjs',
       globals: globals.node,
+    },
+  },
+
+  {
+    files: ['website/docusaurus.config.mjs'],
+    languageOptions: {
+      globals: globals.nodeBuiltin,
     },
   },
 
@@ -506,6 +512,8 @@ const config = defineConfig(
     languageOptions: {parserOptions: {ecmaFeatures: {jsx: true}}},
     linterOptions: {reportUnusedDisableDirectives: 'off'},
     rules: {
+      'no-useless-assignment': 'off',
+      'preserve-caught-error': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-namespace': 'off',
@@ -597,7 +605,7 @@ const config = defineConfig(
     },
   },
   {
-    files: ['examples/**/*', 'eslint.config.mjs'],
+    files: ['examples/**/*', 'eslint.config.mjs', 'website/**/*'],
     rules: {
       'no-restricted-imports': 'off',
     },
@@ -639,6 +647,26 @@ const config = defineConfig(
     },
   },
   {
+    // The core of @jest/source-map is platform-neutral: everything that
+    // touches Node sits behind the `SourceMapFileReader` implemented in
+    // nodeFileReader.ts.
+    files: [
+      'packages/jest-source-map/src/SourceMapCache.ts',
+      'packages/jest-source-map/src/getCallsite.ts',
+      'packages/jest-source-map/src/SourceMapSupport.ts',
+    ],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          message:
+            'This module is platform-neutral — reach Node through the `SourceMapFileReader` implemented in nodeFileReader.ts.',
+          selector: 'ImportDeclaration[source.value=/^node:|^graceful-fs$/]',
+        },
+      ],
+    },
+  },
+  {
     files: ['packages/**/*.ts'],
     rules: {
       '@typescript-eslint/explicit-module-boundary-types': 'error',
@@ -673,6 +701,7 @@ const config = defineConfig(
       '**/vendor/**/*',
     ],
     rules: {
+      'preserve-caught-error': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       'unicorn/consistent-function-scoping': 'off',
       'unicorn/no-await-expression-member': 'off',
@@ -711,6 +740,12 @@ const config = defineConfig(
     files: ['e2e/fake-timers-temporal/__tests__/*'],
     languageOptions: {
       globals: {Temporal: 'readonly'},
+    },
+  },
+  {
+    files: ['e2e/vmscript-coverage/package/vmscript.js'],
+    rules: {
+      'no-useless-assignment': 'off',
     },
   },
   {
@@ -825,62 +860,77 @@ const config = defineConfig(
       '@typescript-eslint/no-unused-expressions': 'off',
     },
   },
-  {
-    ignores: [
-      '!.*',
-      '**/coverage/**',
-      '**/node_modules/**',
-      'bin/',
-      'packages/*/build/**',
-      'packages/*/dist/**',
-      'website/.docusaurus',
-      'website/build',
-      'website/node_modules',
-      'website/i18n/*.js',
-      'website/static',
+  globalIgnores([
+    '!.*',
+    '**/coverage/**',
+    '**/node_modules/**',
+    'bin/',
+    'packages/*/build/**',
+    'packages/*/dist/**',
+    'website/.docusaurus',
+    'website/build',
+    'website/node_modules',
+    'website/i18n/*.js',
+    'website/static',
 
-      // Third-party script
-      'packages/jest-diff/src/cleanupSemantic.ts',
-      'e2e/native-esm/wasm-bindgen/index_bg.js',
+    // Third-party script
+    'packages/jest-diff/src/cleanupSemantic.ts',
+    'e2e/native-esm/wasm-bindgen/index_bg.js',
 
-      '**/.yarn',
-      '**/.pnp.*',
+    // Compiler output whose inline source map encodes its exact columns
+    'e2e/source-map-not-transformed/lib/boom.js',
 
-      '**/*.snap',
-      '**/*.json',
+    // Written by the e2e tests that own them, and left behind by an
+    // interrupted run
+    'e2e/console-log-output-when-run-in-band/**',
+    'e2e/coverage-threshold/**',
+    'e2e/execute-tests-once-in-mpr/**',
+    'e2e/jest-config-js/**',
+    'e2e/jest-config-ts/**',
+    'e2e/resolve-no-extensions-no-js/**',
+    'e2e/timeouts/**',
+    'e2e/timeouts-legacy/**',
+    'e2e/ts-node-integration/**',
+    'e2e/to-match-inline-snapshot/__tests__/**',
+    'e2e/to-match-snapshot/__tests__/**',
 
-      // JS Syntax error
-      '{docs,website/versioned_docs/version-*}/ECMAScriptModules.md',
-      '{docs,website/versioned_docs/version-*}/JestObjectAPI.md',
-      'packages/jest-runtime/src/__tests__/test_esm_sync_graph_root/syntax-error.mjs',
+    '**/.yarn',
+    '**/.pnp.*',
 
-      // Bug? Uses TS syntax
-      'e2e/babel-plugin-jest-hoist/__tests__/integration.test.js',
-      'e2e/coverage-report/notRequiredInTestSuite.js',
-      'e2e/expect-async-matcher/matchers.js',
-      'e2e/explicit-resource-management/__tests__/index.js',
-      'e2e/failures/__tests__/errorWithCause.test.js',
-      'e2e/failures/__tests__/errorWithCauseInDescribe.test.js',
-      'e2e/failures/macros.js',
-      'e2e/global-setup/invalidSetupWithNamedExport.js',
-      'e2e/global-setup/setup.js',
-      'e2e/global-setup/setupWithDefaultExport.js',
-      'e2e/global-teardown/invalidTeardownWithNamedExport.js',
-      'e2e/global-teardown/teardownWithDefaultExport.js',
-      'e2e/multi-project-babel/prj-1/index.js',
-      'e2e/multi-project-babel/prj-2/index.js',
-      'e2e/multi-project-babel/prj-3/src/index.js',
-      'e2e/multi-project-babel/prj-4/src/index.js',
-      'e2e/multi-project-babel/prj-5/src/index.js',
-      'e2e/native-esm/__tests__/native-esm-import-assertions.test.js',
-      'e2e/transform-linked-modules/ignored/symlink.js',
-      'e2e/global-setup/setupWithDefaultExport.js',
-      'e2e/global-setup/setupWithDefaultExport.js',
-      'e2e/failures/macros.js',
-      'e2e/transform/**/*',
-      'examples/react-native/index.js',
-    ],
-  },
+    '**/*.snap',
+    '**/*.json',
+
+    // JS Syntax error
+    '{docs,website/versioned_docs/version-*}/ECMAScriptModules.md',
+    '{docs,website/versioned_docs/version-*}/JestObjectAPI.md',
+    'packages/jest-runtime/src/__tests__/test_esm_sync_graph_root/syntax-error.mjs',
+
+    // Bug? Uses TS syntax
+    'e2e/babel-plugin-jest-hoist/__tests__/integration.test.js',
+    'e2e/coverage-report/notRequiredInTestSuite.js',
+    'e2e/expect-async-matcher/matchers.js',
+    'e2e/explicit-resource-management/__tests__/index.js',
+    'e2e/failures/__tests__/errorWithCause.test.js',
+    'e2e/failures/__tests__/errorWithCauseInDescribe.test.js',
+    'e2e/failures/macros.js',
+    'e2e/global-setup/invalidSetupWithNamedExport.js',
+    'e2e/global-setup/setup.js',
+    'e2e/global-setup/setupWithDefaultExport.js',
+    'e2e/global-teardown/invalidTeardownWithNamedExport.js',
+    'e2e/global-teardown/teardownWithDefaultExport.js',
+    'e2e/multi-project-babel/prj-1/index.js',
+    'e2e/multi-project-babel/prj-2/index.js',
+    'e2e/multi-project-babel/prj-3/src/index.js',
+    'e2e/multi-project-babel/prj-4/src/index.js',
+    'e2e/multi-project-babel/prj-5/src/index.js',
+    'e2e/native-esm/__tests__/native-esm-import-assertions.test.js',
+    'e2e/transform-linked-modules/ignored/symlink.js',
+    'e2e/global-setup/setupWithDefaultExport.js',
+    'e2e/global-setup/setupWithDefaultExport.js',
+    'e2e/failures/macros.js',
+    'e2e/transform/**/*',
+    'examples/react-native/index.js',
+  ]),
   {
     files: [
       'packages/expect/src/__tests__/**/*',

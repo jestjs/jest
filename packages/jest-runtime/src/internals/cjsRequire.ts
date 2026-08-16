@@ -215,9 +215,9 @@ export class CoreModuleProvider {
     this.requireBuilder = options.requireBuilder;
   }
 
-  require(moduleName: string, supportPrefix: boolean): unknown {
+  require(moduleName: string): unknown {
     const moduleWithoutNodePrefix =
-      supportPrefix && this.resolution.normalizeCoreModuleSpecifier(moduleName);
+      this.resolution.normalizeCoreModuleSpecifier(moduleName);
 
     if (moduleWithoutNodePrefix === 'process') {
       return this.environment.global.process;

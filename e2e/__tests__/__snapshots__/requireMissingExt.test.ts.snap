@@ -10,7 +10,6 @@ exports[`shows a proper error from deep requires 1`] = `
       node_modules/discord.js/src/index.js
       __tests__/test.js
 
-
     However, Jest was able to find:
     	'../package.json'
 

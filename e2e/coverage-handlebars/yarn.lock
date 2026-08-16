@@ -22,19 +22,19 @@ __metadata:
   linkType: hard
 
 "@jridgewell/sourcemap-codec@npm:^1.4.14":
-  version: 1.5.0
-  resolution: "@jridgewell/sourcemap-codec@npm:1.5.0"
-  checksum: 10/4ed6123217569a1484419ac53f6ea0d9f3b57e5b57ab30d7c267bdb27792a27eb0e4b08e84a2680aa55cc2f2b411ffd6ec3db01c44fdc6dc43aca4b55f8374fd
+  version: 1.5.5
+  resolution: "@jridgewell/sourcemap-codec@npm:1.5.5"
+  checksum: 10/5d9d207b462c11e322d71911e55e21a4e2772f71ffe8d6f1221b8eb5ae6774458c1d242f897fb0814e8714ca9a6b498abfa74dfe4f434493342902b1a48b33a5
   languageName: node
   linkType: hard
 
 "@jridgewell/trace-mapping@npm:^0.3.25":
-  version: 0.3.25
-  resolution: "@jridgewell/trace-mapping@npm:0.3.25"
+  version: 0.3.31
+  resolution: "@jridgewell/trace-mapping@npm:0.3.31"
   dependencies:
     "@jridgewell/resolve-uri": "npm:^3.1.0"
     "@jridgewell/sourcemap-codec": "npm:^1.4.14"
-  checksum: 10/dced32160a44b49d531b80a4a2159dceab6b3ddf0c8e95a0deae4b0e894b172defa63d5ac52a19c2068e1fe7d31ea4ba931fbeec103233ecb4208953967120fc
+  checksum: 10/da0283270e691bdb5543806077548532791608e52386cfbbf3b9e8fb00457859d1bd01d512851161c886eb3a2f3ce6fd9bcf25db8edf3bddedd275bd4a88d606
   languageName: node
   linkType: hard
 
@@ -88,9 +88,9 @@ __metadata:
   linkType: hard
 
 "string-dedent@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "string-dedent@npm:3.0.1"
-  checksum: 10/18c5dcc547fdaf26f89e9424423dcc188539c7286b21d67ce1ce040241d2c14d35d0933e460c29093536c6aed9f056c0fbb3e76deda06d8c7fce7cd3d47a84f8
+  version: 3.0.2
+  resolution: "string-dedent@npm:3.0.2"
+  checksum: 10/39f147d5780e4dfb93c7ced00f68a618adba10f9bd08912c3f9ed72a92a32d99b97c267a09ec1f4e785efe5cea18180f6aa73d90647410314371520d67a5425e
   languageName: node
   linkType: hard
 

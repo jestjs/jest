@@ -86,12 +86,9 @@ export function buildWasmSyntheticModule(
 export function buildCoreSyntheticModule(
   moduleName: string,
   context: VMContext,
-  requireCoreModule: (moduleName: string, supportPrefix: boolean) => unknown,
+  requireCoreModule: (moduleName: string) => unknown,
 ): SyntheticModule {
-  const required = requireCoreModule(moduleName, true) as Record<
-    string,
-    unknown
-  >;
+  const required = requireCoreModule(moduleName) as Record<string, unknown>;
   // should identifier be `node://${moduleName}`?
   return syntheticFromExports(moduleName, context, {
     ...required,

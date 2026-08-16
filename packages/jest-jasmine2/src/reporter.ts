@@ -12,45 +12,16 @@ import {
   createEmptyTestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {formatResultsErrors} from 'jest-message-util';
-import {isError} from 'jest-util';
+import {
+  flattenErrorStack,
+  formatResultsErrors,
+  hasNestedErrors,
+} from 'jest-message-util';
 import type {SpecResult} from './jasmine/Spec';
 import type {SuiteResult} from './jasmine/Suite';
 import type {Reporter, RunDetails} from './types';
 
 type Microseconds = number;
-
-const isErrorWithCause = (
-  error: unknown,
-): error is Error & {cause: Error | string} =>
-  (isError(error) || error instanceof Error) &&
-  'cause' in error &&
-  (typeof error.cause === 'string' ||
-    isError(error.cause) ||
-    error.cause instanceof Error);
-
-const formatErrorStackWithCause = (error: Error, seen: Set<Error>): string => {
-  const stack =
-    typeof error.stack === 'string' && error.stack !== ''
-      ? error.stack
-      : error.message;
-
-  if (!isErrorWithCause(error)) {
-    return stack;
-  }
-
-  let cause: string;
-  if (typeof error.cause === 'string') {
-    cause = error.cause;
-  } else if (seen.has(error.cause)) {
-    cause = '[Circular cause]';
-  } else {
-    seen.add(error);
-    cause = formatErrorStackWithCause(error.cause, seen);
-  }
-
-  return `${stack}\n\n[cause]: ${cause}`;
-};
 
 export default class Jasmine2Reporter implements Reporter {
   private readonly _testResults: Array<AssertionResult>;
@@ -165,8 +136,8 @@ export default class Jasmine2Reporter implements Reporter {
         ? this._addMissingMessageToStack(failed.stack, failed.message)
         : failed.message || '';
 
-    if (isErrorWithCause(failed.error)) {
-      return formatErrorStackWithCause(failed.error, new Set());
+    if (hasNestedErrors(failed.error)) {
+      return flattenErrorStack(failed.error);
     }
 
     return message;

@@ -9,7 +9,12 @@ import React from 'react';
 import clsx from 'clsx';
 import MarkdownBlock from './MarkdownBlock';
 
-export default function GridBlock(props) {
+export default function GridBlock({
+  align = 'left',
+  contents = [],
+  layout = 'twoColumn',
+  ...props
+}) {
   function renderBlock(origBlock, i) {
     const blockDefaults = {
       imageAlign: 'left',
@@ -21,9 +26,9 @@ export default function GridBlock(props) {
     };
 
     const blockClasses = clsx('blockElement', props.className, {
-      alignCenter: props.align === 'center',
-      alignRight: props.align === 'right',
-      fourByGridBlock: props.layout === 'fourColumn',
+      alignCenter: align === 'center',
+      alignRight: align === 'right',
+      fourByGridBlock: layout === 'fourColumn',
       imageAlignSide:
         block.image &&
         (block.imageAlign === 'left' || block.imageAlign === 'right'),
@@ -31,8 +36,8 @@ export default function GridBlock(props) {
       imageAlignRight: block.image && block.imageAlign === 'right',
       imageAlignBottom: block.image && block.imageAlign === 'bottom',
       imageAlignLeft: block.image && block.imageAlign === 'left',
-      threeByGridBlock: props.layout === 'threeColumn',
-      twoByGridBlock: props.layout === 'twoColumn',
+      threeByGridBlock: layout === 'threeColumn',
+      twoByGridBlock: layout === 'twoColumn',
     });
 
     const topLeftImage =
@@ -85,11 +90,5 @@ export default function GridBlock(props) {
     );
   }
 
-  return <div className="gridBlockV1">{props.contents.map(renderBlock)}</div>;
+  return <div className="gridBlockV1">{contents.map(renderBlock)}</div>;
 }
-
-GridBlock.defaultProps = {
-  align: 'left',
-  contents: [],
-  layout: 'twoColumn',
-};

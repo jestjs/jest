@@ -16,6 +16,7 @@
     {"path": "../jest-message-util"},
     {"path": "../jest-resolve"},
     {"path": "../jest-runtime"},
+    {"path": "../jest-source-map"},
     {"path": "../jest-test-result"},
     {"path": "../jest-transform"},
     {"path": "../jest-types"},

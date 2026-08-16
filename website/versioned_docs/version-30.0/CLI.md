@@ -417,7 +417,7 @@ Run the tests of the specified projects. Jest uses the attribute `displayName` i
 
 ### `--setupFilesAfterEnv <path1> ... <pathN>`
 
-A list of paths to modules that run some code to configure or to set up the testing framework before each test. Beware that files imported by the setup scripts will not be mocked during testing.
+A list of paths to modules that run some code to configure or to set up the testing framework before each test file. Beware that files imported by the setup scripts will not be mocked during testing.
 
 ### `--shard`
 
@@ -461,7 +461,7 @@ Adds a `location` field to test results. Useful if you want to report the locati
 
 :::note
 
-In the resulting object `column` is 0-indexed while `line` is not.
+`line` is 1-indexed. `column` is 1-indexed with the default `jest-circus` runner, but 0-indexed with `jest-jasmine2`. Both will be 1-indexed in Jest 31, matching the positions V8 reports in a stack trace and through [`CallSite`](https://nodejs.org/api/util.html#utilgetcallsitesframecount-options).
 
 ```json
 {

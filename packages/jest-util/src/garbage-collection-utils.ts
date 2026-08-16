@@ -30,26 +30,35 @@ export type DeletionMode = 'soft' | 'off' | 'on';
  * Initializes the garbage collection utils with the given deletion mode.
  *
  * @param globalObject the global object on which to store the deletion mode.
- * @param deletionMode the deletion mode to use.
+ * @param deletionMode the deletion mode to use, or `undefined` when none was configured.
+ *
+ * @returns the mode that is in effect, which is the already initialized one if there is one.
  */
 export function initializeGarbageCollectionUtils(
   globalObject: typeof globalThis,
-  deletionMode: DeletionMode,
-): void {
-  const currentMode = Reflect.get(globalObject, DELETION_MODE_SYMBOL);
-  if (currentMode && currentMode !== deletionMode) {
-    console.warn(
-      chalk.yellow(
-        [
-          '[jest-util] garbage collection deletion mode already initialized, ignoring new mode',
-          `  Current: '${currentMode}'`,
-          `  Given: '${deletionMode}'`,
-        ].join('\n'),
-      ),
-    );
-    return;
+  deletionMode?: DeletionMode,
+): DeletionMode {
+  const currentMode: DeletionMode | undefined = Reflect.get(
+    globalObject,
+    DELETION_MODE_SYMBOL,
+  );
+  if (currentMode) {
+    if (deletionMode !== undefined && currentMode !== deletionMode) {
+      console.warn(
+        chalk.yellow(
+          [
+            '[jest-util] garbage collection deletion mode already initialized, ignoring new mode',
+            `  Current: '${currentMode}'`,
+            `  Given: '${deletionMode}'`,
+          ].join('\n'),
+        ),
+      );
+    }
+    return currentMode;
   }
-  Reflect.set(globalObject, DELETION_MODE_SYMBOL, deletionMode);
+  const modeToUse = deletionMode ?? 'soft';
+  Reflect.set(globalObject, DELETION_MODE_SYMBOL, modeToUse);
+  return modeToUse;
 }
 
 /**
@@ -92,38 +101,34 @@ export function protectProperties<T>(
     return false;
   }
 
-  // Reflect.get may cause deprecation warnings, so we disable them temporarily
-  const originalEmitWarning = process.emitWarning;
-
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    process.emitWarning = () => {};
-    if (
-      depth >= 0 &&
-      canDeleteProperties(value) &&
-      !Reflect.has(value, PROTECT_SYMBOL)
-    ) {
-      const result = Reflect.defineProperty(value, PROTECT_SYMBOL, {
-        configurable: true,
-        enumerable: false,
-        value: properties,
-        writable: true,
-      });
-      for (const key of getProtectedKeys(value, properties)) {
-        try {
-          const nested = Reflect.get(value, key);
-          protectProperties(nested, [], depth - 1);
-        } catch {
-          // Reflect.get might fail in certain edge-cases
-          // Instead of failing the entire process, we will skip the property.
+  if (
+    depth >= 0 &&
+    canDeleteProperties(value) &&
+    !Reflect.has(value, PROTECT_SYMBOL)
+  ) {
+    const result = Reflect.defineProperty(value, PROTECT_SYMBOL, {
+      configurable: true,
+      enumerable: false,
+      value: properties,
+      writable: true,
+    });
+    for (const key of getProtectedKeys(value, properties)) {
+      try {
+        // Reading an accessor resolves it, which both triggers deprecation
+        // warnings and defeats lazy globals. Its value is protected once
+        // whoever owns it resolves it.
+        const descriptor = Reflect.getOwnPropertyDescriptor(value, key);
+        if (descriptor && 'value' in descriptor) {
+          protectProperties(descriptor.value, [], depth - 1);
         }
+      } catch {
+        // Inspecting exotic objects might fail, e.g. a proxy with a throwing trap.
+        // Instead of failing the entire process, we will skip the property.
       }
-      return result;
     }
-    return false;
-  } finally {
-    process.emitWarning = originalEmitWarning;
+    return result;
   }
+  return false;
 }
 
 /**
