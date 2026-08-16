@@ -39,7 +39,7 @@ Preserve their public signatures. **Any internal callback that "loads a module" 
 
 ### Capability gates stay glued to the body they guard
 
-`internals/nodeCapabilities.ts` exports three gates:
+Three gates decide what the sync paths may do. `internals/nodeCapabilities.ts` exports the first two; the third is a `Resolution` method:
 
 - `runtimeSupportsVmModules` — `typeof SyntheticModule === 'function'` (Node 18+ with `--experimental-vm-modules`)
 - `supportsSyncEvaluate` — Node 24.9+ (gates on `hasAsyncGraph`); required for the sync ESM graph walker
@@ -51,10 +51,11 @@ When moving a method that depends on a gate, carry the gate verbatim with the bo
 
 Sync code paths must validate `vm.Module#status` before reuse:
 
-- A `SourceTextModule` may live in a registry while still `'unlinked'` — the legacy async path stashes it before `link()` runs. Gate cache reuse on `module.status === 'evaluated'`.
+- A `SourceTextModule` may live in a registry while still `'unlinked'` — the legacy async path stashes it before `link()` runs. Reuse a cache entry only at `'evaluated'`.
 - Rethrow `module.error` when `status === 'errored'`.
-- For `'unlinked' | 'linking' | 'linked' | 'evaluating'`, bail (sync-preferred) or surface a typed error (sync-required).
-- `requireEsmModule` (sync-required) must never `return null` for non-concurrency reasons — its caller turns `null` into the generic `ERR_REQUIRE_ESM` "concurrent import()" message. Resolver errors, missing factory, missing `moduleRequests` API, errored cache → throw a typed error or `invariant`.
+- `'linked'` is adoptable, not a bail: an earlier walk linked the module and then failed before evaluating it (a sibling threw). It is instantiated, so evaluate it — `evaluateLinkedModule` at the root, or hand it to the root's evaluate cascade as an already-linked scratch entry.
+- For `'unlinked' | 'linking' | 'evaluating'`, bail (sync-preferred) or surface a typed error (sync-required).
+- `tryLoadGraphSync` must only return `LOAD_ASYNC` when something genuinely has to finish asynchronously — `requireEsmModule` turns that sentinel into the `ERR_REQUIRE_ESM` "concurrent import()" message, so returning it for any other reason reports a concurrent import that does not exist. Resolver errors, missing factory, missing `moduleRequests` API, errored cache → throw a typed error or `invariant`.
 
 ### Mutex hygiene
 
