@@ -142,8 +142,8 @@ describe('Runtime loadCjsAsEsm module.exports unwrapping', () => {
       expect(first).toEqual({fromModuleExports: true});
       expect(first.named).toBeUndefined();
 
-      // Second require hits CjsLoader's ESM-registry cache fast path, which
-      // must apply the same unwrapping as the cold path above.
+      // Second require is served from the ESM registry, which must apply the
+      // same unwrapping as the cold path above.
       const second = runtime.requireModule(
         FROM,
         './module-exports-export-name.mjs',

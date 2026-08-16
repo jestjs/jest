@@ -480,6 +480,48 @@ describe('Runtime sync ESM graph - require(esm)', () => {
   );
 
   testWithSyncEsm(
+    'rethrows the original error when requiring a module that already failed',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      expect(() => runtime.requireModule(FROM, './throws-at-eval.mjs')).toThrow(
+        'boom from esm eval',
+      );
+      expect(() => runtime.requireModule(FROM, './throws-at-eval.mjs')).toThrow(
+        'boom from esm eval',
+      );
+    },
+  );
+
+  testWithSyncEsm(
+    'evaluates a module left linked when a sibling threw',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      expect(() =>
+        runtime.requireModule(FROM, './import-throwing-then-sibling.mjs'),
+      ).toThrow('boom from esm eval');
+      const ns = runtime.requireModule(FROM, './linked-sibling.mjs');
+      expect(ns.value).toBe('sibling');
+    },
+  );
+
+  testWithSyncEsm(
+    'reports the same top-level await error when a failed graph is required again',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const expected = expect.objectContaining({
+        code: 'ERR_REQUIRE_ASYNC_MODULE',
+        message: expect.stringMatching(/top-level await/),
+      });
+      expect(() =>
+        runtime.requireModule(FROM, './import-cjs-then-tla.mjs'),
+      ).toThrow(expected);
+      expect(() =>
+        runtime.requireModule(FROM, './import-cjs-then-tla.mjs'),
+      ).toThrow(expected);
+    },
+  );
+
+  testWithSyncEsm(
     'throws ERR_REQUIRE_ESM when an `import()` of the same module is in flight',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});

@@ -90,8 +90,9 @@ type ModuleLinkExtra = {
 };
 
 // Source-text entries carry their dep cacheKeys (used for `linkRequests`).
-// Synthetic entries (mocks, core, JSON, wasm, @jest/globals) start linked
-// and never appear in the link-requests pass.
+// The `'synthetic'` kind covers everything already linked - mocks, core, JSON,
+// wasm, @jest/globals, plus modules adopted from the registry - so it never
+// appears in the link-requests pass.
 type ScratchEntry =
   | {
       kind: 'source';
@@ -369,6 +370,9 @@ export class EsmLoader {
       // (`'evaluated'` / `'errored'`); bail otherwise.
       if (cached.status === 'evaluated') return cached as ESModule;
       if (cached.status === 'errored') throw cached.error;
+      if (cached.status === 'linked') {
+        return this.evaluateLinkedModule(cached, mode);
+      }
       return LOAD_ASYNC;
     }
 
@@ -385,16 +389,21 @@ export class EsmLoader {
       const {cacheKey, modulePath} = worklist.pop()!;
       if (scratch.has(cacheKey)) continue;
 
-      // Registry first, mutex second. Same settled-status gate as the root -
-      // anything in `'unlinked'` / `'linking'` / `'linked'` / `'evaluating'`
-      // is the legacy path mid-flight on this dep. Plugging an unlinked
-      // module into the parent's `linkRequests` would fail Node's link
-      // cascade; plugging a `'linked'` one would skip its body. Bail.
+      // Registry first, mutex second. `'unlinked'` / `'linking'` /
+      // `'evaluating'` mean the legacy path is mid-flight on this dep;
+      // plugging an unlinked module into the parent's `linkRequests` would
+      // fail Node's link cascade, so bail. `'linked'` is adoptable: it is
+      // already instantiated, so the root's evaluate cascade runs its body.
       const fromRegistry = registry.get(cacheKey);
       if (fromRegistry instanceof Promise) return LOAD_ASYNC;
       if (fromRegistry) {
         if (fromRegistry.status === 'errored') throw fromRegistry.error;
-        if (fromRegistry.status !== 'evaluated') return LOAD_ASYNC;
+        if (
+          fromRegistry.status !== 'evaluated' &&
+          fromRegistry.status !== 'linked'
+        ) {
+          return LOAD_ASYNC;
+        }
         scratch.set(cacheKey, {
           cacheKey,
           kind: 'synthetic',
@@ -602,6 +611,33 @@ export class EsmLoader {
     return rootModule;
   }
 
+  // A module sits in the registry linked-but-unevaluated when an earlier walk
+  // linked it and then failed before the evaluate cascade reached it - a
+  // sibling threw, or the walk bailed on an unsupported edge. It is fully
+  // instantiated, so evaluating it now is all that is left.
+  private evaluateLinkedModule(
+    module: VMModuleWithAsyncGraph,
+    mode: SyncEsmMode,
+  ): ESModule | LoadAsync {
+    if (moduleHasAsyncGraph(module)) {
+      if (mode === 'sync-required') {
+        throw makeRequireAsyncError(module.identifier, 'top-level await');
+      }
+      return LOAD_ASYNC;
+    }
+
+    module.evaluate().catch(noop);
+
+    if (module.status === 'errored') {
+      throw module.error;
+    }
+    invariant(
+      module.status === 'evaluated',
+      `Expected synchronous evaluation to complete for ${module.identifier}, but module status is "${module.status}". This is a bug in Jest, please report it!`,
+    );
+    return module;
+  }
+
   private getContext(): VMContext {
     invariant(
       typeof this.environment.getVmContext === 'function',
@@ -615,8 +651,8 @@ export class EsmLoader {
   // Commits (or reuses) a synthetic-module entry under `cacheKey` in both the
   // local scratch and the long-lived registry. Returns `false` when the
   // registry holds something the caller must bail on: a mid-flight Promise
-  // from the legacy async path, or a non-evaluated module (legacy can stash
-  // an `'unlinked'` SourceTextModule here while link/evaluate runs).
+  // from the legacy async path, or a module still being linked (legacy can
+  // stash an `'unlinked'` SourceTextModule here while link/evaluate runs).
   private tryCommitSynthetic(
     cacheKey: string,
     registry: ModuleRegistry | Map<string, JestModule>,
@@ -629,7 +665,9 @@ export class EsmLoader {
     if (fromRegistry) {
       const cached = fromRegistry as VMModule;
       if (cached.status === 'errored') throw cached.error;
-      if (cached.status !== 'evaluated') return false;
+      if (cached.status !== 'evaluated' && cached.status !== 'linked') {
+        return false;
+      }
     }
     const module =
       (fromRegistry as VMModuleWithAsyncGraph | undefined) ?? build();
@@ -1296,6 +1334,13 @@ export class EsmLoader {
     }
 
     await this.evaluatingMap.get(module);
+
+    // A concurrent caller may have driven the evaluation while we awaited the
+    // link or evaluate promise, and it throws on its own stack - so re-read
+    // the status rather than assuming we are the one that evaluated.
+    if ((module.status as VMModule['status']) === 'errored') {
+      throw module.error;
+    }
 
     return module;
   }
