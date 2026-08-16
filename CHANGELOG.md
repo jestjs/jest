@@ -19,7 +19,7 @@
 - `[jest-circus]` Clear `currentlyRunningTest` after skipped and todo tests ([#16342](https://github.com/jestjs/jest/pull/16342))
 - `[jest-circus]` Prevent late `done()` callbacks from affecting later test or hook invocations ([#16343](https://github.com/jestjs/jest/pull/16343))
 - `[jest-circus, jest-jasmine2, jest-message-util]` Serialize the inner errors of an `AggregateError` into `failureMessages`, `retryReasons` and `unhandledErrors`, so `--json` output and reporter annotations include them ([#16316](https://github.com/jestjs/jest/pull/16316))
-- `[jest-circus, jest-snapshot]` Preserve inline snapshots from other tests when retrying a failed test ([#16344](https://github.com/jestjs/jest/pull/16344))
+- `[jest-circus, jest-snapshot]` Keep snapshot state and counts correct when a test retries ([#16344](https://github.com/jestjs/jest/pull/16344))
 - `[@jest/create-cache-key-function]` Include the caller support flags in the generated key, so a transformer that emits ESM or CJS based on them no longer shares one cache entry between the two ([#16331](https://github.com/jestjs/jest/pull/16331))
 - `[@jest/create-cache-key-function]` Include the stringified project config in the generated key, so editing a transformer's own settings invalidates what it cached ([#16331](https://github.com/jestjs/jest/pull/16331))
 - `[@jest/transform]` Include the caller support flags in a transform's cache key, so a file transformed both as ESM and as CJS no longer serves one shape's output for the other ([#16331](https://github.com/jestjs/jest/pull/16331))

@@ -62,18 +62,23 @@ type SnapshotCounts = {
   updated: number;
 };
 
+// Everything a single test contributed since its current attempt began, so a
+// retry can undo exactly that much and leave the other tests' work alone.
+type AttemptRecord = {
+  checkedKeys: Set<string>;
+  counts: SnapshotCounts;
+  fileSnapshots: Map<string, string | undefined>;
+  inlineSnapshots: Set<InlineSnapshot>;
+};
+
 export default class SnapshotState {
   private _counters: Map<string, number>;
   private _dirty: boolean;
-  // @ts-expect-error - seemingly unused?
-  private _index: number;
   private readonly _updateSnapshot: Config.SnapshotUpdateState;
   private _snapshotData: SnapshotData;
-  private readonly _initialData: SnapshotData;
   private readonly _snapshotPath: string;
   private _inlineSnapshots: Array<InlineSnapshot>;
-  private readonly _inlineSnapshotOwners: WeakMap<InlineSnapshot, object>;
-  private _snapshotCountsByTest: WeakMap<object, SnapshotCounts>;
+  private _attemptRecordsByTest: WeakMap<object, AttemptRecord>;
   private readonly _uncheckedKeys: Set<string>;
   private readonly _prettierPath: string | null;
   private readonly _rootDir: string;
@@ -92,16 +97,13 @@ export default class SnapshotState {
       this._snapshotPath,
       options.updateSnapshot,
     );
-    this._initialData = data;
     this._snapshotData = data;
     this._dirty = dirty;
     this._prettierPath = options.prettierPath ?? null;
     this._inlineSnapshots = [];
-    this._inlineSnapshotOwners = new WeakMap();
-    this._snapshotCountsByTest = new WeakMap();
+    this._attemptRecordsByTest = new WeakMap();
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
-    this._index = 0;
     this.expand = options.expand || false;
     this.added = 0;
     this.matched = 0;
@@ -147,22 +149,57 @@ export default class SnapshotState {
         snapshot: receivedSerialized,
       };
       this._inlineSnapshots.push(inlineSnapshot);
-      if (options.testRetryOwner !== undefined) {
-        this._inlineSnapshotOwners.set(inlineSnapshot, options.testRetryOwner);
-      }
+      this._recordFor(options.testRetryOwner)?.inlineSnapshots.add(
+        inlineSnapshot,
+      );
     } else {
+      // A retried attempt must not leave its writes behind, or the next attempt
+      // sees the key as pre-existing and reports it as matched, not written.
+      const fileSnapshots = this._recordFor(
+        options.testRetryOwner,
+      )?.fileSnapshots;
+      if (fileSnapshots !== undefined && !fileSnapshots.has(key)) {
+        fileSnapshots.set(key, this._snapshotData[key]);
+      }
       this._snapshotData[key] = receivedSerialized;
     }
   }
 
+  private _recordFor(testRetryOwner?: object): AttemptRecord | undefined {
+    if (testRetryOwner === undefined) {
+      return undefined;
+    }
+    let record = this._attemptRecordsByTest.get(testRetryOwner);
+    if (record === undefined) {
+      record = {
+        checkedKeys: new Set(),
+        counts: {added: 0, matched: 0, unmatched: 0, updated: 0},
+        fileSnapshots: new Map(),
+        inlineSnapshots: new Set(),
+      };
+      this._attemptRecordsByTest.set(testRetryOwner, record);
+    }
+    return record;
+  }
+
+  // `match` marks a key as checked so it is not reported obsolete. A key only
+  // reached on a discarded attempt has to go back to being unchecked.
+  private _markKeyChecked(key: string, testRetryOwner?: object): void {
+    if (this._uncheckedKeys.delete(key)) {
+      this._recordFor(testRetryOwner)?.checkedKeys.add(key);
+    }
+  }
+
   clear(testRetryOwner?: object): void {
-    this._snapshotData = this._initialData;
     this._counters = new Map();
-    this._index = 0;
 
     if (testRetryOwner === undefined) {
+      // TODO(jest next major): require `testRetryOwner` and drop this branch.
+      // Unlike the per-owner path below it rolls back neither file snapshot
+      // data nor unchecked keys, so a snapshot added before the reset is
+      // reported as matched and one it checked is never reported obsolete.
       this._inlineSnapshots = [];
-      this._snapshotCountsByTest = new WeakMap();
+      this._attemptRecordsByTest = new WeakMap();
       this.added = 0;
       this.matched = 0;
       this.unmatched = 0;
@@ -170,33 +207,39 @@ export default class SnapshotState {
       return;
     }
 
+    const record = this._attemptRecordsByTest.get(testRetryOwner);
+    if (record === undefined) {
+      return;
+    }
+    this._attemptRecordsByTest.delete(testRetryOwner);
+
     this._inlineSnapshots = this._inlineSnapshots.filter(
-      snapshot => this._inlineSnapshotOwners.get(snapshot) !== testRetryOwner,
+      snapshot => !record.inlineSnapshots.has(snapshot),
     );
-    const counts = this._snapshotCountsByTest.get(testRetryOwner);
-    if (counts !== undefined) {
-      this.added -= counts.added;
-      this.matched -= counts.matched;
-      this.unmatched -= counts.unmatched;
-      this.updated -= counts.updated;
-      this._snapshotCountsByTest.delete(testRetryOwner);
+    this.added -= record.counts.added;
+    this.matched -= record.counts.matched;
+    this.unmatched -= record.counts.unmatched;
+    this.updated -= record.counts.updated;
+    for (const [key, previous] of record.fileSnapshots) {
+      if (previous === undefined) {
+        delete this._snapshotData[key];
+      } else {
+        this._snapshotData[key] = previous;
+      }
+    }
+    for (const key of record.checkedKeys) {
+      this._uncheckedKeys.add(key);
     }
   }
 
   private _incrementSnapshotCount(
-    count: keyof SnapshotCounts,
+    status: keyof SnapshotCounts,
     testRetryOwner?: object,
   ): void {
-    this[count]++;
-    if (testRetryOwner !== undefined) {
-      const counts = this._snapshotCountsByTest.get(testRetryOwner) ?? {
-        added: 0,
-        matched: 0,
-        unmatched: 0,
-        updated: 0,
-      };
-      counts[count]++;
-      this._snapshotCountsByTest.set(testRetryOwner, counts);
+    this[status]++;
+    const record = this._recordFor(testRetryOwner);
+    if (record !== undefined) {
+      record.counts[status]++;
     }
   }
 
@@ -269,7 +312,7 @@ export default class SnapshotState {
     // there's an external snapshot. This way the external snapshot can be
     // removed with `--updateSnapshot`.
     if (!(isInline && this._snapshotData[key] !== undefined)) {
-      this._uncheckedKeys.delete(key);
+      this._markKeyChecked(key, testRetryOwner);
     }
 
     const receivedSerialized = addExtraLineBreaks(
@@ -389,7 +432,7 @@ export default class SnapshotState {
       key = testNameToKey(testName, count);
     }
 
-    this._uncheckedKeys.delete(key);
+    this._markKeyChecked(key, testRetryOwner);
     this._incrementSnapshotCount('unmatched', testRetryOwner);
     return key;
   }
