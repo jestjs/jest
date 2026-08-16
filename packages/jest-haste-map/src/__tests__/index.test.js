@@ -779,6 +779,112 @@ describe('HasteMap', () => {
     }
   });
 
+  // `haste_impl.js` names every `index.js` file `index`, a module collision of
+  // its own, so the mock tests below run without a haste impl.
+  it('does not warn on duplicate mocks that each sit next to a module', async () => {
+    mockFs[path.join('/', 'project', 'fruits', 'module1', 'index.js')] = `
+      // module1
+    `;
+    mockFs[
+      path.join('/', 'project', 'fruits', 'module1', '__mocks__', 'index.js')
+    ] = `
+      // module1 mock
+    `;
+    mockFs[path.join('/', 'project', 'fruits', 'module2', 'index.js')] = `
+      // module2
+    `;
+    mockFs[
+      path.join('/', 'project', 'fruits', 'module2', '__mocks__', 'index.js')
+    ] = `
+      // module2 mock
+    `;
+
+    await (
+      await HasteMap.create({
+        ...defaultConfig,
+        hasteImplModulePath: undefined,
+        mocksPattern: '__mocks__',
+      })
+    ).build();
+
+    expect(console.warn).not.toHaveBeenCalled();
+  });
+
+  it('warns on duplicate mocks when only one sits next to a module', async () => {
+    mockFs[path.join('/', 'project', 'fruits', 'module1', 'index.js')] = `
+      // module1
+    `;
+    mockFs[
+      path.join('/', 'project', 'fruits', 'module1', '__mocks__', 'index.js')
+    ] = `
+      // module1 mock
+    `;
+    mockFs[
+      path.join('/', 'project', 'fruits', 'module2', '__mocks__', 'index.js')
+    ] = `
+      // module2 mock, with nothing next to it to mock
+    `;
+
+    await (
+      await HasteMap.create({
+        ...defaultConfig,
+        hasteImplModulePath: undefined,
+        mocksPattern: '__mocks__',
+      })
+    ).build();
+
+    expect(console.warn).toHaveBeenCalledWith(
+      expect.stringContaining('duplicate manual mock found: index'),
+    );
+  });
+
+  it('warns on duplicate mocks nested inside a __mocks__ directory', async () => {
+    mockFs[path.join('/', 'project', 'fruits', 'module1', 'subdir', 'x.js')] = `
+      // module1 subdir
+    `;
+    mockFs[
+      path.join(
+        '/',
+        'project',
+        'fruits',
+        'module1',
+        '__mocks__',
+        'subdir',
+        'x.js',
+      )
+    ] = `
+      // module1 subdir mock
+    `;
+    mockFs[path.join('/', 'project', 'fruits', 'module2', 'subdir', 'x.js')] = `
+      // module2 subdir
+    `;
+    mockFs[
+      path.join(
+        '/',
+        'project',
+        'fruits',
+        'module2',
+        '__mocks__',
+        'subdir',
+        'x.js',
+      )
+    ] = `
+      // module2 subdir mock
+    `;
+
+    await (
+      await HasteMap.create({
+        ...defaultConfig,
+        hasteImplModulePath: undefined,
+        mocksPattern: '__mocks__',
+      })
+    ).build();
+
+    expect(console.warn).toHaveBeenCalledWith(
+      expect.stringContaining('duplicate manual mock found: subdir/x'),
+    );
+  });
+
   it('warns on duplicate module ids', async () => {
     mockFs[path.join('/', 'project', 'fruits', 'other', 'Strawberry.js')] = `
       const Banana = require("Banana");
