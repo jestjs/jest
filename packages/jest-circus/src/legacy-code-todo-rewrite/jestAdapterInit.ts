@@ -357,7 +357,7 @@ const handleSnapshotStateAfterRetry =
     switch (event.name) {
       case 'test_retry': {
         // Clear any snapshot data that occurred in previous test run
-        snapshotState.clear();
+        snapshotState.clear(event.test);
       }
     }
   };

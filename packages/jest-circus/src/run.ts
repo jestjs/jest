@@ -28,12 +28,23 @@ import {
 // the original values in the variables before we require any files.
 const {setTimeout} = globalThis;
 
-const testNameStorage = new AsyncLocalStorage<string>();
+type RunningTest = {
+  id: string;
+  test: Circus.TestEntry;
+};
+
+const testEntryStorage = new AsyncLocalStorage<RunningTest>();
+
+const runningTest = (test: Circus.TestEntry): RunningTest => ({
+  id: getTestID(test),
+  test,
+});
 
 const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock, seed, randomize} = getState();
   jestExpect.setState({
-    currentConcurrentTestName: () => testNameStorage.getStore(),
+    currentConcurrentTestName: () => testEntryStorage.getStore()?.id,
+    currentTestIdentity: () => testEntryStorage.getStore()?.test,
   });
   const rng = randomize ? rngBuilder(seed) : undefined;
   await dispatch({name: 'run_start'});
@@ -118,7 +129,9 @@ const _runTestsForDescribeBlock = async (
         await new Promise(resolve => setTimeout(resolve, waitBeforeRetry));
       }
 
-      await _runTest(test, isSkipped);
+      await testEntryStorage.run(runningTest(test), () =>
+        _runTest(test, isSkipped),
+      );
       numRetriesAvailable--;
     }
   };
@@ -143,7 +156,7 @@ const _runTestsForDescribeBlock = async (
   };
   const runTestWithContext = async (child: Circus.TestEntry) => {
     const hasErrorsBeforeTestRun = child.errors.length > 0;
-    return testNameStorage.run(getTestID(child), async () => {
+    return testEntryStorage.run(runningTest(child), async () => {
       await _runTest(child, isSkipped);
       await handleRetry(child, hasErrorsBeforeTestRun, hasRetryTimes);
     });
