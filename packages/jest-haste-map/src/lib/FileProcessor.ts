@@ -244,18 +244,18 @@ export class FileProcessor {
         return null;
       }
 
-      if (moduleMetadata != null) {
-        const platform =
-          getPlatformExtension(filePath, this._options.platforms) ||
-          H.GENERIC_PLATFORM;
+      const moduleId = fileMetadata[H.ID];
+      const platform =
+        getPlatformExtension(filePath, this._options.platforms) ||
+        H.GENERIC_PLATFORM;
 
+      if (moduleMetadata != null) {
         const module = moduleMetadata[platform];
 
         if (module == null) {
           return null;
         }
 
-        const moduleId = fileMetadata[H.ID];
         let modulesByPlatform = map.get(moduleId);
         if (!modulesByPlatform) {
           modulesByPlatform = Object.create(null) as ModuleMapItem;
@@ -263,6 +263,16 @@ export class FileProcessor {
         }
         modulesByPlatform[platform] = module;
 
+        return null;
+      }
+
+      // A haste name involved in a collision has no `map` entry — it was
+      // deleted when the collision was recorded — but `duplicates` survives a
+      // rebuild and already lists this file, so its metadata is up to date and
+      // re-extracting it would change nothing.
+      if (
+        hasteMap.duplicates.get(moduleId)?.get(platform)?.has(relativeFilePath)
+      ) {
         return null;
       }
     }
