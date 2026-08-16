@@ -18,6 +18,7 @@ import type {
   default as JasmineSpec,
   SpecResult,
 } from './jasmine/Spec';
+import type {default as JasmineSuite} from './jasmine/Suite';
 
 export type SetupOptions = {
   config: Config.ProjectConfig;
@@ -65,6 +66,52 @@ const addAssertionErrors = (result: SpecResult) => {
   }
 };
 
+// Position of each spec among the specs sharing its full name, counting from 1
+// in declaration order. Specs with a unique name are left out, so the common
+// case stays empty.
+const buildTestNameOccurrences = (topSuite: JasmineSuite) => {
+  const specsByFullName = new Map<string, Array<JasmineSpec>>();
+
+  const collect = (suite: JasmineSuite) => {
+    for (const child of suite.children) {
+      if ('children' in child) {
+        collect(child);
+      } else {
+        const fullName = child.getFullName();
+        const namesakes = specsByFullName.get(fullName);
+        if (namesakes === undefined) {
+          specsByFullName.set(fullName, [child]);
+        } else {
+          namesakes.push(child);
+        }
+      }
+    }
+  };
+  collect(topSuite);
+
+  const occurrences = new Map<JasmineSpec, number>();
+  for (const namesakes of specsByFullName.values()) {
+    if (namesakes.length > 1) {
+      for (const [index, spec] of namesakes.entries()) {
+        occurrences.set(spec, index + 1);
+      }
+    }
+  }
+  return occurrences;
+};
+
+let testNameOccurrences: Map<JasmineSpec, number> | undefined;
+
+// Jasmine is patched before the test file declares anything, so the tree only
+// exists once the first spec starts.
+const getTestNameOccurrence = (spec: JasmineSpec) => {
+  testNameOccurrences ??= buildTestNameOccurrences(
+    // @ts-expect-error: jasmine doesn't exist on globalThis
+    globalThis.jasmine.getEnv().topSuite(),
+  );
+  return testNameOccurrences.get(spec);
+};
+
 const patchJasmine = () => {
   // @ts-expect-error: jasmine doesn't exist on globalThis
   globalThis.jasmine.Spec = (realSpec => {
@@ -78,7 +125,10 @@ const patchJasmine = () => {
         };
         const onStart = attr.onStart;
         attr.onStart = (context: JasmineSpec) => {
-          jestExpect.setState({currentTestName: context.getFullName()});
+          jestExpect.setState({
+            currentTestName: context.getFullName(),
+            currentTestNameOccurrence: () => getTestNameOccurrence(context),
+          });
           onStart?.call(attr, context);
         };
         super(attr);
@@ -101,6 +151,10 @@ export default async function setupJestGlobals({
   for (let i = config.snapshotSerializers.length - 1; i >= 0; i--) {
     addSerializer(localRequire(config.snapshotSerializers[i]));
   }
+
+  // The module outlives a single test file, so the previous file's tree must
+  // not answer for this one.
+  testNameOccurrences = undefined;
 
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;

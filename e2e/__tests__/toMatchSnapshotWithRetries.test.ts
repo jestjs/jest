@@ -152,7 +152,7 @@ exports[\`varies 2\`] = \`"b"\`;
   expect(stderr).toMatch('Snapshots:   1 obsolete, 1 passed, 1 total');
 });
 
-test('keeps counters for colliding full names across an immediate retry', () => {
+test('keeps other tests counting where they were across an immediate retry', () => {
   const filename = 'counters-across-immediate-retries.test.js';
   const template = makeTemplate(`
     let attempt = 0;
@@ -184,12 +184,13 @@ test('keeps counters for colliding full names across an immediate retry', () => 
     'utf8',
   );
 
-  // The two full names collide, so the second test's key must keep counting
-  // from the first test's, even though the flaky test was cleared in between.
+  // Clearing the flaky test in between must leave the other two counting where
+  // they were. Their full names collide, which used to make them share one
+  // counter; they now have a key space each, and both must survive the retry.
   expect(exitCode).toBe(0);
   expect(stderr).toMatch('Snapshots:   2 written, 2 total');
   expect(snapshot).toContain('exports[`a b c 1`] = `"first"`;');
-  expect(snapshot).toContain('exports[`a b c 2`] = `"second"`;');
+  expect(snapshot).toContain('exports[`a b c 2.1`] = `"second"`;');
 });
 
 test('scopes retry cleanup to the test, not its enclosing hooks', () => {

@@ -1399,7 +1399,7 @@ Received constructor:     <r>C</> extends <g>B</>
 
 `;
 
-exports[`.toBeInstanceOf() passing {} and [Function B] 2`] = `
+exports[`.toBeInstanceOf() passing {} and [Function B] 2.1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toBeInstanceOf<d>(</><g>expected</><d>)</>
 
 Expected constructor: not <g>B</>
@@ -1407,7 +1407,7 @@ Received constructor:     <r>E</> extends … extends <g>B</>
 
 `;
 
-exports[`.toBeInstanceOf() passing {} and [Function B] 3`] = `
+exports[`.toBeInstanceOf() passing {} and [Function B] 3.1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toBeInstanceOf<d>(</><g>expected</><d>)</>
 
 Expected constructor: not <g>B</>
@@ -2085,14 +2085,14 @@ Expected: <g>[]</>
 Received: serializes to the same string
 `;
 
-exports[`.toEqual() {pass: false} expect([]).toEqual([]) 2`] = `
+exports[`.toEqual() {pass: false} expect([]).toEqual([]) 2.1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 Expected: <g>[]</>
 Received: serializes to the same string
 `;
 
-exports[`.toEqual() {pass: false} expect([]).toEqual([]) 3`] = `
+exports[`.toEqual() {pass: false} expect([]).toEqual([]) 3.1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 Expected: <g>[]</>
@@ -2717,14 +2717,14 @@ Expected: not <g>"abc"</>
 
 `;
 
-exports[`.toEqual() {pass: true} expect("abc").not.toEqual("abc") 2`] = `
+exports[`.toEqual() {pass: true} expect("abc").not.toEqual("abc") 2.1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 Expected: not <g>"abc"</>
 
 `;
 
-exports[`.toEqual() {pass: true} expect("abc").not.toEqual("abc") 3`] = `
+exports[`.toEqual() {pass: true} expect("abc").not.toEqual("abc") 3.1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 Expected: not <g>"abc"</>
@@ -2913,7 +2913,7 @@ Expected: not <g>{}</>
 
 `;
 
-exports[`.toEqual() {pass: true} expect({}).not.toEqual({}) 2`] = `
+exports[`.toEqual() {pass: true} expect({}).not.toEqual({}) 2.1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 Expected: not <g>{}</>
@@ -2934,7 +2934,7 @@ Expected: not <g>0</>
 
 `;
 
-exports[`.toEqual() {pass: true} expect(0).not.toEqual(0) 2`] = `
+exports[`.toEqual() {pass: true} expect(0).not.toEqual(0) 2.1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 Expected: not <g>0</>
@@ -3507,7 +3507,7 @@ Expected value: <g>2</>
 Received value: <r>{"a.b.c.d": 1}</>
 `;
 
-exports[`.toHaveProperty() {pass: false} expect({"a.b.c.d": 1}).toHaveProperty('a.b.c.d', 2) 2`] = `
+exports[`.toHaveProperty() {pass: false} expect({"a.b.c.d": 1}).toHaveProperty('a.b.c.d', 2) 2.1`] = `
 <d>expect(</><r>received</><d>).</>toHaveProperty<d>(</><g>path</><d>, </><g>value</><d>)</>
 
 Expected path: <g>["a.b.c.d"]</>

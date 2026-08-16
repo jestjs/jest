@@ -39,6 +39,15 @@ test('testNameToKey', () => {
   expect(testNameToKey('abc cde ', 12)).toBe('abc cde  12');
 });
 
+test('testNameToKey gives each test sharing a name its own key space', () => {
+  expect(testNameToKey('abc cde', 1, 1)).toBe('abc cde 1');
+  expect(testNameToKey('abc cde', 1, 2)).toBe('abc cde 2.1');
+  expect(testNameToKey('abc cde', 12, 3)).toBe('abc cde 3.12');
+
+  expect(testNameToKey('abc cde', 1, 2)).not.toBe(testNameToKey('abc cde', 2));
+  expect(keyToTestName(testNameToKey('abc cde', 12, 3))).toBe('abc cde');
+});
+
 test('testNameToKey escapes line endings to prevent collisions', () => {
   expect(testNameToKey('test with\r\nCRLF', 1)).toBe('test with\\r\\nCRLF 1');
   expect(testNameToKey('test with\rCR', 1)).toBe('test with\\rCR 1');

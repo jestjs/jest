@@ -119,14 +119,26 @@ const denormalizeTestNameFromKey = (key: string): string =>
     }
   });
 
-export const testNameToKey = (testName: string, count: number): string =>
-  `${normalizeTestNameForKey(testName)} ${count}`;
+// Tests sharing a full name would otherwise share one key space and take each
+// other's keys, so every namesake after the first counts within its own. The
+// separator is a dot because a name can end in anything a test author types,
+// including something that looks like the occurrence.
+export const testNameToKey = (
+  testName: string,
+  count: number,
+  nameOccurrence?: number,
+): string =>
+  nameOccurrence !== undefined && nameOccurrence > 1
+    ? `${normalizeTestNameForKey(testName)} ${nameOccurrence}.${count}`
+    : `${normalizeTestNameForKey(testName)} ${count}`;
+
+const KEY_COUNT_SUFFIX = / \d+(\.\d+)?$/;
 
 export const keyToTestName = (key: string): string => {
-  if (!/ \d+$/.test(key)) {
+  if (!KEY_COUNT_SUFFIX.test(key)) {
     throw new Error('Snapshot keys must end with a number.');
   }
-  const testNameWithoutCount = key.replace(/ \d+$/, '');
+  const testNameWithoutCount = key.replace(KEY_COUNT_SUFFIX, '');
   return denormalizeTestNameFromKey(testNameWithoutCount);
 };
 

@@ -34,12 +34,20 @@ export type SnapshotStateOptions = {
 export type SnapshotMatchOptions = {
   readonly testName: string;
   readonly testIdentity?: object;
+  readonly nameOccurrence?: number;
   readonly received: unknown;
   readonly key?: string;
   readonly inlineSnapshot?: string;
   readonly isInline: boolean;
   readonly error?: Error;
   readonly testFailing?: boolean;
+};
+
+export type SnapshotFailOptions = {
+  readonly testName: string;
+  readonly testIdentity?: object;
+  readonly nameOccurrence?: number;
+  readonly key?: string;
 };
 
 type SnapshotReturnOptions = {
@@ -214,16 +222,27 @@ export default class SnapshotState {
     }
   }
 
-  // Counters number keys per full test name, and full names can collide
-  // across tests. Undoing an increment could double-undo a collision, so the
-  // record keeps each counter's value from before the test first touched it.
-  private _bumpCounter(testName: string, testIdentity?: object): number {
+  // A test's counter has to be its own, or namesakes take each other's keys in
+  // whatever order they happen to run. The occurrence is what separates them,
+  // and leads so the pair is recoverable from the string.
+  private static _counterKey(testName: string, nameOccurrence = 1): string {
+    return `${nameOccurrence} ${testName}`;
+  }
+
+  // Undoing an increment could undo more than this test's own, so the record
+  // keeps each counter's value from before the test first touched it.
+  private _bumpCounter(
+    testName: string,
+    nameOccurrence: number | undefined,
+    testIdentity?: object,
+  ): number {
+    const counterKey = SnapshotState._counterKey(testName, nameOccurrence);
     const record = this._recordFor(testIdentity);
-    if (record !== undefined && !record.counters.has(testName)) {
-      record.counters.set(testName, this._counters.get(testName));
+    if (record !== undefined && !record.counters.has(counterKey)) {
+      record.counters.set(counterKey, this._counters.get(counterKey));
     }
-    const count = (this._counters.get(testName) ?? 0) + 1;
-    this._counters.set(testName, count);
+    const count = (this._counters.get(counterKey) ?? 0) + 1;
+    this._counters.set(counterKey, count);
     return count;
   }
 
@@ -266,11 +285,11 @@ export default class SnapshotState {
     for (const key of record.checkedKeys) {
       this._uncheckedKeys.add(key);
     }
-    for (const [testName, previous] of record.counters) {
+    for (const [counterKey, previous] of record.counters) {
       if (previous === undefined) {
-        this._counters.delete(testName);
+        this._counters.delete(counterKey);
       } else {
-        this._counters.set(testName, previous);
+        this._counters.set(counterKey, previous);
       }
     }
     // The dirty flag can only be undone when every write since this test's
@@ -347,6 +366,7 @@ export default class SnapshotState {
   match({
     testName,
     testIdentity,
+    nameOccurrence,
     received,
     key,
     inlineSnapshot,
@@ -354,10 +374,10 @@ export default class SnapshotState {
     error,
     testFailing = false,
   }: SnapshotMatchOptions): SnapshotReturnOptions {
-    const count = this._bumpCounter(testName, testIdentity);
+    const count = this._bumpCounter(testName, nameOccurrence, testIdentity);
 
     if (!key) {
-      key = testNameToKey(testName, count);
+      key = testNameToKey(testName, count, nameOccurrence);
     }
 
     // Do not mark the snapshot as "checked" if the snapshot is inline and
@@ -471,16 +491,16 @@ export default class SnapshotState {
     }
   }
 
-  fail(
-    testName: string,
-    _received: unknown,
-    key?: string,
-    testIdentity?: object,
-  ): string {
-    const count = this._bumpCounter(testName, testIdentity);
+  fail({
+    testName,
+    testIdentity,
+    nameOccurrence,
+    key,
+  }: SnapshotFailOptions): string {
+    const count = this._bumpCounter(testName, nameOccurrence, testIdentity);
 
     if (!key) {
-      key = testNameToKey(testName, count);
+      key = testNameToKey(testName, count, nameOccurrence);
     }
 
     this._markKeyChecked(key, testIdentity);

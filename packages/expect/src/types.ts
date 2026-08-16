@@ -72,6 +72,12 @@ export interface MatcherState {
    */
   currentTestIdentity?: () => object | undefined;
   currentTestName?: string;
+  /**
+   * Position of the currently running test among the tests in its file that
+   * share its full name, counting from 1 in definition order. `undefined` when
+   * no other test shares the name.
+   */
+  currentTestNameOccurrence?: () => number | undefined;
   error?: Error;
   expand?: boolean;
   expectedAssertionsNumber: number | null;

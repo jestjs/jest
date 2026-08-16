@@ -722,7 +722,7 @@ This ensures that a value matches the most recent snapshot. Check out [the Snaps
 
 You can provide an optional `propertyMatchers` object argument, which has asymmetric matchers as values of a subset of expected properties, **if** the received value will be an **object** instance. It is like `toMatchObject` with flexible criteria for a subset of properties, followed by a snapshot test as exact criteria for the rest of the properties.
 
-You can provide an optional `hint` string argument that is appended to the test name. Although Jest always appends a number at the end of a snapshot name, short descriptive hints might be more useful than numbers to differentiate **multiple** snapshots in a **single** `it` or `test` block. Jest sorts snapshots by name in the corresponding `.snap` file.
+You can provide an optional `hint` string argument that is appended to the test name. Although Jest always appends a number at the end of a snapshot name, short descriptive hints might be more useful than numbers to differentiate **multiple** snapshots in a **single** `it` or `test` block. Jest sorts snapshots by name in the corresponding `.snap` file. Each test counts its own snapshots, so two tests that end up with the same full name do not take each other's names — see [Use descriptive snapshot names](SnapshotTesting.md#3-use-descriptive-snapshot-names).
 
 ### `.toMatchInlineSnapshot(propertyMatchers?, inlineSnapshot)`
 
@@ -821,7 +821,7 @@ test('throws on octopus', () => {
 
 Use `.toThrowErrorMatchingSnapshot` to test that a function throws an error matching the most recent snapshot when it is called.
 
-You can provide an optional `hint` string argument that is appended to the test name. Although Jest always appends a number at the end of a snapshot name, short descriptive hints might be more useful than numbers to differentiate **multiple** snapshots in a **single** `it` or `test` block. Jest sorts snapshots by name in the corresponding `.snap` file.
+You can provide an optional `hint` string argument that is appended to the test name. Although Jest always appends a number at the end of a snapshot name, short descriptive hints might be more useful than numbers to differentiate **multiple** snapshots in a **single** `it` or `test` block. Jest sorts snapshots by name in the corresponding `.snap` file. Each test counts its own snapshots, so two tests that end up with the same full name do not take each other's names — see [Use descriptive snapshot names](SnapshotTesting.md#3-use-descriptive-snapshot-names).
 
 For example, let's say you have a `drinkFlavor` function that throws whenever the flavor is `'octopus'`, and is coded like this:
 

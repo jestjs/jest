@@ -94,8 +94,11 @@ expect(1).toMatchInlineSnapshot();
     testIdentity: retriedTest,
     testName: 'retried match',
   });
-  snapshotState.fail('retained failure', undefined, undefined, retainedTest);
-  snapshotState.fail('retried failure', undefined, undefined, retriedTest);
+  snapshotState.fail({
+    testIdentity: retainedTest,
+    testName: 'retained failure',
+  });
+  snapshotState.fail({testIdentity: retriedTest, testName: 'retried failure'});
 
   expect(snapshotState.added).toBe(2);
   expect(snapshotState.matched).toBe(2);
@@ -185,6 +188,86 @@ test('still saves when another test wrote between the rolled-back writes', () =>
   const snapshotFile = fs.readFileSync(snapshotPath, 'utf8');
   expect(snapshotFile).toContain('exports[`written by another test 1`]');
   expect(snapshotFile).not.toContain('written on retry');
+});
+
+describe('tests sharing a full name', () => {
+  const readKeys = (snapshotPath: string) =>
+    [...fs.readFileSync(snapshotPath, 'utf8').matchAll(/^exports\[`(.+)`\]/gm)]
+      .map(match => match[1])
+      .sort();
+
+  test('count their snapshots independently of run order', () => {
+    const snapshotPath = path.join(rootDir, 'example.test.js.snap');
+    const snapshotState = new SnapshotState(snapshotPath, {
+      rootDir,
+      snapshotFormat: {},
+      updateSnapshot: 'new',
+    });
+
+    // The second test runs first, as `--randomize` or concurrency may order it.
+    snapshotState.match({
+      isInline: false,
+      nameOccurrence: 2,
+      received: 'from the second test',
+      testIdentity: {},
+      testName: 'suite same name',
+    });
+    snapshotState.match({
+      isInline: false,
+      nameOccurrence: 1,
+      received: 'from the first test',
+      testIdentity: {},
+      testName: 'suite same name',
+    });
+
+    expect(snapshotState.added).toBe(2);
+    expect(snapshotState.save()).toEqual({deleted: false, saved: true});
+    expect(readKeys(snapshotPath)).toEqual([
+      'suite same name 1',
+      'suite same name 2.1',
+    ]);
+  });
+
+  test('keep their own counters when one of them retries', () => {
+    const snapshotPath = path.join(rootDir, 'example.test.js.snap');
+    const snapshotState = new SnapshotState(snapshotPath, {
+      rootDir,
+      snapshotFormat: {},
+      updateSnapshot: 'new',
+    });
+    const retriedTest = {};
+
+    snapshotState.match({
+      isInline: false,
+      nameOccurrence: 2,
+      received: 'discarded',
+      testIdentity: retriedTest,
+      testName: 'suite same name',
+    });
+    snapshotState.match({
+      isInline: false,
+      nameOccurrence: 1,
+      received: 'from the first test',
+      testIdentity: {},
+      testName: 'suite same name',
+    });
+    snapshotState.clear(retriedTest);
+    snapshotState.match({
+      isInline: false,
+      nameOccurrence: 2,
+      received: 'from the second test',
+      testIdentity: {},
+      testName: 'suite same name',
+    });
+
+    expect(snapshotState.added).toBe(2);
+    expect(snapshotState.save()).toEqual({deleted: false, saved: true});
+    const snapshotFile = fs.readFileSync(snapshotPath, 'utf8');
+    expect(snapshotFile).toContain(
+      'exports[`suite same name 2.1`] = `"from the second test"`;',
+    );
+    expect(snapshotFile).not.toContain('discarded');
+  });
 });
 
 test('clear without a test identity removes all pending inline snapshots', () => {

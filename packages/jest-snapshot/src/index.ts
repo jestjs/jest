@@ -58,15 +58,20 @@ const printSnapshotName = (
   concatenatedBlockNames = '',
   hint = '',
   count: number,
+  nameOccurrence?: number,
 ): string => {
   const hasNames = concatenatedBlockNames.length > 0;
   const hasHint = hint.length > 0;
+  const countSuffix =
+    nameOccurrence !== undefined && nameOccurrence > 1
+      ? `${nameOccurrence}.${count}`
+      : count;
 
   return `Snapshot name: \`${
     hasNames ? escapeBacktickString(concatenatedBlockNames) : ''
   }${hasNames && hasHint ? ': ' : ''}${
     hasHint ? BOLD_WEIGHT(escapeBacktickString(hint)) : ''
-  } ${count}\``;
+  } ${countSuffix}\``;
 };
 
 function stripAddedIndentation(inlineSnapshot: string) {
@@ -287,11 +292,17 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     context.dontThrow();
   }
 
-  const {currentConcurrentTestName, currentTestIdentity, isNot, snapshotState} =
-    context;
+  const {
+    currentConcurrentTestName,
+    currentTestIdentity,
+    currentTestNameOccurrence,
+    isNot,
+    snapshotState,
+  } = context;
   const currentTestName =
     currentConcurrentTestName?.() ?? context.currentTestName;
   const testIdentity = currentTestIdentity?.();
+  const nameOccurrence = currentTestNameOccurrence?.();
 
   if (isNot) {
     throw new Error(
@@ -341,12 +352,11 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     if (propertyPass) {
       received = deepMerge(received, properties);
     } else {
-      const key = snapshotState.fail(
-        fullTestName,
-        received,
-        undefined,
+      const key = snapshotState.fail({
+        nameOccurrence,
         testIdentity,
-      );
+        testName: fullTestName,
+      });
       const matched = /(\d+)$/.exec(key);
       const count = matched === null ? 1 : Number(matched[1]);
 
@@ -355,6 +365,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
           currentTestName,
           hint,
           count,
+          nameOccurrence,
         )}\n\n${printPropertiesAndReceived(
           properties,
           received,
@@ -373,6 +384,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     error: context.error,
     inlineSnapshot,
     isInline,
+    nameOccurrence,
     received,
     testFailing,
     testIdentity,
@@ -391,6 +403,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
             currentTestName,
             hint,
             count,
+            nameOccurrence,
           )}\n\n` +
           `New snapshot was ${BOLD_WEIGHT('not written')}. The update flag ` +
           'must be explicitly passed to write a new snapshot.\n\n' +
@@ -404,6 +417,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
             currentTestName,
             hint,
             count,
+            nameOccurrence,
           )}\n\n${printSnapshotAndReceived(
             expected,
             actual,
