@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
+import {isJestJasmineRun} from '@jest/test-utils';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -176,6 +177,121 @@ test('does not mark hinted snapshots as obsolete in skipped tests', () => {
     expect(snapshot).toContain('exports[`will be skipped: hint 1`]');
   }
 });
+
+test('does not mark hinted snapshots as obsolete in deselected tests', () => {
+  const filename = 'no-obsolete-hinted-if-deselected.test.js';
+  const template = makeTemplate(`test('renders the header', () => {
+      expect('header markup').toMatchSnapshot('markup');
+      expect({a: 1}).toMatchSnapshot('props');
+    });
+
+    test('renders the footer', () => {
+      expect('footer markup').toMatchSnapshot();
+    });
+    `);
+
+  writeFiles(TESTS_DIR, {[filename]: template()});
+  expect(runJest(DIR, ['-w=1', '--ci=false', filename]).stderr).toMatch(
+    '3 snapshots written from 1 test suite.',
+  );
+
+  // A test the name pattern skips over reports as pending, same as `test.skip`,
+  // so its snapshots have to survive the update the matching test triggers.
+  const {stderr, exitCode} = runJest(DIR, [
+    '-w=1',
+    '--ci=false',
+    '-t',
+    'footer',
+    '-u',
+    filename,
+  ]);
+
+  expect(stderr).not.toMatch('removed');
+  expect(exitCode).toBe(0);
+  const snapshot = fs.readFileSync(
+    path.join(TESTS_DIR, '__snapshots__', `${filename}.snap`),
+    'utf8',
+  );
+  expect(snapshot).toContain('exports[`renders the header: markup 1`]');
+  expect(snapshot).toContain('exports[`renders the header: props 1`]');
+});
+
+test('does not mark hinted snapshots as obsolete in failing tests', () => {
+  const filename = 'no-obsolete-hinted-if-failed.test.js';
+  // The failure comes first, so the snapshot below is never reached on the
+  // second run — an unreached snapshot is the only kind obsolete detection
+  // has to decide about.
+  const template = makeTemplate(`test('breaks early', () => {
+      expect(true).toBe($1);
+      expect({a: 6}).toMatchSnapshot('hint');
+    });
+    `);
+
+  writeFiles(TESTS_DIR, {[filename]: template(['true'])});
+  expect(runJest(DIR, ['-w=1', '--ci=false', filename]).stderr).toMatch(
+    '1 snapshot written from 1 test suite.',
+  );
+
+  // Updating snapshots is the usual response to a failure, so the failing
+  // test's own snapshots must not be swept up by the same run.
+  writeFiles(TESTS_DIR, {[filename]: template(['false'])});
+  const {stderr, exitCode} = runJest(DIR, [
+    '-w=1',
+    '--ci=false',
+    '-u',
+    filename,
+  ]);
+
+  expect(stderr).not.toMatch('removed');
+  expect(exitCode).toBe(1);
+  const snapshot = fs.readFileSync(
+    path.join(TESTS_DIR, '__snapshots__', `${filename}.snap`),
+    'utf8',
+  );
+  expect(snapshot).toContain('exports[`breaks early: hint 1`]');
+});
+
+// jasmine2 has no `test.failing` clause in its obsolete guard at all.
+const testOnCircus = isJestJasmineRun() ? test.skip : test;
+
+testOnCircus(
+  'does not mark hinted snapshots as obsolete in passing `test.failing`',
+  () => {
+    const filename = 'no-obsolete-hinted-if-test-failing.test.js';
+    const template = makeTemplate(`$1('throws as expected', () => {
+      $2;
+      expect({a: 6}).toMatchSnapshot('hint');
+    });
+    `);
+
+    writeFiles(TESTS_DIR, {
+      [filename]: template(['test', 'expect(true).toBe(true)']),
+    });
+    expect(runJest(DIR, ['-w=1', '--ci=false', filename]).stderr).toMatch(
+      '1 snapshot written from 1 test suite.',
+    );
+
+    // A `test.failing` that throws reports as passed, and the snapshots it never
+    // reached past the throw are kept on purpose.
+    writeFiles(TESTS_DIR, {
+      [filename]: template(['test.failing', "throw new Error('boom')"]),
+    });
+    const {stderr, exitCode} = runJest(DIR, [
+      '-w=1',
+      '--ci=false',
+      '-u',
+      filename,
+    ]);
+
+    expect(stderr).not.toMatch('removed');
+    expect(exitCode).toBe(0);
+    const snapshot = fs.readFileSync(
+      path.join(TESTS_DIR, '__snapshots__', `${filename}.snap`),
+      'utf8',
+    );
+    expect(snapshot).toContain('exports[`throws as expected: hint 1`]');
+  },
+);
 
 test('accepts custom snapshot name', () => {
   const filename = 'accept-custom-snapshot-name.test.js';
