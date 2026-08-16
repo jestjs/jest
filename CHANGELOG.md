@@ -34,7 +34,7 @@
 - `[jest-environment-node, jest-util]` Only warn about a conflicting `globalsCleanup` mode when one was explicitly configured, and follow the mode that is actually in effect ([#16323](https://github.com/jestjs/jest/pull/16323))
 - `[jest-environment-node, jest-util]` Stop resolving lazy globals when setting up an environment, so Node 26's builtin module globals are no longer loaded (and no longer emit their deprecation warnings) for every test file ([#16324](https://github.com/jestjs/jest/pull/16324))
 - `[jest-haste-map]` Keep watch mode alive when an outside process briefly makes a file unreadable on Windows, instead of tearing the watcher down on `EPERM` ([#16295](https://github.com/jestjs/jest/pull/16295))
-- `[jest-haste-map]` Restore the nested `duplicates` index correctly in `ModuleMap.fromJSON`, so a haste collision reported inside a test worker raises `DuplicateHasteCandidatesError` instead of a `TypeError` ([#16349](https://github.com/jestjs/jest/pull/16349))
+- `[jest-haste-map]` Restore the nested `duplicates` index correctly in `ModuleMap.fromJSON`, so a haste collision reported inside a test worker raises `DuplicateHasteCandidatesError` instead of a `TypeError` ([#16353](https://github.com/jestjs/jest/pull/16353))
 - `[jest-message-util]` Print the inner errors of an `AggregateError` thrown inside a test ([#16316](https://github.com/jestjs/jest/pull/16316))
 - `[jest-message-util]` Indent nested `cause` and `AggregateError` sections of a test failure by one level per depth, so the nesting is legible instead of rendering flat ([#16316](https://github.com/jestjs/jest/pull/16316))
 - `[jest-message-util]` Color stack traces line by line so blank lines stay blank ([#16316](https://github.com/jestjs/jest/pull/16316))
