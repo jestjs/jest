@@ -36,17 +36,50 @@ test('keyToTestName()', () => {
 });
 
 test('testNameToKey', () => {
-  expect(testNameToKey('abc cde', 1)).toBe('abc cde 1');
-  expect(testNameToKey('abc cde ', 12)).toBe('abc cde  12');
+  expect(testNameToKey({count: 1, testName: 'abc cde'})).toBe('abc cde 1');
+  expect(testNameToKey({count: 12, testName: 'abc cde '})).toBe('abc cde  12');
+});
+
+test('testNameToKey keeps the hint out of the name', () => {
+  expect(testNameToKey({count: 1, hint: 'hint', testName: 'abc'})).toBe(
+    'abc \u203A hint 1',
+  );
+  // A colon in either half is just text; only the separator divides them.
+  expect(testNameToKey({count: 1, testName: 'abc: hint'})).toBe('abc: hint 1');
+  expect(testNameToKey({count: 1, hint: 'a: b', testName: 'abc'})).toBe(
+    'abc \u203A a: b 1',
+  );
+  expect(keyToTestName('abc \u203A hint 1')).toBe('abc');
+  expect(keyToTestName('abc: hint 1')).toBe('abc: hint');
+});
+
+test('testNameToKey escapes a separator inside the name', () => {
+  const key = testNameToKey({count: 1, hint: 'hint', testName: 'a \u203A b'});
+
+  expect(key).toBe('a \\u203A b \u203A hint 1');
+  expect(keyToTestName(key)).toBe('a \u203A b');
 });
 
 test('testNameToKey gives each test sharing a name its own key space', () => {
-  expect(testNameToKey('abc cde', 1, 1)).toBe('abc cde 1');
-  expect(testNameToKey('abc cde', 1, 2)).toBe('abc cde 2.1');
-  expect(testNameToKey('abc cde', 12, 3)).toBe('abc cde 3.12');
+  const name = 'abc cde';
+  expect(testNameToKey({count: 1, nameOccurrence: 1, testName: name})).toBe(
+    'abc cde 1',
+  );
+  expect(testNameToKey({count: 1, nameOccurrence: 2, testName: name})).toBe(
+    'abc cde 2.1',
+  );
+  expect(testNameToKey({count: 12, nameOccurrence: 3, testName: name})).toBe(
+    'abc cde 3.12',
+  );
 
-  expect(testNameToKey('abc cde', 1, 2)).not.toBe(testNameToKey('abc cde', 2));
-  expect(keyToTestName(testNameToKey('abc cde', 12, 3))).toBe('abc cde');
+  expect(testNameToKey({count: 1, nameOccurrence: 2, testName: name})).not.toBe(
+    testNameToKey({count: 2, testName: name}),
+  );
+  expect(
+    keyToTestName(
+      testNameToKey({count: 12, nameOccurrence: 3, testName: name}),
+    ),
+  ).toBe('abc cde');
 });
 
 test('keyToNameOccurrence recovers which namesake a key belongs to', () => {
@@ -59,13 +92,25 @@ test('keyToNameOccurrence recovers which namesake a key belongs to', () => {
 });
 
 test('testNameToKey escapes line endings to prevent collisions', () => {
-  expect(testNameToKey('test with\r\nCRLF', 1)).toBe('test with\\r\\nCRLF 1');
-  expect(testNameToKey('test with\rCR', 1)).toBe('test with\\rCR 1');
-  expect(testNameToKey('test with\nLF', 1)).toBe('test with\\nLF 1');
+  expect(testNameToKey({count: 1, testName: 'test with\r\nCRLF'})).toBe(
+    'test with\\r\\nCRLF 1',
+  );
+  expect(testNameToKey({count: 1, testName: 'test with\rCR'})).toBe(
+    'test with\\rCR 1',
+  );
+  expect(testNameToKey({count: 1, testName: 'test with\nLF'})).toBe(
+    'test with\\nLF 1',
+  );
 
-  expect(testNameToKey('test\r\n', 1)).not.toBe(testNameToKey('test\r', 1));
-  expect(testNameToKey('test\r\n', 1)).not.toBe(testNameToKey('test\n', 1));
-  expect(testNameToKey('test\r', 1)).not.toBe(testNameToKey('test\n', 1));
+  expect(testNameToKey({count: 1, testName: 'test\r\n'})).not.toBe(
+    testNameToKey({count: 1, testName: 'test\r'}),
+  );
+  expect(testNameToKey({count: 1, testName: 'test\r\n'})).not.toBe(
+    testNameToKey({count: 1, testName: 'test\n'}),
+  );
+  expect(testNameToKey({count: 1, testName: 'test\r'})).not.toBe(
+    testNameToKey({count: 1, testName: 'test\n'}),
+  );
 });
 
 test('keyToTestName reverses testNameToKey transformation', () => {
@@ -81,7 +126,7 @@ test('keyToTestName reverses testNameToKey transformation', () => {
   ];
 
   for (const testName of testCases) {
-    const key = testNameToKey(testName, 1);
+    const key = testNameToKey({count: 1, testName});
     const recovered = keyToTestName(key);
     expect(recovered).toBe(testName);
   }

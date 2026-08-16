@@ -6,7 +6,7 @@
  */
 
 import * as fs from 'graceful-fs';
-import {escapeBacktickString} from '@jest/snapshot-utils';
+import {HINT_SEPARATOR, escapeBacktickString} from '@jest/snapshot-utils';
 import type {Config} from '@jest/types';
 import type {MatcherFunctionWithContext} from 'expect';
 import {
@@ -69,7 +69,7 @@ const printSnapshotName = (
 
   return `Snapshot name: \`${
     hasNames ? escapeBacktickString(concatenatedBlockNames) : ''
-  }${hasNames && hasHint ? ': ' : ''}${
+  }${hasNames && hasHint ? HINT_SEPARATOR : ''}${
     hasHint ? BOLD_WEIGHT(escapeBacktickString(hint)) : ''
   } ${countSuffix}\``;
 };
@@ -324,10 +324,9 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     );
   }
 
-  const fullTestName =
-    currentTestName && hint
-      ? `${currentTestName}: ${hint}`
-      : currentTestName || ''; // future BREAKING change: || hint
+  // The hint is kept apart from the name; the key format joins them, so that
+  // a colon in either one cannot be read as the boundary between them.
+  const fullTestName = currentTestName || ''; // future BREAKING change: || hint
 
   if (typeof properties === 'object') {
     if (typeof received !== 'object' || received === null) {
@@ -353,6 +352,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
       received = deepMerge(received, properties);
     } else {
       const key = snapshotState.fail({
+        hint,
         nameOccurrence,
         testIdentity,
         testName: fullTestName,
@@ -382,6 +382,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
 
   const result = snapshotState.match({
     error: context.error,
+    hint,
     inlineSnapshot,
     isInline,
     nameOccurrence,

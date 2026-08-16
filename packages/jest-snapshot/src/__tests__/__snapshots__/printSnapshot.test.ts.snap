@@ -169,7 +169,7 @@ Snapshot name: \`with properties 1\`
 exports[`pass false toMatchSnapshot New snapshot was not written (multi line) 1`] = `
 <d>expect(</><t>received</><d>).</>toMatchSnapshot<d>(</><b>hint</><d>)</>
 
-Snapshot name: \`New snapshot was not written: <b>(CI)</> 1\`
+Snapshot name: \`New snapshot was not written › <b>(CI)</> 1\`
 
 New snapshot was <b>not written</>. The update flag must be explicitly passed to write a new snapshot.
 
@@ -183,7 +183,7 @@ Received:
 exports[`pass false toMatchSnapshot New snapshot was not written (single line) 1`] = `
 <d>expect(</><t>received</><d>).</>toMatchSnapshot<d>(</><b>hint</><d>)</>
 
-Snapshot name: \`New snapshot was not written: <b>(CI)</> 2\`
+Snapshot name: \`New snapshot was not written › <b>(CI)</> 2\`
 
 New snapshot was <b>not written</>. The update flag must be explicitly passed to write a new snapshot.
 
@@ -218,7 +218,7 @@ Snapshot name: \`with properties 1\`
 exports[`pass false toMatchSnapshot with properties equals true 1`] = `
 <d>expect(</><t>received</><d>).</>toMatchSnapshot<d>(</>properties<d>, </><b>hint</><d>)</>
 
-Snapshot name: \`with properties: <b>change text value</> 1\`
+Snapshot name: \`with properties › <b>change text value</> 1\`
 
 <m>- Snapshot  - 1</>
 <t>+ Received  + 1</>

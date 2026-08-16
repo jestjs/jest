@@ -321,7 +321,10 @@ describe('markSnapshotsAsCheckedForTest', () => {
   });
 
   test('claims the keys the test took under a hint', () => {
-    const snapshotState = stateWithKeys(['a test: hint 1', 'a test: other 1']);
+    const snapshotState = stateWithKeys([
+      'a test \u203A hint 1',
+      'a test \u203A other 1',
+    ]);
 
     snapshotState.markSnapshotsAsCheckedForTest('a test');
 
@@ -331,7 +334,7 @@ describe('markSnapshotsAsCheckedForTest', () => {
   test('leaves the keys of every other test alone', () => {
     const snapshotState = stateWithKeys([
       'a test 1',
-      'a test: hint 1',
+      'a test \u203A hint 1',
       'a test extra 1',
       'another test 1',
       'a tes 1',
@@ -339,8 +342,6 @@ describe('markSnapshotsAsCheckedForTest', () => {
 
     snapshotState.markSnapshotsAsCheckedForTest('a test');
 
-    // `a test extra` is a separate test whose name merely starts the same way:
-    // only a ': ' after the full name marks a hint.
     expect(snapshotState.getUncheckedKeys()).toEqual([
       'a test extra 1',
       'another test 1',
@@ -348,14 +349,13 @@ describe('markSnapshotsAsCheckedForTest', () => {
     ]);
   });
 
-  test('cannot tell a hint from a test whose name contains the separator', () => {
-    const snapshotState = stateWithKeys(['a: b 1']);
+  test('tells a hint from a test whose name contains a colon', () => {
+    const snapshotState = stateWithKeys(['a: b 1', 'a \u203A b 1']);
 
     snapshotState.markSnapshotsAsCheckedForTest('a');
 
-    // A key left by a removed `test('a: b')` is indistinguishable from a hinted
-    // snapshot of `test('a')`, so it is claimed and never reported obsolete.
-    // Telling them apart needs ownership the key format does not record.
-    expect(snapshotState.getUncheckedKeys()).toEqual([]);
+    // `a: b 1` was left by a removed `test('a: b')`, so it stays obsolete;
+    // only the hinted key belongs to `test('a')`.
+    expect(snapshotState.getUncheckedKeys()).toEqual(['a: b 1']);
   });
 });

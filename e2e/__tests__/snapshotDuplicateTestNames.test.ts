@@ -192,3 +192,52 @@ test('reports the key it wrote when a namesake fails to match', () => {
   expect(stderr).toMatch('Snapshot name: `suite same name 2.1`');
   expect(exitCode).toBe(1);
 });
+
+test('keeps a hint apart from a colon in a test name', () => {
+  const filename = 'hint-vs-colon.test.js';
+  const template = makeTemplate(`
+    test('a: b', () => {
+      expect('from the test named with a colon').toMatchSnapshot();
+    });
+    test('a', () => {
+      expect('from the hinted test').toMatchSnapshot('b');
+    });
+  `);
+
+  writeFiles(TESTS_DIR, {[filename]: template()});
+  const {exitCode, stderr} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+
+  expect(stderr).toMatch('2 snapshots written from 1 test suite.');
+  expect(exitCode).toBe(0);
+
+  // Both would be `a: b 1` if the hint were joined onto the name with ': '.
+  const snapshot = readSnapshot(filename);
+  expect(snapshot).toContain(
+    'exports[`a: b 1`] = `"from the test named with a colon"`;',
+  );
+  expect(snapshot).toContain('exports[`a › b 1`] = `"from the hinted test"`;');
+});
+
+test('reports a key left by a deleted test with a colon in its name', () => {
+  const filename = 'deleted-colon-name.test.js';
+
+  writeFiles(TESTS_DIR, {
+    [filename]: "test.skip('a', () => {});\n",
+    [`__snapshots__/${filename}.snap`]: `// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[\`a: b 1\`] = \`"left by a deleted test"\`;
+`,
+  });
+
+  // `test('a')` is skipped, so it claims what it did not reach — but the key
+  // belongs to a gone `test('a: b')`, not to a hint of its own.
+  const {exitCode, stderr} = runJest(DIR, [
+    '-w=1',
+    '--ci=false',
+    '-u',
+    filename,
+  ]);
+
+  expect(stderr).toMatch('1 snapshot file removed from 1 test suite.');
+  expect(exitCode).toBe(0);
+});

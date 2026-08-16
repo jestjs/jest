@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`babel 7 babel-plugin-jest-hoist 1. automatic react runtime: 1. automatic react runtime 1`] = `
+exports[`babel 7 babel-plugin-jest-hoist 1. automatic react runtime › 1. automatic react runtime 1`] = `
 
 jest.mock('./App', () => () => <div>Hello world</div>);
 
@@ -35,7 +35,7 @@ function _getJestObj() {
 
 `;
 
-exports[`babel 7 babel-plugin-jest-hoist 2. top level mocking: 2. top level mocking 1`] = `
+exports[`babel 7 babel-plugin-jest-hoist 2. top level mocking › 2. top level mocking 1`] = `
 
 require('x');
 
@@ -56,7 +56,7 @@ require('x');
 
 `;
 
-exports[`babel 7 babel-plugin-jest-hoist 3. within a block: 3. within a block 1`] = `
+exports[`babel 7 babel-plugin-jest-hoist 3. within a block › 3. within a block 1`] = `
 
 beforeEach(() => {
   require('x');
@@ -78,7 +78,7 @@ beforeEach(() => {
 
 `;
 
-exports[`babel 7 babel-plugin-jest-hoist 4. within a block with no siblings: 4. within a block with no siblings 1`] = `
+exports[`babel 7 babel-plugin-jest-hoist 4. within a block with no siblings › 4. within a block with no siblings 1`] = `
 
 beforeEach(() => {
   jest.mock('someNode');
@@ -98,7 +98,7 @@ beforeEach(() => {
 
 `;
 
-exports[`babel 7 babel-plugin-jest-hoist 5. required \`jest\` within \`jest\`: 5. required \`jest\` within \`jest\` 1`] = `
+exports[`babel 7 babel-plugin-jest-hoist 5. required \`jest\` within \`jest\` › 5. required \`jest\` within \`jest\` 1`] = `
 
 const {jest} = require('@jest/globals');
 
@@ -116,7 +116,7 @@ jest.mock('some-module', () => {
 
 `;
 
-exports[`babel 7 babel-plugin-jest-hoist 6. imported jest.mock within jest.mock: 6. imported jest.mock within jest.mock 1`] = `
+exports[`babel 7 babel-plugin-jest-hoist 6. imported jest.mock within jest.mock › 6. imported jest.mock within jest.mock 1`] = `
 
 import {jest} from '@jest/globals';
 
@@ -139,7 +139,7 @@ import {jest} from '@jest/globals';
 
 `;
 
-exports[`babel 7 babel-plugin-jest-hoist 7. global jest.mock within jest.mock: 7. global jest.mock within jest.mock 1`] = `
+exports[`babel 7 babel-plugin-jest-hoist 7. global jest.mock within jest.mock › 7. global jest.mock within jest.mock 1`] = `
 
 jest.mock('some-module', () => {
   jest.mock('some-module');
@@ -159,7 +159,7 @@ function _getJestObj() {
 
 `;
 
-exports[`babel 7 babel-plugin-jest-hoist 8. imported jest.requireActual in jest.mock: 8. imported jest.requireActual in jest.mock 1`] = `
+exports[`babel 7 babel-plugin-jest-hoist 8. imported jest.requireActual in jest.mock › 8. imported jest.requireActual in jest.mock 1`] = `
 
 import {jest} from '@jest/globals';
 
@@ -185,7 +185,7 @@ jest.requireActual('some-module');
 
 `;
 
-exports[`babel 7 babel-plugin-jest-hoist 9. global jest.requireActual in jest.mock: 9. global jest.requireActual in jest.mock 1`] = `
+exports[`babel 7 babel-plugin-jest-hoist 9. global jest.requireActual in jest.mock › 9. global jest.requireActual in jest.mock 1`] = `
 
 jest.mock('some-module', () => {
   jest.requireActual('some-module');
@@ -208,7 +208,7 @@ jest.requireActual('some-module');
 
 `;
 
-exports[`babel 7 babel-plugin-jest-hoist 10. TS typeof usage in jest.mock: 10. TS typeof usage in jest.mock 1`] = `
+exports[`babel 7 babel-plugin-jest-hoist 10. TS typeof usage in jest.mock › 10. TS typeof usage in jest.mock 1`] = `
 
 jest.mock('some-module', () => {
   const actual = jest.requireActual('some-module');
@@ -231,7 +231,7 @@ function _getJestObj() {
 
 `;
 
-exports[`babel 7 babel-plugin-jest-hoist 11. jest.spyOn call on the imported module: 11. jest.spyOn call on the imported module 1`] = `
+exports[`babel 7 babel-plugin-jest-hoist 11. jest.spyOn call on the imported module › 11. jest.spyOn call on the imported module 1`] = `
 
 jest.mock('some-module', () => {
   const module = jest.requireActual('some-module');
@@ -255,7 +255,7 @@ function _getJestObj() {
 
 `;
 
-exports[`babel 7 babel-plugin-jest-hoist 12. jest.spyOn call in class constructor: 12. jest.spyOn call in class constructor 1`] = `
+exports[`babel 7 babel-plugin-jest-hoist 12. jest.spyOn call in class constructor › 12. jest.spyOn call in class constructor 1`] = `
 
 jest.mock('some-module', () => {
   const Actual = jest.requireActual('some-module');
@@ -287,7 +287,7 @@ function _getJestObj() {
 
 `;
 
-exports[`babel 8 babel-plugin-jest-hoist 13. automatic react runtime: 13. automatic react runtime 1`] = `
+exports[`babel 8 babel-plugin-jest-hoist 13. automatic react runtime › 13. automatic react runtime 1`] = `
 
 jest.mock('./App', () => () => <div>Hello world</div>);
 
@@ -315,7 +315,7 @@ function _getJestObj() {
 
 `;
 
-exports[`babel 8 babel-plugin-jest-hoist 14. top level mocking: 14. top level mocking 1`] = `
+exports[`babel 8 babel-plugin-jest-hoist 14. top level mocking › 14. top level mocking 1`] = `
 
 require('x');
 
@@ -336,7 +336,7 @@ require('x');
 
 `;
 
-exports[`babel 8 babel-plugin-jest-hoist 15. within a block: 15. within a block 1`] = `
+exports[`babel 8 babel-plugin-jest-hoist 15. within a block › 15. within a block 1`] = `
 
 beforeEach(() => {
   require('x');
@@ -358,7 +358,7 @@ beforeEach(() => {
 
 `;
 
-exports[`babel 8 babel-plugin-jest-hoist 16. within a block with no siblings: 16. within a block with no siblings 1`] = `
+exports[`babel 8 babel-plugin-jest-hoist 16. within a block with no siblings › 16. within a block with no siblings 1`] = `
 
 beforeEach(() => {
   jest.mock('someNode');
@@ -378,7 +378,7 @@ beforeEach(() => {
 
 `;
 
-exports[`babel 8 babel-plugin-jest-hoist 17. required \`jest\` within \`jest\`: 17. required \`jest\` within \`jest\` 1`] = `
+exports[`babel 8 babel-plugin-jest-hoist 17. required \`jest\` within \`jest\` › 17. required \`jest\` within \`jest\` 1`] = `
 
 const {jest} = require('@jest/globals');
 
@@ -396,7 +396,7 @@ jest.mock('some-module', () => {
 
 `;
 
-exports[`babel 8 babel-plugin-jest-hoist 18. imported jest.mock within jest.mock: 18. imported jest.mock within jest.mock 1`] = `
+exports[`babel 8 babel-plugin-jest-hoist 18. imported jest.mock within jest.mock › 18. imported jest.mock within jest.mock 1`] = `
 
 import {jest} from '@jest/globals';
 
@@ -419,7 +419,7 @@ import {jest} from '@jest/globals';
 
 `;
 
-exports[`babel 8 babel-plugin-jest-hoist 19. global jest.mock within jest.mock: 19. global jest.mock within jest.mock 1`] = `
+exports[`babel 8 babel-plugin-jest-hoist 19. global jest.mock within jest.mock › 19. global jest.mock within jest.mock 1`] = `
 
 jest.mock('some-module', () => {
   jest.mock('some-module');
@@ -439,7 +439,7 @@ function _getJestObj() {
 
 `;
 
-exports[`babel 8 babel-plugin-jest-hoist 20. imported jest.requireActual in jest.mock: 20. imported jest.requireActual in jest.mock 1`] = `
+exports[`babel 8 babel-plugin-jest-hoist 20. imported jest.requireActual in jest.mock › 20. imported jest.requireActual in jest.mock 1`] = `
 
 import {jest} from '@jest/globals';
 
@@ -465,7 +465,7 @@ jest.requireActual('some-module');
 
 `;
 
-exports[`babel 8 babel-plugin-jest-hoist 21. global jest.requireActual in jest.mock: 21. global jest.requireActual in jest.mock 1`] = `
+exports[`babel 8 babel-plugin-jest-hoist 21. global jest.requireActual in jest.mock › 21. global jest.requireActual in jest.mock 1`] = `
 
 jest.mock('some-module', () => {
   jest.requireActual('some-module');
@@ -488,7 +488,7 @@ jest.requireActual('some-module');
 
 `;
 
-exports[`babel 8 babel-plugin-jest-hoist 22. TS typeof usage in jest.mock: 22. TS typeof usage in jest.mock 1`] = `
+exports[`babel 8 babel-plugin-jest-hoist 22. TS typeof usage in jest.mock › 22. TS typeof usage in jest.mock 1`] = `
 
 jest.mock('some-module', () => {
   const actual = jest.requireActual('some-module');
@@ -511,7 +511,7 @@ function _getJestObj() {
 
 `;
 
-exports[`babel 8 babel-plugin-jest-hoist 23. jest.spyOn call on the imported module: 23. jest.spyOn call on the imported module 1`] = `
+exports[`babel 8 babel-plugin-jest-hoist 23. jest.spyOn call on the imported module › 23. jest.spyOn call on the imported module 1`] = `
 
 jest.mock('some-module', () => {
   const module = jest.requireActual('some-module');
@@ -535,7 +535,7 @@ function _getJestObj() {
 
 `;
 
-exports[`babel 8 babel-plugin-jest-hoist 24. jest.spyOn call in class constructor: 24. jest.spyOn call in class constructor 1`] = `
+exports[`babel 8 babel-plugin-jest-hoist 24. jest.spyOn call in class constructor › 24. jest.spyOn call in class constructor 1`] = `
 
 jest.mock('some-module', () => {
   const Actual = jest.requireActual('some-module');

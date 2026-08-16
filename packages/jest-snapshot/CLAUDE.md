@@ -30,7 +30,9 @@ Three implications:
 
 Snapshot files (`*.snap`) are valid JavaScript modules: each snapshot is `exports['<test name> <counter>'] = '...';`. Format details enforced by `@jest/snapshot-utils`:
 
-- Keys come from `testNameToKey(testName, counter)` — `${testName} ${counter}`.
+- Keys come from `testNameToKey({testName, hint, count, nameOccurrence})`. The base is `${testName} ${count}`.
+- A hint joins the name as `name › hint`; `normalizeTestNameForKey` escapes that separator inside a name — so it appears once and a colon in a title is never read as a hint boundary.
+- Tests sharing a full name each count in their own space: the first keeps `${testName} ${count}`, later ones get `${testName} ${nameOccurrence}.${count}`. The runner supplies the position, since only it knows definition order.
 - Multi-line snapshots are wrapped with extra leading/trailing newlines (see `addExtraLineBreaks` / `removeExtraLineBreaks`). Don't `trim()` — that would chew custom-serializer output.
 - Backticks in values are escaped via `escapeBacktickString`.
 - A header banner is required at the top so editors and `--ci` can detect the file. `saveSnapshotFile` writes it.

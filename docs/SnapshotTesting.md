@@ -262,7 +262,7 @@ Now, every time the snapshot test case runs, `Date.now()` will return `148236336
 
 Always strive to use descriptive test and/or snapshot names for snapshots. The best names describe the expected snapshot content. This makes it easier for reviewers to verify the snapshots during review, and for anyone to know whether or not an outdated snapshot is the correct behavior before updating.
 
-A snapshot key is the full test name — every enclosing `describe` title, then the test title — followed by a number counting the snapshots that test took. When two tests in a file end up with the same full name, each still gets its own keys: the first keeps `full name 1`, `full name 2`, and every namesake after it counts within its own space, as `full name 2.1`, `full name 3.1`, and so on. Distinct names are still worth writing — the position is what tells the namesakes apart, so reordering them in the source moves their snapshots.
+A snapshot key is the full test name — every enclosing `describe` title, then the test title — followed by a number counting the snapshots that test took. A [hint](ExpectAPI.md#tomatchsnapshotpropertymatchers-hint) is joined onto the name as `renders the header › markup 1`, so a colon or any other punctuation in a title is never mistaken for the boundary between the name and the hint. When two tests in a file end up with the same full name, each still gets its own keys: the first keeps `full name 1`, `full name 2`, and every namesake after it counts within its own space, as `full name 2.1`, `full name 3.1`, and so on. Distinct names are still worth writing — the position is what tells the namesakes apart, so reordering them in the source moves their snapshots.
 
 For example, compare:
 

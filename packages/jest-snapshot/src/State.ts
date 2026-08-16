@@ -34,6 +34,7 @@ export type SnapshotStateOptions = {
 
 export type SnapshotMatchOptions = {
   readonly testName: string;
+  readonly hint?: string;
   readonly testIdentity?: object;
   readonly nameOccurrence?: number;
   readonly received: unknown;
@@ -46,6 +47,7 @@ export type SnapshotMatchOptions = {
 
 export type SnapshotFailOptions = {
   readonly testName: string;
+  readonly hint?: string;
   readonly testIdentity?: object;
   readonly nameOccurrence?: number;
   readonly key?: string;
@@ -141,14 +143,9 @@ export default class SnapshotState {
     nameOccurrence?: number,
   ): void {
     for (const uncheckedKey of this._uncheckedKeys) {
-      const keyTestName = keyToTestName(uncheckedKey);
-      // A hint is joined onto the test name with ': ' before the key is built,
-      // so the recovered name of a hinted snapshot is longer than the name the
-      // runner reports for the test that took it.
-      if (
-        keyTestName !== testName &&
-        !keyTestName.startsWith(`${testName}: `)
-      ) {
+      // The hint lives past the separator, so what comes back is the plain
+      // test name whether or not the snapshot was hinted.
+      if (keyToTestName(uncheckedKey) !== testName) {
         continue;
       }
       // Without a position there is nothing to tell namesakes apart with, so
@@ -241,18 +238,27 @@ export default class SnapshotState {
   // A test's counter has to be its own, or namesakes take each other's keys in
   // whatever order they happen to run. The occurrence is what separates them,
   // and leads so the pair is recoverable from the string.
-  private static _counterKey(testName: string, nameOccurrence = 1): string {
-    return `${nameOccurrence} ${testName}`;
+  private static _counterKey(
+    testName: string,
+    hint: string | undefined,
+    nameOccurrence = 1,
+  ): string {
+    return testNameToKey({count: 0, hint, nameOccurrence, testName});
   }
 
   // Undoing an increment could undo more than this test's own, so the record
   // keeps each counter's value from before the test first touched it.
   private _bumpCounter(
     testName: string,
+    hint: string | undefined,
     nameOccurrence: number | undefined,
     testIdentity?: object,
   ): number {
-    const counterKey = SnapshotState._counterKey(testName, nameOccurrence);
+    const counterKey = SnapshotState._counterKey(
+      testName,
+      hint,
+      nameOccurrence,
+    );
     const record = this._recordFor(testIdentity);
     if (record !== undefined && !record.counters.has(counterKey)) {
       record.counters.set(counterKey, this._counters.get(counterKey));
@@ -381,6 +387,7 @@ export default class SnapshotState {
 
   match({
     testName,
+    hint,
     testIdentity,
     nameOccurrence,
     received,
@@ -390,10 +397,15 @@ export default class SnapshotState {
     error,
     testFailing = false,
   }: SnapshotMatchOptions): SnapshotReturnOptions {
-    const count = this._bumpCounter(testName, nameOccurrence, testIdentity);
+    const count = this._bumpCounter(
+      testName,
+      hint,
+      nameOccurrence,
+      testIdentity,
+    );
 
     if (!key) {
-      key = testNameToKey(testName, count, nameOccurrence);
+      key = testNameToKey({count, hint, nameOccurrence, testName});
     }
 
     // Do not mark the snapshot as "checked" if the snapshot is inline and
@@ -509,14 +521,20 @@ export default class SnapshotState {
 
   fail({
     testName,
+    hint,
     testIdentity,
     nameOccurrence,
     key,
   }: SnapshotFailOptions): string {
-    const count = this._bumpCounter(testName, nameOccurrence, testIdentity);
+    const count = this._bumpCounter(
+      testName,
+      hint,
+      nameOccurrence,
+      testIdentity,
+    );
 
     if (!key) {
-      key = testNameToKey(testName, count, nameOccurrence);
+      key = testNameToKey({count, hint, nameOccurrence, testName});
     }
 
     this._markKeyChecked(key, testIdentity);
