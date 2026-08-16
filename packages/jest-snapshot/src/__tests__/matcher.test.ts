@@ -42,8 +42,8 @@ test('passes the test identity to failed property snapshots', () => {
     ) => 'test name 1',
   );
   const mockedContext = {
-    currentTestName: 'test name',
     currentTestIdentity: () => testIdentity,
+    currentTestName: 'test name',
     equals: () => false,
     snapshotState: {expand: false, fail},
     utils: {iterableEquality: jest.fn(), subsetEquality: jest.fn()},

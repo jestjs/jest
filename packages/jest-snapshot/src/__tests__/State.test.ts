@@ -55,44 +55,44 @@ expect(1).toMatchInlineSnapshot();
     inlineSnapshot: '"outdated"',
     isInline: true,
     received: 'updated',
-    testName: 'updated snapshot',
     testIdentity: retainedTest,
+    testName: 'updated snapshot',
   });
   snapshotState.match({
     error: makeErrorAt(filename, 2),
     isInline: true,
     received: 'added',
-    testName: 'added snapshot',
     testIdentity: retainedTest,
+    testName: 'added snapshot',
   });
   snapshotState.match({
     error: makeErrorAt(filename, 3),
     inlineSnapshot: '"outdated"',
     isInline: true,
     received: 'updated on retry',
-    testName: 'updated snapshot on retry',
     testIdentity: retriedTest,
+    testName: 'updated snapshot on retry',
   });
   snapshotState.match({
     error: makeErrorAt(filename, 4),
     isInline: true,
     received: 'retry',
+    testIdentity: retriedTest,
     testName: 'retried snapshot',
-    testIdentity: retriedTest,
   });
   snapshotState.match({
     inlineSnapshot: '"matched"',
     isInline: true,
     received: 'matched',
-    testName: 'retained match',
     testIdentity: retainedTest,
+    testName: 'retained match',
   });
   snapshotState.match({
     inlineSnapshot: '"matched"',
     isInline: true,
     received: 'matched',
-    testName: 'retried match',
     testIdentity: retriedTest,
+    testName: 'retried match',
   });
   snapshotState.fail('retained failure', undefined, undefined, retainedTest);
   snapshotState.fail('retried failure', undefined, undefined, retriedTest);
@@ -127,8 +127,8 @@ test('clear without a test identity removes all pending inline snapshots', () =>
     error: makeErrorAt(filename, 1),
     isInline: true,
     received: 'added',
-    testName: 'added snapshot',
     testIdentity: {},
+    testName: 'added snapshot',
   });
   expect(snapshotState.added).toBe(1);
 
