@@ -353,5 +353,46 @@ describe('FileProcessor', () => {
 
       expect(pool.end).toHaveBeenCalledTimes(1);
     });
+
+    it('ends the worker pool when a duplicate mock throws synchronously', () => {
+      const hasteMap = createEmptyMap();
+      hasteMap.files.set(path.join('__mocks__', 'a.js'), [
+        '',
+        1000,
+        42,
+        0,
+        '',
+        null,
+      ]);
+      hasteMap.files.set(path.join('nested', '__mocks__', 'a.js'), [
+        '',
+        2000,
+        42,
+        0,
+        '',
+        null,
+      ]);
+
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
+      jest.mocked(pool.get).mockReturnValue(makeWorker());
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      const fp = new FileProcessor(
+        makeOptions({
+          mocksPattern: /__mocks__/,
+          throwOnModuleCollision: true,
+        }),
+        console,
+        pool,
+      );
+
+      expect(() =>
+        fp.buildHasteMap({hasteMap, removedFiles: new Map()}, jest.fn()),
+      ).toThrow(DuplicateError);
+      expect(pool.end).toHaveBeenCalledTimes(1);
+    });
   });
 });
