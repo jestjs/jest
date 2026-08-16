@@ -66,6 +66,7 @@ type SnapshotCounts = {
 // retry can undo exactly that much and leave the other tests' work alone.
 type AttemptRecord = {
   checkedKeys: Set<string>;
+  counters: Map<string, number | undefined>;
   counts: SnapshotCounts;
   fileSnapshots: Map<string, string | undefined>;
   inlineSnapshots: Set<InlineSnapshot>;
@@ -75,7 +76,7 @@ export default class SnapshotState {
   private _counters: Map<string, number>;
   private _dirty: boolean;
   private readonly _updateSnapshot: Config.SnapshotUpdateState;
-  private _snapshotData: SnapshotData;
+  private readonly _snapshotData: SnapshotData;
   private readonly _snapshotPath: string;
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _attemptRecordsByTest: WeakMap<object, AttemptRecord>;
@@ -173,6 +174,7 @@ export default class SnapshotState {
     if (record === undefined) {
       record = {
         checkedKeys: new Set(),
+        counters: new Map(),
         counts: {added: 0, matched: 0, unmatched: 0, updated: 0},
         fileSnapshots: new Map(),
         inlineSnapshots: new Set(),
@@ -190,10 +192,22 @@ export default class SnapshotState {
     }
   }
 
-  clear(testRetryOwner?: object): void {
-    this._counters = new Map();
+  // Counters number keys per full test name, and full names can collide
+  // across tests. Undoing an increment could double-undo a collision, so the
+  // record keeps each counter's value from before the test first touched it.
+  private _bumpCounter(testName: string, testRetryOwner?: object): number {
+    const record = this._recordFor(testRetryOwner);
+    if (record !== undefined && !record.counters.has(testName)) {
+      record.counters.set(testName, this._counters.get(testName));
+    }
+    const count = (this._counters.get(testName) ?? 0) + 1;
+    this._counters.set(testName, count);
+    return count;
+  }
 
+  clear(testRetryOwner?: object): void {
     if (testRetryOwner === undefined) {
+      this._counters = new Map();
       // TODO(jest next major): require `testRetryOwner` and drop this branch.
       // Unlike the per-owner path below it rolls back neither file snapshot
       // data nor unchecked keys, so a snapshot added before the reset is
@@ -229,6 +243,13 @@ export default class SnapshotState {
     }
     for (const key of record.checkedKeys) {
       this._uncheckedKeys.add(key);
+    }
+    for (const [testName, previous] of record.counters) {
+      if (previous === undefined) {
+        this._counters.delete(testName);
+      } else {
+        this._counters.set(testName, previous);
+      }
     }
   }
 
@@ -301,8 +322,7 @@ export default class SnapshotState {
     error,
     testFailing = false,
   }: SnapshotMatchOptions): SnapshotReturnOptions {
-    this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
-    const count = Number(this._counters.get(testName));
+    const count = this._bumpCounter(testName, testRetryOwner);
 
     if (!key) {
       key = testNameToKey(testName, count);
@@ -425,8 +445,7 @@ export default class SnapshotState {
     key?: string,
     testRetryOwner?: object,
   ): string {
-    this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
-    const count = Number(this._counters.get(testName));
+    const count = this._bumpCounter(testName, testRetryOwner);
 
     if (!key) {
       key = testNameToKey(testName, count);

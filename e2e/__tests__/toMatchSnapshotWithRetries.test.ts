@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {skipSuiteOnJasmine} from '@jest/test-utils';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
@@ -149,6 +150,46 @@ exports[\`varies 2\`] = \`"b"\`;
   // the run, even though every test passed.
   expect(exitCode).toBe(1);
   expect(stderr).toMatch('Snapshots:   1 obsolete, 1 passed, 1 total');
+});
+
+test('keeps counters for colliding full names across an immediate retry', () => {
+  const filename = 'counters-across-immediate-retries.test.js';
+  const template = makeTemplate(`
+    let attempt = 0;
+    jest.retryTimes(1, {retryImmediately: true});
+
+    describe('a', () => {
+      test('b c', () => {
+        expect('first').toMatchSnapshot();
+      });
+    });
+
+    test('flaky', () => {
+      attempt += 1;
+      expect(attempt).toBe(2);
+    });
+
+    describe('a b', () => {
+      test('c', () => {
+        expect('second').toMatchSnapshot();
+      });
+    });
+  `);
+
+  writeFiles(TESTS_DIR, {[filename]: template([])});
+
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const snapshot = fs.readFileSync(
+    path.join(TESTS_DIR, '__snapshots__', `${filename}.snap`),
+    'utf8',
+  );
+
+  // The two full names collide, so the second test's key must keep counting
+  // from the first test's, even though the flaky test was cleared in between.
+  expect(exitCode).toBe(0);
+  expect(stderr).toMatch('Snapshots:   2 written, 2 total');
+  expect(snapshot).toContain('exports[`a b c 1`] = `"first"`;');
+  expect(snapshot).toContain('exports[`a b c 2`] = `"second"`;');
 });
 
 test('scopes retry cleanup to the test, not its enclosing hooks', () => {
