@@ -38,6 +38,26 @@ type CoverageWorker = typeof import('./CoverageWorker');
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
 
+function getMaxCols(): number {
+  if (process.stdout.columns) {
+    return process.stdout.columns;
+  }
+
+  const envColumns = Number.parseInt(process.env.COLUMNS || '', 10);
+  if (envColumns) {
+    return envColumns;
+  }
+
+  const isCI =
+    process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+
+  if (isCI && !process.env.JEST_WORKER_ID) {
+    return 80;
+  }
+
+  return Number.POSITIVE_INFINITY;
+}
+
 export default class CoverageReporter extends BaseReporter {
   private readonly _context: ReporterContext;
   private readonly _coverageMap: istanbulCoverage.CoverageMap;
@@ -87,14 +107,7 @@ export default class CoverageReporter extends BaseReporter {
         }
         istanbulReports
           .create(reporter, {
-            maxCols:
-              process.stdout.columns ||
-              Number.parseInt(process.env.COLUMNS || '', 10) ||
-              ((process.env.CI === 'true' ||
-                process.env.GITHUB_ACTIONS === 'true') &&
-              !process.env.JEST_WORKER_ID
-                ? 80
-                : Number.POSITIVE_INFINITY),
+            maxCols: getMaxCols(),
             ...additionalOptions,
           })
           .execute(reportContext);
