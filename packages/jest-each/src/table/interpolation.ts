@@ -7,6 +7,7 @@
  */
 
 import {isPrimitive} from '@jest/get-type';
+import {escapeStrForRegex} from 'jest-regex-util';
 import {format as pretty} from 'pretty-format';
 
 export type Template = Record<string, unknown>;
@@ -17,20 +18,30 @@ export const interpolateVariables = (
   title: string,
   template: Template,
   index: number,
-): string =>
-  title
-    .replaceAll(
-      new RegExp(`\\$(${Object.keys(template).join('|')})[.\\w]*`, 'g'),
-      match => {
-        const keyPath = match.slice(1).split('.');
-        const value = getPath(template, keyPath);
+): string => {
+  const keys = Object.keys(template);
+  // An empty alternation matches a bare `$`, so a row with no keys would
+  // otherwise replace every `$` in the title with the whole (empty) row.
+  const interpolated =
+    keys.length > 0
+      ? title.replaceAll(
+          new RegExp(
+            `\\$(${keys.map(key => escapeStrForRegex(key)).join('|')})[.\\w]*`,
+            'g',
+          ),
+          match => {
+            const keyPath = match.slice(1).split('.');
+            const value = getPath(template, keyPath);
 
-        return isPrimitive(value)
-          ? String(value)
-          : pretty(value, {maxDepth: 1, min: true});
-      },
-    )
-    .replace('$#', `${index}`);
+            return isPrimitive(value)
+              ? String(value)
+              : pretty(value, {maxDepth: 1, min: true});
+          },
+        )
+      : title;
+
+  return interpolated.replace('$#', `${index}`);
+};
 
 /* eslint import-x/export: 0*/
 export function getPath<
