@@ -46,7 +46,7 @@ export type Callbacks = {
 
 export class ChangeQueue {
   private readonly _callbacks: Callbacks;
-  private readonly _extensions: Array<string>;
+  private readonly _extensions: Set<string>;
   private _changeInterval?: ReturnType<typeof setInterval>;
   private _changeQueue: Promise<null | void> = Promise.resolve();
   private _eventsQueue: EventsQueue = [];
@@ -61,7 +61,7 @@ export class ChangeQueue {
     callbacks: Callbacks,
   ) {
     this._hasteMap = hasteMap;
-    this._extensions = extensions;
+    this._extensions = new Set(extensions.map(extension => `.${extension}`));
     this._callbacks = callbacks;
   }
 
@@ -85,7 +85,7 @@ export class ChangeQueue {
     if (
       (stat && stat.isDirectory()) ||
       ignore(filePath) ||
-      !this._extensions.some(ext => filePath.endsWith(ext))
+      !this._extensions.has(path.extname(filePath))
     ) {
       return;
     }
