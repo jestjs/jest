@@ -210,3 +210,69 @@ test('clear without a test identity removes all pending inline snapshots', () =>
     'expect(1).toMatchInlineSnapshot();\n',
   );
 });
+
+describe('markSnapshotsAsCheckedForTest', () => {
+  // Only a key the test never reached is still unchecked by the time the
+  // runner asks — `match` claims the rest as it goes.
+  const stateWithKeys = (keys: Array<string>) => {
+    const snapshotPath = path.join(rootDir, 'example.test.js.snap');
+    fs.writeFileSync(
+      snapshotPath,
+      `// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing\n\n${keys
+        .map(key => `exports[\`${key}\`] = \`"value"\`;\n`)
+        .join('\n')}`,
+    );
+    return new SnapshotState(snapshotPath, {
+      rootDir,
+      snapshotFormat: {},
+      updateSnapshot: 'none',
+    });
+  };
+
+  test('claims the keys the test took under its own name', () => {
+    const snapshotState = stateWithKeys(['a test 1', 'a test 2']);
+
+    snapshotState.markSnapshotsAsCheckedForTest('a test');
+
+    expect(snapshotState.getUncheckedKeys()).toEqual([]);
+  });
+
+  test('claims the keys the test took under a hint', () => {
+    const snapshotState = stateWithKeys(['a test: hint 1', 'a test: other 1']);
+
+    snapshotState.markSnapshotsAsCheckedForTest('a test');
+
+    expect(snapshotState.getUncheckedKeys()).toEqual([]);
+  });
+
+  test('leaves the keys of every other test alone', () => {
+    const snapshotState = stateWithKeys([
+      'a test 1',
+      'a test: hint 1',
+      'a test extra 1',
+      'another test 1',
+      'a tes 1',
+    ]);
+
+    snapshotState.markSnapshotsAsCheckedForTest('a test');
+
+    // `a test extra` is a separate test whose name merely starts the same way:
+    // only a ': ' after the full name marks a hint.
+    expect(snapshotState.getUncheckedKeys()).toEqual([
+      'a test extra 1',
+      'another test 1',
+      'a tes 1',
+    ]);
+  });
+
+  test('cannot tell a hint from a test whose name contains the separator', () => {
+    const snapshotState = stateWithKeys(['a: b 1']);
+
+    snapshotState.markSnapshotsAsCheckedForTest('a');
+
+    // A key left by a removed `test('a: b')` is indistinguishable from a hinted
+    // snapshot of `test('a')`, so it is claimed and never reported obsolete.
+    // Telling them apart needs ownership the key format does not record.
+    expect(snapshotState.getUncheckedKeys()).toEqual([]);
+  });
+});
