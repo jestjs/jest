@@ -142,6 +142,31 @@ test('makeRunResult keeps the unserialized unhandled errors', () => {
   expect(result.unhandledErrors[0]).toBe(error.stack);
 });
 
+test('a generator test body receives the shared test context', async () => {
+  const rootDescribe = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
+  const testContext = {fromHook: 'hook value'};
+  let sawSharedContext = false;
+  const circusTest = makeTest(
+    function* (this: Circus.TestContext) {
+      sawSharedContext = this === testContext;
+    } as unknown as Circus.TestFn,
+    undefined,
+    false,
+    'generator test',
+    rootDescribe,
+    undefined,
+    new Error('async error'),
+    false,
+  );
+
+  await callAsyncCircusFn(circusTest, testContext, {
+    isHook: false,
+    timeout: 1000,
+  });
+
+  expect(sawSharedContext).toBe(true);
+});
+
 test('a late done callback does not affect a later invocation', async () => {
   const rootDescribe = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
   let firstDone: Circus.DoneFn = () => {};

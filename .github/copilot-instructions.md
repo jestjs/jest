@@ -47,6 +47,8 @@ node ../../packages/jest-cli/bin/jest.js --no-cache
 
 CI runs the test matrix with `nick-fields/retry` (10-min timeout, up to 3 retries on flake) across Ubuntu/macOS/Windows × Node 18/20/22/24/25/26. If a test is consistently failing locally but green in CI, suspect a retry-masked flake.
 
+`codecov/patch` and `codecov/project` report before the four `Node LTS on Ubuntu with coverage (N/4)` shards have uploaded, so their numbers mean nothing until those jobs finish; both are advisory anyway (`require_ci_to_pass: false`, `target: auto`). Coverage is measured only in the process running the suite, so a line reachable only through an e2e fixture always reads as uncovered.
+
 ### Test gotchas worth memorizing
 
 - **Snapshot updates with ANSI colors**: many snapshots contain chalk-rendered ANSI escape sequences. Always update snapshots with `FORCE_COLOR=1 yarn jest <path> -u` so the color output is preserved. Running without `FORCE_COLOR=1` strips the sequences and produces wrong snapshots.

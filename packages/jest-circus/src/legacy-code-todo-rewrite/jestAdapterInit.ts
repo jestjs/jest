@@ -84,6 +84,7 @@ export const initialize = async ({
     getRunnerState().testTimeout = globalConfig.testTimeout;
   }
   getRunnerState().maxConcurrency = globalConfig.maxConcurrency;
+  getRunnerState().expand = globalConfig.expand;
 
   getRunnerState().randomize = globalConfig.randomize;
   getRunnerState().seed = globalConfig.seed;
