@@ -50,6 +50,12 @@ import type {
 import type {default as Spec, SpecResult} from './Spec';
 import type Suite from './Suite';
 
+function isAssertionError(
+  error: Error | AssertionErrorWithStack,
+): error is AssertionErrorWithStack {
+  return error instanceof AssertionError || error?.name === AssertionError.name;
+}
+
 export default function jasmineEnv(j$: Jasmine) {
   return class Env {
     specFilter: (spec: Spec) => boolean;
@@ -685,12 +691,8 @@ export default function jasmineEnv(j$: Jasmine) {
         let checkIsError;
         let message;
 
-        if (
-          error instanceof AssertionError ||
-          (error && error.name === AssertionError.name)
-        ) {
+        if (isAssertionError(error)) {
           checkIsError = false;
-          // @ts-expect-error TODO Possible error: j$.Spec does not have expand property
           message = assertionErrorMessage(error, {expand: j$.Spec.expand});
         } else {
           const check = isError(error);

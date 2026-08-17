@@ -190,6 +190,117 @@ describe('ChangeQueue', () => {
     queue.stop();
   });
 
+  describe('extension filtering', () => {
+    async function emitAdd(extensions: Array<string>, fileName: string) {
+      const hasteMap = createEmptyMap();
+      const callbacks = makeCallbacks();
+
+      const queue = new ChangeQueue(hasteMap, extensions, callbacks);
+      queue.start();
+      queue.onChange('add', path.join('src', fileName), ROOT, STAT);
+      await Promise.resolve();
+      jest.advanceTimersByTime(INTERVAL);
+      queue.stop();
+
+      return callbacks.emit;
+    }
+
+    it.each(['Apple.js', 'Apple.test.js'])(
+      'accepts %s when `js` is configured',
+      fileName =>
+        expect(emitAdd(['js'], fileName)).resolves.toHaveBeenCalledTimes(1),
+    );
+
+    // `endsWith(ext)` matched any path whose final characters happened to
+    // spell the extension, so a longer extension or a bare name ending in
+    // those letters slipped through.
+    it.each(['Apple.mjs', 'Apple.cjs', 'myjs', 'Apple.jsx'])(
+      'rejects %s when only `js` is configured',
+      fileName =>
+        expect(emitAdd(['js'], fileName)).resolves.not.toHaveBeenCalled(),
+    );
+
+    it('accepts a file whose extension is one of several configured', () =>
+      expect(
+        emitAdd(['js', 'mjs'], 'Apple.mjs'),
+      ).resolves.toHaveBeenCalledTimes(1));
+
+    it('rejects a file with no extension', () =>
+      expect(emitAdd(['js'], 'Makefile')).resolves.not.toHaveBeenCalled());
+  });
+
+  describe('duplicate manual mocks', () => {
+    const MOCK_A = path.join('a', '__mocks__', 'foo.js');
+    const MOCK_B = path.join('b', '__mocks__', 'foo.js');
+
+    function hasteMapWithBothMocks(owner: string) {
+      const hasteMap = createEmptyMap();
+      for (const mockPath of [MOCK_A, MOCK_B]) {
+        hasteMap.files.set(mockPath, ['', 1000, 42, 1, '', null]);
+      }
+      hasteMap.mocks.set('foo', owner);
+      hasteMap.mockDuplicates.set('foo', new Set([MOCK_A, MOCK_B]));
+      return hasteMap;
+    }
+
+    async function deleteAndEmit(hasteMap: InternalHasteMap, target: string) {
+      const callbacks = makeCallbacks({mocksPattern: /__mocks__/});
+      const queue = new ChangeQueue(hasteMap, ['js'], callbacks);
+      queue.start();
+      queue.onChange('delete', target, ROOT, undefined);
+      await Promise.resolve();
+      jest.advanceTimersByTime(INTERVAL);
+      queue.stop();
+
+      const [event] = jest.mocked(callbacks.emit).mock.calls[0];
+      return event.moduleMap;
+    }
+
+    it('falls back to the surviving file when the resolved mock is deleted', async () => {
+      const moduleMap = await deleteAndEmit(
+        hasteMapWithBothMocks(MOCK_A),
+        MOCK_A,
+      );
+
+      expect(moduleMap.getMockModule('foo')).toBe(path.join(ROOT, MOCK_B));
+    });
+
+    // `FileProcessor` lets the last processed claimant win, so watch mode has to
+    // promote the newest survivor or it disagrees with a restart.
+    it('promotes the last surviving claimant, not the first', async () => {
+      const MOCK_C = path.join('c', '__mocks__', 'foo.js');
+      const hasteMap = createEmptyMap();
+      for (const mockPath of [MOCK_A, MOCK_B, MOCK_C]) {
+        hasteMap.files.set(mockPath, ['', 1000, 42, 1, '', null]);
+      }
+      hasteMap.mocks.set('foo', MOCK_C);
+      hasteMap.mockDuplicates.set('foo', new Set([MOCK_A, MOCK_B, MOCK_C]));
+
+      const moduleMap = await deleteAndEmit(hasteMap, MOCK_C);
+
+      expect(moduleMap.getMockModule('foo')).toBe(path.join(ROOT, MOCK_B));
+    });
+
+    it('leaves the resolved mock alone when a different claimant is deleted', async () => {
+      const moduleMap = await deleteAndEmit(
+        hasteMapWithBothMocks(MOCK_A),
+        MOCK_B,
+      );
+
+      expect(moduleMap.getMockModule('foo')).toBe(path.join(ROOT, MOCK_A));
+    });
+
+    it('drops the mock when the deleted file was the only claimant', async () => {
+      const hasteMap = createEmptyMap();
+      hasteMap.files.set(MOCK_A, ['', 1000, 42, 1, '', null]);
+      hasteMap.mocks.set('foo', MOCK_A);
+
+      const moduleMap = await deleteAndEmit(hasteMap, MOCK_A);
+
+      expect(moduleMap.getMockModule('foo')).toBeUndefined();
+    });
+  });
+
   it('stop() clears the interval so no further emissions occur', async () => {
     const hasteMap = createEmptyMap();
     const callbacks = makeCallbacks();

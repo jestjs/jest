@@ -184,10 +184,12 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     }
     case 'test_skip': {
       event.test.status = 'skip';
+      state.currentlyRunningTest = null;
       break;
     }
     case 'test_todo': {
       event.test.status = 'todo';
+      state.currentlyRunningTest = null;
       break;
     }
     case 'test_done': {

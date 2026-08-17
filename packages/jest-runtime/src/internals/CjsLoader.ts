@@ -19,7 +19,6 @@ import {hasEsmSyntax} from './esmLexer';
 import type {InitialModule, ModuleRegistry} from './moduleTypes';
 import {
   runtimeSupportsVmModules,
-  supportsNodeColonModulePrefixInRequire,
   supportsSyncEvaluate,
 } from './nodeCapabilities';
 
@@ -88,10 +87,7 @@ export class CjsLoader {
     }
 
     if (moduleName && this.resolution.isCoreModule(moduleName)) {
-      return this.coreModule.require(
-        moduleName,
-        supportsNodeColonModulePrefixInRequire,
-      ) as T;
+      return this.coreModule.require(moduleName) as T;
     }
 
     if (!modulePath) {

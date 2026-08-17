@@ -15,6 +15,8 @@ const DEFAULT_CONCURRENCY = Math.max(os.availableParallelism() * 4, 32);
 // fdir returns directory paths with a trailing separator; strip it.
 const TRAILING_SEP_RE = /[/\\]+$/;
 
+// `includeDirs` and the `dir` entry kind have no caller yet: they are for
+// symlinked directories, where following a link means walking its target.
 export interface WalkOptions extends Pick<FdirOptions, 'includeDirs'> {
   root: string;
   concurrency?: number;

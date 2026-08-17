@@ -862,6 +862,7 @@ const config = defineConfig(
   },
   globalIgnores([
     '!.*',
+    '.claude/**',
     '**/coverage/**',
     '**/node_modules/**',
     'bin/',

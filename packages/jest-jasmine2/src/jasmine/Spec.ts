@@ -95,8 +95,8 @@ export default class Spec {
   currentRun?: ReturnType<typeof queueRunner>;
   markedTodo?: boolean;
   markedPending?: boolean;
-  expand?: boolean;
 
+  static expand?: boolean;
   static pendingSpecExceptionMessage: string;
 
   static isPendingSpecException(e: Error) {
@@ -240,7 +240,7 @@ export default class Spec {
         expected: '',
         actual: '',
         error: this.isAssertionError(error)
-          ? assertionErrorMessage(error, {expand: this.expand})
+          ? assertionErrorMessage(error, {expand: Spec.expand})
           : error,
       },
       true,

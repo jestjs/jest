@@ -9,7 +9,7 @@ import * as fs from 'graceful-fs';
 
 export class FileCache {
   private readonly strings: Map<string, string>;
-  private readonly buffers = new Map<string, BufferSource>();
+  private readonly buffers = new Map<string, Buffer<ArrayBuffer>>();
 
   constructor(cacheFS: Map<string, string>) {
     this.strings = cacheFS;
@@ -24,7 +24,7 @@ export class FileCache {
     return source;
   }
 
-  readFileBuffer(filename: string): BufferSource {
+  readFileBuffer(filename: string): Buffer<ArrayBuffer> {
     let source = this.buffers.get(filename);
     if (!source) {
       source = fs.readFileSync(filename);

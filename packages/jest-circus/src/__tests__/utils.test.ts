@@ -5,9 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {Circus} from '@jest/types';
 import {runTest} from '../__mocks__/testUtils';
 import {ROOT_DESCRIBE_BLOCK_NAME} from '../state';
 import {
+  callAsyncCircusFn,
   makeDescribe,
   makeRunResult,
   makeSingleTestResult,
@@ -138,4 +140,63 @@ test('makeRunResult keeps the unserialized unhandled errors', () => {
 
   expect(result.unhandledErrorsDetailed[0]).toBe(error);
   expect(result.unhandledErrors[0]).toBe(error.stack);
+});
+
+test('a generator test body receives the shared test context', async () => {
+  const rootDescribe = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
+  const testContext = {fromHook: 'hook value'};
+  let sawSharedContext = false;
+  const circusTest = makeTest(
+    function* (this: Circus.TestContext) {
+      sawSharedContext = this === testContext;
+    } as unknown as Circus.TestFn,
+    undefined,
+    false,
+    'generator test',
+    rootDescribe,
+    undefined,
+    new Error('async error'),
+    false,
+  );
+
+  await callAsyncCircusFn(circusTest, testContext, {
+    isHook: false,
+    timeout: 1000,
+  });
+
+  expect(sawSharedContext).toBe(true);
+});
+
+test('a late done callback does not affect a later invocation', async () => {
+  const rootDescribe = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
+  let firstDone: Circus.DoneFn = () => {};
+  const circusTest = makeTest(
+    done => {
+      firstDone = done;
+    },
+    undefined,
+    false,
+    'done callback test',
+    rootDescribe,
+    undefined,
+    new Error('async error'),
+    false,
+  );
+  const options = {isHook: false, timeout: 1000};
+
+  const firstInvocation = callAsyncCircusFn(circusTest, {}, options);
+  firstDone(new Error('first failure'));
+  await expect(firstInvocation).rejects.toThrow('first failure');
+
+  circusTest.seenDone = false;
+  let secondDone: Circus.DoneFn = () => {};
+  circusTest.fn = done => {
+    secondDone = done;
+  };
+
+  const secondInvocation = callAsyncCircusFn(circusTest, {}, options);
+  firstDone();
+  secondDone();
+
+  await expect(secondInvocation).resolves.toBeUndefined();
 });

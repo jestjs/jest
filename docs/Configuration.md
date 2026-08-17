@@ -1492,6 +1492,8 @@ This option allows the use of a custom resolver. This resolver must be a module 
 1. a function expecting a string as the first argument for the path to resolve and an options object as the second argument. The function should either return a path to the module that should be resolved or throw an error if the module can't be found. _or_
 2. an object containing `async` and/or `sync` properties. The `sync` property should be a function with the shape explained above, and the `async` property should also be a function that accepts the same arguments, but returns a promise which resolves with the path to the module or rejects with an error.
 
+The resolver may be written as either CommonJS or an ES module, including one that uses a top-level await. An ES module can export the function or the `sync`/`async` object as its `default` export, or expose `sync` and `async` as named exports.
+
 The options object provided to resolvers has the shape:
 
 ```ts
