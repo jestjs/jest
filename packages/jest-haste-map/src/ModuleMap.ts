@@ -39,7 +39,7 @@ export default class ModuleMap implements IModuleMap {
   private static mapFromArrayRecursive(
     arr: ReadonlyArray<[string, unknown]>,
   ): Map<string, unknown> {
-    if (arr[0] && Array.isArray(arr[1])) {
+    if (arr[0] && Array.isArray(arr[0][1])) {
       arr = arr.map(el => [
         el[0],
         this.mapFromArrayRecursive(el[1] as Array<[string, unknown]>),
