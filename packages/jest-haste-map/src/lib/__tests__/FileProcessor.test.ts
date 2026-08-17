@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as os from 'node:os';
 import * as path from 'node:path';
 import type {WorkerMetadata} from '../../types';
 import type * as WorkerModule from '../../worker';
@@ -13,8 +14,26 @@ import {WorkerPool} from '../WorkerPool';
 import {createEmptyMap} from '../util';
 
 jest.mock('../WorkerPool');
+// `isIgnorableFileError` reads the platform once at module load, so the
+// platform-dependent cases have to re-import through `jest.isolateModules`.
+jest.mock('node:os', () => ({
+  ...jest.requireActual<typeof import('node:os')>('node:os'),
+  platform: jest.fn(
+    jest.requireActual<typeof import('node:os')>('node:os').platform,
+  ),
+}));
 
+const mockPlatform = jest.mocked(os.platform);
 const MockWorkerPool = WorkerPool as jest.MockedClass<typeof WorkerPool>;
+
+function loadFileProcessorOn(platform: NodeJS.Platform) {
+  mockPlatform.mockReturnValue(platform);
+  let Loaded!: typeof FileProcessor;
+  jest.isolateModules(() => {
+    ({FileProcessor: Loaded} = require('../FileProcessor'));
+  });
+  return Loaded;
+}
 
 const ROOT = path.join('/', 'root');
 const FAKE_WORKER_PATH = '/fake/worker.js';
@@ -116,9 +135,99 @@ describe('FileProcessor', () => {
       );
     });
 
-    it('silently removes the file on ENOENT worker error', async () => {
+    it.each(['EACCES', 'ENOENT'])(
+      'silently removes the file on a %s worker error',
+      async code => {
+        const hasteMap = createEmptyMap();
+        hasteMap.files.set(path.join('src', 'Locked.js'), [
+          '',
+          1000,
+          42,
+          0,
+          '',
+          null,
+        ]);
+
+        const worker = {
+          getSha1: jest.fn<typeof WorkerModule.getSha1>(),
+          worker: jest
+            .fn<typeof WorkerModule.worker>()
+            .mockRejectedValue(Object.assign(new Error(code), {code})),
+        };
+        const pool = new MockWorkerPool({
+          maxWorkers: 1,
+          workerPath: FAKE_WORKER_PATH,
+        });
+        jest.mocked(pool.get).mockReturnValue(worker);
+
+        const fp = new FileProcessor(makeOptions(), console, pool);
+        await fp.processFile(
+          hasteMap,
+          hasteMap.map,
+          hasteMap.mocks,
+          path.join(ROOT, 'src', 'Locked.js'),
+        );
+
+        expect(hasteMap.files.has(path.join('src', 'Locked.js'))).toBe(false);
+      },
+    );
+
+    // The reason this PR exists: an outside process holding a file open on
+    // Windows surfaces as EPERM, and indexing has to survive it. Asserting it
+    // here (rather than only on the predicate) is what pins `workerError` to
+    // `isIgnorableFileError` — the array check it replaced passes every other
+    // case in this file.
+    it.each([
+      ['win32', false],
+      ['linux', true],
+    ] as const)(
+      'on %s, an EPERM worker error keeps the file: %s',
+      async (platform, stillThrows) => {
+        const hasteMap = createEmptyMap();
+        hasteMap.files.set(path.join('src', 'Held.js'), [
+          '',
+          1000,
+          42,
+          0,
+          '',
+          null,
+        ]);
+
+        const worker = {
+          getSha1: jest.fn<typeof WorkerModule.getSha1>(),
+          worker: jest
+            .fn<typeof WorkerModule.worker>()
+            .mockRejectedValue(
+              Object.assign(new Error('EPERM'), {code: 'EPERM'}),
+            ),
+        };
+        const pool = new MockWorkerPool({
+          maxWorkers: 1,
+          workerPath: FAKE_WORKER_PATH,
+        });
+        jest.mocked(pool.get).mockReturnValue(worker);
+
+        const PlatformFileProcessor = loadFileProcessorOn(platform);
+        const fp = new PlatformFileProcessor(makeOptions(), console, pool);
+        const processing = fp.processFile(
+          hasteMap,
+          hasteMap.map,
+          hasteMap.mocks,
+          path.join(ROOT, 'src', 'Held.js'),
+        );
+
+        if (stillThrows) {
+          await expect(processing).rejects.toThrow('EPERM');
+        } else {
+          await processing;
+          expect(hasteMap.files.has(path.join('src', 'Held.js'))).toBe(false);
+        }
+      },
+    );
+
+    it('rethrows a worker error that is not an ignorable file error', async () => {
       const hasteMap = createEmptyMap();
-      hasteMap.files.set(path.join('src', 'Gone.js'), [
+      hasteMap.files.set(path.join('src', 'Bad.js'), [
         '',
         1000,
         42,
@@ -127,10 +236,13 @@ describe('FileProcessor', () => {
         null,
       ]);
 
-      const enoent = Object.assign(new Error('ENOENT'), {code: 'ENOENT'});
       const worker = {
         getSha1: jest.fn<typeof WorkerModule.getSha1>(),
-        worker: jest.fn<typeof WorkerModule.worker>().mockRejectedValue(enoent),
+        worker: jest
+          .fn<typeof WorkerModule.worker>()
+          .mockRejectedValue(
+            Object.assign(new Error('EISDIR'), {code: 'EISDIR'}),
+          ),
       };
       const pool = new MockWorkerPool({
         maxWorkers: 1,
@@ -139,14 +251,15 @@ describe('FileProcessor', () => {
       jest.mocked(pool.get).mockReturnValue(worker);
 
       const fp = new FileProcessor(makeOptions(), console, pool);
-      await fp.processFile(
-        hasteMap,
-        hasteMap.map,
-        hasteMap.mocks,
-        path.join(ROOT, 'src', 'Gone.js'),
-      );
 
-      expect(hasteMap.files.has(path.join('src', 'Gone.js'))).toBe(false);
+      await expect(
+        fp.processFile(
+          hasteMap,
+          hasteMap.map,
+          hasteMap.mocks,
+          path.join(ROOT, 'src', 'Bad.js'),
+        ),
+      ).rejects.toThrow('EISDIR');
     });
 
     it('throws DuplicateError when throwOnModuleCollision is true', async () => {

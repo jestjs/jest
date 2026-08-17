@@ -21,6 +21,7 @@ import type {
 import type {WorkerPool} from './WorkerPool';
 import * as fastPath from './fast_path';
 import getPlatformExtension from './getPlatformExtension';
+import {isIgnorableFileError} from './isIgnorableFileError';
 
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PACKAGE_JSON = `${path.sep}package.json`;
@@ -178,7 +179,9 @@ export class FileProcessor {
         error.stack = ''; // Remove stack for stack-less errors.
       }
 
-      if (!['ENOENT', 'EACCES'].includes(error.code)) {
+      // `EACCES` is not in `isIgnorableFileError`: an unreadable file is fatal
+      // to a watcher, but here it only means this one file cannot be indexed.
+      if (error.code !== 'EACCES' && !isIgnorableFileError(error)) {
         throw error;
       }
 
