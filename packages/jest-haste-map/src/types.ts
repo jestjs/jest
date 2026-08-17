@@ -89,6 +89,7 @@ export type WorkerMetadata = {
 
 export type CrawlerOptions = {
   computeSha1: boolean;
+  console: Console;
   enableSymlinks: boolean;
   data: InternalHasteMap;
   extensions: Array<string>;

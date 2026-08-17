@@ -474,6 +474,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     return crawlFiles(
       {
         computeSha1: options.computeSha1,
+        console: this._console,
         data: hasteMap,
         enableSymlinks: options.enableSymlinks,
         extensions: options.extensions,
@@ -483,7 +484,6 @@ class HasteMap extends EventEmitter implements IHasteMap {
         roots: options.roots,
       },
       await shouldUseWatchman(this._options.useWatchman),
-      this._console,
     );
   }
 
