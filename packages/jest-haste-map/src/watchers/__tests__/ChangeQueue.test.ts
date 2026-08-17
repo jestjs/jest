@@ -265,6 +265,22 @@ describe('ChangeQueue', () => {
       expect(moduleMap.getMockModule('foo')).toBe(path.join(ROOT, MOCK_B));
     });
 
+    // `FileProcessor` lets the last processed claimant win, so watch mode has to
+    // promote the newest survivor or it disagrees with a restart.
+    it('promotes the last surviving claimant, not the first', async () => {
+      const MOCK_C = path.join('c', '__mocks__', 'foo.js');
+      const hasteMap = createEmptyMap();
+      for (const mockPath of [MOCK_A, MOCK_B, MOCK_C]) {
+        hasteMap.files.set(mockPath, ['', 1000, 42, 1, '', null]);
+      }
+      hasteMap.mocks.set('foo', MOCK_C);
+      hasteMap.mockDuplicates.set('foo', new Set([MOCK_A, MOCK_B, MOCK_C]));
+
+      const moduleMap = await deleteAndEmit(hasteMap, MOCK_C);
+
+      expect(moduleMap.getMockModule('foo')).toBe(path.join(ROOT, MOCK_B));
+    });
+
     it('leaves the resolved mock alone when a different claimant is deleted', async () => {
       const moduleMap = await deleteAndEmit(
         hasteMapWithBothMocks(MOCK_A),

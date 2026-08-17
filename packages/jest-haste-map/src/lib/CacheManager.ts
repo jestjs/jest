@@ -28,8 +28,13 @@ export class CacheManager {
     } catch {
       return createEmptyMap();
     }
-    // A cache written before `mockDuplicates` existed deserializes without it.
-    hasteMap.mockDuplicates ??= new Map();
+    // A cache written before `mockDuplicates` existed has no record of which
+    // files claim which mock name. Defaulting it to empty would read as "no
+    // duplicates anywhere" and leave watch mode unable to recover one, so treat
+    // it as a miss and let the crawl derive the claims again.
+    if (hasteMap.mockDuplicates == null) {
+      return createEmptyMap();
+    }
     return hasteMap;
   }
 

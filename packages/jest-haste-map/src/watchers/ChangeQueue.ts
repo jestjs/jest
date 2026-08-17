@@ -220,11 +220,13 @@ export class ChangeQueue {
       return;
     }
 
-    // `files` has already had this path deleted, so a survivor found here is
-    // one the haste map still tracks.
-    const survivor = [
-      ...(this._hasteMap.mockDuplicates.get(mockName) ?? []),
-    ].find(candidate => this._hasteMap.files.has(candidate));
+    // Claimants are recorded in the order they were processed and the last one
+    // wins, so search from the end to land on the same file a rebuild would.
+    // `files` has already had this path deleted, so a survivor found here is one
+    // the haste map still tracks.
+    const survivor = [...(this._hasteMap.mockDuplicates.get(mockName) ?? [])]
+      .reverse()
+      .find(candidate => this._hasteMap.files.has(candidate));
 
     if (survivor == null) {
       this._hasteMap.mocks.delete(mockName);
