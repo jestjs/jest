@@ -16,36 +16,34 @@ type WorkerPoolOptions = {
   workerThreads?: boolean;
 };
 
+const inBandWorker: HasteWorker = {getSha1, worker};
+
 export class WorkerPool {
   private readonly _options: WorkerPoolOptions;
-  private _worker: JestWorkerFarm<HasteWorker> | HasteWorker | null = null;
+  private _farm: JestWorkerFarm<HasteWorker> | null = null;
 
   constructor(options: WorkerPoolOptions) {
     this._options = options;
   }
 
   get(forceInBand?: boolean): JestWorkerFarm<HasteWorker> | HasteWorker {
-    if (!this._worker) {
-      if (forceInBand || this._options.maxWorkers <= 1) {
-        this._worker = {getSha1, worker};
-      } else {
-        this._worker = new Worker(this._options.workerPath, {
-          enableWorkerThreads: this._options.workerThreads,
-          exposedMethods: ['getSha1', 'worker'],
-          forkOptions: {serialization: 'json'},
-          maxRetries: 3,
-          numWorkers: this._options.maxWorkers,
-        }) as JestWorkerFarm<HasteWorker>;
-      }
+    if (forceInBand || this._options.maxWorkers <= 1) {
+      return inBandWorker;
     }
-    return this._worker;
+    if (!this._farm) {
+      this._farm = new Worker(this._options.workerPath, {
+        enableWorkerThreads: this._options.workerThreads,
+        exposedMethods: ['getSha1', 'worker'],
+        forkOptions: {serialization: 'json'},
+        maxRetries: 3,
+        numWorkers: this._options.maxWorkers,
+      }) as JestWorkerFarm<HasteWorker>;
+    }
+    return this._farm;
   }
 
   end(): void {
-    const workerInstance = this._worker;
-    if (workerInstance && 'end' in workerInstance) {
-      workerInstance.end();
-    }
-    this._worker = null;
+    this._farm?.end();
+    this._farm = null;
   }
 }

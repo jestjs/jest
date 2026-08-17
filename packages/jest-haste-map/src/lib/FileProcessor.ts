@@ -323,22 +323,30 @@ export class FileProcessor {
     }
 
     const promises: Array<Promise<void>> = [];
-    for (const relativeFilePath of filesToProcess.keys()) {
-      if (
-        this._options.skipPackageJson &&
-        relativeFilePath.endsWith(PACKAGE_JSON)
-      ) {
-        continue;
+    try {
+      for (const relativeFilePath of filesToProcess.keys()) {
+        if (
+          this._options.skipPackageJson &&
+          relativeFilePath.endsWith(PACKAGE_JSON)
+        ) {
+          continue;
+        }
+        // SHA-1, if requested, should already be present thanks to the crawler.
+        const filePath = fastPath.resolve(
+          this._options.rootDir,
+          relativeFilePath,
+        );
+        const promise = this.processFile(hasteMap, map, mocks, filePath);
+        if (promise) {
+          promises.push(promise);
+        }
       }
-      // SHA-1, if requested, should already be present thanks to the crawler.
-      const filePath = fastPath.resolve(
-        this._options.rootDir,
-        relativeFilePath,
-      );
-      const promise = this.processFile(hasteMap, map, mocks, filePath);
-      if (promise) {
-        promises.push(promise);
-      }
+    } catch (error) {
+      // `processFile` throws synchronously on a duplicate manual mock when
+      // `throwOnModuleCollision` is set, which would otherwise escape before
+      // the settlement handlers below can shut the worker farm down.
+      this._workerPool.end();
+      throw error;
     }
 
     return Promise.all(promises).then(
