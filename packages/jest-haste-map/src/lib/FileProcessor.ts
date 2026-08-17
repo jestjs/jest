@@ -236,6 +236,13 @@ export class FileProcessor {
           if (this._options.throwOnModuleCollision) {
             throw new DuplicateError(existingMockPath, secondMockPath);
           }
+
+          let duplicates = hasteMap.mockDuplicates.get(mockPath);
+          if (duplicates == null) {
+            duplicates = new Set();
+            hasteMap.mockDuplicates.set(mockPath, duplicates);
+          }
+          duplicates.add(existingMockPath).add(secondMockPath);
         }
       }
 
@@ -314,6 +321,9 @@ export class FileProcessor {
     if (changedFiles === undefined || removedFiles.size > 0) {
       map = new Map();
       mocks = new Map();
+      // Re-derived along with `mocks` below; keeping the old entries would let a
+      // file deleted while Jest was not running be promoted back later.
+      hasteMap.mockDuplicates = new Map();
       filesToProcess = hasteMap.files;
     } else {
       map = hasteMap.map;

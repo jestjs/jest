@@ -119,6 +119,7 @@ export class ChangeQueue {
             duplicates: new Map(this._hasteMap.duplicates),
             files: new Map(this._hasteMap.files),
             map: new Map(this._hasteMap.map),
+            mockDuplicates: new Map(this._hasteMap.mockDuplicates),
             mocks: new Map(this._hasteMap.mocks),
           };
         }
@@ -156,8 +157,7 @@ export class ChangeQueue {
             this._callbacks.mocksPattern &&
             this._callbacks.mocksPattern.test(filePath)
           ) {
-            const mockName = getMockName(filePath);
-            this._hasteMap.mocks.delete(mockName);
+            this._removeMock(getMockName(filePath), relativeFilePath);
           }
 
           this._callbacks.recoverDuplicates(
@@ -198,6 +198,39 @@ export class ChangeQueue {
       .catch((error: Error) => {
         this._callbacks.onError(error);
       });
+  }
+
+  // A mock name can be claimed by several files. Dropping the name outright
+  // when one of them goes loses the others until they change or Jest restarts.
+  private _removeMock(mockName: string, relativeFilePath: string): void {
+    const claimants = this._hasteMap.mockDuplicates.get(mockName);
+    if (claimants != null) {
+      // Copied because the previous frame's ChangeEvent still holds the old set.
+      const remaining = new Set(claimants);
+      remaining.delete(relativeFilePath);
+      if (remaining.size === 0) {
+        this._hasteMap.mockDuplicates.delete(mockName);
+      } else {
+        this._hasteMap.mockDuplicates.set(mockName, remaining);
+      }
+    }
+
+    if (this._hasteMap.mocks.get(mockName) !== relativeFilePath) {
+      // Another file owns the name, so there is nothing to replace.
+      return;
+    }
+
+    // `files` has already had this path deleted, so a survivor found here is
+    // one the haste map still tracks.
+    const survivor = [
+      ...(this._hasteMap.mockDuplicates.get(mockName) ?? []),
+    ].find(candidate => this._hasteMap.files.has(candidate));
+
+    if (survivor == null) {
+      this._hasteMap.mocks.delete(mockName);
+    } else {
+      this._hasteMap.mocks.set(mockName, survivor);
+    }
   }
 
   private _emitChange(): void {

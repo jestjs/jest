@@ -22,11 +22,15 @@ export class CacheManager {
   }
 
   read(): InternalHasteMap {
+    let hasteMap: InternalHasteMap;
     try {
-      return deserialize(readFileSync(this._cachePath));
+      hasteMap = deserialize(readFileSync(this._cachePath));
     } catch {
       return createEmptyMap();
     }
+    // A cache written before `mockDuplicates` existed deserializes without it.
+    hasteMap.mockDuplicates ??= new Map();
+    return hasteMap;
   }
 
   persist(hasteMap: InternalHasteMap): void {
