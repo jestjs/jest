@@ -38,6 +38,8 @@
 - `[jest-haste-map]` Attach the watchman client's `error` listener before the first command, so a watchman failure falls back to the node crawler instead of crashing on an unhandled `error` event, and always end the client ([#16355](https://github.com/jestjs/jest/pull/16355))
 - `[jest-haste-map]` Stop delivering watch events after `WatchmanWatcher` is closed, and route its warnings through the configured console ([#16355](https://github.com/jestjs/jest/pull/16355))
 - `[jest-haste-map]` Restore the nested `duplicates` index correctly in `ModuleMap.fromJSON`, so a haste collision reported inside a test worker raises `DuplicateHasteCandidatesError` instead of a `TypeError` ([#16353](https://github.com/jestjs/jest/pull/16353))
+- `[jest-haste-map]` Match watched files on a full extension, so `moduleFileExtensions: ['js']` no longer accepts `foo.mjs` ([#16352](https://github.com/jestjs/jest/pull/16352))
+- `[jest-haste-map]` Delimit the fields that make up the haste map cache key, so two different option sets cannot hash to the same cache file ([#16352](https://github.com/jestjs/jest/pull/16352))
 - `[jest-message-util]` Print the inner errors of an `AggregateError` thrown inside a test ([#16316](https://github.com/jestjs/jest/pull/16316))
 - `[jest-message-util]` Indent nested `cause` and `AggregateError` sections of a test failure by one level per depth, so the nesting is legible instead of rendering flat ([#16316](https://github.com/jestjs/jest/pull/16316))
 - `[jest-message-util]` Color stack traces line by line so blank lines stay blank ([#16316](https://github.com/jestjs/jest/pull/16316))
