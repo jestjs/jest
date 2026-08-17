@@ -190,6 +190,49 @@ describe('ChangeQueue', () => {
     queue.stop();
   });
 
+  describe('extension filtering', () => {
+    async function emitAdd(extensions: Array<string>, fileName: string) {
+      const hasteMap = createEmptyMap();
+      const callbacks = makeCallbacks();
+
+      const queue = new ChangeQueue(hasteMap, extensions, callbacks);
+      queue.start();
+      queue.onChange('add', path.join('src', fileName), ROOT, STAT);
+      await Promise.resolve();
+      jest.advanceTimersByTime(INTERVAL);
+      queue.stop();
+
+      return callbacks.emit;
+    }
+
+    it.each(['Apple.js', 'Apple.test.js'])(
+      'accepts %s when `js` is configured',
+      async fileName => {
+        expect(await emitAdd(['js'], fileName)).toHaveBeenCalledTimes(1);
+      },
+    );
+
+    // `endsWith(ext)` matched any path whose final characters happened to
+    // spell the extension, so a longer extension or a bare name ending in
+    // those letters slipped through.
+    it.each(['Apple.mjs', 'Apple.cjs', 'myjs', 'Apple.jsx'])(
+      'rejects %s when only `js` is configured',
+      async fileName => {
+        expect(await emitAdd(['js'], fileName)).not.toHaveBeenCalled();
+      },
+    );
+
+    it('accepts a file whose extension is one of several configured', async () => {
+      expect(await emitAdd(['js', 'mjs'], 'Apple.mjs')).toHaveBeenCalledTimes(
+        1,
+      );
+    });
+
+    it('rejects a file with no extension', async () => {
+      expect(await emitAdd(['js'], 'Makefile')).not.toHaveBeenCalled();
+    });
+  });
+
   it('stop() clears the interval so no further emissions occur', async () => {
     const hasteMap = createEmptyMap();
     const callbacks = makeCallbacks();
