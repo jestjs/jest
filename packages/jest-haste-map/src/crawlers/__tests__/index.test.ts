@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {createEmptyMap} from '../../lib/util';
 import {crawl} from '../index';
 import {nodeCrawl} from '../node';
 import {watchmanCrawl} from '../watchman';
@@ -22,13 +23,7 @@ const mockConsole = {warn: jest.fn()} as unknown as Console;
 const crawlerOptions = {
   computeSha1: false,
   console: mockConsole,
-  data: {
-    clocks: new Map(),
-    duplicates: new Map(),
-    files: new Map(),
-    map: new Map(),
-    mocks: new Map(),
-  },
+  data: createEmptyMap(),
   enableSymlinks: false,
   extensions: ['js'],
   forceNodeFilesystemAPI: false,

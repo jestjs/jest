@@ -35,6 +35,7 @@
 - `[jest-environment-node, jest-util]` Stop resolving lazy globals when setting up an environment, so Node 26's builtin module globals are no longer loaded (and no longer emit their deprecation warnings) for every test file ([#16324](https://github.com/jestjs/jest/pull/16324))
 - `[jest-haste-map]` Keep watch mode alive when an outside process briefly makes a file unreadable on Windows, instead of tearing the watcher down on `EPERM` ([#16295](https://github.com/jestjs/jest/pull/16295))
 - `[jest-haste-map]` Keep indexing when an outside process holds a file open on Windows, instead of failing the whole crawl on `EPERM` ([#16358](https://github.com/jestjs/jest/pull/16358))
+- `[jest-haste-map]` Keep a duplicated manual mock resolving when the file it pointed at is deleted in watch mode ([#16360](https://github.com/jestjs/jest/pull/16360))
 - `[jest-haste-map]` Shut the worker farm down when a duplicate manual mock aborts the build under `throwOnModuleCollision` ([#16354](https://github.com/jestjs/jest/pull/16354))
 - `[jest-haste-map]` Attach the watchman client's `error` listener before the first command, so a watchman failure falls back to the node crawler instead of crashing on an unhandled `error` event, and always end the client ([#16355](https://github.com/jestjs/jest/pull/16355))
 - `[jest-haste-map]` Stop delivering watch events after `WatchmanWatcher` is closed, and route its warnings through the configured console ([#16355](https://github.com/jestjs/jest/pull/16355))

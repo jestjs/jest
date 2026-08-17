@@ -262,6 +262,41 @@ describe('FileProcessor', () => {
       ).rejects.toThrow('EISDIR');
     });
 
+    it('records every file claiming a mock name, keeping the last as resolved', async () => {
+      const first = path.join('a', '__mocks__', 'foo.js');
+      const second = path.join('b', '__mocks__', 'foo.js');
+      const hasteMap = createEmptyMap();
+      hasteMap.files.set(first, ['', 1000, 42, 0, '', null]);
+      hasteMap.files.set(second, ['', 2000, 42, 0, '', null]);
+
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
+      jest.mocked(pool.get).mockReturnValue(makeWorker());
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const fp = new FileProcessor(
+        makeOptions({mocksPattern: /__mocks__/}),
+        console,
+        pool,
+      );
+      for (const relativeFilePath of [first, second]) {
+        await fp.processFile(
+          hasteMap,
+          hasteMap.map,
+          hasteMap.mocks,
+          path.join(ROOT, relativeFilePath),
+        );
+      }
+
+      expect(hasteMap.mockDuplicates.get('foo')).toEqual(
+        new Set([first, second]),
+      );
+      // Resolution stays last-wins; only the recovery path is new.
+      expect(hasteMap.mocks.get('foo')).toBe(second);
+    });
+
     it('throws DuplicateError when throwOnModuleCollision is true', async () => {
       const hasteMap = createEmptyMap();
       hasteMap.files.set(path.join('src', 'A.js'), ['', 1000, 42, 0, '', null]);
