@@ -184,26 +184,51 @@ test('does not retry a test failure after a process-level error', async () => {
   expect(result.testResults[0].invocations).toBe(1);
 });
 
-test('supports snapshot states without retry checkpoints', async () => {
-  let attempts = 0;
+test('clears snapshot identities only for the retried subtree', async () => {
+  const clear = jest.fn();
+  let attempt = 0;
+  let nestedBlock!: Circus.DescribeBlock;
+  let nestedTest!: Circus.TestEntry;
+  let targetBlock!: Circus.DescribeBlock;
+  let targetTest!: Circus.TestEntry;
 
   const result = await runIsolated(() => {
-    jestExpect.setState({snapshotState: {} as never});
-    circusDescribe('without snapshot checkpoints', () => {
-      circusTest('flaky', () => {
-        attempts++;
-        expect(attempts).toBe(2);
+    jestExpect.setState({snapshotState: {clear} as never});
+    circusDescribe('sibling', () => {
+      circusTest('sibling test', () => {});
+    });
+    circusDescribe('retrying describe', () => {
+      circusBeforeAll(() => {
+        attempt++;
+      });
+      circusTest('target test', () => {
+        expect(attempt).toBe(2);
+      });
+      circusDescribe('nested', () => {
+        circusTest('nested test', () => {});
       });
     });
 
-    getState().describeRetryOptions.set(
-      getDescribeBlock('without snapshot checkpoints'),
-      {numRetries: 1},
-    );
+    targetBlock = getDescribeBlock('retrying describe');
+    targetTest = targetBlock.children.find(
+      child => child.type === 'test',
+    ) as Circus.TestEntry;
+    nestedBlock = targetBlock.children.find(
+      child => child.type === 'describeBlock',
+    ) as Circus.DescribeBlock;
+    nestedTest = nestedBlock.children[0] as Circus.TestEntry;
+    getState().describeRetryOptions.set(targetBlock, {numRetries: 1});
   });
 
-  expect(attempts).toBe(2);
-  expect(result.testResults[0].errors).toEqual([]);
+  expect(
+    result.testResults.every(testResult => testResult.errors.length === 0),
+  ).toBe(true);
+  expect(clear.mock.calls).toEqual([
+    [targetTest],
+    [nestedTest],
+    [targetBlock],
+    [nestedBlock],
+  ]);
 });
 
 test('shuffles each describe once at its existing lifecycle point', async () => {

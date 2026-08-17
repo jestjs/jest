@@ -230,7 +230,7 @@ export const callAsyncCircusFn = (
           }
           reject(errorAtDone);
           throw errorAtDone;
-        } else {
+        } else if (!completed) {
           testOrHook.seenDone = true;
         }
 
@@ -272,7 +272,7 @@ export const callAsyncCircusFn = (
 
     let returnedValue: Global.TestReturnValue;
     if (isGeneratorFunction(fn)) {
-      returnedValue = co.wrap(fn).call({});
+      returnedValue = co.wrap(fn).call(testContext);
     } else {
       try {
         returnedValue = fn.call(testContext);

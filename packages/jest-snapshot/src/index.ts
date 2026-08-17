@@ -287,9 +287,11 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     context.dontThrow();
   }
 
-  const {currentConcurrentTestName, isNot, snapshotState} = context;
+  const {currentConcurrentTestName, currentTestIdentity, isNot, snapshotState} =
+    context;
   const currentTestName =
     currentConcurrentTestName?.() ?? context.currentTestName;
+  const testIdentity = currentTestIdentity?.();
 
   if (isNot) {
     throw new Error(
@@ -339,7 +341,12 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     if (propertyPass) {
       received = deepMerge(received, properties);
     } else {
-      const key = snapshotState.fail(fullTestName, received);
+      const key = snapshotState.fail(
+        fullTestName,
+        received,
+        undefined,
+        testIdentity,
+      );
       const matched = /(\d+)$/.exec(key);
       const count = matched === null ? 1 : Number(matched[1]);
 
@@ -368,6 +375,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     isInline,
     received,
     testFailing,
+    testIdentity,
     testName: fullTestName,
   });
   const {actual, count, expected, pass} = result;

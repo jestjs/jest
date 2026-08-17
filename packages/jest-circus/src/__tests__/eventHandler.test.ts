@@ -31,6 +31,31 @@ test('addEventHandler and removeEventHandler control handlers', async () => {
   expect(spy).not.toHaveBeenCalledWith({name: 'unknown2'}, expect.anything());
 });
 
+test('clears the currently running test when a test is skipped or todo', async () => {
+  resetState();
+  const state = getState();
+  const circusTest = makeTest(
+    () => {},
+    undefined,
+    false,
+    'test',
+    state.rootDescribeBlock,
+    undefined,
+    new Error(),
+    false,
+  );
+
+  state.currentlyRunningTest = circusTest;
+  await eventHandler({name: 'test_skip', test: circusTest}, state);
+  expect(circusTest.status).toBe('skip');
+  expect(state.currentlyRunningTest).toBeNull();
+
+  state.currentlyRunningTest = circusTest;
+  await eventHandler({name: 'test_todo', test: circusTest}, state);
+  expect(circusTest.status).toBe('todo');
+  expect(state.currentlyRunningTest).toBeNull();
+});
+
 test('uses the async owner for process errors and handled rejections', async () => {
   resetState();
   const state = getState();

@@ -2133,6 +2133,60 @@ describe('ScriptTransformer', () => {
       ['\\.js$test_preprocessor', expect.any(Object)],
     ]);
   });
+
+  describe('caller support flags', () => {
+    const esmOptions = {...getCoverageOptions(), supportsStaticESM: true};
+    const cjsOptions = {...getCoverageOptions(), supportsStaticESM: false};
+
+    // The same file is transformed twice — as CJS and as ESM — and a transformer
+    // that reads the flag emits different code for each.
+    const configWithFlagReader = () => ({
+      ...config,
+      transform: [
+        ['\\.js$', 'passthrough-preprocessor', {}] as [string, string, unknown],
+      ],
+    });
+
+    beforeEach(() => {
+      jest
+        .mocked(
+          (require('passthrough-preprocessor') as SyncTransformer).process,
+        )
+        .mockImplementation((sourceText, sourcePath, options) => ({
+          code: options.supportsStaticESM
+            ? 'export default 1;'
+            : 'module.exports = 1;',
+        }));
+    });
+
+    it('separates the in-memory entries of one file transformed two ways', async () => {
+      const scriptTransformer = await createScriptTransformer(
+        configWithFlagReader(),
+      );
+
+      expect(
+        scriptTransformer.transform('/fruits/banana.js', cjsOptions).code,
+      ).toBe('module.exports = 1;');
+      expect(
+        scriptTransformer.transform('/fruits/banana.js', esmOptions).code,
+      ).toBe('export default 1;');
+    });
+
+    it('separates their cache files', async () => {
+      const scriptTransformer = await createScriptTransformer(
+        configWithFlagReader(),
+      );
+
+      scriptTransformer.transform('/fruits/banana.js', cjsOptions);
+      scriptTransformer.transform('/fruits/banana.js', esmOptions);
+
+      const written = jest
+        .mocked(writeFileAtomic.sync)
+        .mock.calls.map(([filePath]) => filePath);
+
+      expect(new Set(written).size).toBe(2);
+    });
+  });
 });
 
 function getTransformOptions(instrument: boolean): ReducedTransformOptions {

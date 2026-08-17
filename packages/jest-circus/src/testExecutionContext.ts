@@ -9,6 +9,7 @@ import {AsyncLocalStorage} from 'node:async_hooks';
 import type {Circus} from '@jest/types';
 
 type TestExecutionContext = {
+  describeBlock?: Circus.DescribeBlock;
   hook?: Circus.Hook;
   test?: Circus.TestEntry;
 };

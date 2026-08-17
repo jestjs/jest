@@ -7,7 +7,12 @@
 
 import * as path from 'node:path';
 import * as fs from 'graceful-fs';
-import {testWithVmEsm} from '@jest/test-utils';
+import {
+  hasSyncEsm,
+  testWithSyncEsm,
+  testWithVmEsm,
+  testWithoutSyncEsm,
+} from '@jest/test-utils';
 import type Resolver from 'jest-resolve';
 import {Resolution} from '../Resolution';
 
@@ -16,8 +21,11 @@ jest.mock('graceful-fs', () => ({
   existsSync: jest.fn(() => false),
 }));
 
-const CJS = ['require', 'node', 'default'];
-const ESM = ['import', 'default'];
+// `module-sync` is only offered to `require()` when Node can load ESM that way.
+const CJS = hasSyncEsm
+  ? ['require', 'module-sync', 'node', 'default']
+  : ['require', 'node', 'default'];
+const ESM = ['import', 'module-sync', 'default'];
 
 function makeResolver(overrides: Partial<Resolver> = {}): Resolver {
   const base = {
@@ -44,20 +52,41 @@ function makeResolver(overrides: Partial<Resolver> = {}): Resolver {
 
 describe('Resolution', () => {
   describe('conditions', () => {
-    test('with no env conditions, uses Node defaults', () => {
-      const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+    testWithSyncEsm(
+      'with no env conditions, uses Node defaults including "module-sync"',
+      () => {
+        const resolver = makeResolver();
+        const r = new Resolution(resolver, [], []);
 
-      r.resolveCjs('/a', 'foo');
-      r.resolveEsm('/a', 'foo');
+        r.resolveCjs('/a', 'foo');
+        r.resolveEsm('/a', 'foo');
 
-      expect(resolver.resolveModule).toHaveBeenNthCalledWith(1, '/a', 'foo', {
-        conditions: CJS,
-      });
-      expect(resolver.resolveModule).toHaveBeenNthCalledWith(2, '/a', 'foo', {
-        conditions: ESM,
-      });
-    });
+        expect(resolver.resolveModule).toHaveBeenNthCalledWith(1, '/a', 'foo', {
+          conditions: ['require', 'module-sync', 'node', 'default'],
+        });
+        expect(resolver.resolveModule).toHaveBeenNthCalledWith(2, '/a', 'foo', {
+          conditions: ['import', 'module-sync', 'default'],
+        });
+      },
+    );
+
+    testWithoutSyncEsm(
+      'omits "module-sync" from the CJS conditions when require(esm) is unavailable',
+      () => {
+        const resolver = makeResolver();
+        const r = new Resolution(resolver, [], []);
+
+        r.resolveCjs('/a', 'foo');
+        r.resolveEsm('/a', 'foo');
+
+        expect(resolver.resolveModule).toHaveBeenNthCalledWith(1, '/a', 'foo', {
+          conditions: ['require', 'node', 'default'],
+        });
+        expect(resolver.resolveModule).toHaveBeenNthCalledWith(2, '/a', 'foo', {
+          conditions: ['import', 'module-sync', 'default'],
+        });
+      },
+    );
 
     test('appends env-provided conditions and de-dupes', () => {
       const resolver = makeResolver();
@@ -67,10 +96,10 @@ describe('Resolution', () => {
       r.resolveEsm('/a', 'foo');
 
       expect(resolver.resolveModule).toHaveBeenNthCalledWith(1, '/a', 'foo', {
-        conditions: ['require', 'node', 'default', 'browser'],
+        conditions: [...CJS, 'browser'],
       });
       expect(resolver.resolveModule).toHaveBeenNthCalledWith(2, '/a', 'foo', {
-        conditions: ['import', 'default', 'browser'],
+        conditions: [...ESM, 'browser'],
       });
     });
   });

@@ -63,6 +63,26 @@ test('works with node assert', () => {
   expect(summary).toMatchSnapshot();
 });
 
+test('node assert diffs honor --expand', () => {
+  // The unchanged keys are printed in full ahead of the diff either way, so
+  // only the `Difference:` section tells the two modes apart.
+  const diffSection = (stderr: string) =>
+    cleanStderr(stderr).split('Difference:').at(-1)!;
+
+  const collapsed = diffSection(
+    runJest(dir, ['assertionErrorExpand.test.js']).stderr,
+  );
+  const expanded = diffSection(
+    runJest(dir, ['assertionErrorExpand.test.js', '--expand']).stderr,
+  );
+
+  expect(collapsed).toContain('@@');
+  expect(collapsed).not.toContain('"key9": 9');
+
+  expect(expanded).not.toContain('@@');
+  expect(expanded).toContain('"key9": 9');
+});
+
 test('works with assertions in separate files', () => {
   const {stderr} = runJest(dir, ['testMacro.test.js']);
 

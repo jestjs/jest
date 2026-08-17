@@ -6,7 +6,7 @@
  */
 
 import pLimit from 'p-limit';
-import {type MatcherState, jestExpect} from '@jest/expect';
+import {jestExpect} from '@jest/expect';
 import type {Circus, Global} from '@jest/types';
 import {invariant} from 'jest-util';
 import shuffleArray, {
@@ -34,10 +34,6 @@ import {
 // the original values in the variables before we require any files.
 const {setTimeout} = globalThis;
 
-type SnapshotRetryCheckpoint = ReturnType<
-  MatcherState['snapshotState']['getRetryCheckpoint']
->;
-
 type DescribeRetryAttempt = {
   errorsBeforeAttempt: Map<Circus.TestEntry, number>;
   expectStateBeforeAttempt: {
@@ -46,7 +42,6 @@ type DescribeRetryAttempt = {
   };
   hasExternalExpectState: boolean;
   processErrorGenerationBeforeAttempt: number;
-  snapshotCheckpoint: SnapshotRetryCheckpoint | undefined;
   unhandledErrorsBeforeAttempt: number;
 };
 
@@ -63,6 +58,10 @@ const run = async (): Promise<Circus.RunResult> => {
     currentConcurrentTestName: () => {
       const test = getTestExecutionContext()?.test;
       return test ? getTestID(test) : undefined;
+    },
+    currentTestIdentity: () => {
+      const context = getTestExecutionContext();
+      return context?.test ?? context?.describeBlock;
     },
   });
   const rng = randomize ? rngBuilder(seed) : undefined;
@@ -116,7 +115,7 @@ const _runTestsForDescribeBlock = async (
 
   let numRetriesAvailable =
     Number.parseInt(String(retryOptions.numRetries), 10) || 0;
-  const tests = getTestsForDescribeBlock(describeBlock);
+  const {describeBlocks, tests} = getEntriesForDescribeBlock(describeBlock);
   while (true) {
     const {
       currentTestName,
@@ -135,9 +134,6 @@ const _runTestsForDescribeBlock = async (
         isExpectingAssertions ||
         suppressedErrors.length > 0,
       processErrorGenerationBeforeAttempt: state.processErrorGeneration,
-      snapshotCheckpoint: jestExpect
-        .getState()
-        .snapshotState?.getRetryCheckpoint?.(),
       unhandledErrorsBeforeAttempt: state.unhandledErrors.length,
     };
     startDescribeRetryAttempt();
@@ -157,13 +153,20 @@ const _runTestsForDescribeBlock = async (
         retryAttempt.processErrorGenerationBeforeAttempt ||
       state.unhandledErrors.length > retryAttempt.unhandledErrorsBeforeAttempt;
     if (!hasErrors || nonRetryable || numRetriesAvailable <= 0) {
-      retryAttempt.snapshotCheckpoint?.commit?.();
       return;
     }
 
     const logErrorsBeforeRetry = retryOptions.logErrorsBeforeRetry ?? false;
     clearTestErrors(retryAttempt, logErrorsBeforeRetry);
-    retryAttempt.snapshotCheckpoint?.restore();
+    const snapshotState = jestExpect.getState().snapshotState;
+    if (snapshotState) {
+      for (const test of tests) {
+        snapshotState.clear(test);
+      }
+      for (const block of describeBlocks) {
+        snapshotState.clear(block);
+      }
+    }
     jestExpect.setState(retryAttempt.expectStateBeforeAttempt);
     await dispatch({describeBlock, name: 'describe_retry'});
 
@@ -201,9 +204,13 @@ const hasErrorsAddedDuringAttempt = (
   return false;
 };
 
-const getTestsForDescribeBlock = (
+const getEntriesForDescribeBlock = (
   describeBlock: Circus.DescribeBlock,
-): Array<Circus.TestEntry> => {
+): {
+  describeBlocks: Array<Circus.DescribeBlock>;
+  tests: Array<Circus.TestEntry>;
+} => {
+  const describeBlocks: Array<Circus.DescribeBlock> = [];
   const tests: Array<Circus.TestEntry> = [];
   const children: Array<Circus.DescribeBlock | Circus.TestEntry> = [
     describeBlock,
@@ -216,6 +223,7 @@ const getTestsForDescribeBlock = (
     }
 
     if (child.type === 'describeBlock') {
+      describeBlocks.push(child);
       for (let index = child.children.length - 1; index >= 0; index--) {
         children.push(child.children[index]);
       }
@@ -223,7 +231,7 @@ const getTestsForDescribeBlock = (
       tests.push(child);
     }
   }
-  return tests;
+  return {describeBlocks, tests};
 };
 
 const takeNewSuppressedErrors = (
@@ -459,20 +467,29 @@ const _callCircusHook = async ({
   test?: Circus.TestEntry;
   testContext?: Circus.TestContext;
 }): Promise<void> =>
-  runInTestExecutionContext({hook, test}, async function _callCircusHook() {
-    await dispatch({hook, name: 'hook_start'});
-    const timeout = hook.timeout || getState().testTimeout;
+  runInTestExecutionContext(
+    {describeBlock, hook, test},
+    async function _callCircusHook() {
+      await dispatch({hook, name: 'hook_start'});
+      const timeout = hook.timeout || getState().testTimeout;
 
-    try {
-      await callAsyncCircusFn(hook, testContext, {
-        isHook: true,
-        timeout,
-      });
-      await dispatch({describeBlock, hook, name: 'hook_success', test});
-    } catch (error) {
-      await dispatch({describeBlock, error, hook, name: 'hook_failure', test});
-    }
-  });
+      try {
+        await callAsyncCircusFn(hook, testContext, {
+          isHook: true,
+          timeout,
+        });
+        await dispatch({describeBlock, hook, name: 'hook_success', test});
+      } catch (error) {
+        await dispatch({
+          describeBlock,
+          error,
+          hook,
+          name: 'hook_failure',
+          test,
+        });
+      }
+    },
+  );
 
 const _callCircusTest = async (
   test: Circus.TestEntry,

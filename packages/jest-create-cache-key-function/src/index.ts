@@ -10,19 +10,14 @@ import {createHash} from 'node:crypto';
 // eslint-disable-next-line no-restricted-imports
 import {readFileSync} from 'node:fs';
 import {relative} from 'node:path';
-import type {Config} from '@jest/types';
+import type {Config, TransformTypes} from '@jest/types';
 
 type OldCacheKeyOptions = {
   config: Config.ProjectConfig;
   instrument: boolean;
 };
 
-// Should mirror `import('@jest/transform').TransformOptions`
-type NewCacheKeyOptions = {
-  config: Config.ProjectConfig;
-  configString: string;
-  instrument: boolean;
-};
+type NewCacheKeyOptions = TransformTypes.CacheKeyOptions;
 
 type OldGetCacheKeyFunction = (
   fileData: string,
@@ -31,7 +26,8 @@ type OldGetCacheKeyFunction = (
   options: OldCacheKeyOptions,
 ) => string;
 
-// Should mirror `import('@jest/transform').Transformer['getCacheKey']`
+// Narrower than `Transformer['getCacheKey']`, which gets the full
+// `TransformOptions`, and so stays assignable to it.
 type NewGetCacheKeyFunction = (
   sourceText: string,
   sourcePath: string,
@@ -61,6 +57,29 @@ function getGlobalCacheKey(
     .slice(0, length);
 }
 
+// Missing before 27, which behaved as all-false.
+function callerSupport(
+  options: OldCacheKeyOptions | NewCacheKeyOptions,
+): string {
+  const support: Partial<TransformTypes.CallerTransformOptions> =
+    'supportsStaticESM' in options ? options : {};
+  const flags: Record<keyof TransformTypes.CallerTransformOptions, boolean> = {
+    supportsDynamicImport: support.supportsDynamicImport === true,
+    supportsExportNamespaceFrom: support.supportsExportNamespaceFrom === true,
+    supportsStaticESM: support.supportsStaticESM === true,
+    supportsTopLevelAwait: support.supportsTopLevelAwait === true,
+  };
+
+  return JSON.stringify(flags);
+}
+
+// Before 27 it is a separate argument rather than part of the bag.
+function configStringOf(
+  options: OldCacheKeyOptions | NewCacheKeyOptions,
+): string {
+  return 'configString' in options ? options.configString : '';
+}
+
 function getCacheKeyFunction(
   globalCacheKey: string,
   length: number,
@@ -70,6 +89,10 @@ function getCacheKeyFunction(
     // We can hide that API difference, though, so this module is usable for both jest@<27 and jest@>=27
     const inferredOptions = options || configString;
     const {config, instrument} = inferredOptions;
+    const inferredConfigString =
+      typeof configString === 'string'
+        ? configString
+        : configStringOf(inferredOptions);
 
     return createHash('sha1')
       .update(globalCacheKey)
@@ -79,6 +102,10 @@ function getCacheKeyFunction(
       .update(config.rootDir ? relative(config.rootDir, sourcePath) : '')
       .update('\0', 'utf8')
       .update(instrument ? 'instrument' : '')
+      .update('\0', 'utf8')
+      .update(inferredConfigString)
+      .update('\0', 'utf8')
+      .update(callerSupport(inferredOptions))
       .digest('hex')
       .slice(0, length);
   }) as GetCacheKeyFunction;

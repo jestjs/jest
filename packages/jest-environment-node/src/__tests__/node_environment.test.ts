@@ -88,3 +88,88 @@ describe('NodeEnvironment', () => {
     expect(new TextEncoder().encode('abc')).toBeInstanceOf(Uint8Array);
   });
 });
+
+describe('globals cleanup', () => {
+  const makeEnvironment = (globalsCleanup: string) =>
+    new NodeEnvironment(
+      {
+        globalConfig: makeGlobalConfig(),
+        projectConfig: makeProjectConfig({
+          testEnvironmentOptions: {globalsCleanup},
+        }),
+      },
+      context,
+    );
+
+  it.each(['on', 'soft', 'off'])(
+    'leaves host globals intact after teardown in %s mode',
+    async globalsCleanup => {
+      const env = makeEnvironment(globalsCleanup);
+
+      await env.teardown();
+
+      expect(typeof process.nextTick).toBe('function');
+      expect(typeof console.log).toBe('function');
+      expect(typeof Object.prototype.hasOwnProperty).toBe('function');
+      expect(typeof Reflect.get).toBe('function');
+    },
+  );
+});
+
+describe('lazy globals', () => {
+  const property = 'lazyGlobalProbe';
+  let resolutions: number;
+
+  // Node 26 exposes the builtin modules as lazy globals, which must not be
+  // resolved just because an environment was constructed.
+  const loadEnvironmentWithLazyGlobal = () => {
+    resolutions = 0;
+    Object.defineProperty(globalThis, property, {
+      configurable: true,
+      enumerable: false,
+      get() {
+        resolutions++;
+        return {module: property};
+      },
+    });
+
+    let Environment: typeof NodeEnvironment;
+    jest.isolateModules(() => {
+      Environment = require('../').default;
+    });
+    return Environment!;
+  };
+
+  afterEach(() => {
+    // @ts-expect-error: probe property
+    delete globalThis[property];
+  });
+
+  it('does not resolve a lazy global when constructing an environment', () => {
+    const Environment = loadEnvironmentWithLazyGlobal();
+
+    const env = new Environment(
+      {globalConfig: makeGlobalConfig(), projectConfig: makeProjectConfig()},
+      context,
+    );
+
+    expect(env.global).toBeDefined();
+    expect(resolutions).toBe(0);
+    expect(
+      Object.getOwnPropertyDescriptor(globalThis, property),
+    ).toHaveProperty('get');
+  });
+
+  it('resolves a lazy global once it is read in the sandbox', () => {
+    const Environment = loadEnvironmentWithLazyGlobal();
+
+    const env = new Environment(
+      {globalConfig: makeGlobalConfig(), projectConfig: makeProjectConfig()},
+      context,
+    );
+
+    // @ts-expect-error: probe property
+    expect(env.global[property]).toEqual({module: property});
+    expect(resolutions).toBe(1);
+  });
+});

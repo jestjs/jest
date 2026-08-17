@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as ReactIs18 from 'react-is-18';
-import * as ReactIs19 from 'react-is-19';
+import * as ReactIs18 from '@jest/react-is-18';
+import * as ReactIs19 from '@jest/react-is-19';
 import type {Config, NewPlugin, Printer, Refs} from '../types';
 import {
   printChildren,

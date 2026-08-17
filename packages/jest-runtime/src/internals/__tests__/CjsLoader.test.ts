@@ -95,10 +95,7 @@ describe('CjsLoader.requireModule', () => {
       } as unknown as jest.Mocked<Resolution>,
     });
     expect(loader.requireModule('/from.js', 'fs')).toBe('fs-shim');
-    expect(stubs.coreModule.require).toHaveBeenCalledWith(
-      'fs',
-      expect.any(Boolean),
-    );
+    expect(stubs.coreModule.require).toHaveBeenCalledWith('fs');
   });
 
   test('returns cached CJS module without re-executing', () => {
