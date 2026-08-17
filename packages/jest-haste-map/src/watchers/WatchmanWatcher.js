@@ -11,6 +11,7 @@ import * as path from 'node:path';
 import anymatch from 'anymatch';
 import watchman from 'fb-watchman';
 import fs from 'graceful-fs';
+import {isIgnorableFileError} from '../lib/isIgnorableFileError';
 import * as common from './common';
 
 const CHANGE_EVENT = common.CHANGE_EVENT;
@@ -268,7 +269,7 @@ WatchmanWatcher.prototype.handleFileChange = function (changeDescriptor) {
     fs.lstat(absPath, (error, stat) => {
       // Files can disappear or temporarily become unreadable between the
       // Watchman event and the lstat call, so ignore that stale event.
-      if (error && common.isIgnorableFileError(error)) {
+      if (error && isIgnorableFileError(error)) {
         return;
       }
 

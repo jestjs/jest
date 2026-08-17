@@ -116,9 +116,46 @@ describe('FileProcessor', () => {
       );
     });
 
-    it('silently removes the file on ENOENT worker error', async () => {
+    it.each(['EACCES', 'ENOENT'])(
+      'silently removes the file on a %s worker error',
+      async code => {
+        const hasteMap = createEmptyMap();
+        hasteMap.files.set(path.join('src', 'Locked.js'), [
+          '',
+          1000,
+          42,
+          0,
+          '',
+          null,
+        ]);
+
+        const worker = {
+          getSha1: jest.fn<typeof WorkerModule.getSha1>(),
+          worker: jest
+            .fn<typeof WorkerModule.worker>()
+            .mockRejectedValue(Object.assign(new Error(code), {code})),
+        };
+        const pool = new MockWorkerPool({
+          maxWorkers: 1,
+          workerPath: FAKE_WORKER_PATH,
+        });
+        jest.mocked(pool.get).mockReturnValue(worker);
+
+        const fp = new FileProcessor(makeOptions(), console, pool);
+        await fp.processFile(
+          hasteMap,
+          hasteMap.map,
+          hasteMap.mocks,
+          path.join(ROOT, 'src', 'Locked.js'),
+        );
+
+        expect(hasteMap.files.has(path.join('src', 'Locked.js'))).toBe(false);
+      },
+    );
+
+    it('rethrows a worker error that is not an ignorable file error', async () => {
       const hasteMap = createEmptyMap();
-      hasteMap.files.set(path.join('src', 'Gone.js'), [
+      hasteMap.files.set(path.join('src', 'Bad.js'), [
         '',
         1000,
         42,
@@ -127,10 +164,13 @@ describe('FileProcessor', () => {
         null,
       ]);
 
-      const enoent = Object.assign(new Error('ENOENT'), {code: 'ENOENT'});
       const worker = {
         getSha1: jest.fn<typeof WorkerModule.getSha1>(),
-        worker: jest.fn<typeof WorkerModule.worker>().mockRejectedValue(enoent),
+        worker: jest
+          .fn<typeof WorkerModule.worker>()
+          .mockRejectedValue(
+            Object.assign(new Error('EISDIR'), {code: 'EISDIR'}),
+          ),
       };
       const pool = new MockWorkerPool({
         maxWorkers: 1,
@@ -139,14 +179,15 @@ describe('FileProcessor', () => {
       jest.mocked(pool.get).mockReturnValue(worker);
 
       const fp = new FileProcessor(makeOptions(), console, pool);
-      await fp.processFile(
-        hasteMap,
-        hasteMap.map,
-        hasteMap.mocks,
-        path.join(ROOT, 'src', 'Gone.js'),
-      );
 
-      expect(hasteMap.files.has(path.join('src', 'Gone.js'))).toBe(false);
+      await expect(
+        fp.processFile(
+          hasteMap,
+          hasteMap.map,
+          hasteMap.mocks,
+          path.join(ROOT, 'src', 'Bad.js'),
+        ),
+      ).rejects.toThrow('EISDIR');
     });
 
     it('throws DuplicateError when throwOnModuleCollision is true', async () => {
