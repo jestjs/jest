@@ -469,6 +469,37 @@ describe('onRunComplete', () => {
     expect(testReporter.getLastError()).toBeUndefined();
   });
 
+  test('collects untested files from project-level collectCoverageFrom', async () => {
+    const testReporter = new CoverageReporter({
+      collectCoverage: true,
+      coverageReporters: ['json'],
+    });
+    testReporter.log = jest.fn();
+
+    const mockHasteFS = {
+      matchFilesWithGlob: jest.fn(() => ['/path/to/project/untested-file.js']),
+    };
+
+    const mockContext = {
+      config: {
+        collectCoverageFrom: ['**/*.js'],
+        rootDir: '/path/to/project',
+      },
+      hasteFS: mockHasteFS,
+    };
+
+    await testReporter.onRunComplete(
+      new Set([mockContext]),
+      {},
+      mockAggResults,
+    );
+
+    expect(mockHasteFS.matchFilesWithGlob).toHaveBeenCalledWith(
+      ['**/*.js'],
+      '/path/to/project',
+    );
+  });
+
   describe('maxCols fallback logic in CI', () => {
     const originalEnv = process.env;
 
