@@ -146,7 +146,8 @@ export class CjsLoader {
         !supportsSyncEvaluate &&
         isError(error) &&
         error.name === 'SyntaxError' &&
-        hasEsmSyntax(this.transformCache.getCachedSource(modulePath) ?? '')
+        hasEsmSyntax(this.transformCache.getCachedSource(modulePath) ?? '') &&
+        !this.resolution.isExplicitlyCommonjs(modulePath)
       ) {
         throw createRequireEsmError(modulePath);
       }
@@ -167,6 +168,11 @@ export class CjsLoader {
     from: string,
     parseError: CjsParseError,
   ): T {
+    // A package that declares `"type": "commonjs"` opted out of ESM for its
+    // `.js` files - Node throws the parse error instead of retrying.
+    if (this.resolution.isExplicitlyCommonjs(modulePath)) {
+      throw parseError.cause;
+    }
     if (supportsSyncEvaluate) {
       try {
         return this.requireEsm<T>(modulePath, from);

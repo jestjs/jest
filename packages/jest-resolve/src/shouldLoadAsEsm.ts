@@ -14,11 +14,34 @@ const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 const cachedFileLookups = new Map<string, boolean>();
 const cachedDirLookups = new Map<string, boolean>();
 const cachedChecks = new Map<string, boolean>();
+const cachedCommonjsChecks = new Map<string, boolean>();
 
 export function clearCachedLookups(): void {
   cachedFileLookups.clear();
   cachedDirLookups.clear();
   cachedChecks.clear();
+  cachedCommonjsChecks.clear();
+}
+
+export function isExplicitlyCommonjsPackage(modulePath: string): boolean {
+  const pkgPath = findClosestPackageJson(dirname(modulePath));
+  if (!pkgPath) {
+    return false;
+  }
+
+  let isCommonjs = cachedCommonjsChecks.get(pkgPath);
+  if (isCommonjs != null) {
+    return isCommonjs;
+  }
+
+  try {
+    isCommonjs = readPackageCached(pkgPath).type === 'commonjs';
+  } catch {
+    isCommonjs = false;
+  }
+
+  cachedCommonjsChecks.set(pkgPath, isCommonjs);
+  return isCommonjs;
 }
 
 export default function cachedShouldLoadAsEsm(

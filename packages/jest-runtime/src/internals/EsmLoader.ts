@@ -936,6 +936,7 @@ export class EsmLoader {
           : LOAD_ASYNC;
       } catch (error) {
         if (!(error instanceof CjsParseError)) throw error;
+        if (this.resolution.isExplicitlyCommonjs(resolved)) throw error.cause;
         // File has ESM syntax but no ESM marker — fall through to the enqueue path.
       }
     }
@@ -1527,6 +1528,7 @@ export class EsmLoader {
       synthetic = this.buildCjsAsEsmSyntheticModule(from, modulePath, context);
     } catch (error) {
       if (!(error instanceof CjsParseError)) throw error;
+      if (this.resolution.isExplicitlyCommonjs(modulePath)) throw error.cause;
       return this.loadEsmModule(modulePath);
     }
 

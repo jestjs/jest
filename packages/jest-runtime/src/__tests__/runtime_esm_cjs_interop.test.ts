@@ -302,3 +302,55 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
     },
   );
 });
+
+// A package that declares "type": "commonjs" opted out of ESM for its .js
+// files. Node throws the CJS parse error instead of retrying as ESM.
+describe('Runtime explicit "type": "commonjs" package', () => {
+  const untransformedNodeModules = {
+    rootDir: ROOT_DIR,
+    transformIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
+  };
+
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  it('require() throws the CJS SyntaxError instead of retrying as ESM', async () => {
+    const runtime = await createRuntime(__filename, untransformedNodeModules);
+    let thrown: Error | undefined;
+    try {
+      runtime.requireModule(FROM, 'commonjs-marked');
+    } catch (error) {
+      thrown = error as Error;
+    }
+    expect(thrown).toBeDefined();
+    expect(thrown!.name).toBe('SyntaxError');
+    expect(thrown!.message).toContain("Unexpected token 'export'");
+    expect((thrown as NodeJS.ErrnoException).code).toBeUndefined();
+  });
+
+  testWithVmEsm(
+    'a static import fails with the CJS SyntaxError instead of loading as ESM',
+    async () => {
+      const runtime = await createRuntime(__filename, untransformedNodeModules);
+      await expect(
+        runtime.unstable_importModule(FROM, './import-commonjs-marked.mjs'),
+      ).rejects.toThrow("Unexpected token 'export'");
+    },
+  );
+
+  testWithVmEsm(
+    'a dynamic import() rejects with the CJS SyntaxError instead of loading as ESM',
+    async () => {
+      const runtime = await createRuntime(__filename, untransformedNodeModules);
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-commonjs-marked-dynamic.mjs',
+      )) as any;
+      const importResult = await m.namespace.importResult;
+      expect(importResult).not.toBe('loaded-as-esm');
+      expect(importResult.name).toBe('SyntaxError');
+      expect(importResult.message).toContain("Unexpected token 'export'");
+    },
+  );
+});

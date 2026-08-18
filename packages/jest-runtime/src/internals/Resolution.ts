@@ -56,6 +56,10 @@ export class Resolution {
     );
   }
 
+  isExplicitlyCommonjs(modulePath: string): boolean {
+    return Resolver.unstable_isExplicitlyCommonjs(modulePath);
+  }
+
   resolveCjs(from: string, to: string | undefined): string {
     if (!to) return from;
     return this.resolveCached(from, to, this.cjsCache, this.cjsConditions);
