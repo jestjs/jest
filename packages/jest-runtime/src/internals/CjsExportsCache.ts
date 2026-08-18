@@ -81,6 +81,10 @@ export class CjsExportsCache {
       throw error;
     }
     const namedExports = new Set(exports);
+    // Cache before walking re-exports so a cycle terminates: a re-entrant call
+    // gets the set built so far instead of recursing forever. The set is
+    // mutated in place, so the cached reference stays complete afterwards.
+    this.cache.set(modulePath, namedExports);
 
     for (const reexport of reexports) {
       if (this.resolution.isCoreModule(reexport)) {
@@ -96,7 +100,6 @@ export class CjsExportsCache {
       }
     }
 
-    this.cache.set(modulePath, namedExports);
     return namedExports;
   }
 

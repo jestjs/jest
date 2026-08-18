@@ -106,6 +106,26 @@ describe('CjsExportsCache', () => {
     ]);
   });
 
+  test('terminates on circular re-exports', () => {
+    const {resolution} = makeResolution({
+      resolveCjs: ((_from: string, to: string) =>
+        to.replace('./', '/')) as Resolution['resolveCjs'],
+    });
+    const {fileCache} = makeFileCache({
+      '/a.js': "module.exports = require('./b.js');",
+      '/b.js': "module.exports = require('./a.js');\nmodule.exports.fromB = 1;",
+    });
+    const cache = new CjsExportsCache({
+      fileCache,
+      loadCoreReexport: jest.fn(),
+      loadNativeAddon: jest.fn(),
+      resolution,
+      transformCache: makeTransformCache(),
+    });
+
+    expect([...cache.getExportsOf('/from.js', '/a.js')]).toEqual(['fromB']);
+  });
+
   test('loads core-module re-exports via the loadCoreReexport callback', () => {
     const {resolution, isCoreModule} = makeResolution();
     isCoreModule.mockImplementation((name: string) => name === 'fs');
