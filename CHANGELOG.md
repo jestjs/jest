@@ -54,6 +54,7 @@
 - `[jest-reporters]` Fix coverage report table formatting in CI/GitHub Actions environments where `process.stdout.columns` is undefined by falling back to the `COLUMNS` env var or `80` columns in CI, preserving existing behaviour in other non-TTY environments ([#16227](https://github.com/jestjs/jest/pull/16227))
 - `[jest-runtime]` Support CJS-in-ESM exports via `"module.exports"` named exports ([#16277](https://github.com/jestjs/jest/pull/16277))
 - `[pretty-format]` Move the `react-is` aliases into the `@jest` scope, so they cannot be shadowed by unrelated packages published under the alias names ([#16333](https://github.com/jestjs/jest/pull/16333))
+- `[jest-reporters]` Collect untested files from a project's own `collectCoverageFrom` when the global config does not set one, so `--coverage` reports untested files in every project of a multi-project run ([#16359](https://github.com/jestjs/jest/pull/16359))
 
 ### Chore & Maintenance
 

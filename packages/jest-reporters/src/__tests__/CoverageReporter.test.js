@@ -470,33 +470,43 @@ describe('onRunComplete', () => {
   });
 
   test('collects untested files from project-level collectCoverageFrom', async () => {
-    const testReporter = new CoverageReporter({
-      collectCoverage: true,
-      coverageReporters: ['json'],
-    });
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        coverageReporters: ['json'],
+      },
+      {
+        maxWorkers: 2,
+      },
+    );
     testReporter.log = jest.fn();
 
-    const mockHasteFS = {
-      matchFilesWithGlob: jest.fn(() => ['/path/to/project/untested-file.js']),
-    };
-
-    const mockContext = {
+    // Each project carries its own collectCoverageFrom/rootDir, and the global
+    // config has neither, so every project must be globbed on its own terms.
+    const makeContext = (rootDir, glob) => ({
       config: {
-        collectCoverageFrom: ['**/*.js'],
-        rootDir: '/path/to/project',
+        collectCoverageFrom: [glob],
+        rootDir,
       },
-      hasteFS: mockHasteFS,
-    };
+      hasteFS: {matchFilesWithGlob: jest.fn(() => [])},
+    });
+
+    const first = makeContext('/path/to/project-a', '**/*.js');
+    const second = makeContext('/path/to/project-b', '**/*.ts');
 
     await testReporter.onRunComplete(
-      new Set([mockContext]),
+      new Set([first, second]),
       {},
       mockAggResults,
     );
 
-    expect(mockHasteFS.matchFilesWithGlob).toHaveBeenCalledWith(
+    expect(first.hasteFS.matchFilesWithGlob).toHaveBeenCalledWith(
       ['**/*.js'],
-      '/path/to/project',
+      '/path/to/project-a',
+    );
+    expect(second.hasteFS.matchFilesWithGlob).toHaveBeenCalledWith(
+      ['**/*.ts'],
+      '/path/to/project-b',
     );
   });
 
