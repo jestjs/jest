@@ -627,6 +627,12 @@ export class EsmLoader {
       return LOAD_ASYNC;
     }
 
+    // Deliberately not recorded in `evaluatingMap`, unlike the legacy path.
+    // The async-graph check above means this only ever evaluates a graph that
+    // finishes before `evaluate()` returns, so there is no pending promise for
+    // another caller to await - and the legacy path only populates that map in
+    // its own async branch. Neither path awaits between reading `status` and
+    // calling `evaluate()`, so a duplicate evaluation cannot start in between.
     module.evaluate().catch(noop);
 
     if (module.status === 'errored') {
