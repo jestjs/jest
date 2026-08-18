@@ -153,6 +153,26 @@ describe('Runtime sync ESM graph', () => {
     );
   });
 
+  testWithVmEsm('sets import.meta.main only for the test file', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const imported = (await runtime.unstable_importModule(
+      FROM,
+      './import-meta-main.mjs',
+    )) as any;
+    expect(imported.namespace.ownMain).toBe(false);
+    expect(imported.namespace.depMain).toBe(false);
+
+    const entryRuntime = await createRuntime(
+      path.join(ROOT_DIR, 'meta-main.mjs'),
+      {rootDir: ROOT_DIR},
+    );
+    const entry = (await entryRuntime.unstable_importModule(
+      FROM,
+      './meta-main.mjs',
+    )) as any;
+    expect(entry.namespace.mainValue).toBe(true);
+  });
+
   testWithVmEsm('pulls a CJS dependency into the sync ESM graph', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(

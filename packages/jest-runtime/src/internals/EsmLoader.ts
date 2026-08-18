@@ -293,6 +293,7 @@ export interface EsmLoaderOptions {
   shouldLoadAsEsm: (modulePath: string) => boolean;
   requireModuleOrMock: (from: string, moduleName: string) => unknown;
   testState: TestState;
+  testPath: string;
 }
 
 export class EsmLoader {
@@ -311,6 +312,7 @@ export class EsmLoader {
     moduleName: string,
   ) => unknown;
   private readonly testState: TestState;
+  private readonly testPath: string;
   private readonly requireFacades = new WeakMap<ESModule, ESModule>();
   // Every cacheKey popped by a sync walk that is still on the stack. Walks
   // nest (a CJS body executing mid-walk can require() an unrelated ESM root),
@@ -341,6 +343,7 @@ export class EsmLoader {
     this.shouldLoadAsEsm = options.shouldLoadAsEsm;
     this.requireModuleOrMock = options.requireModuleOrMock;
     this.testState = options.testState;
+    this.testPath = options.testPath;
   }
 
   // `'load-async'` means the sync graph could not be completed — a concurrent
@@ -644,6 +647,8 @@ export class EsmLoader {
               const parentPath = fileURLToPath(parent);
               return this.resolveForImportMeta(parentPath, specifier);
             };
+            // @ts-expect-error Jest uses @types/node@18.
+            meta.main = modulePath === this.testPath;
             (meta as JestImportMeta).jest =
               this.jestGlobals.jestObjectFor(modulePath);
           },
@@ -1080,6 +1085,8 @@ export class EsmLoader {
       importModuleDynamically: esmDynamicImport,
       initializeImportMeta(meta) {
         meta.url = specifier;
+        // @ts-expect-error Jest uses @types/node@18.
+        meta.main = false;
         if (meta.url.startsWith('file://')) {
           // @ts-expect-error Jest uses @types/node@18.
           meta.filename = fileURLToPath(meta.url);
@@ -1274,6 +1281,8 @@ export class EsmLoader {
                 const parentPath = fileURLToPath(parent);
                 return this.resolveForImportMeta(parentPath, specifier);
               };
+              // @ts-expect-error Jest uses @types/node@18.
+              meta.main = modulePath === this.testPath;
               (meta as JestImportMeta).jest =
                 this.jestGlobals.jestObjectFor(modulePath);
             },
@@ -1360,6 +1369,8 @@ export class EsmLoader {
           importModuleDynamically: this.dynamicImport,
           initializeImportMeta(meta) {
             meta.url = specifier;
+            // @ts-expect-error Jest uses @types/node@18.
+            meta.main = false;
             if (meta.url.startsWith('file://')) {
               // @ts-expect-error Jest uses @types/node@18.
               meta.filename = fileURLToPath(meta.url);

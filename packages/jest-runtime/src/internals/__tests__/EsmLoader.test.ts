@@ -103,6 +103,7 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
     requireModuleOrMock: stubs.requireModuleOrMock,
     resolution: stubs.resolution,
     shouldLoadAsEsm: stubs.shouldLoadAsEsm,
+    testPath: '/test.js',
     testState: stubs.testState,
     transformCache: stubs.transformCache,
   });

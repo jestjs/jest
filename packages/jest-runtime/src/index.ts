@@ -223,6 +223,7 @@ export default class Runtime {
         this.requireModuleOrMock(from, moduleName),
       resolution: this._resolution,
       shouldLoadAsEsm: modulePath => this.unstable_shouldLoadAsEsm(modulePath),
+      testPath: this._testPath,
       testState: this.testState,
       transformCache: this.transformCache,
     });
