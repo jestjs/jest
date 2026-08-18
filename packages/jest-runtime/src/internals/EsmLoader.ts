@@ -124,6 +124,18 @@ function makeRequireAsyncError(
   return error;
 }
 
+function makeRequireCycleError(
+  modulePath: string,
+  requiredFrom: string | undefined,
+): NodeJS.ErrnoException {
+  const fromPart = requiredFrom === undefined ? '' : ` (from ${requiredFrom})`;
+  const error: NodeJS.ErrnoException = new Error(
+    `Cannot require() ES Module ${modulePath} in a cycle.${fromPart} A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.`,
+  );
+  error.code = 'ERR_REQUIRE_CYCLE_MODULE';
+  return error;
+}
+
 // Decode a `data:` URI specifier into its mime type and decoded code/body.
 // `application/wasm` returns a Buffer; everything else returns a UTF-8 string.
 const dataURIRegex =
@@ -299,6 +311,10 @@ export class EsmLoader {
     moduleName: string,
   ) => unknown;
   private readonly testState: TestState;
+  // Every cacheKey popped by a sync walk that is still on the stack. Walks
+  // nest (a CJS body executing mid-walk can require() an unrelated ESM root),
+  // so this is a stack of one Set per walk rather than a single Set.
+  private readonly activeSyncWalks: Array<Set<string>> = [];
   // Used only by the legacy async path; deletable when min-Node ≥ v24.9
   // (delete the block at the bottom of this file too - eslint/tsc will
   // surface anything else that becomes unused).
@@ -328,8 +344,13 @@ export class EsmLoader {
   // are not consulted - driving a SyntheticModule from `unlinked` to
   // `evaluated` needs the async link()/evaluate() pair. Transitive-dep mocks
   // still apply via the graph walker.
-  requireEsmModule<T>(modulePath: string): T {
-    const module = this.tryLoadGraphSync(modulePath, '', 'sync-required');
+  requireEsmModule<T>(modulePath: string, requiredFrom?: string): T {
+    const module = this.tryLoadGraphSync(
+      modulePath,
+      '',
+      'sync-required',
+      requiredFrom,
+    );
     if (module === LOAD_ASYNC) {
       const error: NodeJS.ErrnoException = new Error(
         `Cannot require() ES Module ${modulePath} synchronously: it is currently being loaded by a concurrent \`import()\`. Await that import before calling require(), or import this module instead of requiring it.`,
@@ -350,6 +371,7 @@ export class EsmLoader {
     rootPath: string,
     rootQuery: string,
     mode: SyncEsmMode,
+    requiredFrom?: string,
   ): ESModule | LoadAsync {
     this.testState.throwIfTornDown(
       'You are trying to `import` a file after the Jest environment has been torn down.',
@@ -378,6 +400,19 @@ export class EsmLoader {
       return LOAD_ASYNC;
     }
 
+    // A require() re-entering a graph that is still being walked would build
+    // and evaluate a second copy of every uncommitted module (scratch entries
+    // reach the registry only after the root instantiates). Node throws
+    // ERR_REQUIRE_CYCLE_MODULE here; a dynamic import() of the same shape is
+    // a legal ESM cycle, so `'sync-preferred'` is exempt.
+    if (mode === 'sync-required') {
+      for (const walk of this.activeSyncWalks) {
+        if (walk.has(rootKey)) {
+          throw makeRequireCycleError(canonicalRootPath, requiredFrom);
+        }
+      }
+    }
+
     const context = this.getContext();
 
     if (this.transformCache.hasMutex(rootKey)) return LOAD_ASYNC;
@@ -387,8 +422,35 @@ export class EsmLoader {
       {cacheKey: rootKey, modulePath: canonicalRootPath},
     ];
 
+    const activeWalk = new Set<string>();
+    this.activeSyncWalks.push(activeWalk);
+    try {
+      return this.walkGraphSync(
+        rootKey,
+        activeWalk,
+        worklist,
+        scratch,
+        registry,
+        context,
+        mode,
+      );
+    } finally {
+      this.activeSyncWalks.pop();
+    }
+  }
+
+  private walkGraphSync(
+    rootKey: string,
+    activeWalk: Set<string>,
+    worklist: Array<WorklistEntry>,
+    scratch: Map<string, ScratchEntry>,
+    registry: Map<string, JestModule>,
+    context: VMContext,
+    mode: SyncEsmMode,
+  ): ESModule | LoadAsync {
     while (worklist.length > 0) {
       const {cacheKey, modulePath} = worklist.pop()!;
+      activeWalk.add(cacheKey);
       if (scratch.has(cacheKey)) continue;
 
       // Registry first, mutex second. `'unlinked'` / `'linking'` /

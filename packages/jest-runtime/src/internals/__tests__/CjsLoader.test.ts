@@ -24,7 +24,9 @@ type Stubs = {
   environment: JestEnvironment;
   coreModule: jest.Mocked<CoreModuleProvider>;
   executor: jest.Mocked<ModuleExecutor>;
-  requireEsm: jest.MockedFunction<<T>(modulePath: string) => T>;
+  requireEsm: jest.MockedFunction<
+    <T>(modulePath: string, requiredFrom: string) => T
+  >;
   testState: TestState;
   logFormattedReferenceError: jest.MockedFunction<(msg: string) => void>;
 };
@@ -191,7 +193,7 @@ describe('CjsLoader.requireModule', () => {
 
     stubs.requireEsm.mockReturnValue('esm-result' as any);
     expect(loader.requireModule('/from.js', './m.mjs')).toBe('esm-result');
-    expect(stubs.requireEsm).toHaveBeenCalledWith('/m.mjs');
+    expect(stubs.requireEsm).toHaveBeenCalledWith('/m.mjs', '/from.js');
   });
 });
 

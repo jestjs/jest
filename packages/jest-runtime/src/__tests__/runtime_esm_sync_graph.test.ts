@@ -373,6 +373,44 @@ describe('Runtime sync ESM graph - require(esm)', () => {
   );
 
   testWithSyncEsm(
+    'throws ERR_REQUIRE_CYCLE_MODULE when a CJS dep requires back into the graph',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      expect(() => runtime.requireModule(FROM, './cycle-root.mjs')).toThrow(
+        expect.objectContaining({
+          code: 'ERR_REQUIRE_CYCLE_MODULE',
+          message: expect.stringMatching(
+            /Cannot require\(\) ES Module .*cycle-root\.mjs in a cycle\. \(from .*requires-cycle-root\.cjs\)/,
+          ),
+        }),
+      );
+    },
+  );
+
+  testWithSyncEsm(
+    'allows a CJS dep to require an unrelated ESM root mid-walk',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const ns = runtime.requireModule(FROM, './nested-walk-root.mjs');
+      expect(ns.rootValue).toBe('root');
+      const unrelated = runtime.requireModule(FROM, './requires-unrelated.cjs');
+      expect(unrelated.otherValue).toBe('sibling');
+    },
+  );
+
+  testWithSyncEsm(
+    'serves an already-evaluated module to a CJS dep mid-walk',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const first = runtime.requireModule(FROM, './a.mjs');
+      const ns = runtime.requireModule(FROM, './reuse-evaluated-root.mjs');
+      expect(ns.reuseValue).toBe('reuse-root');
+      const probe = runtime.requireModule(FROM, './requires-evaluated.cjs');
+      expect(probe.aValue).toBe(first.valueA);
+    },
+  );
+
+  testWithSyncEsm(
     'throws ERR_REQUIRE_ASYNC_MODULE for an async mock factory',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
