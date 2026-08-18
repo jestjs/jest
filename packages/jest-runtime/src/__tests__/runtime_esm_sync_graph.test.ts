@@ -162,6 +162,19 @@ describe('Runtime sync ESM graph', () => {
     expect(m.namespace.cjsValue).toBe('from-cjs');
   });
 
+  testWithVmEsm(
+    "exposes a CJS dependency's exports as the 'module.exports' named export",
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-cjs-namespace.mjs',
+      )) as any;
+      expect(m.namespace.moduleExportsValue).toEqual({cjsValue: 'from-cjs'});
+      expect(m.namespace.sameAsDefault).toBe(true);
+    },
+  );
+
   testWithVmEsm('imports a wasm module via data: URI', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
@@ -401,15 +414,12 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     },
   );
 
-  testWithSyncEsm(
-    "keeps a module's own __esModule export as-is",
-    async () => {
-      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
-      const result = runtime.requireModule(FROM, './own-esmodule.mjs');
-      expect(result.__esModule).toBe(false);
-      expect(result.default).toBe('overridden');
-    },
-  );
+  testWithSyncEsm("keeps a module's own __esModule export as-is", async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const result = runtime.requireModule(FROM, './own-esmodule.mjs');
+    expect(result.__esModule).toBe(false);
+    expect(result.default).toBe('overridden');
+  });
 
   testWithSyncEsm('keeps live bindings through the facade', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -420,14 +430,11 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     expect(result.counter).toBe(1);
   });
 
-  testWithSyncEsm(
-    'exposes the require() result on require.cache',
-    async () => {
-      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
-      const probe = runtime.requireModule(FROM, './reads-cache-for-esm.cjs');
-      expect(probe.cacheMatchesRequire).toBe(true);
-    },
-  );
+  testWithSyncEsm('exposes the require() result on require.cache', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const probe = runtime.requireModule(FROM, './reads-cache-for-esm.cjs');
+    expect(probe.cacheMatchesRequire).toBe(true);
+  });
 
   testWithSyncEsm(
     'throws ERR_REQUIRE_CYCLE_MODULE when a CJS dep requires back into the graph',
