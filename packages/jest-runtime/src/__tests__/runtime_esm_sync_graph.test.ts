@@ -388,6 +388,27 @@ describe('Runtime sync ESM graph - require(esm)', () => {
   );
 
   testWithSyncEsm(
+    'throws ERR_REQUIRE_CYCLE_MODULE for a self-require during evaluation',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const ns = runtime.requireModule(FROM, './eval-time-cycle.mjs');
+      expect(ns.observed).toBe('ERR_REQUIRE_CYCLE_MODULE');
+    },
+  );
+
+  testWithSyncEsm(
+    'scopes cycle detection to the registry the walk runs against',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const ns = runtime.requireModule(FROM, './isolation-reentry-root.mjs');
+      expect(ns.outerValue).toBe('outer');
+      const probe = runtime.requireModule(FROM, './isolates-same-root.cjs');
+      expect(probe.isolated.outerValue).toBe('outer');
+      expect(probe.isolated).not.toBe(ns);
+    },
+  );
+
+  testWithSyncEsm(
     'allows a CJS dep to require an unrelated ESM root mid-walk',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});

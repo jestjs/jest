@@ -313,8 +313,14 @@ export class EsmLoader {
   private readonly testState: TestState;
   // Every cacheKey popped by a sync walk that is still on the stack. Walks
   // nest (a CJS body executing mid-walk can require() an unrelated ESM root),
-  // so this is a stack of one Set per walk rather than a single Set.
-  private readonly activeSyncWalks: Array<Set<string>> = [];
+  // so this is a stack of one entry per walk rather than a single Set. Each
+  // walk records the registry it ran against: an isolation overlay or an
+  // automock scratch registry is a separate instance space, so a key match
+  // across registries is a fresh build, not a cycle.
+  private readonly activeSyncWalks: Array<{
+    registry: Map<string, JestModule>;
+    keys: Set<string>;
+  }> = [];
   // Used only by the legacy async path; deletable when min-Node ≥ v24.9
   // (delete the block at the bottom of this file too - eslint/tsc will
   // surface anything else that becomes unused).
@@ -397,6 +403,15 @@ export class EsmLoader {
       if (cached.status === 'linked') {
         return this.evaluateLinkedModule(cached, mode);
       }
+      // `'unlinked'` / `'linking'` / `'evaluating'`. When the key belongs to
+      // a walk still on the stack this is a require() of a module whose own
+      // evaluation is in progress - a cycle, not a concurrent import().
+      if (
+        mode === 'sync-required' &&
+        this.isReEnteringActiveWalk(rootKey, registry)
+      ) {
+        throw makeRequireCycleError(canonicalRootPath, requiredFrom);
+      }
       return LOAD_ASYNC;
     }
 
@@ -405,12 +420,11 @@ export class EsmLoader {
     // reach the registry only after the root instantiates). Node throws
     // ERR_REQUIRE_CYCLE_MODULE here; a dynamic import() of the same shape is
     // a legal ESM cycle, so `'sync-preferred'` is exempt.
-    if (mode === 'sync-required') {
-      for (const walk of this.activeSyncWalks) {
-        if (walk.has(rootKey)) {
-          throw makeRequireCycleError(canonicalRootPath, requiredFrom);
-        }
-      }
+    if (
+      mode === 'sync-required' &&
+      this.isReEnteringActiveWalk(rootKey, registry)
+    ) {
+      throw makeRequireCycleError(canonicalRootPath, requiredFrom);
     }
 
     const context = this.getContext();
@@ -423,7 +437,7 @@ export class EsmLoader {
     ];
 
     const activeWalk = new Set<string>();
-    this.activeSyncWalks.push(activeWalk);
+    this.activeSyncWalks.push({keys: activeWalk, registry});
     try {
       return this.walkGraphSync(
         rootKey,
@@ -437,6 +451,15 @@ export class EsmLoader {
     } finally {
       this.activeSyncWalks.pop();
     }
+  }
+
+  private isReEnteringActiveWalk(
+    rootKey: string,
+    registry: Map<string, JestModule>,
+  ): boolean {
+    return this.activeSyncWalks.some(
+      walk => walk.registry === registry && walk.keys.has(rootKey),
+    );
   }
 
   private walkGraphSync(
