@@ -87,6 +87,7 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Document the intentional divergences from Node's module system in the ECMAScript Modules page ([#16368](https://github.com/jestjs/jest/pull/16368))
 - `[docs]` Note deprecation of `react-test-renderer` in React Native tutorial and `pretty-format` README ([#16294](https://github.com/jestjs/jest/pull/16294))
 - `[docs]` Use `@testing-library/react-native` in the React Native tutorial instead of the deprecated `react-test-renderer` ([#16318](https://github.com/jestjs/jest/pull/16318))
 - `[babel-jest, @jest/transform]` Update `babel-plugin-istanbul` to v8 ([#16049](https://github.com/jestjs/jest/pull/16049))

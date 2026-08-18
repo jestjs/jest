@@ -60,6 +60,18 @@ Packages resolve through the [`require` and `module-sync` conditions](https://no
 
 On Node versions older than v24.9, `require()` of an ESM file still throws `ERR_REQUIRE_ESM`.
 
+## Divergences from Node
+
+Jest's module system diverges from Node's in a few places:
+
+- In a graph that mixes ESM and CJS, the CJS dependencies execute while the graph is built, so a CJS module can run earlier relative to its ESM siblings than it would in Node.
+- The named exports of a CJS module imported from ESM are a superset of Node's: keys present on `module.exports` after evaluation are exposed in addition to what static analysis finds.
+- Writes to and deletes from `require.cache` are silently ignored.
+- The static members of `require('module')` (such as `Module._resolveFilename`) come from the host Node, not from Jest's module system.
+- `require()` of an ES module that is part of a graph currently being loaded throws `ERR_REQUIRE_CYCLE_MODULE` even when the required module is not an ancestor of the requiring module.
+- The `'module.exports'` named export of an imported CJS module is exposed on every Node version, including versions older than v23 where Node itself does not provide it.
+- Importing JSON without `with {type: 'json'}` emits a warning instead of throwing. This becomes an error in a future major version.
+
 ## Module mocking in ESM
 
 Since ESM evaluates static `import` statements before looking at the code, the hoisting of `jest.mock` calls that happens in CJS won't work for ESM. To mock modules in ESM, you need to use `require` or dynamic `import()` after `jest.mock` calls to load the mocked modules - the same applies to modules which load the mocked modules.
