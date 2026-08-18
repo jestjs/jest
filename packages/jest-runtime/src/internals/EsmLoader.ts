@@ -139,7 +139,7 @@ function makeRequireCycleError(
 // Decode a `data:` URI specifier into its mime type and decoded code/body.
 // `application/wasm` returns a Buffer; everything else returns a UTF-8 string.
 const dataURIRegex =
-  /^data:(?<mime>[^;,]*)(?:;(?<encoding>[^,]*))?,(?<code>.*)$/;
+  /^data:(?<mime>[^;,]*)(?<parameters>(?:;[^;,]*)*),(?<code>.*)$/;
 
 const supportedDataUriMimes = new Set([
   'text/javascript',
@@ -157,7 +157,11 @@ function parseDataUri(specifier: string): {
     error.code = 'ERR_INVALID_URL';
     throw error;
   }
-  const {mime, code} = match.groups;
+  // The mime essence and mediatype parameters are case-insensitive. Unknown
+  // parameters are ignored; base64 applies only as the final parameter, as
+  // in the data URL specification.
+  const mime = match.groups.mime.toLowerCase();
+  const {code} = match.groups;
   if (!supportedDataUriMimes.has(mime)) {
     const error: NodeJS.ErrnoException = new RangeError(
       `Unknown module format: ${mime || 'text/plain'} for URL ${specifier}`,
@@ -165,22 +169,19 @@ function parseDataUri(specifier: string): {
     error.code = 'ERR_UNKNOWN_MODULE_FORMAT';
     throw error;
   }
-  // Data URL mediatype parameters are case-insensitive.
-  const encoding = match.groups.encoding?.toLowerCase();
+  const parameters = match.groups.parameters.split(';').slice(1);
+  const isBase64 = parameters.at(-1)?.toLowerCase() === 'base64';
   if (mime === 'application/wasm') {
-    if (!encoding) throw new Error('Missing data URI encoding');
-    if (encoding !== 'base64') {
-      throw new Error(`Invalid data URI encoding: ${encoding}`);
+    if (parameters.length === 0) throw new Error('Missing data URI encoding');
+    if (!isBase64) {
+      throw new Error(`Invalid data URI encoding: ${parameters.join(';')}`);
     }
     return {code: Buffer.from(code, 'base64'), mime};
   }
-  if (!encoding || encoding === 'charset=utf-8') {
-    return {code: decodeURIComponent(code), mime};
-  }
-  if (encoding === 'base64') {
+  if (isBase64) {
     return {code: Buffer.from(code, 'base64').toString(), mime};
   }
-  throw new Error(`Invalid data URI encoding: ${encoding}`);
+  return {code: decodeURIComponent(code), mime};
 }
 
 const urlSchemeRegex = /^[A-Za-z][A-Za-z0-9+.-]*:/;
