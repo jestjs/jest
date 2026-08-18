@@ -397,6 +397,17 @@ describe('Runtime sync ESM graph - require(esm)', () => {
   );
 
   testWithSyncEsm(
+    'throws ERR_REQUIRE_CYCLE_MODULE across nested walks',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const ns = runtime.requireModule(FROM, './deep-cycle-root.mjs');
+      expect(ns.rootOneValue).toBe(1);
+      const probe = runtime.requireModule(FROM, './requires-first-root.cjs');
+      expect(probe.observed).toBe('ERR_REQUIRE_CYCLE_MODULE');
+    },
+  );
+
+  testWithSyncEsm(
     'scopes cycle detection to the registry the walk runs against',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
