@@ -416,10 +416,19 @@ const makeTestResults = (
 
 // Return a string that identifies the test (concat of parent describe block
 // names + test title)
+const testIds = new WeakMap<Circus.TestEntry, string>();
+
 export const getTestID = (test: Circus.TestEntry): string => {
+  const cachedTestId = testIds.get(test);
+  if (cachedTestId !== undefined) {
+    return cachedTestId;
+  }
+
   const testNamesPath = getTestNamesPath(test);
   testNamesPath.shift(); // remove TOP_DESCRIBE_BLOCK_NAME
-  return testNamesPath.join(' ');
+  const testId = testNamesPath.join(' ');
+  testIds.set(test, testId);
+  return testId;
 };
 
 const _getError = (

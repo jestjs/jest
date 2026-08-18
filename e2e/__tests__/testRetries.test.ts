@@ -41,7 +41,7 @@ describe('Test Retries', () => {
     expect(result.failed).toBe(false);
   });
 
-  it('restores beforeAll snapshot failures before retrying', () => {
+  it('restores test snapshots before retrying an entire describe', () => {
     const reporterConfig = {
       reporters: [
         'default',
@@ -51,7 +51,7 @@ describe('Test Retries', () => {
     const result = runJest('test-retries', [
       '--config',
       JSON.stringify(reporterConfig),
-      '__tests__/entireDescribeBeforeAllSnapshot.test.js',
+      '__tests__/entireDescribeSnapshot.test.js',
     ]);
 
     expect(result.exitCode).toBe(0);
@@ -69,6 +69,21 @@ describe('Test Retries', () => {
         (testResult: {invocations: number}) => testResult.invocations,
       ),
     ).toEqual([2]);
+  });
+
+  it('reports late describe retry options at the call site', () => {
+    const result = runJest('test-retries', [
+      '__tests__/entireDescribeLateRetryTimes.test.js',
+    ]);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.failed).toBe(true);
+    expect(result.stderr).toContain(
+      'Cannot set retry options after tests have started running. Retry options must be set synchronously.',
+    );
+    expect(result.stderr).toContain(
+      'entireDescribeLateRetryTimes.test.js:10:8',
+    );
   });
 
   it('does not retry or clear delayed errors from outside the describe', () => {

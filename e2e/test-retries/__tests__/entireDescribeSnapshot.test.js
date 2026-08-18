@@ -15,10 +15,10 @@ jest.retryTimes(1, {
 
 beforeAll(() => {
   attempt += 1;
-  expect(attempt).toMatchSnapshot();
-  expect(attempt).toMatchInlineSnapshot('2');
 });
 
 test('runs after the snapshot failure is restored', () => {
+  expect(attempt).toMatchSnapshot();
+  expect(attempt).toMatchInlineSnapshot('2');
   expect(attempt).toBe(2);
 });

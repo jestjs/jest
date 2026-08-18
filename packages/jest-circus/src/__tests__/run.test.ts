@@ -64,7 +64,7 @@ test('expect state exposes the same test entry across retries', async () => {
   expect(jestExpect.getState().currentTestIdentity?.()).toBeUndefined();
 });
 
-test('expect state exposes test and describe identities to hooks', async () => {
+test('expect state exposes test identities to tests and each hooks', async () => {
   const observed: Array<[string, object | undefined]> = [];
   const recordIdentity = (name: string) => {
     observed.push([name, jestExpect.getState().currentTestIdentity?.()]);
@@ -97,11 +97,11 @@ test('expect state exposes test and describe identities to hooks', async () => {
   await run();
 
   expect(observed).toEqual([
-    ['beforeAll', describeBlock],
+    ['beforeAll', undefined],
     ['beforeEach', testEntry],
     ['test', testEntry],
     ['afterEach', testEntry],
-    ['afterAll', describeBlock],
+    ['afterAll', undefined],
   ]);
   expect(jestExpect.getState().currentTestIdentity?.()).toBeUndefined();
 });

@@ -60,8 +60,7 @@ const run = async (): Promise<Circus.RunResult> => {
       return test ? getTestID(test) : undefined;
     },
     currentTestIdentity: () => {
-      const context = getTestExecutionContext();
-      return context?.test ?? context?.describeBlock;
+      return getTestExecutionContext()?.test;
     },
   });
   const rng = randomize ? rngBuilder(seed) : undefined;
@@ -115,7 +114,7 @@ const _runTestsForDescribeBlock = async (
 
   let numRetriesAvailable =
     Number.parseInt(String(retryOptions.numRetries), 10) || 0;
-  const {describeBlocks, tests} = getEntriesForDescribeBlock(describeBlock);
+  const tests = getTestsForDescribeBlock(describeBlock);
   while (true) {
     const {
       currentTestName,
@@ -163,9 +162,6 @@ const _runTestsForDescribeBlock = async (
       for (const test of tests) {
         snapshotState.clear(test);
       }
-      for (const block of describeBlocks) {
-        snapshotState.clear(block);
-      }
     }
     jestExpect.setState(retryAttempt.expectStateBeforeAttempt);
     await dispatch({describeBlock, name: 'describe_retry'});
@@ -204,13 +200,9 @@ const hasErrorsAddedDuringAttempt = (
   return false;
 };
 
-const getEntriesForDescribeBlock = (
+const getTestsForDescribeBlock = (
   describeBlock: Circus.DescribeBlock,
-): {
-  describeBlocks: Array<Circus.DescribeBlock>;
-  tests: Array<Circus.TestEntry>;
-} => {
-  const describeBlocks: Array<Circus.DescribeBlock> = [];
+): Array<Circus.TestEntry> => {
   const tests: Array<Circus.TestEntry> = [];
   const children: Array<Circus.DescribeBlock | Circus.TestEntry> = [
     describeBlock,
@@ -223,7 +215,6 @@ const getEntriesForDescribeBlock = (
     }
 
     if (child.type === 'describeBlock') {
-      describeBlocks.push(child);
       for (let index = child.children.length - 1; index >= 0; index--) {
         children.push(child.children[index]);
       }
@@ -231,7 +222,7 @@ const getEntriesForDescribeBlock = (
       tests.push(child);
     }
   }
-  return {describeBlocks, tests};
+  return tests;
 };
 
 const takeNewSuppressedErrors = (

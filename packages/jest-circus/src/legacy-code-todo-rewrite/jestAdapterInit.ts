@@ -113,12 +113,9 @@ export const initialize = async ({
   ) => {
     const state = getRunnerState();
     if (state.hasStarted) {
-      state.unhandledErrors.push(
-        new Error(
-          'Cannot set retry options after tests have started running. Retry options must be set synchronously.',
-        ),
+      throw new Error(
+        'Cannot set retry options after tests have started running. Retry options must be set synchronously.',
       );
-      return;
     }
     state.describeRetryOptions.set(state.currentDescribeBlock, retryOptions);
   };

@@ -187,7 +187,6 @@ test('does not retry a test failure after a process-level error', async () => {
 test('clears snapshot identities only for the retried subtree', async () => {
   const clear = jest.fn();
   let attempt = 0;
-  let nestedBlock!: Circus.DescribeBlock;
   let nestedTest!: Circus.TestEntry;
   let targetBlock!: Circus.DescribeBlock;
   let targetTest!: Circus.TestEntry;
@@ -213,7 +212,7 @@ test('clears snapshot identities only for the retried subtree', async () => {
     targetTest = targetBlock.children.find(
       child => child.type === 'test',
     ) as Circus.TestEntry;
-    nestedBlock = targetBlock.children.find(
+    const nestedBlock = targetBlock.children.find(
       child => child.type === 'describeBlock',
     ) as Circus.DescribeBlock;
     nestedTest = nestedBlock.children[0] as Circus.TestEntry;
@@ -223,12 +222,7 @@ test('clears snapshot identities only for the retried subtree', async () => {
   expect(
     result.testResults.every(testResult => testResult.errors.length === 0),
   ).toBe(true);
-  expect(clear.mock.calls).toEqual([
-    [targetTest],
-    [nestedTest],
-    [targetBlock],
-    [nestedBlock],
-  ]);
+  expect(clear.mock.calls).toEqual([[targetTest], [nestedTest]]);
 });
 
 test('shuffles each describe once at its existing lifecycle point', async () => {

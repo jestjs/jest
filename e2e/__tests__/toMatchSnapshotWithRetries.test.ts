@@ -315,18 +315,12 @@ test('preserves snapshot updates across describe and test retries', () => {
       jest.retryTimes(1, {entireDescribe: true});
       beforeAll(() => {
         attempt += 1;
-        expect(\`beforeAll \${attempt}\`).toMatchSnapshot();
-        expect(\`beforeAll \${attempt}\`).toMatchInlineSnapshot();
       });
       test('suite external', () => expect(attempt).toMatchSnapshot());
       test('suite inline', () =>
         expect(\`suite \${attempt}\`).toMatchInlineSnapshot(),
       );
       test('flaky', () => expect(attempt).toBe(2));
-      afterAll(() => {
-        expect(\`afterAll \${attempt}\`).toMatchSnapshot();
-        expect(\`afterAll \${attempt}\`).toMatchInlineSnapshot();
-      });
     });
 
     let laterAttempt = 0;
@@ -345,19 +339,13 @@ test('preserves snapshot updates across describe and test retries', () => {
   );
   const testContents = fs.readFileSync(path.join(TESTS_DIR, filename), 'utf8');
 
-  expect(stderr).toMatch('9 snapshots written from 1 test suite.');
+  expect(stderr).toMatch('5 snapshots written from 1 test suite.');
   expect(snapshotContents).toContain('= `"before external"`;');
-  expect(snapshotContents).toContain('= `"beforeAll 2"`;');
   expect(snapshotContents).toContain('= `2`;');
-  expect(snapshotContents).toContain('= `"afterAll 2"`;');
-  expect(snapshotContents).not.toContain('beforeAll 1');
-  expect(snapshotContents).not.toContain('afterAll 1');
-  expect(snapshotContents.match(/exports\[/g)).toHaveLength(4);
+  expect(snapshotContents.match(/exports\[/g)).toHaveLength(2);
   expect(testContents).toContain('toMatchInlineSnapshot(`"before inline"`)');
-  expect(testContents).toContain('toMatchInlineSnapshot(`"beforeAll 2"`)');
   expect(testContents).toContain('toMatchInlineSnapshot(`"suite 2"`)');
-  expect(testContents).toContain('toMatchInlineSnapshot(`"afterAll 2"`)');
   expect(testContents).toContain('toMatchInlineSnapshot(`"later inline"`)');
-  expect(testContents.match(/toMatchInlineSnapshot\(`/g)).toHaveLength(5);
+  expect(testContents.match(/toMatchInlineSnapshot\(`/g)).toHaveLength(3);
   expect(exitCode).toBe(0);
 });
