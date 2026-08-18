@@ -859,3 +859,50 @@ describe('Runtime sync ESM graph - data: URI modules', () => {
     },
   );
 });
+
+describe('Runtime sync ESM graph - data: URI mediatype parsing', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithVmEsm('accepts an upper-case mime type', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-upper-mime.mjs',
+    )) as any;
+    expect(m.namespace.upper).toBe(1);
+  });
+
+  testWithVmEsm(
+    'decodes base64 given as the final of several parameters',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-data-uri-multi-params.mjs',
+      )) as any;
+      expect(m.namespace.multi).toBe(2);
+    },
+  );
+});
+
+describe('Runtime sync ESM graph - require.cache proxy in isolation', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithSyncEsm(
+    'exposes an isolated ESM entry consistently across proxy traps',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      let result: any;
+      runtime.isolateModules(() => {
+        result = runtime.requireModule(FROM, './reads-cache-traps.cjs');
+      });
+      expect(result.entryExports).toBeDefined();
+      expect(result.hasEntry).toBe(true);
+      expect(result.listed).toBe(true);
+    },
+  );
+});

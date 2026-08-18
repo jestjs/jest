@@ -260,12 +260,13 @@ export class ModuleRegistries {
         if (typeof key !== 'string') return false;
         return (
           this.moduleRegistry.has(key) ||
-          isLiveEsm(this.esModuleRegistry.get(key))
+          isLiveEsm((this.isolation?.esm ?? this.esModuleRegistry).get(key))
         );
       },
       ownKeys: () => {
         const keys = new Set<string>(this.moduleRegistry.keys());
-        for (const [key, entry] of this.esModuleRegistry) {
+        for (const [key, entry] of this.isolation?.esm ??
+          this.esModuleRegistry) {
           if (isLiveEsm(entry)) keys.add(key);
         }
         return [...keys];
