@@ -38,6 +38,8 @@ class Isolation {
 }
 
 export class ModuleRegistries {
+  private readonly requireEsmResult: (module: VMModule) => unknown;
+
   private moduleRegistry: ModuleRegistry = new Map();
   private readonly internalModuleRegistry: ModuleRegistry = new Map();
   private esModuleRegistry = new Map<string, JestModule>();
@@ -50,6 +52,10 @@ export class ModuleRegistries {
     VMModule,
     NodeModule
   >();
+
+  constructor(requireEsmResult: (module: VMModule) => unknown) {
+    this.requireEsmResult = requireEsmResult;
+  }
 
   getCjs(modulePath: string): InitialModule | Module | JestModule | undefined {
     return (this.isolation?.cjs ?? this.moduleRegistry).get(modulePath);
@@ -208,7 +214,7 @@ export class ModuleRegistries {
     const dir = path.dirname(filename);
     const wrapper = {
       children: [],
-      exports: esm.namespace,
+      exports: this.requireEsmResult(esm),
       filename,
       id: filename,
       isPreloading: false,

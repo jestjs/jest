@@ -373,6 +373,63 @@ describe('Runtime sync ESM graph - require(esm)', () => {
   );
 
   testWithSyncEsm(
+    'marks a required module that has a default export with __esModule',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const result = runtime.requireModule(FROM, './with-default.mjs');
+      expect(
+        Object.getOwnPropertyDescriptor(result, '__esModule'),
+      ).toStrictEqual({
+        configurable: false,
+        enumerable: true,
+        value: true,
+        writable: true,
+      });
+      expect(result.default).toBe('D');
+      expect(result.x).toBe(1);
+      expect(runtime.requireModule(FROM, './with-default.mjs')).toBe(result);
+    },
+  );
+
+  testWithSyncEsm(
+    'adds no __esModule marker without a default export',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const result = runtime.requireModule(FROM, './a.mjs');
+      expect('__esModule' in result).toBe(false);
+      expect(result.valueA).toBe('a');
+    },
+  );
+
+  testWithSyncEsm(
+    "keeps a module's own __esModule export as-is",
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const result = runtime.requireModule(FROM, './own-esmodule.mjs');
+      expect(result.__esModule).toBe(false);
+      expect(result.default).toBe('overridden');
+    },
+  );
+
+  testWithSyncEsm('keeps live bindings through the facade', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const result = runtime.requireModule(FROM, './live-bindings.mjs');
+    expect(result.__esModule).toBe(true);
+    expect(result.counter).toBe(0);
+    result.bump();
+    expect(result.counter).toBe(1);
+  });
+
+  testWithSyncEsm(
+    'exposes the require() result on require.cache',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const probe = runtime.requireModule(FROM, './reads-cache-for-esm.cjs');
+      expect(probe.cacheMatchesRequire).toBe(true);
+    },
+  );
+
+  testWithSyncEsm(
     'throws ERR_REQUIRE_CYCLE_MODULE when a CJS dep requires back into the graph',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
