@@ -157,6 +157,10 @@ function makeInvalidUrlError(): NodeJS.ErrnoException {
   return error;
 }
 
+// The `data-urls` package implements the full WHATWG data URL processor,
+// but it is too heavy for this limited use case - it drags in `whatwg-url`
+// and its Unicode tables. See https://github.com/jsdom/data-urls/issues/7.
+
 // The WHATWG forgiving percent-decode: valid %XX escapes decode to their
 // byte, anything else passes through as its UTF-8 bytes instead of throwing.
 function forgivingPercentDecode(input: string): Buffer {
