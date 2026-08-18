@@ -15,6 +15,7 @@
 
 ### Fixes
 
+- `[jest-console, jest-reporters]` `CustomConsole` now buffers console output so `TestResult.console` is populated for reporters when `verbose` is enabled, while `GitHubActionsReporter` avoids replaying buffered output in verbose mode ([#16155](https://github.com/jestjs/jest/pull/16155))
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 - `[expect]` Widen `toMatchObject` and `objectContaining` parameter type from `Record<string, unknown>` to `object` so class instances are accepted ([#16196](https://github.com/jestjs/jest/pull/16196))
 - `[jest-circus]` Call a generator test body with the shared test context, so `this` matches what a regular test function receives ([#16347](https://github.com/jestjs/jest/pull/16347))
