@@ -800,6 +800,7 @@ describe('Runtime sync ESM graph - data: URI modules', () => {
       expect(m.namespace.hasJest).toBe('object');
       expect(m.namespace.resolveType).toBe('function');
       expect(m.namespace.absolute).toBe('node:fs');
+      expect(m.namespace.builtin).toBe('node:fs');
       expect(m.namespace.relativeError).toBe('ERR_UNSUPPORTED_RESOLVE_REQUEST');
       expect(m.namespace.bareError).toBe('ERR_UNSUPPORTED_RESOLVE_REQUEST');
     },
@@ -829,20 +830,17 @@ describe('Runtime sync ESM graph - data: URI modules', () => {
     },
   );
 
-  testWithVmEsm(
-    'reports the default text/plain mediatype for a mime-less data: URI',
-    async () => {
-      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
-      await expect(
-        runtime.unstable_importModule(FROM, './import-data-uri-no-mime.mjs'),
-      ).rejects.toThrow(
-        expect.objectContaining({
-          code: 'ERR_UNKNOWN_MODULE_FORMAT',
-          message: 'Unknown module format: text/plain for URL data:,hello',
-        }),
-      );
-    },
-  );
+  testWithVmEsm('rejects a mime-less data: URI like Node', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    await expect(
+      runtime.unstable_importModule(FROM, './import-data-uri-no-mime.mjs'),
+    ).rejects.toThrow(
+      expect.objectContaining({
+        code: 'ERR_UNKNOWN_MODULE_FORMAT',
+        message: 'Unknown module format: null for URL data:,hello',
+      }),
+    );
+  });
 
   testWithVmEsm(
     'rejects a malformed data: URI with ERR_INVALID_URL',
@@ -883,6 +881,33 @@ describe('Runtime sync ESM graph - data: URI mediatype parsing', () => {
         './import-data-uri-multi-params.mjs',
       )) as any;
       expect(m.namespace.multi).toBe(2);
+    },
+  );
+
+  testWithVmEsm('accepts the application/javascript mime type', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-application-mime.mjs',
+    )) as any;
+    expect(m.namespace.appJs).toBe(3);
+  });
+
+  // Node matches the JavaScript mime case-insensitively but requires exact
+  // case for application/json, and reports the original spelling.
+  testWithVmEsm(
+    'rejects an upper-case application/json mime type like Node',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-data-uri-upper-json.mjs'),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_UNKNOWN_MODULE_FORMAT',
+          message:
+            'Unknown module format: APPLICATION/JSON for URL data:APPLICATION/JSON,{}',
+        }),
+      );
     },
   );
 });

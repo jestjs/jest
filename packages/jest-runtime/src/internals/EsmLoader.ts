@@ -147,6 +147,8 @@ const supportedDataUriMimes = new Set([
   'application/wasm',
 ]);
 
+const javaScriptMimeRegex = /^(?:text|application)\/javascript$/i;
+
 function parseDataUri(specifier: string): {
   mime: string;
   code: string | Buffer;
@@ -157,14 +159,19 @@ function parseDataUri(specifier: string): {
     error.code = 'ERR_INVALID_URL';
     throw error;
   }
-  // The mime essence and mediatype parameters are case-insensitive. Unknown
-  // parameters are ignored; base64 applies only as the final parameter, as
-  // in the data URL specification.
-  const mime = match.groups.mime.toLowerCase();
+  // Node matches the JavaScript mime case-insensitively (text/ and
+  // application/ alike) but requires exact case for application/json and
+  // application/wasm, and its rejection reports the original spelling - or
+  // `null` when the mime is empty. Mediatype parameters are case-insensitive
+  // and unknown ones are ignored; base64 applies only as the final parameter.
+  const mimeEssence = match.groups.mime;
+  const mime = javaScriptMimeRegex.test(mimeEssence)
+    ? 'text/javascript'
+    : mimeEssence;
   const {code} = match.groups;
   if (!supportedDataUriMimes.has(mime)) {
     const error: NodeJS.ErrnoException = new RangeError(
-      `Unknown module format: ${mime || 'text/plain'} for URL ${specifier}`,
+      `Unknown module format: ${mimeEssence || 'null'} for URL ${specifier}`,
     );
     error.code = 'ERR_UNKNOWN_MODULE_FORMAT';
     throw error;
@@ -185,24 +192,6 @@ function parseDataUri(specifier: string): {
 }
 
 const urlSchemeRegex = /^[A-Za-z][A-Za-z0-9+.-]*:/;
-
-// `import.meta.resolve` inside a data: module. A data: base URL is not
-// hierarchical, so Node resolves only specifiers that are themselves
-// absolute URLs - relative and bare specifiers both throw.
-function makeDataUriMetaResolve(
-  specifier: string,
-): (request: string) => string {
-  return request => {
-    if (urlSchemeRegex.test(request)) {
-      return new URL(request).href;
-    }
-    const error: NodeJS.ErrnoException = new TypeError(
-      `Failed to resolve module specifier "${request}" from "${specifier}": Invalid relative URL or base scheme is not hierarchical.`,
-    );
-    error.code = 'ERR_UNSUPPORTED_RESOLVE_REQUEST';
-    throw error;
-  };
-}
 
 // Mirrors Node's `validateAttributes` in lib/internal/modules/esm/assert.js.
 // The only deliberate divergence: missing `type: 'json'` warns instead of
@@ -1090,6 +1079,25 @@ export class EsmLoader {
     };
   }
 
+  // `import.meta.resolve` inside a data: module. A data: base URL is not
+  // hierarchical, so Node resolves only built-in modules and specifiers that
+  // are themselves absolute URLs - relative and bare specifiers both throw.
+  private dataUriMetaResolve(specifier: string): (request: string) => string {
+    return request => {
+      if (this.resolution.isCoreModule(request)) {
+        return canonicalCoreSpecifier(request);
+      }
+      if (urlSchemeRegex.test(request)) {
+        return new URL(request).href;
+      }
+      const error: NodeJS.ErrnoException = new TypeError(
+        `Failed to resolve module specifier "${request}" from "${specifier}": Invalid relative URL or base scheme is not hierarchical.`,
+      );
+      error.code = 'ERR_UNSUPPORTED_RESOLVE_REQUEST';
+      throw error;
+    };
+  }
+
   private buildSyncDataUriEntry(
     specifier: string,
     cacheKey: string,
@@ -1131,7 +1139,7 @@ export class EsmLoader {
         meta.url = specifier;
         // @ts-expect-error Jest uses @types/node@18.
         meta.main = false;
-        meta.resolve = makeDataUriMetaResolve(specifier);
+        meta.resolve = this.dataUriMetaResolve(specifier);
         (meta as JestImportMeta).jest =
           this.jestGlobals.jestObjectFor(specifier);
       },
@@ -1412,7 +1420,7 @@ export class EsmLoader {
             meta.url = specifier;
             // @ts-expect-error Jest uses @types/node@18.
             meta.main = false;
-            meta.resolve = makeDataUriMetaResolve(specifier);
+            meta.resolve = this.dataUriMetaResolve(specifier);
             (meta as JestImportMeta).jest =
               this.jestGlobals.jestObjectFor(specifier);
           },
