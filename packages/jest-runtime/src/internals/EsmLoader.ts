@@ -367,8 +367,9 @@ export class EsmLoader {
       // The legacy `loadEsmModule` source-text branch does `registry.set`
       // while the `SourceTextModule` is still `'unlinked'` (link runs later
       // in `linkAndEvaluateModule`); accessing `.namespace` on a non-evaluated
-      // module throws `ERR_VM_MODULE_STATUS`. Surface settled entries
-      // (`'evaluated'` / `'errored'`); bail otherwise.
+      // module throws `ERR_VM_MODULE_STATUS`. So: reuse `'evaluated'`,
+      // rethrow `'errored'`, evaluate `'linked'` (already instantiated, just
+      // never evaluated), and bail on everything still being linked.
       if (cached.status === 'evaluated') return cached as ESModule;
       if (cached.status === 'errored') throw cached.error;
       if (cached.status === 'linked') {
