@@ -116,7 +116,7 @@ describe('RequireBuilder', () => {
       expect(requireDispatch).not.toHaveBeenCalled();
     });
 
-    test('snapshots `main` at build time, not per call', () => {
+    test('reads `main` live, not as a build-time snapshot', () => {
       const testMainModule = new TestMainModule();
       const builder = makeBuilder({testMainModule});
 
@@ -124,10 +124,7 @@ describe('RequireBuilder', () => {
       expect(requireFn.main).toBeNull();
 
       testMainModule.current = {filename: '/test.js'} as Module;
-      expect(requireFn.main).toBeNull();
-
-      const laterRequire = builder.for(sampleFrom, undefined);
-      expect(laterRequire.main).toBe(testMainModule.current);
+      expect(requireFn.main).toBe(testMainModule.current);
     });
   });
 
