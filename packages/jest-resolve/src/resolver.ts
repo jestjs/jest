@@ -636,9 +636,6 @@ export default class Resolver {
     if (cachedModuleID) {
       return cachedModuleID;
     }
-    if (moduleName.startsWith('data:')) {
-      return moduleName;
-    }
 
     const moduleType = this._getModuleType(moduleName);
     const absolutePath = await this._getAbsolutePathAsync(
