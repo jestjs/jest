@@ -505,6 +505,23 @@ describe('Runtime sync ESM graph - require(esm)', () => {
   );
 
   testWithSyncEsm(
+    'adopts a linked module as a dependency of a later graph',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      expect(() =>
+        runtime.requireModule(FROM, './import-throwing-then-sibling.mjs'),
+      ).toThrow('boom from esm eval');
+
+      // A fresh root pulls the leftover in as a *dependency*, so it is adopted
+      // into the scratch graph and evaluated by the root's cascade rather than
+      // taking the root cache branch.
+      const ns = runtime.requireModule(FROM, './import-linked-sibling.mjs');
+      expect(ns.value).toBe('sibling');
+      expect(ns.wrapper).toBe('wrapper');
+    },
+  );
+
+  testWithSyncEsm(
     'reports the same top-level await error when a failed graph is required again',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
