@@ -86,28 +86,38 @@ export class CjsExportsCache {
     // mutated in place, so the cached reference stays complete afterwards.
     this.cache.set(modulePath, namedExports);
 
-    for (const reexport of reexports) {
-      if (this.resolution.isCoreModule(reexport)) {
-        const coreExports = this.loadCoreReexport(modulePath, reexport);
-        if (coreExports !== null && typeof coreExports === 'object') {
-          for (const key of Object.keys(coreExports as Record<string, unknown>))
-            namedExports.add(key);
+    try {
+      for (const reexport of reexports) {
+        if (this.resolution.isCoreModule(reexport)) {
+          const coreExports = this.loadCoreReexport(modulePath, reexport);
+          if (coreExports !== null && typeof coreExports === 'object') {
+            for (const key of Object.keys(
+              coreExports as Record<string, unknown>,
+            ))
+              namedExports.add(key);
+          }
+        } else {
+          const resolved = this.resolution.resolveCjs(modulePath, reexport);
+          // A re-exported ES module has no CJS export list. Letting the parse
+          // error escape would make the caller treat the *re-exporting* module
+          // as ESM; its names still reach importers off the runtime exports
+          // object.
+          let reexportedNames: Set<string>;
+          try {
+            reexportedNames = this.getExportsOf(modulePath, resolved);
+          } catch (error) {
+            if (error instanceof CjsParseError) continue;
+            throw error;
+          }
+          for (const key of reexportedNames) namedExports.add(key);
         }
-      } else {
-        const resolved = this.resolution.resolveCjs(modulePath, reexport);
-        // A re-exported ES module has no CJS export list. Letting the parse
-        // error escape would make the caller treat the *re-exporting* module
-        // as ESM; its names still reach importers off the runtime exports
-        // object.
-        let reexportedNames: Set<string>;
-        try {
-          reexportedNames = this.getExportsOf(modulePath, resolved);
-        } catch (error) {
-          if (error instanceof CjsParseError) continue;
-          throw error;
-        }
-        for (const key of reexportedNames) namedExports.add(key);
       }
+    } catch (error) {
+      // Drop the entry seeded above: a walk that failed part-way must not
+      // leave its partial export list memoized, or the next call returns it
+      // as success and swallows this error.
+      this.cache.delete(modulePath);
+      throw error;
     }
 
     return namedExports;
