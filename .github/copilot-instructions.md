@@ -10,7 +10,7 @@ yarn install        # ~45 s. Python is required (node-gyp).
 yarn build:js       # ~5 s. Run this before tests — they import from build/, not src/.
 ```
 
-Tests transform on the fly via `babel-jest`, but their `import {x} from '../'` resolves to each package's `build/`. `yarn build:js` is required after every checkout. Full `yarn build` (`build:js && build:ts && bundle:ts`) is 3–5 min and only needed when working on type declarations or API Extractor output.
+Tests transform on the fly via `babel-jest`, but their `import {x} from '../'` resolves to each package's `build/`. `yarn build:js` is required after every checkout. Full `yarn build` (`build:js && build:ts && bundle:ts`) is 3–5 min and needed when working on type declarations or API Extractor output — and before `yarn typecheck:tests`, which resolves cross-package types from `build/*.d.ts` and reports phantom errors (e.g. missing custom matchers) in a fresh checkout without them.
 
 Iterative: `yarn watch` (webpack), `yarn watch:ts` (declarations). Clean: `yarn build-clean`; full reset: `yarn clean-all`.
 

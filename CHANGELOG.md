@@ -66,6 +66,7 @@
 - `[jest-runtime]` Check a cached ES module's status before `require()` returns it, so a module whose evaluation threw rethrows that error and one left linked by a failed sibling is evaluated instead of returning uninitialized bindings ([#16364](https://github.com/jestjs/jest/pull/16364))
 - `[jest-runtime]` Report the original `ERR_REQUIRE_ASYNC_MODULE` when a `require()` of a top-level-await graph is retried, instead of a spurious "concurrent `import()`" error ([#16364](https://github.com/jestjs/jest/pull/16364))
 - `[jest-runtime]` Throw the evaluation error when another caller's `import()` of the same module failed while we awaited it, instead of resolving with the errored module ([#16364](https://github.com/jestjs/jest/pull/16364))
+- `[jest-runtime]` Throw `ERR_REQUIRE_CYCLE_MODULE` like Node when a CommonJS module `require()`s an ES module that is still being loaded, instead of evaluating the module a second time ([#16366](https://github.com/jestjs/jest/pull/16366))
 - `[jest-runtime]` Key builtin modules in the ESM registry by one canonical specifier ([#16341](https://github.com/jestjs/jest/pull/16341))
 - `[jest-runtime]` `import.meta.resolve()` for a builtin uses its `node:` specifier ([#16341](https://github.com/jestjs/jest/pull/16341))
 - `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
