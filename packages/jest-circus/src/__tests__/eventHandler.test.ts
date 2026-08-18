@@ -74,7 +74,7 @@ test('uses the async owner for process errors and handled rejections', async () 
   await runInTestExecutionContext({test: circusTest}, () =>
     eventHandler({error: testError, name: 'error'}, state),
   );
-  expect(state.processErrorGeneration).toBe(1);
+  expect(state.processErrorGeneration).toBe(0);
   expect(circusTest.errors).toContain(testError);
 
   const rejection = Promise.resolve();
@@ -130,6 +130,11 @@ test('only vetoes unowned rejections during a describe attempt', async () => {
     expect(
       circusTest.unhandledRejectionErrorByPromise.has(ownedRejection),
     ).toBe(true);
+
+    await runInTestExecutionContext({test: circusTest}, () =>
+      eventHandler({error: new Error('owned exception'), name: 'error'}, state),
+    );
+    expect(state.processErrorGeneration).toBe(0);
 
     const outsideRejection = Promise.resolve();
     await eventHandler(

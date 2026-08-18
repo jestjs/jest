@@ -305,9 +305,10 @@ const eventHandler: Circus.EventHandler = (event, state) => {
           state.processErrorGeneration++;
         }
       } else if (context?.test) {
-        state.processErrorGeneration++;
         context.test.errors.push(event.error);
       } else {
+        // Nothing owns this error, so a discarded describe attempt cannot roll
+        // it back — it has to stop the retry instead.
         state.processErrorGeneration++;
         state.unhandledErrors.push(event.error);
       }

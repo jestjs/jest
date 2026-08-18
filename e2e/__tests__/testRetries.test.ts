@@ -231,6 +231,15 @@ describe('Test Retries', () => {
     expect(result.failed).toBe(false);
   });
 
+  it('retries a describe after an owned uncaught exception', () => {
+    const result = runJest('test-retries', [
+      'entireDescribeUncaughtException.test.js',
+    ]);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.failed).toBe(false);
+  });
+
   it('retries a describe after an owned unhandled rejection', () => {
     const result = runJest('test-retries', [
       '--waitForUnhandledRejections',
