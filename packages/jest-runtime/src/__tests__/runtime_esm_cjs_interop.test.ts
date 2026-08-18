@@ -426,4 +426,15 @@ describe('Runtime .cjs file with ESM syntax', () => {
       runtime.unstable_importModule(FROM, './import-cjs-ext.mjs'),
     ).rejects.toThrow("Unexpected token 'export'");
   });
+
+  // Package "type" governs only .js files, so other extensions keep the
+  // syntax-based ESM fallback even inside a "type": "commonjs" package.
+  testWithSyncEsm(
+    'retries a .jsx file with ESM syntax as ESM despite the package type',
+    async () => {
+      const runtime = await createRuntime(__filename, untransformedNodeModules);
+      const ns = runtime.requireModule(FROM, 'commonjs-marked/esm-syntax.jsx');
+      expect(ns.jsxValue).toBe('jsx-esm');
+    },
+  );
 });

@@ -58,18 +58,16 @@ export class Resolution {
 
   // Package `type` governs only files whose extension leaves the format
   // open - `.mjs` and configured ESM extensions are ESM regardless.
+  // The .cjs extension is explicitly CommonJS on its own; the package `type`
+  // field governs only .js files.
   isExplicitlyCommonjs(modulePath: string): boolean {
     const extension = path.extname(modulePath);
     if (extension === '.cjs') {
       return true;
     }
-    if (
-      extension === '.mjs' ||
-      this.extensionsToTreatAsEsm.includes(extension)
-    ) {
-      return false;
-    }
-    return Resolver.unstable_isExplicitlyCommonjs(modulePath);
+    return (
+      extension === '.js' && Resolver.unstable_isExplicitlyCommonjs(modulePath)
+    );
   }
 
   resolveCjs(from: string, to: string | undefined): string {
