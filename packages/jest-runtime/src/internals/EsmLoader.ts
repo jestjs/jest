@@ -90,8 +90,9 @@ type ModuleLinkExtra = {
 };
 
 // Source-text entries carry their dep cacheKeys (used for `linkRequests`).
-// The `'synthetic'` kind covers everything already linked - mocks, core, JSON,
-// wasm, @jest/globals, plus modules adopted from the registry - so it never
+// `'prelinked'` covers everything that arrives already linked - mocks, core,
+// JSON, wasm, @jest/globals, plus modules adopted from the registry, which
+// may be `SourceTextModule`s rather than `SyntheticModule`s - so it never
 // appears in the link-requests pass.
 type ScratchEntry =
   | {
@@ -100,7 +101,7 @@ type ScratchEntry =
       module: VMModuleWithAsyncGraph;
       deps: Array<string>;
     }
-  | {kind: 'synthetic'; cacheKey: string; module: VMModuleWithAsyncGraph};
+  | {kind: 'prelinked'; cacheKey: string; module: VMModuleWithAsyncGraph};
 
 // `SourceTextModule#hasAsyncGraph()` lets us prove a graph is sync-evaluable.
 // `SyntheticModule` does not expose it but is by definition sync (the user
@@ -406,7 +407,7 @@ export class EsmLoader {
         }
         scratch.set(cacheKey, {
           cacheKey,
-          kind: 'synthetic',
+          kind: 'prelinked',
           module: fromRegistry,
         });
         continue;
@@ -416,7 +417,7 @@ export class EsmLoader {
       if (this.resolution.isCoreModule(modulePath)) {
         scratch.set(cacheKey, {
           cacheKey,
-          kind: 'synthetic',
+          kind: 'prelinked',
           module: buildCoreSyntheticModule(modulePath, context, name =>
             this.coreModule.require(name),
           ),
@@ -468,7 +469,7 @@ export class EsmLoader {
       if (modulePath.endsWith('.json')) {
         scratch.set(cacheKey, {
           cacheKey,
-          kind: 'synthetic',
+          kind: 'prelinked',
           module: buildJsonSyntheticModule(
             this.transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS),
             modulePath,
@@ -672,7 +673,7 @@ export class EsmLoader {
     const module =
       (fromRegistry as VMModuleWithAsyncGraph | undefined) ?? build();
     if (!fromRegistry) registry.set(cacheKey, module);
-    scratch.set(cacheKey, {cacheKey, kind: 'synthetic', module});
+    scratch.set(cacheKey, {cacheKey, kind: 'prelinked', module});
     return true;
   }
 
@@ -802,7 +803,7 @@ export class EsmLoader {
       if (!scratch.has(moduleID)) {
         scratch.set(moduleID, {
           cacheKey: moduleID,
-          kind: 'synthetic',
+          kind: 'prelinked',
           module: existing,
         });
       }
@@ -833,7 +834,7 @@ export class EsmLoader {
     this.registries.setModuleMock(moduleID, synth);
     scratch.set(moduleID, {
       cacheKey: moduleID,
-      kind: 'synthetic',
+      kind: 'prelinked',
       module: synth,
     });
     return {cacheKey: moduleID};
@@ -886,7 +887,7 @@ export class EsmLoader {
 
     return {
       cacheKey,
-      kind: 'synthetic',
+      kind: 'prelinked',
       module: synthetic,
     };
   }
@@ -919,7 +920,7 @@ export class EsmLoader {
     if (mime === 'application/json') {
       return {
         cacheKey,
-        kind: 'synthetic',
+        kind: 'prelinked',
         module: buildJsonSyntheticModule(code as string, specifier, context),
       };
     }
