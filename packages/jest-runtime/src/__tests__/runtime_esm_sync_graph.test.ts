@@ -206,6 +206,38 @@ describe('Runtime sync ESM graph - mocks and isolation', () => {
     expect(m.namespace.greeting).toBe('mocked-async');
   });
 
+  testWithVmEsm(
+    'a module mock first imported inside isolateModulesAsync does not leak out',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+
+      let invocations = 0;
+      runtime.setModuleMock(FROM, './mock-target.mjs', () => {
+        invocations++;
+        return {greeting: `mocked-${invocations}`};
+      });
+
+      let inside: any;
+      await runtime.isolateModulesAsync(async () => {
+        inside = (await runtime.unstable_importModule(
+          FROM,
+          './import-mock-target.mjs',
+        )) as any;
+      });
+      expect(inside.namespace.greeting).toBe('mocked-1');
+
+      const outside = (await runtime.unstable_importModule(
+        FROM,
+        './import-mock-target.mjs',
+      )) as any;
+
+      // The mock instance built inside the block must not be reused
+      // afterwards - the factory runs again, as it does for a CommonJS mock.
+      expect(outside.namespace.greeting).toBe('mocked-2');
+      expect(invocations).toBe(2);
+    },
+  );
+
   testWithVmEsm('isolateModulesAsync gives a fresh ESM namespace', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
 
