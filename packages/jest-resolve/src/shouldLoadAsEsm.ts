@@ -29,11 +29,15 @@ export default function cachedShouldLoadAsEsm(
     return false;
   }
 
-  let cachedLookup = cachedFileLookups.get(path);
+  // The answer depends on the extension list, and the cache is shared between
+  // projects in a process - key on both so projects with different
+  // `extensionsToTreatAsEsm` don't read each other's answers.
+  const cacheKey = `${extensionsToTreatAsEsm.join('\0')}\0${path}`;
+  let cachedLookup = cachedFileLookups.get(cacheKey);
 
   if (cachedLookup === undefined) {
     cachedLookup = shouldLoadAsEsm(path, extensionsToTreatAsEsm);
-    cachedFileLookups.set(path, cachedLookup);
+    cachedFileLookups.set(cacheKey, cachedLookup);
   }
 
   return cachedLookup;
@@ -64,7 +68,7 @@ function shouldLoadAsEsm(
 
   if (cachedLookup === undefined) {
     cachedLookup = cachedPkgCheck(cwd);
-    cachedFileLookups.set(cwd, cachedLookup);
+    cachedDirLookups.set(cwd, cachedLookup);
   }
 
   return cachedLookup;
