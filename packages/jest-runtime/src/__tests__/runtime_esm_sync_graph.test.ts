@@ -943,6 +943,44 @@ describe('Runtime sync ESM graph - data: URI mediatype parsing', () => {
     },
   );
 
+  // In a URL the fragment starts at the first #, so a fragment before the
+  // comma leaves the data: URL without a payload.
+  testWithVmEsm(
+    'rejects a fragment before the comma with ERR_INVALID_URL',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(
+          FROM,
+          './import-data-uri-early-fragment.mjs',
+        ),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_INVALID_URL',
+          message: 'Invalid URL',
+        }),
+      );
+    },
+  );
+
+  // Node echoes the mime essence in the rejection only when it parses as a
+  // MIME type, and reports null otherwise.
+  testWithVmEsm('reports null for an unparseable mime essence', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    await expect(
+      runtime.unstable_importModule(
+        FROM,
+        './import-data-uri-unparseable-mime.mjs',
+      ),
+    ).rejects.toThrow(
+      expect.objectContaining({
+        code: 'ERR_UNKNOWN_MODULE_FORMAT',
+        message:
+          'Unknown module format: null for URL data:text%2Fjavascript,export const q = 1',
+      }),
+    );
+  });
+
   testWithVmEsm('accepts the application/javascript mime type', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(

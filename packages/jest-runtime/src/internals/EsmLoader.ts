@@ -139,7 +139,7 @@ function makeRequireCycleError(
 // Decode a `data:` URI specifier into its mime type and decoded code/body.
 // `application/wasm` returns a Buffer; everything else returns a UTF-8 string.
 const dataURIRegex =
-  /^data:(?<mime>[^;,]*)(?<parameters>(?:;[^;,]*)*),(?<code>[^#]*)(?:#.*)?$/;
+  /^data:(?<mime>[^;,]*)(?<parameters>(?:;[^;,]*)*),(?<code>.*)$/;
 
 const supportedDataUriMimes = new Set([
   'text/javascript',
@@ -148,6 +148,8 @@ const supportedDataUriMimes = new Set([
 ]);
 
 const javaScriptMimeRegex = /^(?:text|application)\/javascript$/i;
+
+const parseableMimeRegex = /^[^/]+\/[^/]+$/;
 
 function makeInvalidUrlError(): NodeJS.ErrnoException {
   const error: NodeJS.ErrnoException = new TypeError('Invalid URL');
@@ -200,24 +202,29 @@ function parseDataUri(specifier: string): {
   mime: string;
   code: string | Buffer;
 } {
-  const match = specifier.match(dataURIRegex);
+  // The fragment starts at the first # and is not part of the payload - a
+  // fragment before the comma leaves the data: URL without a payload at all.
+  const match = specifier.split('#', 1)[0].match(dataURIRegex);
   if (!match || !match.groups) {
     throw makeInvalidUrlError();
   }
   // Node matches the JavaScript mime case-insensitively (text/ and
   // application/ alike) but requires exact case for application/json and
-  // application/wasm, and its rejection reports the original spelling - or
-  // `null` when the mime is empty. ASCII whitespace around the mediatype is
-  // stripped. Mediatype parameters are case-insensitive and unknown ones are
-  // ignored; base64 applies only as the final parameter.
+  // application/wasm. Its rejection echoes the mime only when it parses as a
+  // MIME type, and reports `null` otherwise. ASCII whitespace around the
+  // mediatype is stripped. Mediatype parameters are case-insensitive and
+  // unknown ones are ignored; base64 applies only as the final parameter.
   const mimeEssence = match.groups.mime.trim();
   const mime = javaScriptMimeRegex.test(mimeEssence)
     ? 'text/javascript'
     : mimeEssence;
   const {code} = match.groups;
   if (!supportedDataUriMimes.has(mime)) {
+    const reportedMime = parseableMimeRegex.test(mimeEssence)
+      ? mimeEssence
+      : 'null';
     const error: NodeJS.ErrnoException = new RangeError(
-      `Unknown module format: ${mimeEssence || 'null'} for URL ${specifier}`,
+      `Unknown module format: ${reportedMime} for URL ${specifier}`,
     );
     error.code = 'ERR_UNKNOWN_MODULE_FORMAT';
     throw error;
