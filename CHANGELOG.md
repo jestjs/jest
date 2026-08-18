@@ -58,6 +58,7 @@
 - `[jest-runner, @jest/source-map]` Keep a source-mapped stack for an error thrown after the test environment was torn down ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[jest-runtime, @jest/source-map]` Keep source maps past teardown and past the next test file's `install`, so a stack from a file no earlier stack mentioned still points at the original source ([#16330](https://github.com/jestjs/jest/pull/16330))
 - `[jest-runtime]` Cache a CJS module's parsed exports before walking its re-exports, so two modules that re-export each other no longer overflow the stack when imported from ESM ([#16363](https://github.com/jestjs/jest/pull/16363))
+- `[jest-runtime]` Keep a re-exported ES module's parse failure from marking the re-exporting CommonJS file as ESM, so `module.exports = require('./dep.mjs')` loads instead of failing with `module is not defined` ([#16363](https://github.com/jestjs/jest/pull/16363))
 - `[jest-runtime]` Key builtin modules in the ESM registry by one canonical specifier ([#16341](https://github.com/jestjs/jest/pull/16341))
 - `[jest-runtime]` `import.meta.resolve()` for a builtin uses its `node:` specifier ([#16341](https://github.com/jestjs/jest/pull/16341))
 - `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))

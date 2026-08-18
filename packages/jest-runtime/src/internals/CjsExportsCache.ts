@@ -95,8 +95,18 @@ export class CjsExportsCache {
         }
       } else {
         const resolved = this.resolution.resolveCjs(modulePath, reexport);
-        for (const key of this.getExportsOf(modulePath, resolved))
-          namedExports.add(key);
+        // A re-exported ES module has no CJS export list. Letting the parse
+        // error escape would make the caller treat the *re-exporting* module
+        // as ESM; its names still reach importers off the runtime exports
+        // object.
+        let reexportedNames: Set<string>;
+        try {
+          reexportedNames = this.getExportsOf(modulePath, resolved);
+        } catch (error) {
+          if (error instanceof CjsParseError) continue;
+          throw error;
+        }
+        for (const key of reexportedNames) namedExports.add(key);
       }
     }
 

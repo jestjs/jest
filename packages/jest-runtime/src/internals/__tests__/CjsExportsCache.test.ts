@@ -169,6 +169,26 @@ describe('CjsExportsCache', () => {
     expect(readFile).not.toHaveBeenCalled();
   });
 
+  test('skips a re-export that cannot be analysed as CJS', () => {
+    const {resolution} = makeResolution({
+      resolveCjs: ((_from: string, to: string) =>
+        to.replace('./', '/')) as Resolution['resolveCjs'],
+    });
+    const {fileCache} = makeFileCache({
+      '/a.js': "module.exports.own = 1; module.exports = require('./esm.mjs');",
+      '/esm.mjs': 'export default function thunk() {}',
+    });
+    const cache = new CjsExportsCache({
+      fileCache,
+      loadCoreReexport: jest.fn(),
+      loadNativeAddon: jest.fn(),
+      resolution,
+      transformCache: makeTransformCache(),
+    });
+
+    expect([...cache.getExportsOf('/from.js', '/a.js')]).toEqual(['own']);
+  });
+
   test('throws CjsParseError when source contains ESM syntax', () => {
     const {resolution} = makeResolution();
     const {fileCache} = makeFileCache({
