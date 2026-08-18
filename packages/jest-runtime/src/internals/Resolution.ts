@@ -47,8 +47,10 @@ export class Resolution {
     this.esmConditions = [
       ...new Set(['import', 'module-sync', 'default', ...envExportConditions]),
     ];
-    this.cjsResolveOptions = {conditions: this.cjsConditions};
-    this.esmResolveOptions = {conditions: this.esmConditions};
+    // Frozen: the resolver memoizes its cache-key serialization on
+    // options-object identity, so these must never be mutated.
+    this.cjsResolveOptions = Object.freeze({conditions: this.cjsConditions});
+    this.esmResolveOptions = Object.freeze({conditions: this.esmConditions});
     this.extensionsToTreatAsEsm = extensionsToTreatAsEsm;
   }
 

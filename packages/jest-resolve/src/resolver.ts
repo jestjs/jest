@@ -812,7 +812,7 @@ export default class Resolver {
     options?: Pick<ResolveModuleConfig, 'conditions'>,
   ): string | null {
     const moduleNameMapper = this._options.moduleNameMapper;
-    if (!moduleNameMapper) {
+    if (moduleNameMapper == null || moduleNameMapper.length === 0) {
       return null;
     }
 
@@ -879,7 +879,7 @@ export default class Resolver {
     }
 
     const moduleNameMapper = this._options.moduleNameMapper;
-    if (!moduleNameMapper) {
+    if (moduleNameMapper == null || moduleNameMapper.length === 0) {
       return null;
     }
 
