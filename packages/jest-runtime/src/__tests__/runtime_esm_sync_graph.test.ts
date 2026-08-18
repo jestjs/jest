@@ -522,6 +522,39 @@ describe('Runtime sync ESM graph - require(esm)', () => {
   );
 
   testWithSyncEsm(
+    'rejects a concurrent import() whose sibling evaluated the module to an error',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      // An async-only resolver forces the legacy path even on Node with sync
+      // evaluate; there, the first caller's sync-branch evaluation stores no
+      // promise in `evaluatingMap`, so the second caller must re-read the
+      // status after its awaits instead of returning the errored module.
+      runtime._resolution.canResolveSync = () => false;
+
+      const results = await Promise.allSettled([
+        runtime.unstable_importModule(
+          FROM,
+          './import-throwing-then-sibling.mjs',
+        ),
+        runtime.unstable_importModule(
+          FROM,
+          './import-throwing-then-sibling.mjs',
+        ),
+      ]);
+
+      expect(results.map(result => result.status)).toEqual([
+        'rejected',
+        'rejected',
+      ]);
+      for (const result of results) {
+        expect((result as PromiseRejectedResult).reason.message).toBe(
+          'boom from esm eval',
+        );
+      }
+    },
+  );
+
+  testWithSyncEsm(
     'reports the same top-level await error when a failed graph is required again',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
