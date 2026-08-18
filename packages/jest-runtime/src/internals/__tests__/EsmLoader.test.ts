@@ -884,7 +884,9 @@ describe('validateImportAttributes', () => {
       const {stubs} = makeLoader();
       jest.isolateModules(() => {
         jest.doMock('../nodeCapabilities', () => ({
-          ...jest.requireActual('../nodeCapabilities'),
+          ...jest.requireActual<typeof import('../nodeCapabilities')>(
+            '../nodeCapabilities',
+          ),
           supportsSyncEvaluate: false,
         }));
         const {EsmLoader: GatedEsmLoader} = require('../EsmLoader');
