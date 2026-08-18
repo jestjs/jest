@@ -204,6 +204,23 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
   );
 
   testWithSyncEsm(
+    "records an ESM-fallback module on the requiring module's children",
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transformIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
+      });
+      const {noMarkerExports, module: parentModule} = runtime.requireModule(
+        FROM,
+        './requires-esm-no-marker.cjs',
+      );
+      expect(noMarkerExports.esmNoMarkerValue).toBe(456);
+      expect(parentModule.children).toHaveLength(1);
+      expect(parentModule.children[0].exports).toBe(noMarkerExports);
+    },
+  );
+
+  testWithSyncEsm(
     'deduplicates an ESM-fallback module imported via a diamond graph (same module, two importers)',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});

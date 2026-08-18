@@ -236,12 +236,13 @@ export class ModuleRegistries {
     return wrapper;
   }
 
+  getEsmRequireCacheEntry(key: string): NodeModule | undefined {
+    const entry = (this.isolation?.esm ?? this.esModuleRegistry).get(key);
+    if (!isLiveEsm(entry)) return undefined;
+    return this.wrapEsmForRequireCache(key, entry);
+  }
+
   createRequireCacheProxy(): NodeJS.Require['cache'] {
-    const esmEntry = (key: string) => {
-      const entry = this.esModuleRegistry.get(key);
-      if (!isLiveEsm(entry)) return undefined;
-      return this.wrapEsmForRequireCache(key, entry);
-    };
     return new Proxy<NodeJS.Require['cache']>(Object.create(null), {
       defineProperty: notPermittedMethod,
       deleteProperty: notPermittedMethod,
@@ -249,7 +250,7 @@ export class ModuleRegistries {
         if (typeof key !== 'string') return undefined;
         return (
           (this.moduleRegistry.get(key) as NodeModule | undefined) ??
-          esmEntry(key)
+          this.getEsmRequireCacheEntry(key)
         );
       },
       getOwnPropertyDescriptor() {

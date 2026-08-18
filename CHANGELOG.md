@@ -71,6 +71,7 @@
 - `[jest-runtime]` Mark the result of `require()`ing an ES module that has a default export with `__esModule: true` through a live-binding facade, and serve the same object from `require.cache`, matching Node ([#16367](https://github.com/jestjs/jest/pull/16367))
 - `[jest-runtime]` Provide a CommonJS module's exports under the `'module.exports'` named export when imported from ESM, matching Node 23+ ([#16367](https://github.com/jestjs/jest/pull/16367))
 - `[jest-runtime]` Give the test file itself a non-null `require.main` ([#16367](https://github.com/jestjs/jest/pull/16367))
+- `[jest-runtime]` Populate `module.children` with the modules a file loads, matching Node ([#16368](https://github.com/jestjs/jest/pull/16368))
 - `[jest-runtime]` Throw `ERR_REQUIRE_CYCLE_MODULE` like Node when a CommonJS module `require()`s an ES module that is still being loaded, instead of evaluating the module a second time ([#16366](https://github.com/jestjs/jest/pull/16366))
 - `[jest-runtime]` Key builtin modules in the ESM registry by one canonical specifier ([#16341](https://github.com/jestjs/jest/pull/16341))
 - `[jest-runtime]` `import.meta.resolve()` for a builtin uses its `node:` specifier ([#16341](https://github.com/jestjs/jest/pull/16341))

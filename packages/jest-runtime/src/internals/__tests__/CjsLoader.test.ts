@@ -54,6 +54,7 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
     registries: {
       getActiveCjsRegistry: jest.fn(() => new Map()),
       getActiveEsmRegistry: jest.fn(() => new Map()),
+      getEsmRequireCacheEntry: jest.fn(() => undefined),
     } as unknown as jest.Mocked<ModuleRegistries>,
     requireEsm: jest.fn() as any,
     resolution: {
@@ -181,6 +182,7 @@ describe('CjsLoader.requireModule', () => {
       registries: {
         getActiveCjsRegistry: jest.fn(() => new Map()),
         getActiveEsmRegistry: jest.fn(() => new Map()),
+        getEsmRequireCacheEntry: jest.fn(() => undefined),
       } as unknown as jest.Mocked<ModuleRegistries>,
       resolution: {
         getCjsMockModule: jest.fn(() => null),

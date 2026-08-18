@@ -100,7 +100,11 @@ export class CjsLoader {
     // On Node 24.9+ we can require() ESM natively. On older Node, fall
     // through to the CJS path so a configured transform can convert it.
     if (supportsSyncEvaluate && this.resolution.shouldLoadAsEsm(modulePath)) {
-      return this.requireEsm<T>(modulePath, from);
+      const exports = this.requireEsm<T>(modulePath, from);
+      if (!isInternal) {
+        this.recordEsmChildModule(from, modulePath);
+      }
+      return exports;
     }
 
     const moduleRegistry = isInternal
@@ -109,6 +113,9 @@ export class CjsLoader {
 
     const module = moduleRegistry.get(modulePath);
     if (module) {
+      if (!isInternal) {
+        this.recordChildModule(from, module as Module, moduleRegistry);
+      }
       return (module as Module).exports;
     }
 
@@ -125,6 +132,9 @@ export class CjsLoader {
       path: path.dirname(modulePath),
     };
     moduleRegistry.set(modulePath, localModule);
+    if (!isInternal) {
+      this.recordChildModule(from, localModule as Module, moduleRegistry);
+    }
 
     try {
       this.loadModule(
@@ -137,6 +147,7 @@ export class CjsLoader {
       );
     } catch (error) {
       moduleRegistry.delete(modulePath);
+      this.removeChildModule(from, localModule as Module, moduleRegistry);
       if (error instanceof CjsParseError) {
         return this.handleCjsParseError(modulePath, from, error);
       }
@@ -157,6 +168,49 @@ export class CjsLoader {
     return localModule.exports;
   }
 
+  // The parent lookup targets the active CJS registry, so an internal
+  // requiring module (registered elsewhere) never gains children.
+  private recordEsmChildModule(from: string, modulePath: string): void {
+    const wrapper = this.registries.getEsmRequireCacheEntry(modulePath);
+    if (wrapper) {
+      this.recordChildModule(
+        from,
+        wrapper as Module,
+        this.registries.getActiveCjsRegistry(),
+      );
+    }
+  }
+
+  // Node records every loaded module on its requiring parent - fresh loads
+  // before evaluation and registry hits alike, deduplicated. A load that
+  // throws is removed again.
+  private recordChildModule(
+    from: string,
+    child: Module,
+    moduleRegistry: ModuleRegistry,
+  ): void {
+    const parent = moduleRegistry.get(from);
+    if (!parent || !('children' in parent) || parent.children.includes(child)) {
+      return;
+    }
+    parent.children.push(child);
+  }
+
+  private removeChildModule(
+    from: string,
+    child: Module,
+    moduleRegistry: ModuleRegistry,
+  ): void {
+    const parent = moduleRegistry.get(from);
+    if (!parent || !('children' in parent)) {
+      return;
+    }
+    const index = parent.children.indexOf(child);
+    if (index !== -1) {
+      parent.children.splice(index, 1);
+    }
+  }
+
   /**
    * The CJS compiler rejected the file (ESM syntax in a non-ESM context).
    * On Node 24.9+ retry as native ESM; on older Node either surface an
@@ -174,8 +228,9 @@ export class CjsLoader {
       throw parseError.cause;
     }
     if (supportsSyncEvaluate) {
+      let exports: T;
       try {
-        return this.requireEsm<T>(modulePath, from);
+        exports = this.requireEsm<T>(modulePath, from);
       } catch (esmError) {
         // Both CJS and ESM parsers rejected it — surface the original CJS error.
         if (esmError instanceof Error && esmError.name === 'SyntaxError') {
@@ -183,6 +238,8 @@ export class CjsLoader {
         }
         throw esmError;
       }
+      this.recordEsmChildModule(from, modulePath);
+      return exports;
     }
     // Explicitly ESM-marked files (.mjs / "type":"module") can't be retried
     // by the ESM loader — give the user an actionable error.
