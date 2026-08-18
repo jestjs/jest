@@ -260,7 +260,7 @@ test('imports from "data:" URI with invalid mime type fail', async () => {
   const code = 'export const something = "some value"';
   await expect(
     () => import(`data:something/else,${encodeURIComponent(code)}`),
-  ).rejects.toThrow('Invalid data URI');
+  ).rejects.toThrow('Unknown module format: something/else');
 });
 
 test('imports from "data:text/javascript" URI with invalid data fail', async () => {

@@ -783,3 +783,79 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     },
   );
 });
+
+describe('Runtime sync ESM graph - data: URI modules', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithVmEsm(
+    'provides import.meta.jest and import.meta.resolve',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-data-uri-meta.mjs',
+      )) as any;
+      expect(m.namespace.hasJest).toBe('object');
+      expect(m.namespace.resolveType).toBe('function');
+      expect(m.namespace.absolute).toBe('node:fs');
+      expect(m.namespace.relativeError).toBe('ERR_UNSUPPORTED_RESOLVE_REQUEST');
+      expect(m.namespace.bareError).toBe('ERR_UNSUPPORTED_RESOLVE_REQUEST');
+    },
+  );
+
+  testWithVmEsm('accepts an upper-case charset parameter', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-upper-charset.mjs',
+    )) as any;
+    expect(m.namespace.x).toBe(1);
+  });
+
+  testWithVmEsm(
+    'rejects an unsupported mime type with ERR_UNKNOWN_MODULE_FORMAT',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-data-uri-bad-mime.mjs'),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_UNKNOWN_MODULE_FORMAT',
+          message: 'Unknown module format: text/html for URL data:text/html,hi',
+        }),
+      );
+    },
+  );
+
+  testWithVmEsm(
+    'reports the default text/plain mediatype for a mime-less data: URI',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-data-uri-no-mime.mjs'),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_UNKNOWN_MODULE_FORMAT',
+          message: 'Unknown module format: text/plain for URL data:,hello',
+        }),
+      );
+    },
+  );
+
+  testWithVmEsm(
+    'rejects a malformed data: URI with ERR_INVALID_URL',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-data-uri-invalid.mjs'),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_INVALID_URL',
+          message: 'Invalid URL',
+        }),
+      );
+    },
+  );
+});

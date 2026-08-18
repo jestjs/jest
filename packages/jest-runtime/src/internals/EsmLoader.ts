@@ -139,7 +139,13 @@ function makeRequireCycleError(
 // Decode a `data:` URI specifier into its mime type and decoded code/body.
 // `application/wasm` returns a Buffer; everything else returns a UTF-8 string.
 const dataURIRegex =
-  /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
+  /^data:(?<mime>[^;,]*)(?:;(?<encoding>[^,]*))?,(?<code>.*)$/;
+
+const supportedDataUriMimes = new Set([
+  'text/javascript',
+  'application/json',
+  'application/wasm',
+]);
 
 function parseDataUri(specifier: string): {
   mime: string;
@@ -147,9 +153,20 @@ function parseDataUri(specifier: string): {
 } {
   const match = specifier.match(dataURIRegex);
   if (!match || !match.groups) {
-    throw new Error('Invalid data URI');
+    const error: NodeJS.ErrnoException = new TypeError('Invalid URL');
+    error.code = 'ERR_INVALID_URL';
+    throw error;
   }
-  const {mime, encoding, code} = match.groups;
+  const {mime, code} = match.groups;
+  if (!supportedDataUriMimes.has(mime)) {
+    const error: NodeJS.ErrnoException = new RangeError(
+      `Unknown module format: ${mime || 'text/plain'} for URL ${specifier}`,
+    );
+    error.code = 'ERR_UNKNOWN_MODULE_FORMAT';
+    throw error;
+  }
+  // Data URL mediatype parameters are case-insensitive.
+  const encoding = match.groups.encoding?.toLowerCase();
   if (mime === 'application/wasm') {
     if (!encoding) throw new Error('Missing data URI encoding');
     if (encoding !== 'base64') {
@@ -164,6 +181,26 @@ function parseDataUri(specifier: string): {
     return {code: Buffer.from(code, 'base64').toString(), mime};
   }
   throw new Error(`Invalid data URI encoding: ${encoding}`);
+}
+
+const urlSchemeRegex = /^[A-Za-z][A-Za-z0-9+.-]*:/;
+
+// `import.meta.resolve` inside a data: module. A data: base URL is not
+// hierarchical, so Node resolves only specifiers that are themselves
+// absolute URLs - relative and bare specifiers both throw.
+function makeDataUriMetaResolve(
+  specifier: string,
+): (request: string) => string {
+  return request => {
+    if (urlSchemeRegex.test(request)) {
+      return new URL(request).href;
+    }
+    const error: NodeJS.ErrnoException = new TypeError(
+      `Failed to resolve module specifier "${request}" from "${specifier}": Invalid relative URL or base scheme is not hierarchical.`,
+    );
+    error.code = 'ERR_UNSUPPORTED_RESOLVE_REQUEST';
+    throw error;
+  };
 }
 
 // Mirrors Node's `validateAttributes` in lib/internal/modules/esm/assert.js.
@@ -1089,16 +1126,13 @@ export class EsmLoader {
       context,
       identifier: specifier,
       importModuleDynamically: esmDynamicImport,
-      initializeImportMeta(meta) {
+      initializeImportMeta: meta => {
         meta.url = specifier;
         // @ts-expect-error Jest uses @types/node@18.
         meta.main = false;
-        if (meta.url.startsWith('file://')) {
-          // @ts-expect-error Jest uses @types/node@18.
-          meta.filename = fileURLToPath(meta.url);
-          // @ts-expect-error Jest uses @types/node@18.
-          meta.dirname = path.dirname(meta.filename);
-        }
+        meta.resolve = makeDataUriMetaResolve(specifier);
+        (meta as JestImportMeta).jest =
+          this.jestGlobals.jestObjectFor(specifier);
       },
     }) as VMModuleWithAsyncGraph;
 
@@ -1373,16 +1407,13 @@ export class EsmLoader {
           context,
           identifier: specifier,
           importModuleDynamically: this.dynamicImport,
-          initializeImportMeta(meta) {
+          initializeImportMeta: meta => {
             meta.url = specifier;
             // @ts-expect-error Jest uses @types/node@18.
             meta.main = false;
-            if (meta.url.startsWith('file://')) {
-              // @ts-expect-error Jest uses @types/node@18.
-              meta.filename = fileURLToPath(meta.url);
-              // @ts-expect-error Jest uses @types/node@18.
-              meta.dirname = path.dirname(meta.filename);
-            }
+            meta.resolve = makeDataUriMetaResolve(specifier);
+            (meta as JestImportMeta).jest =
+              this.jestGlobals.jestObjectFor(specifier);
           },
         });
       }
