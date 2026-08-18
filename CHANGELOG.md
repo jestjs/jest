@@ -53,6 +53,7 @@
 - `[@jest-environment/jsdom-abstract]` Make `@types/jsdom` a peer dependency ([#16166](https://github.com/jestjs/jest/pull/16166))
 - `[jest-mock]` Remove the leftover own accessor descriptor when restoring a `spyOn` of an inherited getter or setter, so the instance keeps reflecting the prototype ([#16226](https://github.com/jestjs/jest/pull/16226))
 - `[jest-resolve]` Include `extensionsToTreatAsEsm` in the `shouldLoadAsEsm` cache key, so projects with different extension lists don't read each other's answers ([#16369](https://github.com/jestjs/jest/pull/16369))
+- `[jest-resolve]` Make `getModuleIDAsync` build and cache `data:` URI module IDs the same way as `getModuleID` ([#16370](https://github.com/jestjs/jest/pull/16370))
 - `[jest-resolve]` Keep virtual and ordinary mock module IDs isolated across test files ([#16296](https://github.com/jestjs/jest/pull/16296))
 - `[jest-resolve]` Guard missing `require.resolve.paths` ([#16052](https://github.com/jestjs/jest/pull/16052))
 - `[jest-resolve, jest-config, jest-runner]` Support a user resolver written as an ES module ([#16332](https://github.com/jestjs/jest/pull/16332))

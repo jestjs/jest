@@ -810,6 +810,52 @@ describe('getModuleID', () => {
 
     expect(normalID).not.toBe(virtualID);
   });
+
+  test('sync and async produce the same ID for a data: URI', async () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    } as ResolverConfig);
+    const from = require.resolve('../');
+    const moduleName = 'data:text/javascript,export default 42';
+
+    const syncID = resolver.getModuleID(new Map(), from, moduleName, {});
+    const asyncID = await resolver.getModuleIDAsync(
+      new Map(),
+      from,
+      moduleName,
+      {},
+    );
+
+    expect(asyncID).toBe(syncID);
+  });
+
+  test('async caches data: URI IDs', async () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    } as ResolverConfig);
+    const from = require.resolve('../');
+    const moduleName = 'data:text/javascript,export default 42';
+    const getAbsolutePath = jest.spyOn(
+      resolver as unknown as {_getAbsolutePathAsync: () => Promise<string>},
+      '_getAbsolutePathAsync',
+    );
+
+    const firstID = await resolver.getModuleIDAsync(
+      new Map(),
+      from,
+      moduleName,
+      {},
+    );
+    const secondID = await resolver.getModuleIDAsync(
+      new Map(),
+      from,
+      moduleName,
+      {},
+    );
+
+    expect(secondID).toBe(firstID);
+    expect(getAbsolutePath).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('nodeModulesPaths', () => {
