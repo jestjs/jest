@@ -220,6 +220,32 @@ describe('CjsLoader.requireModule', () => {
   );
 
   testWithSyncEsm(
+    'falls back to ESM resolution when CJS resolution fails for an ESM-only package',
+    () => {
+      const {loader, stubs} = makeLoader({
+        registries: {
+          getActiveCjsRegistry: jest.fn(() => new Map()),
+          getActiveEsmRegistry: jest.fn(() => new Map()),
+        } as unknown as jest.Mocked<ModuleRegistries>,
+        resolution: {
+          getCjsMockModule: jest.fn(() => null),
+          getModule: jest.fn(() => null),
+          isCoreModule: jest.fn(() => false),
+          resolveCjs: jest.fn(() => {
+            throw new Error('Package path . is not exported');
+          }),
+          resolveEsm: jest.fn(() => '/m.mjs'),
+          shouldLoadAsEsm: jest.fn(() => true),
+        } as unknown as jest.Mocked<Resolution>,
+      });
+
+      stubs.requireEsm.mockReturnValue('esm-result' as any);
+      expect(loader.requireModule('/from.js', 'esm-only-pkg')).toBe('esm-result');
+      expect(stubs.requireEsm).toHaveBeenCalledWith('/m.mjs');
+    },
+  );
+
+  testWithSyncEsm(
     'returns the raw namespace on the ESM cache-hit fast path when there is no "module.exports" export',
     () => {
       const namespace = {named: 'x'};
