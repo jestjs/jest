@@ -884,6 +884,27 @@ describe('Runtime sync ESM graph - data: URI mediatype parsing', () => {
     },
   );
 
+  testWithVmEsm('keeps a URL fragment out of the module source', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-fragment.mjs',
+    )) as any;
+    expect(m.namespace.fragmentDefault).toBe(1);
+  });
+
+  testWithVmEsm(
+    'percent-decodes a base64 payload before decoding',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-data-uri-escaped-base64.mjs',
+      )) as any;
+      expect(m.namespace.escaped).toBe(42);
+    },
+  );
+
   testWithVmEsm('accepts the application/javascript mime type', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(

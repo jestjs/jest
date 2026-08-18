@@ -139,7 +139,7 @@ function makeRequireCycleError(
 // Decode a `data:` URI specifier into its mime type and decoded code/body.
 // `application/wasm` returns a Buffer; everything else returns a UTF-8 string.
 const dataURIRegex =
-  /^data:(?<mime>[^;,]*)(?<parameters>(?:;[^;,]*)*),(?<code>.*)$/;
+  /^data:(?<mime>[^;,]*)(?<parameters>(?:;[^;,]*)*),(?<code>[^#]*)(?:#.*)?$/;
 
 const supportedDataUriMimes = new Set([
   'text/javascript',
@@ -183,10 +183,13 @@ function parseDataUri(specifier: string): {
     if (!isBase64) {
       throw new Error(`Invalid data URI encoding: ${parameters.join(';')}`);
     }
-    return {code: Buffer.from(code, 'base64'), mime};
+    return {code: Buffer.from(decodeURIComponent(code), 'base64'), mime};
   }
   if (isBase64) {
-    return {code: Buffer.from(code, 'base64').toString(), mime};
+    return {
+      code: Buffer.from(decodeURIComponent(code), 'base64').toString(),
+      mime,
+    };
   }
   return {code: decodeURIComponent(code), mime};
 }
