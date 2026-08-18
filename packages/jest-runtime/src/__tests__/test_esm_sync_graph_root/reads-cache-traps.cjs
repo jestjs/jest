@@ -14,4 +14,7 @@ module.exports = {
   entryExports: require.cache[esmPath] && require.cache[esmPath].exports,
   hasEntry: esmPath in require.cache,
   listed: Object.keys(require.cache).includes(esmPath),
+  selfEntry: require.cache[module.filename],
+  selfHasEntry: module.filename in require.cache,
+  selfListed: Object.keys(require.cache).includes(module.filename),
 };
