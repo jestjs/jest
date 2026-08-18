@@ -178,6 +178,21 @@ describe('ModuleRegistries', () => {
       expect(registries.hasMock('scratch-id')).toBe(false);
     });
 
+    test('keeps ESM and module-mock writes out of the long-lived registries', () => {
+      const registries = new ModuleRegistries();
+      registries.enterIsolated('isolateModules');
+
+      registries.withScratchRegistries(() => {
+        registries.getActiveEsmRegistry().set('/scratch.mjs', fakeEsm());
+        registries.setModuleMock('scratch-id', fakeEsm());
+      });
+
+      registries.exitIsolated();
+
+      expect(registries.hasEsm('/scratch.mjs')).toBe(false);
+      expect(registries.hasModuleMock('scratch-id')).toBe(false);
+    });
+
     test('restores originals even when fn throws', () => {
       const registries = new ModuleRegistries();
       const orig = fakeCjs('/a.js');
