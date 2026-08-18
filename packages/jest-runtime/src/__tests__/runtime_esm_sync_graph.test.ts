@@ -981,6 +981,54 @@ describe('Runtime sync ESM graph - data: URI mediatype parsing', () => {
     );
   });
 
+  // The payload decode runs before the format check, so an invalid base64
+  // body wins over an unknown mime type.
+  testWithVmEsm(
+    'reports ERR_INVALID_URL for bad base64 even with an unknown mime',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(
+          FROM,
+          './import-data-uri-bad-mime-bad-base64.mjs',
+        ),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_INVALID_URL',
+          message: 'Invalid URL',
+        }),
+      );
+    },
+  );
+
+  // Only the JavaScript mime tolerates surrounding spaces - application/json
+  // must match exactly, and the rejection echoes the mediatype verbatim.
+  testWithVmEsm(
+    'rejects application/json with a leading space like Node',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-data-uri-space-json.mjs'),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_UNKNOWN_MODULE_FORMAT',
+          message:
+            'Unknown module format:  application/json for URL data: application/json,{}',
+        }),
+      );
+    },
+  );
+
+  // The URL parser strips ASCII tab and newline from the specifier entirely.
+  testWithVmEsm('strips a tab inside the mediatype', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-tab-mime.mjs',
+    )) as any;
+    expect(m.namespace.tabbed).toBe(1);
+  });
+
   testWithVmEsm('accepts the application/javascript mime type', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(

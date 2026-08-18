@@ -141,15 +141,15 @@ function makeRequireCycleError(
 const dataURIRegex =
   /^data:(?<mime>[^;,]*)(?<parameters>(?:;[^;,]*)*),(?<code>.*)$/;
 
-const supportedDataUriMimes = new Set([
-  'text/javascript',
-  'application/json',
-  'application/wasm',
-]);
+// Node's own mediatype extraction (lib/internal/modules/esm/load.js) - the
+// capture is both the format-decision input and what the rejection message
+// echoes, and a failed capture reports the literal string "null".
+const nodeMediatypeRegex = /^data:([^/]+\/[^;,]+)[^,]*,/;
 
-const javaScriptMimeRegex = /^(?:text|application)\/javascript$/i;
-
-const parseableMimeRegex = /^[^/]+\/[^/]+$/;
+// Node's mimeToFormat: the JavaScript mime tolerates surrounding spaces and
+// matches case-insensitively (text/ and application/ alike), while
+// application/json and application/wasm require an exact match.
+const javaScriptMimeRegex = /^ *(?:text|application)\/javascript *$/i;
 
 function makeInvalidUrlError(): NodeJS.ErrnoException {
   const error: NodeJS.ErrnoException = new TypeError('Invalid URL');
@@ -206,54 +206,51 @@ function parseDataUri(specifier: string): {
   mime: string;
   code: string | Buffer;
 } {
-  // The fragment starts at the first # and is not part of the payload - a
-  // fragment before the comma leaves the data: URL without a payload at all.
-  const match = specifier.split('#', 1)[0].match(dataURIRegex);
+  // The URL parser strips ASCII tab and newline from the input entirely, and
+  // the fragment starts at the first # - a fragment before the comma leaves
+  // the data: URL without a payload at all.
+  const serialized = specifier.replaceAll(/[\t\n\r]/g, '').split('#', 1)[0];
+  const match = serialized.match(dataURIRegex);
   if (!match || !match.groups) {
     throw makeInvalidUrlError();
   }
-  // Node matches the JavaScript mime case-insensitively (text/ and
-  // application/ alike) but requires exact case for application/json and
-  // application/wasm. Its rejection echoes the mime only when it parses as a
-  // MIME type, and reports `null` otherwise. ASCII whitespace around the
-  // mediatype is stripped. Mediatype parameters are case-insensitive and
+  // The payload decodes before the format check, so an invalid body wins
+  // over an unknown mime type. Mediatype parameters are case-insensitive and
   // unknown ones are ignored; base64 applies only as the final parameter.
-  const mimeEssence = match.groups.mime.trim();
-  const mime = javaScriptMimeRegex.test(mimeEssence)
-    ? 'text/javascript'
-    : mimeEssence;
-  const {code} = match.groups;
-  if (!supportedDataUriMimes.has(mime)) {
-    const reportedMime = parseableMimeRegex.test(mimeEssence)
-      ? mimeEssence
-      : 'null';
+  const parameters = match.groups.parameters.split(';').slice(1);
+  const isBase64 = parameters.at(-1)?.trim().toLowerCase() === 'base64';
+  const decodedBody = isBase64
+    ? forgivingBase64Decode(
+        forgivingPercentDecode(match.groups.code).toString(),
+      )
+    : forgivingPercentDecode(match.groups.code);
+  const mediatype = serialized.match(nodeMediatypeRegex)?.[1] ?? null;
+  let mime: string | null = null;
+  if (mediatype !== null) {
+    if (javaScriptMimeRegex.test(mediatype)) {
+      mime = 'text/javascript';
+    } else if (
+      mediatype === 'application/json' ||
+      mediatype === 'application/wasm'
+    ) {
+      mime = mediatype;
+    }
+  }
+  if (mime === null) {
     const error: NodeJS.ErrnoException = new RangeError(
-      `Unknown module format: ${reportedMime} for URL ${specifier}`,
+      `Unknown module format: ${mediatype} for URL ${specifier}`,
     );
     error.code = 'ERR_UNKNOWN_MODULE_FORMAT';
     throw error;
   }
-  const parameters = match.groups.parameters.split(';').slice(1);
-  const isBase64 = parameters.at(-1)?.trim().toLowerCase() === 'base64';
   if (mime === 'application/wasm') {
     if (parameters.length === 0) throw new Error('Missing data URI encoding');
     if (!isBase64) {
       throw new Error(`Invalid data URI encoding: ${parameters.join(';')}`);
     }
-    return {
-      code: forgivingBase64Decode(forgivingPercentDecode(code).toString()),
-      mime,
-    };
+    return {code: decodedBody, mime};
   }
-  if (isBase64) {
-    return {
-      code: forgivingBase64Decode(
-        forgivingPercentDecode(code).toString(),
-      ).toString(),
-      mime,
-    };
-  }
-  return {code: forgivingPercentDecode(code).toString(), mime};
+  return {code: decodedBody.toString(), mime};
 }
 
 const urlSchemeRegex = /^[A-Za-z][A-Za-z0-9+.-]*:/;
