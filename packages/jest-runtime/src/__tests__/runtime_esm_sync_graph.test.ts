@@ -110,6 +110,28 @@ describe('Runtime sync ESM graph', () => {
     expect(m.namespace.data).toEqual({answer: 42, label: 'json'});
   });
 
+  testWithVmEsm(
+    'keys a core root the same way it keys a core dependency',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+
+      // `import-core.mjs` pulls in `node:path` as a dependency, which the
+      // walker keys canonically. Importing the builtin as a *root* goes
+      // through a separate branch, and must land on that same entry rather
+      // than minting a second synthetic wrapper.
+      const viaDep = (await runtime.unstable_importModule(
+        FROM,
+        './import-core.mjs',
+      )) as any;
+      const asRoot = (await runtime.unstable_importModule(
+        FROM,
+        'node:path',
+      )) as any;
+
+      expect(asRoot.namespace).toBe(viaDep.namespace.nodePath);
+    },
+  );
+
   testWithVmEsm('imports core node modules through the ESM graph', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
