@@ -100,6 +100,45 @@ describe('ModuleRegistries', () => {
     });
   });
 
+  describe('module mocks through isolation', () => {
+    test('inherits module mocks created outside the isolation block', () => {
+      const registries = new ModuleRegistries();
+      const outer = fakeEsm();
+      registries.setModuleMock('id', outer);
+
+      registries.enterIsolated('isolateModules');
+      expect(registries.hasModuleMock('id')).toBe(true);
+      expect(registries.getModuleMock('id')).toBe(outer);
+      registries.exitIsolated();
+    });
+
+    test('drops module mocks created inside the isolation block on exit', () => {
+      const registries = new ModuleRegistries();
+
+      registries.enterIsolated('isolateModulesAsync');
+      registries.setModuleMock('id', fakeEsm());
+      expect(registries.hasModuleMock('id')).toBe(true);
+      registries.exitIsolated();
+
+      expect(registries.hasModuleMock('id')).toBe(false);
+      expect(registries.getModuleMock('id')).toBeUndefined();
+    });
+
+    test('an inner module mock shadows the outer one without replacing it', () => {
+      const registries = new ModuleRegistries();
+      const outer = fakeEsm();
+      const inner = fakeEsm();
+      registries.setModuleMock('id', outer);
+
+      registries.enterIsolated('isolateModules');
+      registries.setModuleMock('id', inner);
+      expect(registries.getModuleMock('id')).toBe(inner);
+      registries.exitIsolated();
+
+      expect(registries.getModuleMock('id')).toBe(outer);
+    });
+  });
+
   describe('withScratchRegistries', () => {
     test('runs fn against fresh CJS + mock maps and restores originals', () => {
       const registries = new ModuleRegistries();

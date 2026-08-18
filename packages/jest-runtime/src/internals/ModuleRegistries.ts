@@ -27,11 +27,13 @@ class Isolation {
   readonly cjs: ModuleRegistry = new Map();
   readonly esm = new Map<string, JestModule>();
   readonly mock = new Map<string, unknown>();
+  readonly moduleMock = new Map<string, JestModule>();
 
   clear(): void {
     this.cjs.clear();
     this.esm.clear();
     this.mock.clear();
+    this.moduleMock.clear();
   }
 }
 
@@ -110,14 +112,26 @@ export class ModuleRegistries {
     );
   }
 
+  // Same cascade as `getMock` above: an isolation block inherits the module
+  // mocks instantiated outside it, but the instances it creates itself go to
+  // the overlay and are dropped on exit.
   getModuleMock(moduleID: string): JestModule | undefined {
-    return this.moduleMockRegistry.get(moduleID);
+    return (
+      this.isolation?.moduleMock.get(moduleID) ??
+      this.moduleMockRegistry.get(moduleID)
+    );
   }
   setModuleMock(moduleID: string, module: JestModule): void {
-    this.moduleMockRegistry.set(moduleID, module);
+    (this.isolation?.moduleMock ?? this.moduleMockRegistry).set(
+      moduleID,
+      module,
+    );
   }
   hasModuleMock(moduleID: string): boolean {
-    return this.moduleMockRegistry.has(moduleID);
+    return (
+      (this.isolation?.moduleMock.has(moduleID) ?? false) ||
+      this.moduleMockRegistry.has(moduleID)
+    );
   }
 
   getActiveEsmRegistry(): Map<string, JestModule> {
