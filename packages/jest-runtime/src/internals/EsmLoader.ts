@@ -149,22 +149,68 @@ const supportedDataUriMimes = new Set([
 
 const javaScriptMimeRegex = /^(?:text|application)\/javascript$/i;
 
+function makeInvalidUrlError(): NodeJS.ErrnoException {
+  const error: NodeJS.ErrnoException = new TypeError('Invalid URL');
+  error.code = 'ERR_INVALID_URL';
+  return error;
+}
+
+// The WHATWG forgiving percent-decode: valid %XX escapes decode to their
+// byte, anything else passes through as its UTF-8 bytes instead of throwing.
+function forgivingPercentDecode(input: string): Buffer {
+  const bytes: Array<number> = [];
+  let index = 0;
+  while (index < input.length) {
+    if (
+      input[index] === '%' &&
+      /^[0-9A-Fa-f]{2}$/.test(input.slice(index + 1, index + 3))
+    ) {
+      bytes.push(Number.parseInt(input.slice(index + 1, index + 3), 16));
+      index += 3;
+    } else {
+      const codePoint = input.codePointAt(index)!;
+      const charLength = codePoint > 0xff_ff ? 2 : 1;
+      for (const byte of Buffer.from(
+        input.slice(index, index + charLength),
+        'utf8',
+      )) {
+        bytes.push(byte);
+      }
+      index += charLength;
+    }
+  }
+  return Buffer.from(bytes);
+}
+
+// The WHATWG forgiving base64: ASCII whitespace is stripped, up to two
+// trailing `=` are allowed, and anything else outside the base64 alphabet
+// (or a leftover length of 1 mod 4) is an invalid URL.
+function forgivingBase64Decode(input: string): Buffer {
+  let data = input.replaceAll(/[\t\n\f\r ]/g, '');
+  if (data.length % 4 === 0) {
+    data = data.replace(/={1,2}$/, '');
+  }
+  if (data.length % 4 === 1 || !/^[A-Za-z0-9+/]*$/.test(data)) {
+    throw makeInvalidUrlError();
+  }
+  return Buffer.from(data, 'base64');
+}
+
 function parseDataUri(specifier: string): {
   mime: string;
   code: string | Buffer;
 } {
   const match = specifier.match(dataURIRegex);
   if (!match || !match.groups) {
-    const error: NodeJS.ErrnoException = new TypeError('Invalid URL');
-    error.code = 'ERR_INVALID_URL';
-    throw error;
+    throw makeInvalidUrlError();
   }
   // Node matches the JavaScript mime case-insensitively (text/ and
   // application/ alike) but requires exact case for application/json and
   // application/wasm, and its rejection reports the original spelling - or
-  // `null` when the mime is empty. Mediatype parameters are case-insensitive
-  // and unknown ones are ignored; base64 applies only as the final parameter.
-  const mimeEssence = match.groups.mime;
+  // `null` when the mime is empty. ASCII whitespace around the mediatype is
+  // stripped. Mediatype parameters are case-insensitive and unknown ones are
+  // ignored; base64 applies only as the final parameter.
+  const mimeEssence = match.groups.mime.trim();
   const mime = javaScriptMimeRegex.test(mimeEssence)
     ? 'text/javascript'
     : mimeEssence;
@@ -177,21 +223,26 @@ function parseDataUri(specifier: string): {
     throw error;
   }
   const parameters = match.groups.parameters.split(';').slice(1);
-  const isBase64 = parameters.at(-1)?.toLowerCase() === 'base64';
+  const isBase64 = parameters.at(-1)?.trim().toLowerCase() === 'base64';
   if (mime === 'application/wasm') {
     if (parameters.length === 0) throw new Error('Missing data URI encoding');
     if (!isBase64) {
       throw new Error(`Invalid data URI encoding: ${parameters.join(';')}`);
     }
-    return {code: Buffer.from(decodeURIComponent(code), 'base64'), mime};
-  }
-  if (isBase64) {
     return {
-      code: Buffer.from(decodeURIComponent(code), 'base64').toString(),
+      code: forgivingBase64Decode(forgivingPercentDecode(code).toString()),
       mime,
     };
   }
-  return {code: decodeURIComponent(code), mime};
+  if (isBase64) {
+    return {
+      code: forgivingBase64Decode(
+        forgivingPercentDecode(code).toString(),
+      ).toString(),
+      mime,
+    };
+  }
+  return {code: forgivingPercentDecode(code).toString(), mime};
 }
 
 const urlSchemeRegex = /^[A-Za-z][A-Za-z0-9+.-]*:/;

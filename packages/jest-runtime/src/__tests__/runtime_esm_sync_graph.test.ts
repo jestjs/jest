@@ -905,6 +905,44 @@ describe('Runtime sync ESM graph - data: URI mediatype parsing', () => {
     },
   );
 
+  testWithVmEsm('strips whitespace around the mime type', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-space-mime.mjs',
+    )) as any;
+    expect(m.namespace.s).toBe(1);
+  });
+
+  // Node's percent-decoding is forgiving: an invalid escape sequence passes
+  // through instead of throwing.
+  testWithVmEsm('loads a payload with a malformed percent escape', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-bad-percent.mjs',
+    )) as any;
+    expect(m.namespace.m).toBe('\u{FFFD}%A');
+  });
+
+  testWithVmEsm(
+    'rejects invalid base64 with ERR_INVALID_URL like Node',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(
+          FROM,
+          './import-data-uri-invalid-base64.mjs',
+        ),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_INVALID_URL',
+          message: 'Invalid URL',
+        }),
+      );
+    },
+  );
+
   testWithVmEsm('accepts the application/javascript mime type', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
@@ -949,6 +987,9 @@ describe('Runtime sync ESM graph - require.cache proxy in isolation', () => {
       expect(result.entryExports).toBeDefined();
       expect(result.hasEntry).toBe(true);
       expect(result.listed).toBe(true);
+      expect(result.selfEntry).toBeDefined();
+      expect(result.selfHasEntry).toBe(true);
+      expect(result.selfListed).toBe(true);
     },
   );
 });
