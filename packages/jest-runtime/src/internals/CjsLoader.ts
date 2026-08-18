@@ -91,7 +91,19 @@ export class CjsLoader {
     }
 
     if (!modulePath) {
-      modulePath = this.resolution.resolveCjs(from, moduleName);
+      try {
+        modulePath = this.resolution.resolveCjs(from, moduleName);
+      } catch (cjsResolveError) {
+        // ESM-only packages (with only an "import" export condition and no
+        // "require"/"default" fallback) cannot be resolved with CJS conditions.
+        // On Node 24.9+ we can load them via the sync ESM graph walker, so
+        // retry with ESM conditions before giving up.
+        if (supportsSyncEvaluate) {
+          modulePath = this.resolution.resolveEsm(from, moduleName);
+        } else {
+          throw cjsResolveError;
+        }
+      }
     }
 
     // On Node 24.9+ we can require() ESM natively. On older Node, fall
