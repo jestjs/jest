@@ -8,7 +8,14 @@
 import {afterEach, beforeEach, expect, test} from '@jest/globals';
 import {jestExpect} from '@jest/expect';
 import type {Circus, Global} from '@jest/types';
-import {test as circusTest} from '../index';
+import {
+  afterAll as circusAfterAll,
+  afterEach as circusAfterEach,
+  beforeAll as circusBeforeAll,
+  beforeEach as circusBeforeEach,
+  describe as circusDescribe,
+  test as circusTest,
+} from '../index';
 import run from '../run';
 import {getState, resetState} from '../state';
 import {RETRY_TIMES} from '../types';
@@ -54,5 +61,47 @@ test('expect state exposes the same test entry across retries', async () => {
   expect(observedNames).toEqual(['retried test', 'retried test']);
   expect(observedIdentities).toEqual([testEntry, testEntry]);
   expect(jestExpect.getState().currentConcurrentTestName?.()).toBeUndefined();
+  expect(jestExpect.getState().currentTestIdentity?.()).toBeUndefined();
+});
+
+test('expect state exposes test identities to tests and each hooks', async () => {
+  const observed: Array<[string, object | undefined]> = [];
+  const recordIdentity = (name: string) => {
+    observed.push([name, jestExpect.getState().currentTestIdentity?.()]);
+  };
+
+  circusDescribe('suite', () => {
+    circusBeforeAll(() => {
+      recordIdentity('beforeAll');
+    });
+    circusBeforeEach(() => {
+      recordIdentity('beforeEach');
+    });
+    circusTest('test', () => {
+      recordIdentity('test');
+    });
+    circusAfterEach(() => {
+      recordIdentity('afterEach');
+    });
+    circusAfterAll(() => {
+      recordIdentity('afterAll');
+    });
+  });
+
+  const describeBlock = getState().rootDescribeBlock
+    .children[0] as Circus.DescribeBlock;
+  const testEntry = describeBlock.children.find(
+    child => child.type === 'test',
+  ) as Circus.TestEntry;
+
+  await run();
+
+  expect(observed).toEqual([
+    ['beforeAll', undefined],
+    ['beforeEach', testEntry],
+    ['test', testEntry],
+    ['afterEach', testEntry],
+    ['afterAll', undefined],
+  ]);
   expect(jestExpect.getState().currentTestIdentity?.()).toBeUndefined();
 });

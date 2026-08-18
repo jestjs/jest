@@ -6,6 +6,7 @@
  */
 
 export const STATE_SYM = Symbol('JEST_STATE_SYMBOL');
+export const RETRY_TIMES_SETTER = Symbol.for('RETRY_TIMES_SETTER');
 export const RETRY_TIMES = Symbol.for('RETRY_TIMES');
 export const RETRY_IMMEDIATELY = Symbol.for('RETRY_IMMEDIATELY');
 export const WAIT_BEFORE_RETRY = Symbol.for('WAIT_BEFORE_RETRY');

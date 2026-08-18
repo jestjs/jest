@@ -297,3 +297,55 @@ test('works when multiple tests have snapshots but only one of them failed multi
     expect(exitCode).toBe(0);
   }
 });
+
+test('preserves snapshot updates across describe and test retries', () => {
+  const filename = 'entire-describe-and-test-retry.test.js';
+  const template = makeTemplate(`
+    jest.retryTimes(1);
+
+    test('before external', () =>
+      expect('before external').toMatchSnapshot(),
+    );
+    test('before inline', () =>
+      expect('before inline').toMatchInlineSnapshot(),
+    );
+
+    describe('with retries', () => {
+      let attempt = 0;
+      jest.retryTimes(1, {entireDescribe: true});
+      beforeAll(() => {
+        attempt += 1;
+      });
+      test('suite external', () => expect(attempt).toMatchSnapshot());
+      test('suite inline', () =>
+        expect(\`suite \${attempt}\`).toMatchInlineSnapshot(),
+      );
+      test('flaky', () => expect(attempt).toBe(2));
+    });
+
+    let laterAttempt = 0;
+    test('later per-test retry', () => {
+      laterAttempt += 1;
+      expect('later inline').toMatchInlineSnapshot();
+      expect(laterAttempt).toBe(2);
+    });
+  `);
+
+  writeFiles(TESTS_DIR, {[filename]: template([])});
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const snapshotContents = fs.readFileSync(
+    path.join(TESTS_DIR, '__snapshots__', `${filename}.snap`),
+    'utf8',
+  );
+  const testContents = fs.readFileSync(path.join(TESTS_DIR, filename), 'utf8');
+
+  expect(stderr).toMatch('5 snapshots written from 1 test suite.');
+  expect(snapshotContents).toContain('= `"before external"`;');
+  expect(snapshotContents).toContain('= `2`;');
+  expect(snapshotContents.match(/exports\[/g)).toHaveLength(2);
+  expect(testContents).toContain('toMatchInlineSnapshot(`"before inline"`)');
+  expect(testContents).toContain('toMatchInlineSnapshot(`"suite 2"`)');
+  expect(testContents).toContain('toMatchInlineSnapshot(`"later inline"`)');
+  expect(testContents.match(/toMatchInlineSnapshot\(`/g)).toHaveLength(3);
+  expect(exitCode).toBe(0);
+});

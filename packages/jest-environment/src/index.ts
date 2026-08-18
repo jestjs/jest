@@ -307,7 +307,10 @@ export interface Jest {
    * `waitBeforeRetry` is the number of milliseconds to wait before retrying
    *
    * `retryImmediately` is the flag to retry the failed test immediately after
-   *  failure
+   * failure.
+   *
+   * `entireDescribe` is the flag to retry all tests and hooks in the describe
+   * block where `retryTimes` is called
    *
    * @remarks
    * Only available with `jest-circus` runner.
@@ -315,6 +318,7 @@ export interface Jest {
   retryTimes(
     numRetries: number,
     options?: {
+      entireDescribe?: boolean;
       logErrorsBeforeRetry?: boolean;
       retryImmediately?: boolean;
       waitBeforeRetry?: number;
