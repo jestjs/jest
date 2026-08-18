@@ -32,6 +32,7 @@ import globals from '..';
 import run from '../run';
 import {addEventHandler, dispatch, getState as getRunnerState} from '../state';
 import testCaseReportHandler from '../testCaseReportHandler';
+import {RETRY_TIMES_SETTER} from '../types';
 import {unhandledRejectionHandler} from '../unhandledRejectionHandler';
 import {getTestID, parseSingleTestResult} from '../utils';
 
@@ -107,6 +108,17 @@ export const initialize = async ({
     expect: jestExpect,
   };
   setGlobalsForRuntime(runtimeGlobals);
+  environment.global[RETRY_TIMES_SETTER] = (
+    retryOptions: Circus.DescribeRetryOptions,
+  ) => {
+    const state = getRunnerState();
+    if (state.hasStarted) {
+      throw new Error(
+        'Cannot set retry options after tests have started running. Retry options must be set synchronously.',
+      );
+    }
+    state.describeRetryOptions.set(state.currentDescribeBlock, retryOptions);
+  };
 
   if (config.injectGlobals) {
     Object.assign(environment.global, runtimeGlobals);

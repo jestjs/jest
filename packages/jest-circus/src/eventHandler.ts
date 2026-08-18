@@ -11,6 +11,10 @@ import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
+import {
+  getTestExecutionContext,
+  hasActiveDescribeRetryAttempt,
+} from './testExecutionContext';
 import {LOG_ERRORS_BEFORE_RETRY, TEST_TIMEOUT_SYMBOL} from './types';
 import {
   addErrorToEachTestUnderDescribe,
@@ -273,35 +277,49 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       // execution, which will result in one test's error failing another test.
       // In any way, it should be possible to track where the error was thrown
       // from.
-      if (state.currentlyRunningTest) {
-        if (event.promise) {
-          state.currentlyRunningTest.unhandledRejectionErrorByPromise.set(
-            event.promise,
-            event.error,
+      const context = getTestExecutionContext();
+      if (event.promise) {
+        let target = state.unhandledRejectionErrorByPromise;
+        if (context?.test) {
+          target = context.test.unhandledRejectionErrorByPromise;
+        } else if (context?.hook) {
+          const hookTarget = state.unhandledRejectionErrorByPromiseByHook.get(
+            context.hook,
           );
-        } else {
-          state.currentlyRunningTest.errors.push(event.error);
+          if (hookTarget) {
+            target = hookTarget;
+          } else {
+            target = new Map();
+            state.unhandledRejectionErrorByPromiseByHook.set(
+              context.hook,
+              target,
+            );
+          }
         }
+        target.set(event.promise, event.error);
+        state.unhandledRejectionErrorByPromiseTarget.set(event.promise, target);
+
+        const hasOwner =
+          context?.test !== undefined || context?.hook !== undefined;
+        if (hasActiveDescribeRetryAttempt() && !hasOwner) {
+          state.processErrorGeneration++;
+        }
+      } else if (context?.test) {
+        context.test.errors.push(event.error);
       } else {
-        if (event.promise) {
-          state.unhandledRejectionErrorByPromise.set(
-            event.promise,
-            event.error,
-          );
-        } else {
-          state.unhandledErrors.push(event.error);
-        }
+        // Nothing owns this error, so a discarded describe attempt cannot roll
+        // it back — it has to stop the retry instead.
+        state.processErrorGeneration++;
+        state.unhandledErrors.push(event.error);
       }
       break;
     }
     case 'error_handled': {
-      if (state.currentlyRunningTest) {
-        state.currentlyRunningTest.unhandledRejectionErrorByPromise.delete(
-          event.promise,
-        );
-      } else {
-        state.unhandledRejectionErrorByPromise.delete(event.promise);
-      }
+      const target = state.unhandledRejectionErrorByPromiseTarget.get(
+        event.promise,
+      );
+      target?.delete(event.promise);
+      state.unhandledRejectionErrorByPromiseTarget.delete(event.promise);
       break;
     }
   }

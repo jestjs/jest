@@ -9,7 +9,7 @@ import type {SyntheticModule, Context as VMContext} from 'node:vm';
 import type {Jest, JestEnvironment} from '@jest/environment';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {expect} from '@jest/globals';
-import type {Config} from '@jest/types';
+import type {Circus, Config} from '@jest/types';
 import type {ModuleMocker} from 'jest-mock';
 import type {MockState} from './MockState';
 import type {TestState} from './TestState';
@@ -17,6 +17,7 @@ import {syntheticFromExports} from './syntheticBuilders';
 import type {EnvironmentGlobals, JestGlobalsWithJest} from './types';
 
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
+const retryTimesSetterSymbol = Symbol.for('RETRY_TIMES_SETTER');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
 const waitBeforeRetrySymbol = Symbol.for('WAIT_BEFORE_RETRY');
 const retryImmediatelySymbol = Symbol.for('RETRY_IMMEDIATELY');
@@ -281,12 +282,24 @@ export class JestGlobals {
     };
 
     const retryTimes: Jest['retryTimes'] = (numTestRetries, options) => {
-      this.environment.global[retryTimesSymbol] = numTestRetries;
-      this.environment.global[logErrorsBeforeRetrySymbol] =
-        options?.logErrorsBeforeRetry;
-      this.environment.global[waitBeforeRetrySymbol] = options?.waitBeforeRetry;
-      this.environment.global[retryImmediatelySymbol] =
-        options?.retryImmediately;
+      if (options?.entireDescribe) {
+        const retryTimesSetter = this.environment.global[
+          retryTimesSetterSymbol
+        ] as ((retryOptions: Circus.DescribeRetryOptions) => void) | undefined;
+        retryTimesSetter?.({
+          logErrorsBeforeRetry: options.logErrorsBeforeRetry,
+          numRetries: numTestRetries,
+          waitBeforeRetry: options.waitBeforeRetry,
+        });
+      } else {
+        this.environment.global[retryTimesSymbol] = numTestRetries;
+        this.environment.global[logErrorsBeforeRetrySymbol] =
+          options?.logErrorsBeforeRetry;
+        this.environment.global[waitBeforeRetrySymbol] =
+          options?.waitBeforeRetry;
+        this.environment.global[retryImmediatelySymbol] =
+          options?.retryImmediately;
+      }
 
       return jestObject;
     };
