@@ -60,21 +60,48 @@ const handleResolveResult = (result: ResolveResult) => {
   return result.path!;
 };
 
+let cachedPreserveSymlinks:
+  | {
+      execArgv: Array<string>;
+      nodeOptions: string | undefined;
+      preserveEnv: string | undefined;
+      result: boolean;
+    }
+  | undefined;
+
 /**
  * Whether Node was started with `--preserve-symlinks` / `NODE_PRESERVE_SYMLINKS`.
+ *
+ * Memoized on its inputs rather than computed once: resolution must keep
+ * reacting to `process.env` changes (e.g. from a setup file), it just
+ * shouldn't re-parse `NODE_OPTIONS` on every call.
  *
  * @see https://nodejs.org/api/cli.html#--preserve-symlinks
  */
 function shouldPreserveSymlinks(): boolean {
+  const execArgv = process.execArgv;
+  const nodeOptions = process.env.NODE_OPTIONS;
+  const preserveEnv = process.env.NODE_PRESERVE_SYMLINKS;
+
+  if (
+    cachedPreserveSymlinks &&
+    cachedPreserveSymlinks.execArgv === execArgv &&
+    cachedPreserveSymlinks.nodeOptions === nodeOptions &&
+    cachedPreserveSymlinks.preserveEnv === preserveEnv
+  ) {
+    return cachedPreserveSymlinks.result;
+  }
+
   // `NODE_PRESERVE_SYMLINKS` is on only when exactly `1`, and `--preserve-symlinks`
   // is matched exactly so `--preserve-symlinks-main` (entry point only) is excluded.
-  return (
-    process.env.NODE_PRESERVE_SYMLINKS === '1' ||
-    process.execArgv.includes('--preserve-symlinks') ||
-    (process.env.NODE_OPTIONS ?? '')
-      .split(/\s+/)
-      .includes('--preserve-symlinks')
-  );
+  const result =
+    preserveEnv === '1' ||
+    execArgv.includes('--preserve-symlinks') ||
+    (nodeOptions ?? '').split(/\s+/).includes('--preserve-symlinks');
+
+  cachedPreserveSymlinks = {execArgv, nodeOptions, preserveEnv, result};
+
+  return result;
 }
 
 function baseResolver(path: string, options: ResolverOptions): string;

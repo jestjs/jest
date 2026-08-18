@@ -82,6 +82,20 @@ describe('isCoreModule', () => {
     const isCore = resolver.isCoreModule('node:not-a-core-module');
     expect(isCore).toBe(false);
   });
+
+  it('scans the moduleNameMapper once per specifier', () => {
+    const regex = /^constants$/;
+    const regexTest = jest.spyOn(regex, 'test');
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      moduleNameMapper: [{moduleName: '$1', regex}],
+    } as ResolverConfig);
+
+    expect(resolver.isCoreModule('constants')).toBe(false);
+    expect(resolver.isCoreModule('constants')).toBe(false);
+
+    expect(regexTest).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('findNodeModule', () => {

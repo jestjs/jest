@@ -226,6 +226,17 @@ describe('Resolution', () => {
         {conditions: ESM},
       );
     });
+
+    test('passes one long-lived options object across calls', () => {
+      const resolver = makeResolver();
+      const r = new Resolution(resolver, [], []);
+
+      r.getCjsModuleId(virtualMocks, '/a', 'foo');
+      r.getCjsModuleId(virtualMocks, '/b', 'bar');
+
+      const getModuleID = jest.mocked(resolver.getModuleID);
+      expect(getModuleID.mock.calls[0][3]).toBe(getModuleID.mock.calls[1][3]);
+    });
   });
 
   describe('mock module lookups', () => {
