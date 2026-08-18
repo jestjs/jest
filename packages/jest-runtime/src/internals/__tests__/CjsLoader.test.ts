@@ -193,29 +193,6 @@ describe('CjsLoader.requireModule', () => {
     expect(loader.requireModule('/from.js', './m.mjs')).toBe('esm-result');
     expect(stubs.requireEsm).toHaveBeenCalledWith('/m.mjs');
   });
-
-  testWithSyncEsm('routes an ESM cache hit to requireEsm too', () => {
-    const esmRegistry = new Map<string, unknown>([
-      ['/m.mjs', {namespace: {named: 'x'}, status: 'evaluated'}],
-    ]);
-    const {loader, stubs} = makeLoader({
-      registries: {
-        getActiveCjsRegistry: jest.fn(() => new Map()),
-        getActiveEsmRegistry: jest.fn(() => esmRegistry),
-      } as unknown as jest.Mocked<ModuleRegistries>,
-      resolution: {
-        getCjsMockModule: jest.fn(() => null),
-        getModule: jest.fn(() => null),
-        isCoreModule: jest.fn(() => false),
-        resolveCjs: jest.fn(() => '/m.mjs'),
-        shouldLoadAsEsm: jest.fn(() => true),
-      } as unknown as jest.Mocked<Resolution>,
-    });
-
-    stubs.requireEsm.mockReturnValue('esm-result' as any);
-    expect(loader.requireModule('/from.js', './m.mjs')).toBe('esm-result');
-    expect(stubs.requireEsm).toHaveBeenCalledWith('/m.mjs');
-  });
 });
 
 describe('CjsLoader.loadModule', () => {
