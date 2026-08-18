@@ -140,6 +140,23 @@ describe('ModuleRegistries', () => {
   });
 
   describe('withScratchRegistries', () => {
+    test('suspends the isolation overlay so the scratch load cannot leak', () => {
+      const registries = new ModuleRegistries();
+      registries.enterIsolated('isolateModules');
+      registries.setCjs('/isolated.js', fakeCjs('/isolated.js'));
+
+      registries.withScratchRegistries(() => {
+        expect(registries.isIsolated()).toBe(false);
+        expect(registries.hasCjs('/isolated.js')).toBe(false);
+        registries.setCjs('/scratch.js', fakeCjs('/scratch.js'));
+      });
+
+      expect(registries.isIsolated()).toBe(true);
+      expect(registries.hasCjs('/isolated.js')).toBe(true);
+      expect(registries.hasCjs('/scratch.js')).toBe(false);
+      registries.exitIsolated();
+    });
+
     test('runs fn against fresh CJS + mock maps and restores originals', () => {
       const registries = new ModuleRegistries();
       const orig = fakeCjs('/a.js');

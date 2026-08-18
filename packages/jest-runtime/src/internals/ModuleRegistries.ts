@@ -178,13 +178,19 @@ export class ModuleRegistries {
   withScratchRegistries<T>(fn: () => T): T {
     const originalMock = this.mockRegistry;
     const originalModule = this.moduleRegistry;
+    const originalIsolation = this.isolation;
     this.mockRegistry = new Map();
     this.moduleRegistry = new Map();
+    // Every accessor prefers the isolation overlay, so swapping only the base
+    // maps would send the scratch load into the live isolated registry - the
+    // pollution this exists to prevent.
+    this.isolation = null;
     try {
       return fn();
     } finally {
       this.mockRegistry = originalMock;
       this.moduleRegistry = originalModule;
+      this.isolation = originalIsolation;
     }
   }
 

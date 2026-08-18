@@ -58,6 +58,7 @@
 - `[jest-runner, @jest/source-map]` Keep a source-mapped stack for an error thrown after the test environment was torn down ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[jest-runtime, @jest/source-map]` Keep source maps past teardown and past the next test file's `install`, so a stack from a file no earlier stack mentioned still points at the original source ([#16330](https://github.com/jestjs/jest/pull/16330))
 - `[jest-runtime]` Scope module mocks instantiated inside `jest.isolateModules`/`isolateModulesAsync` to that block, so a mock first imported there no longer outlives it - matching how CommonJS mocks already behave ([#16365](https://github.com/jestjs/jest/pull/16365))
+- `[jest-runtime]` Suspend module isolation while generating an automock, so loading the real module to read its shape no longer populates the isolated registry ([#16365](https://github.com/jestjs/jest/pull/16365))
 - `[jest-runtime]` Key builtin modules in the ESM registry by one canonical specifier ([#16341](https://github.com/jestjs/jest/pull/16341))
 - `[jest-runtime]` `import.meta.resolve()` for a builtin uses its `node:` specifier ([#16341](https://github.com/jestjs/jest/pull/16341))
 - `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
