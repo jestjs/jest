@@ -1029,6 +1029,23 @@ describe('Runtime sync ESM graph - data: URI mediatype parsing', () => {
     expect(m.namespace.tabbed).toBe(1);
   });
 
+  // Node never sees a literal non-ASCII character around the base64 token
+  // (its URL parser percent-encodes it), so the parameter is not recognized,
+  // the payload stays percent-decoded base64 text, and parsing that as
+  // JavaScript fails on the trailing padding.
+  testWithVmEsm(
+    'does not honor a base64 parameter padded with Unicode whitespace',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(
+          FROM,
+          './import-data-uri-nbsp-base64.mjs',
+        ),
+      ).rejects.toThrow('Unexpected end of input');
+    },
+  );
+
   testWithVmEsm('accepts the application/javascript mime type', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(

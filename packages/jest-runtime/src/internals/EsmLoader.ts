@@ -218,7 +218,13 @@ function parseDataUri(specifier: string): {
   // over an unknown mime type. Mediatype parameters are case-insensitive and
   // unknown ones are ignored; base64 applies only as the final parameter.
   const parameters = match.groups.parameters.split(';').slice(1);
-  const isBase64 = parameters.at(-1)?.trim().toLowerCase() === 'base64';
+  // Spaces are the only whitespace that can surround the token: the URL
+  // parser strips tab and newline and percent-encodes everything else.
+  const isBase64 =
+    parameters
+      .at(-1)
+      ?.replaceAll(/^ +| +$/g, '')
+      .toLowerCase() === 'base64';
   const decodedBody = isBase64
     ? forgivingBase64Decode(
         forgivingPercentDecode(match.groups.code).toString(),
