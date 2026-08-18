@@ -382,7 +382,12 @@ export class EsmLoader {
     if ('module.exports' in namespace) {
       return namespace['module.exports'];
     }
+    // The facade needs `linkRequests`/`instantiate` and a synchronously
+    // settling evaluate - the capabilities `require(esm)` itself is gated on.
+    // Below that gate this is reached only through `require.cache` reads,
+    // which keep handing out the raw namespace.
     if (
+      !supportsSyncEvaluate ||
       module.status !== 'evaluated' ||
       !('default' in namespace) ||
       '__esModule' in namespace

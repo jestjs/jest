@@ -878,4 +878,39 @@ describe('validateImportAttributes', () => {
       expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_UNSUPPORTED');
     });
   });
+
+  describe('requireResultFromModule', () => {
+    test('hands out the raw namespace when sync evaluation is unavailable', () => {
+      const {stubs} = makeLoader();
+      jest.isolateModules(() => {
+        jest.doMock('../nodeCapabilities', () => ({
+          ...jest.requireActual('../nodeCapabilities'),
+          supportsSyncEvaluate: false,
+        }));
+        const {EsmLoader: GatedEsmLoader} = require('../EsmLoader');
+        const loader = new GatedEsmLoader({
+          cjsExportsCache: stubs.cjsExportsCache,
+          coreModule: stubs.coreModule,
+          environment: stubs.environment,
+          fileCache: stubs.fileCache,
+          jestGlobals: stubs.jestGlobals,
+          mockState: stubs.mockState,
+          registries: stubs.registries,
+          requireModuleOrMock: stubs.requireModuleOrMock,
+          resolution: stubs.resolution,
+          shouldLoadAsEsm: stubs.shouldLoadAsEsm,
+          testPath: '/test.js',
+          testState: stubs.testState,
+          transformCache: stubs.transformCache,
+        });
+        const namespace = {default: 'D', x: 1};
+        const module = {
+          identifier: '/m.mjs',
+          namespace,
+          status: 'evaluated',
+        };
+        expect(loader.requireResultFromModule(module)).toBe(namespace);
+      });
+    });
+  });
 });
