@@ -31,8 +31,9 @@ export default function cachedShouldLoadAsEsm(
 
   // The answer depends on the extension list, and the cache is shared between
   // projects in a process - key on both so projects with different
-  // `extensionsToTreatAsEsm` don't read each other's answers.
-  const cacheKey = `${extensionsToTreatAsEsm.join('\0')}\0${path}`;
+  // `extensionsToTreatAsEsm` don't read each other's answers. JSON rather
+  // than a delimiter join, so no legal extension value can collide.
+  const cacheKey = `${JSON.stringify(extensionsToTreatAsEsm)}\0${path}`;
   let cachedLookup = cachedFileLookups.get(cacheKey);
 
   if (cachedLookup === undefined) {
