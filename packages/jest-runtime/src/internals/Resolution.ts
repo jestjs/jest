@@ -56,7 +56,16 @@ export class Resolution {
     );
   }
 
+  // Package `type` governs only files whose extension leaves the format
+  // open - `.mjs` and configured ESM extensions are ESM regardless.
   isExplicitlyCommonjs(modulePath: string): boolean {
+    const extension = path.extname(modulePath);
+    if (
+      extension === '.mjs' ||
+      this.extensionsToTreatAsEsm.includes(extension)
+    ) {
+      return false;
+    }
     return Resolver.unstable_isExplicitlyCommonjs(modulePath);
   }
 

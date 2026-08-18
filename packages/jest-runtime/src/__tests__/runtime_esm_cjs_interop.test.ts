@@ -370,4 +370,28 @@ describe('Runtime explicit "type": "commonjs" package', () => {
       expect(importResult.message).toContain("Unexpected token 'export'");
     },
   );
+
+  // Package "type" governs only .js files - an .mjs file is ESM regardless.
+  testWithSyncEsm(
+    'require()s an .mjs file inside the package as ESM',
+    async () => {
+      const runtime = await createRuntime(__filename, untransformedNodeModules);
+      const ns = runtime.requireModule(FROM, 'commonjs-marked/entry.mjs');
+      expect(ns.esmEntry).toBe('esm-entry');
+    },
+  );
+
+  testWithoutSyncEsm(
+    'throws ERR_REQUIRE_ESM for an untransformed .mjs file inside the package',
+    async () => {
+      const runtime = await createRuntime(__filename, untransformedNodeModules);
+      expect(() =>
+        runtime.requireModule(FROM, 'commonjs-marked/entry.mjs'),
+      ).toThrow(
+        expect.objectContaining({
+          code: 'ERR_REQUIRE_ESM',
+        }),
+      );
+    },
+  );
 });
