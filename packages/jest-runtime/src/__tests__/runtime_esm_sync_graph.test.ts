@@ -110,6 +110,28 @@ describe('Runtime sync ESM graph', () => {
     expect(m.namespace.data).toEqual({answer: 42, label: 'json'});
   });
 
+  testWithVmEsm(
+    'keys a core root the same way it keys a core dependency',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+
+      // `import-core.mjs` pulls in `node:path` as a dependency, which the
+      // walker keys canonically. Importing the builtin as a *root* goes
+      // through a separate branch, and must land on that same entry rather
+      // than minting a second synthetic wrapper.
+      const viaDep = (await runtime.unstable_importModule(
+        FROM,
+        './import-core.mjs',
+      )) as any;
+      const asRoot = (await runtime.unstable_importModule(
+        FROM,
+        'node:path',
+      )) as any;
+
+      expect(asRoot.namespace).toBe(viaDep.namespace.nodePath);
+    },
+  );
+
   testWithVmEsm('imports core node modules through the ESM graph', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
@@ -476,6 +498,98 @@ describe('Runtime sync ESM graph - require(esm)', () => {
       expect(() => runtime.requireModule(FROM, './throws-at-eval.mjs')).toThrow(
         'boom from esm eval',
       );
+    },
+  );
+
+  testWithSyncEsm(
+    'rethrows the original error when requiring a module that already failed',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      expect(() => runtime.requireModule(FROM, './throws-at-eval.mjs')).toThrow(
+        'boom from esm eval',
+      );
+      expect(() => runtime.requireModule(FROM, './throws-at-eval.mjs')).toThrow(
+        'boom from esm eval',
+      );
+    },
+  );
+
+  testWithSyncEsm(
+    'evaluates a module left linked when a sibling threw',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      expect(() =>
+        runtime.requireModule(FROM, './import-throwing-then-sibling.mjs'),
+      ).toThrow('boom from esm eval');
+      const ns = runtime.requireModule(FROM, './linked-sibling.mjs');
+      expect(ns.value).toBe('sibling');
+    },
+  );
+
+  testWithSyncEsm(
+    'adopts a linked module as a dependency of a later graph',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      expect(() =>
+        runtime.requireModule(FROM, './import-throwing-then-sibling.mjs'),
+      ).toThrow('boom from esm eval');
+
+      // A fresh root pulls the leftover in as a *dependency*, so it is adopted
+      // into the scratch graph and evaluated by the root's cascade rather than
+      // taking the root cache branch.
+      const ns = runtime.requireModule(FROM, './import-linked-sibling.mjs');
+      expect(ns.value).toBe('sibling');
+      expect(ns.wrapper).toBe('wrapper');
+    },
+  );
+
+  testWithSyncEsm(
+    'rejects a concurrent import() whose sibling evaluated the module to an error',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      // An async-only resolver forces the legacy path even on Node with sync
+      // evaluate; there, the first caller's sync-branch evaluation stores no
+      // promise in `evaluatingMap`, so the second caller must re-read the
+      // status after its awaits instead of returning the errored module.
+      runtime._resolution.canResolveSync = () => false;
+
+      const results = await Promise.allSettled([
+        runtime.unstable_importModule(
+          FROM,
+          './import-throwing-then-sibling.mjs',
+        ),
+        runtime.unstable_importModule(
+          FROM,
+          './import-throwing-then-sibling.mjs',
+        ),
+      ]);
+
+      expect(results.map(result => result.status)).toEqual([
+        'rejected',
+        'rejected',
+      ]);
+      for (const result of results) {
+        expect((result as PromiseRejectedResult).reason.message).toBe(
+          'boom from esm eval',
+        );
+      }
+    },
+  );
+
+  testWithSyncEsm(
+    'reports the same top-level await error when a failed graph is required again',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const expected = expect.objectContaining({
+        code: 'ERR_REQUIRE_ASYNC_MODULE',
+        message: expect.stringMatching(/top-level await/),
+      });
+      expect(() =>
+        runtime.requireModule(FROM, './import-cjs-then-tla.mjs'),
+      ).toThrow(expected);
+      expect(() =>
+        runtime.requireModule(FROM, './import-cjs-then-tla.mjs'),
+      ).toThrow(expected);
     },
   );
 

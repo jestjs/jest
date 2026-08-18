@@ -97,17 +97,6 @@ export class CjsLoader {
     // On Node 24.9+ we can require() ESM natively. On older Node, fall
     // through to the CJS path so a configured transform can convert it.
     if (supportsSyncEvaluate && this.resolution.shouldLoadAsEsm(modulePath)) {
-      // Fast path: skip the graph walker on cache hits.
-      const reg = this.registries.getActiveEsmRegistry();
-      const cached = reg.get(modulePath);
-      if (cached && !(cached instanceof Promise)) {
-        const cachedNamespace = cached.namespace as Record<string, unknown>;
-        return (
-          'module.exports' in cachedNamespace
-            ? cachedNamespace['module.exports']
-            : cachedNamespace
-        ) as T;
-      }
       return this.requireEsm<T>(modulePath);
     }
 
