@@ -155,6 +155,17 @@ describe('Runtime requireModule', () => {
     }
   });
 
+  it('reflects a main module assigned after `require` was built', async () => {
+    const runtime = await createRuntime(__filename);
+    const lazy = runtime.requireModule(
+      __filename,
+      './test_root/modules_with_main/lazy_main.js',
+    );
+    expect(lazy.getMain()).toBeNull();
+    runtime.testMainModule.current = module;
+    expect(lazy.getMain()).toBe(module);
+  });
+
   it('throws on non-existent haste modules', async () => {
     const runtime = await createRuntime(__filename);
     expect(() => {

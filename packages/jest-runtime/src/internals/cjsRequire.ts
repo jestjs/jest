@@ -86,9 +86,12 @@ export class RequireBuilder {
     moduleRequire.resolve = resolveImpl;
     moduleRequire.cache = this.registries.createRequireCacheProxy();
 
+    // A getter, not a snapshot: the test file's own require object is built
+    // before the executor assigns the main module, so a captured value would
+    // leave the entry point's require.main null.
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
-      value: this.testMainModule.current,
+      get: () => this.testMainModule.current,
     });
 
     return moduleRequire;

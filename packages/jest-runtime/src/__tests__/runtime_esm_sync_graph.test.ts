@@ -153,6 +153,26 @@ describe('Runtime sync ESM graph', () => {
     );
   });
 
+  testWithVmEsm('sets import.meta.main only for the test file', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const imported = (await runtime.unstable_importModule(
+      FROM,
+      './import-meta-main.mjs',
+    )) as any;
+    expect(imported.namespace.ownMain).toBe(false);
+    expect(imported.namespace.depMain).toBe(false);
+
+    const entryRuntime = await createRuntime(
+      path.join(ROOT_DIR, 'meta-main.mjs'),
+      {rootDir: ROOT_DIR},
+    );
+    const entry = (await entryRuntime.unstable_importModule(
+      FROM,
+      './meta-main.mjs',
+    )) as any;
+    expect(entry.namespace.mainValue).toBe(true);
+  });
+
   testWithVmEsm('pulls a CJS dependency into the sync ESM graph', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
@@ -161,6 +181,19 @@ describe('Runtime sync ESM graph', () => {
     )) as any;
     expect(m.namespace.cjsValue).toBe('from-cjs');
   });
+
+  testWithVmEsm(
+    "exposes a CJS dependency's exports as the 'module.exports' named export",
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-cjs-namespace.mjs',
+      )) as any;
+      expect(m.namespace.moduleExportsValue).toEqual({cjsValue: 'from-cjs'});
+      expect(m.namespace.sameAsDefault).toBe(true);
+    },
+  );
 
   testWithVmEsm('imports a wasm module via data: URI', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -371,6 +404,57 @@ describe('Runtime sync ESM graph - require(esm)', () => {
       );
     },
   );
+
+  testWithSyncEsm(
+    'marks a required module that has a default export with __esModule',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const result = runtime.requireModule(FROM, './with-default.mjs');
+      expect(
+        Object.getOwnPropertyDescriptor(result, '__esModule'),
+      ).toStrictEqual({
+        configurable: false,
+        enumerable: true,
+        value: true,
+        writable: true,
+      });
+      expect(result.default).toBe('D');
+      expect(result.x).toBe(1);
+      expect(runtime.requireModule(FROM, './with-default.mjs')).toBe(result);
+    },
+  );
+
+  testWithSyncEsm(
+    'adds no __esModule marker without a default export',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const result = runtime.requireModule(FROM, './a.mjs');
+      expect('__esModule' in result).toBe(false);
+      expect(result.valueA).toBe('a');
+    },
+  );
+
+  testWithSyncEsm("keeps a module's own __esModule export as-is", async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const result = runtime.requireModule(FROM, './own-esmodule.mjs');
+    expect(result.__esModule).toBe(false);
+    expect(result.default).toBe('overridden');
+  });
+
+  testWithSyncEsm('keeps live bindings through the facade', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const result = runtime.requireModule(FROM, './live-bindings.mjs');
+    expect(result.__esModule).toBe(true);
+    expect(result.counter).toBe(0);
+    result.bump();
+    expect(result.counter).toBe(1);
+  });
+
+  testWithSyncEsm('exposes the require() result on require.cache', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const probe = runtime.requireModule(FROM, './reads-cache-for-esm.cjs');
+    expect(probe.cacheMatchesRequire).toBe(true);
+  });
 
   testWithSyncEsm(
     'throws ERR_REQUIRE_CYCLE_MODULE when a CJS dep requires back into the graph',

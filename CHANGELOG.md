@@ -11,6 +11,7 @@
 - `[jest-haste-map]` Replace `NodeWatcher` and `FSEventsWatcher` with `@parcel/watcher` for the non-watchman watch path ([#16188](https://github.com/jestjs/jest/pull/16188))
 - `[jest-resolve]` Bump `unrs-resolver` to 1.12.1, remove `jest-pnp-resolver` and unnecessary checks ([#15721](https://github.com/jestjs/jest/pull/15721))
 - `[jest-resolve]` Honor Node's `--preserve-symlinks` / `NODE_PRESERVE_SYMLINKS` in the default resolver by passing `symlinks: false` to `unrs-resolver` ([#16260](https://github.com/jestjs/jest/pull/16260))
+- `[jest-runtime]` Set `import.meta.main` to `true` in the test file and `false` in every module it loads, matching Node 24+ ([#16367](https://github.com/jestjs/jest/pull/16367))
 - `[jest-runtime]` Resolve the `module-sync` export condition, so a package that exposes its ESM entry point for `require()` loads the same file Node would ([#16336](https://github.com/jestjs/jest/pull/16336))
 
 ### Fixes
@@ -66,6 +67,9 @@
 - `[jest-runtime]` Check a cached ES module's status before `require()` returns it, so a module whose evaluation threw rethrows that error and one left linked by a failed sibling is evaluated instead of returning uninitialized bindings ([#16364](https://github.com/jestjs/jest/pull/16364))
 - `[jest-runtime]` Report the original `ERR_REQUIRE_ASYNC_MODULE` when a `require()` of a top-level-await graph is retried, instead of a spurious "concurrent `import()`" error ([#16364](https://github.com/jestjs/jest/pull/16364))
 - `[jest-runtime]` Throw the evaluation error when another caller's `import()` of the same module failed while we awaited it, instead of resolving with the errored module ([#16364](https://github.com/jestjs/jest/pull/16364))
+- `[jest-runtime]` Mark the result of `require()`ing an ES module that has a default export with `__esModule: true` through a live-binding facade, and serve the same object from `require.cache`, matching Node ([#16367](https://github.com/jestjs/jest/pull/16367))
+- `[jest-runtime]` Provide a CommonJS module's exports under the `'module.exports'` named export when imported from ESM, matching Node 23+ ([#16367](https://github.com/jestjs/jest/pull/16367))
+- `[jest-runtime]` Give the test file itself a non-null `require.main` ([#16367](https://github.com/jestjs/jest/pull/16367))
 - `[jest-runtime]` Throw `ERR_REQUIRE_CYCLE_MODULE` like Node when a CommonJS module `require()`s an ES module that is still being loaded, instead of evaluating the module a second time ([#16366](https://github.com/jestjs/jest/pull/16366))
 - `[jest-runtime]` Key builtin modules in the ESM registry by one canonical specifier ([#16341](https://github.com/jestjs/jest/pull/16341))
 - `[jest-runtime]` `import.meta.resolve()` for a builtin uses its `node:` specifier ([#16341](https://github.com/jestjs/jest/pull/16341))

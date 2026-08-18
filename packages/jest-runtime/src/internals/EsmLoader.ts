@@ -293,6 +293,7 @@ export interface EsmLoaderOptions {
   shouldLoadAsEsm: (modulePath: string) => boolean;
   requireModuleOrMock: (from: string, moduleName: string) => unknown;
   testState: TestState;
+  testPath: string;
 }
 
 export class EsmLoader {
@@ -311,6 +312,8 @@ export class EsmLoader {
     moduleName: string,
   ) => unknown;
   private readonly testState: TestState;
+  private readonly testPath: string;
+  private readonly requireFacades = new WeakMap<ESModule, ESModule>();
   // Every cacheKey popped by a sync walk that is still on the stack. Walks
   // nest (a CJS body executing mid-walk can require() an unrelated ESM root),
   // so this is a stack of one entry per walk rather than a single Set. Each
@@ -340,6 +343,7 @@ export class EsmLoader {
     this.shouldLoadAsEsm = options.shouldLoadAsEsm;
     this.requireModuleOrMock = options.requireModuleOrMock;
     this.testState = options.testState;
+    this.testPath = options.testPath;
   }
 
   // `'load-async'` means the sync graph could not be completed — a concurrent
@@ -364,10 +368,63 @@ export class EsmLoader {
       error.code = 'ERR_REQUIRE_ESM';
       throw error;
     }
+    return this.requireResultFromModule(module) as T;
+  }
+
+  // Mirrors Node's `populateCJSExportsFromESM`: a `'module.exports'` named
+  // export wins outright; a module without a `default` export - or one that
+  // defines its own `__esModule`, which users may set to override tooling
+  // detection - hands back the raw namespace. Everything else gets a facade
+  // namespace carrying `__esModule: true`, so transpiled consumers that pick
+  // `mod.__esModule ? mod.default : mod` see require()d real ESM as ESM.
+  requireResultFromModule(module: ESModule): unknown {
     const namespace = module.namespace as Record<string, unknown>;
-    return (
-      'module.exports' in namespace ? namespace['module.exports'] : namespace
-    ) as T;
+    if ('module.exports' in namespace) {
+      return namespace['module.exports'];
+    }
+    // The facade needs `linkRequests`/`instantiate` and a synchronously
+    // settling evaluate - the capabilities `require(esm)` itself is gated on.
+    // Below that gate this is reached only through `require.cache` reads,
+    // which keep handing out the raw namespace.
+    if (
+      !supportsSyncEvaluate ||
+      module.status !== 'evaluated' ||
+      !('default' in namespace) ||
+      '__esModule' in namespace
+    ) {
+      return namespace;
+    }
+    return this.requireFacadeFor(module).namespace;
+  }
+
+  // Node builds the facade as a real source-text module rather than a copy or
+  // a Proxy - re-exporting keeps the original's bindings live and enumerable
+  // with no per-access overhead. The original is already evaluated and the
+  // facade body has no top-level await, so evaluation completes synchronously.
+  private requireFacadeFor(module: ESModule): ESModule {
+    const cached = this.requireFacades.get(module);
+    if (cached) return cached;
+    const facade: VMModuleWithAsyncGraph = new SourceTextModule(
+      "export * from 'original';\nexport {default} from 'original';\nexport const __esModule = true;",
+      {
+        context: this.getContext(),
+        identifier: `jest-require-facade:${module.identifier}`,
+      },
+    );
+    invariant(
+      typeof facade.linkRequests === 'function' &&
+        typeof facade.instantiate === 'function',
+      'linkRequests/instantiate unavailable on the require facade',
+    );
+    facade.linkRequests([module]);
+    facade.instantiate();
+    facade.evaluate().catch(noop);
+    invariant(
+      facade.status === 'evaluated',
+      `Expected the require facade for ${module.identifier} to evaluate synchronously, but its status is "${facade.status}". This is a bug in Jest, please report it!`,
+    );
+    this.requireFacades.set(module, facade);
+    return facade;
   }
 
   // Public for unit-test access. Production callers reach the sync graph
@@ -595,6 +652,8 @@ export class EsmLoader {
               const parentPath = fileURLToPath(parent);
               return this.resolveForImportMeta(parentPath, specifier);
             };
+            // @ts-expect-error Jest uses @types/node@18.
+            meta.main = modulePath === this.testPath;
             (meta as JestImportMeta).jest =
               this.jestGlobals.jestObjectFor(modulePath);
           },
@@ -1031,6 +1090,8 @@ export class EsmLoader {
       importModuleDynamically: esmDynamicImport,
       initializeImportMeta(meta) {
         meta.url = specifier;
+        // @ts-expect-error Jest uses @types/node@18.
+        meta.main = false;
         if (meta.url.startsWith('file://')) {
           // @ts-expect-error Jest uses @types/node@18.
           meta.filename = fileURLToPath(meta.url);
@@ -1225,6 +1286,8 @@ export class EsmLoader {
                 const parentPath = fileURLToPath(parent);
                 return this.resolveForImportMeta(parentPath, specifier);
               };
+              // @ts-expect-error Jest uses @types/node@18.
+              meta.main = modulePath === this.testPath;
               (meta as JestImportMeta).jest =
                 this.jestGlobals.jestObjectFor(modulePath);
             },
@@ -1311,6 +1374,8 @@ export class EsmLoader {
           importModuleDynamically: this.dynamicImport,
           initializeImportMeta(meta) {
             meta.url = specifier;
+            // @ts-expect-error Jest uses @types/node@18.
+            meta.main = false;
             if (meta.url.startsWith('file://')) {
               // @ts-expect-error Jest uses @types/node@18.
               meta.filename = fileURLToPath(meta.url);

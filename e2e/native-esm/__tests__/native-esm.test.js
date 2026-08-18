@@ -31,6 +31,7 @@ test('should have correct import.meta', () => {
     dirname: expect.any(String),
     filename: expect.any(String),
     jest: expect.anything(),
+    main: true,
     resolve: expect.any(Function),
     url: expect.any(String),
   });
