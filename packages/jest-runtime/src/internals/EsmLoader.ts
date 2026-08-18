@@ -439,15 +439,15 @@ export class EsmLoader {
     const activeWalk = new Set<string>();
     this.activeSyncWalks.push({keys: activeWalk, registry});
     try {
-      return this.walkGraphSync(
-        rootKey,
+      return this.walkGraphSync({
         activeWalk,
-        worklist,
-        scratch,
-        registry,
         context,
         mode,
-      );
+        registry,
+        rootKey,
+        scratch,
+        worklist,
+      });
     } finally {
       this.activeSyncWalks.pop();
     }
@@ -462,15 +462,23 @@ export class EsmLoader {
     );
   }
 
-  private walkGraphSync(
-    rootKey: string,
-    activeWalk: Set<string>,
-    worklist: Array<WorklistEntry>,
-    scratch: Map<string, ScratchEntry>,
-    registry: Map<string, JestModule>,
-    context: VMContext,
-    mode: SyncEsmMode,
-  ): ESModule | LoadAsync {
+  private walkGraphSync({
+    rootKey,
+    activeWalk,
+    worklist,
+    scratch,
+    registry,
+    context,
+    mode,
+  }: {
+    rootKey: string;
+    activeWalk: Set<string>;
+    worklist: Array<WorklistEntry>;
+    scratch: Map<string, ScratchEntry>;
+    registry: Map<string, JestModule>;
+    context: VMContext;
+    mode: SyncEsmMode;
+  }): ESModule | LoadAsync {
     while (worklist.length > 0) {
       const {cacheKey, modulePath} = worklist.pop()!;
       activeWalk.add(cacheKey);
