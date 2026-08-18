@@ -60,6 +60,9 @@ export class Resolution {
   // open - `.mjs` and configured ESM extensions are ESM regardless.
   isExplicitlyCommonjs(modulePath: string): boolean {
     const extension = path.extname(modulePath);
+    if (extension === '.cjs') {
+      return true;
+    }
     if (
       extension === '.mjs' ||
       this.extensionsToTreatAsEsm.includes(extension)

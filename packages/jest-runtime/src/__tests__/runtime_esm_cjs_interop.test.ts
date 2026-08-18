@@ -395,3 +395,35 @@ describe('Runtime explicit "type": "commonjs" package', () => {
     },
   );
 });
+
+// The .cjs extension marks a file CommonJS regardless of package type, so
+// ESM syntax in it surfaces the parse error instead of retrying as ESM.
+describe('Runtime .cjs file with ESM syntax', () => {
+  const untransformedNodeModules = {
+    rootDir: ROOT_DIR,
+    transformIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
+  };
+
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithSyncEsm('require() throws the CJS SyntaxError', async () => {
+    const runtime = await createRuntime(__filename, untransformedNodeModules);
+    expect(() =>
+      runtime.requireModule(FROM, 'cjs-ext-pkg/esm-syntax.cjs'),
+    ).toThrow(
+      expect.objectContaining({
+        message: expect.stringContaining("Unexpected token 'export'"),
+        name: 'SyntaxError',
+      }),
+    );
+  });
+
+  testWithVmEsm('a static import fails with the CJS SyntaxError', async () => {
+    const runtime = await createRuntime(__filename, untransformedNodeModules);
+    await expect(
+      runtime.unstable_importModule(FROM, './import-cjs-ext.mjs'),
+    ).rejects.toThrow("Unexpected token 'export'");
+  });
+});
