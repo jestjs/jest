@@ -71,6 +71,7 @@ Jest's module system diverges from Node's in a few places:
 - `require()` of an ES module that is part of a graph currently being loaded throws `ERR_REQUIRE_CYCLE_MODULE` even when the required module is not an ancestor of the requiring module.
 - The `'module.exports'` named export of an imported CJS module is exposed on every Node version, including versions older than v23 where Node itself does not provide it.
 - Importing JSON without `with {type: 'json'}` emits a warning instead of throwing. This becomes an error in a future major version.
+- An `application/wasm` data: URI requires the `;base64` parameter and reports a descriptive error without it, where Node hands the percent-decoded text to WebAssembly and fails with `CompileError`.
 
 ## Module mocking in ESM
 
