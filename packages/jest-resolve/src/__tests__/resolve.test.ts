@@ -872,6 +872,42 @@ describe('getModuleID', () => {
   });
 });
 
+describe('default resolver factory reuse', () => {
+  const {ResolverFactory} = require('unrs-resolver') as {
+    ResolverFactory: typeof import('unrs-resolver').ResolverFactory;
+  };
+
+  test('reuses one factory per options shape instead of cloning per call', () => {
+    const cloneWithOptions = jest.spyOn(
+      ResolverFactory.prototype,
+      'cloneWithOptions',
+    );
+
+    const findOptions = {
+      basedir: __dirname,
+      conditions: ['require', 'node', 'default'],
+      extensions: ['.js'],
+      moduleDirectory: ['node_modules'],
+    };
+    Resolver.findNodeModule('jest-util', findOptions);
+    Resolver.findNodeModule('jest-util', findOptions);
+    Resolver.findNodeModule('jest-haste-map', findOptions);
+
+    expect(cloneWithOptions).not.toHaveBeenCalled();
+
+    Resolver.findNodeModule('jest-util', {
+      ...findOptions,
+      conditions: ['import', 'default'],
+    });
+    Resolver.findNodeModule('jest-util', {
+      ...findOptions,
+      conditions: ['import', 'default'],
+    });
+
+    expect(cloneWithOptions).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe('nodeModulesPaths', () => {
   it('provides custom module paths after node_modules', () => {
     const src = require.resolve('../');
