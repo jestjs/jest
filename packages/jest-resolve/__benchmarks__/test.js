@@ -22,8 +22,8 @@
 
 'use strict';
 
-const fs = require('node:fs');
 const path = require('node:path');
+const fs = require('graceful-fs');
 const {ResolverFactory} = require('unrs-resolver');
 const Resolver = require('../build').default;
 

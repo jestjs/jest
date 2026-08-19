@@ -72,16 +72,22 @@ const ABSENT = '\u0002';
 
 const arrayCacheKeys = new WeakMap<ReadonlyArray<string>, string>();
 
+// JSON escapes control characters, so no element can smuggle a
+// KEY_SEPARATOR or ABSENT byte into the composed key.
 function cacheKeyForArray(array: ReadonlyArray<string> | undefined): string {
   if (array == null) {
     return ABSENT;
   }
   let key = arrayCacheKeys.get(array);
   if (key === undefined) {
-    key = array.join('\u0000');
+    key = JSON.stringify(array);
     arrayCacheKeys.set(array, key);
   }
   return key;
+}
+
+function cacheKeyForValue(value: string | undefined): string {
+  return value == null ? ABSENT : JSON.stringify(value);
 }
 
 function resolverForOptions(
@@ -160,8 +166,10 @@ export function baseResolver(
     const extensionsKey = cacheKeyForArray(extensions);
     const modulesKey = Array.isArray(modules)
       ? cacheKeyForArray(modules)
-      : (modules ?? ABSENT);
-    const rootsKey = roots ? cacheKeyForArray(roots) : (rootDir ?? ABSENT);
+      : cacheKeyForValue(modules);
+    const rootsKey = roots
+      ? cacheKeyForArray(roots)
+      : cacheKeyForValue(rootDir);
     fastKey = ['fast', conditionsKey, extensionsKey, modulesKey, rootsKey].join(
       KEY_SEPARATOR,
     );
