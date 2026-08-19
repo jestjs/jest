@@ -949,6 +949,60 @@ describe('Runtime sync ESM graph - URL-keyed module instances', () => {
     },
   );
 
+  testWithVmEsm(
+    'an empty query or fragment names the plain module, like Node',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const plain = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs',
+      )) as any;
+      const emptyQuery = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs?',
+      )) as any;
+      const emptyFragment = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs#',
+      )) as any;
+      const emptyQueryWithFragment = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs?#frag',
+      )) as any;
+      const fragmentOnly = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs#frag',
+      )) as any;
+
+      expect(emptyQuery.namespace).toBe(plain.namespace);
+      expect(emptyFragment.namespace).toBe(plain.namespace);
+      expect(emptyQueryWithFragment.namespace).toBe(fragmentOnly.namespace);
+      expect(fragmentOnly.namespace).not.toBe(plain.namespace);
+    },
+  );
+
+  testWithVmEsm(
+    'accepts file: URLs without an authority and with an upper-case scheme',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const reporterPath = path.join(ROOT_DIR, 'url-reporter.mjs');
+      const relative = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs',
+      )) as any;
+      const singleSlash = (await runtime.unstable_importModule(
+        FROM,
+        `file:${reporterPath}`,
+      )) as any;
+      const upperCaseScheme = (await runtime.unstable_importModule(
+        FROM,
+        pathToFileURL(reporterPath).href.replace(/^file:/, 'FILE:'),
+      )) as any;
+      expect(singleSlash.namespace).toBe(relative.namespace);
+      expect(upperCaseScheme.namespace).toBe(relative.namespace);
+    },
+  );
+
   testWithVmEsm('import.meta.url carries the query and fragment', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(

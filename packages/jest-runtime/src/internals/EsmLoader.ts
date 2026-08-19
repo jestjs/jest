@@ -376,6 +376,12 @@ type SplitSpecifier = {
   suffix: string;
 };
 
+// The scheme is case-insensitive and the authority is optional, so
+// `file:/tmp/a.mjs` and `FILE:///tmp/a.mjs` are the same URL as
+// `file:///tmp/a.mjs` - all three have to reach `fileURLToPath` rather than
+// the package resolver.
+const fileSchemeRegex = /^file:/i;
+
 // A `?` or `#` in an import specifier is a query/fragment delimiter, never a
 // filename character: the fragment starts at the first `#`, the query at the
 // first `?` before it. `data:` URIs pass through whole - their `?`/`#` belong
@@ -384,7 +390,7 @@ function splitQueryAndFragment(specifier: string): SplitSpecifier {
   if (specifier.startsWith('data:')) {
     return {pathOrSpecifier: specifier, suffix: ''};
   }
-  if (specifier.startsWith('file://')) {
+  if (fileSchemeRegex.test(specifier)) {
     const url = new URL(specifier);
     return {
       pathOrSpecifier: fileURLToPath(url),
@@ -407,12 +413,15 @@ function splitQueryAndFragment(specifier: string): SplitSpecifier {
 
 // ESM registry keys are serialized URLs, matching Node's per-URL module
 // instancing: `?a`/`?a` share an instance while `?b`, `#frag` and the plain
-// form are all distinct. The suffix goes through URL serialization - the
-// parser percent-encodes non-ASCII and spaces, so `?é` and its `?%C3%A9`
-// spelling name one instance, exactly as in Node.
+// form are all distinct. Reading the suffix back off `search`/`hash` applies
+// the normalization Node's resolver applies: non-ASCII and spaces
+// percent-encode, and an empty `?` or `#` drops out, so `./a.mjs?` names the
+// same instance as `./a.mjs`.
 function fileCacheKey(modulePath: string, suffix: string): string {
   const baseUrl = pathToFileURL(modulePath);
-  return suffix === '' ? baseUrl.href : new URL(suffix, baseUrl).href;
+  if (suffix === '') return baseUrl.href;
+  const url = new URL(suffix, baseUrl);
+  return baseUrl.href + url.search + url.hash;
 }
 
 function makeUnknownBuiltinError(specifier: string): NodeJS.ErrnoException {
