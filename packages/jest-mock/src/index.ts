@@ -105,8 +105,14 @@ export type SpiedClass<T extends ClassLike = UnknownClass> = MockInstance<
   (...args: ConstructorParameters<T>) => InstanceType<T>
 >;
 
+// Keep the pre-existing implementation signature while retaining every
+// overload in `T` for the return-value helpers on `MockInstance<T>`.
 export type SpiedFunction<T extends FunctionLike = UnknownFunction> =
-  MockInstance<T>;
+  MockInstance<T> &
+    Pick<
+      MockInstance<(...args: Parameters<T>) => ReturnType<T>>,
+      'mockImplementation' | 'mockImplementationOnce' | 'withImplementation'
+    >;
 
 export type SpiedGetter<T> = MockInstance<() => T>;
 
@@ -132,49 +138,11 @@ export interface Mock<T extends FunctionLike = UnknownFunction>
   (...args: Parameters<T>): ReturnType<T>;
 }
 
-// `ReturnType<T>` picks the LAST overload signature of `T`, so for a function
-// like `pg.Client['end']` whose overloads are `(): Promise<void>` and
-// `(cb): void`, `ReturnType` collapses to `void` and the Promise-shaped
-// overload disappears — `mockResolvedValue` / `mockRejectedValue` then infer
-// `never` and reject any value. Walk up to four overloads and union their
-// return types so the Promise-shaped overload (if any) survives.
-type OverloadedReturnType<T> = T extends {
-  (...args: Array<any>): infer R1;
-  (...args: Array<any>): infer R2;
-  (...args: Array<any>): infer R3;
-  (...args: Array<any>): infer R4;
-}
-  ? R1 | R2 | R3 | R4
-  : T extends {
-        (...args: Array<any>): infer R1;
-        (...args: Array<any>): infer R2;
-        (...args: Array<any>): infer R3;
-      }
-    ? R1 | R2 | R3
-    : T extends {
-          (...args: Array<any>): infer R1;
-          (...args: Array<any>): infer R2;
-        }
-      ? R1 | R2
-      : T extends (...args: Array<any>) => infer R
-        ? R
-        : never;
+type ResolveType<T extends FunctionLike> =
+  ReturnType<T> extends PromiseLike<infer U> ? U : never;
 
-type ResolveType<T extends FunctionLike> = [
-  Extract<OverloadedReturnType<T>, PromiseLike<any>>,
-] extends [never]
-  ? never
-  : Extract<OverloadedReturnType<T>, PromiseLike<any>> extends PromiseLike<
-        infer U
-      >
-    ? U
-    : never;
-
-type RejectType<T extends FunctionLike> = [
-  Extract<OverloadedReturnType<T>, PromiseLike<any>>,
-] extends [never]
-  ? never
-  : unknown;
+type RejectType<T extends FunctionLike> =
+  ReturnType<T> extends PromiseLike<any> ? unknown : never;
 
 /**
  * Like the built-in `ReturnType<T>`, but for overloaded functions yields a
@@ -210,66 +178,6 @@ type FunctionRejectType<T extends FunctionLike> =
       : never
     : never;
 
-/**
- * Like {@link FunctionSignatures} but preserves each overload's `this`
- * parameter so implementations can use `function` syntax to access the
- * spied-on receiver (e.g. `spyOn(Date.prototype, 'getTime')`).
- *
- * Kept private to `jest-mock` — `@jest/expect-utils` exposes the `this`-less
- * `FunctionSignatures` for its public types.
- */
-type FunctionSignaturesWithThis<F> = F extends {
-  (this: infer T1, ...args: infer A1): infer R1;
-  (this: infer T2, ...args: infer A2): infer R2;
-  (this: infer T3, ...args: infer A3): infer R3;
-  (this: infer T4, ...args: infer A4): infer R4;
-  (this: infer T5, ...args: infer A5): infer R5;
-  (this: infer T6, ...args: infer A6): infer R6;
-  (this: infer T7, ...args: infer A7): infer R7;
-  (this: infer T8, ...args: infer A8): infer R8;
-  (this: infer T9, ...args: infer A9): infer R9;
-  (this: infer T10, ...args: infer A10): infer R10;
-  (this: infer T11, ...args: infer A11): infer R11;
-  (this: infer T12, ...args: infer A12): infer R12;
-  (this: infer T13, ...args: infer A13): infer R13;
-  (this: infer T14, ...args: infer A14): infer R14;
-  (this: infer T15, ...args: infer A15): infer R15;
-}
-  ? | ((this: T1, ...args: A1) => R1)
-    | ((this: T2, ...args: A2) => R2)
-    | ((this: T3, ...args: A3) => R3)
-    | ((this: T4, ...args: A4) => R4)
-    | ((this: T5, ...args: A5) => R5)
-    | ((this: T6, ...args: A6) => R6)
-    | ((this: T7, ...args: A7) => R7)
-    | ((this: T8, ...args: A8) => R8)
-    | ((this: T9, ...args: A9) => R9)
-    | ((this: T10, ...args: A10) => R10)
-    | ((this: T11, ...args: A11) => R11)
-    | ((this: T12, ...args: A12) => R12)
-    | ((this: T13, ...args: A13) => R13)
-    | ((this: T14, ...args: A14) => R14)
-    | ((this: T15, ...args: A15) => R15)
-  : F extends FunctionLike
-    ? F
-    : never;
-
-/**
- * A function value usable as a `mockImplementation`/`mockImplementationOnce`
- * for `T`. Distributes over each overload of `T` so any single overload's
- * call signature is acceptable, preserves the overload's `this` parameter so
- * `function` implementations can access the spied receiver, and strips
- * namespace/static members and type-predicate signatures that callers cannot
- * reasonably reconstruct (e.g. `lstat.__promisify__` or `Array.isArray`'s
- * `arg is any[]` predicate).
- */
-type FunctionImplementation<T extends FunctionLike> =
-  FunctionSignaturesWithThis<T> extends infer S
-    ? S extends (...args: any) => any
-      ? S
-      : never
-    : never;
-
 export interface MockInstance<
   T extends FunctionLike = UnknownFunction,
 > extends Disposable {
@@ -281,13 +189,10 @@ export interface MockInstance<
   mockClear(): this;
   mockReset(): this;
   mockRestore(): void;
-  mockImplementation(fn: FunctionImplementation<T>): this;
-  mockImplementationOnce(fn: FunctionImplementation<T>): this;
-  withImplementation(
-    fn: FunctionImplementation<T>,
-    callback: () => Promise<unknown>,
-  ): Promise<void>;
-  withImplementation(fn: FunctionImplementation<T>, callback: () => void): void;
+  mockImplementation(fn: T): this;
+  mockImplementationOnce(fn: T): this;
+  withImplementation(fn: T, callback: () => Promise<unknown>): Promise<void>;
+  withImplementation(fn: T, callback: () => void): void;
   mockName(name: string): this;
   mockReturnThis(): this;
   mockReturnValue(value: FunctionReturnType<T>): this;
@@ -1095,7 +1000,7 @@ export class ModuleMocker {
       f.mockReturnThis = () =>
         f.mockImplementation(function (this: ReturnType<T>) {
           return this;
-        } as FunctionImplementation<T>);
+        });
 
       f.mockName = (name: string) => {
         if (name) {
@@ -1337,7 +1242,7 @@ export class ModuleMocker {
       type: 'function',
     });
     if (implementation) {
-      fn.mockImplementation(implementation as FunctionImplementation<T>);
+      fn.mockImplementation(implementation);
     }
     return fn;
   }

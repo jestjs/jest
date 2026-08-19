@@ -127,16 +127,8 @@ describe('Mocked', () => {
     >();
 
     expect(mockFunctionObject.mockReturnValue).type.not.toBeCallableWith(123);
-    // `mockImplementation` accepts any function matching the call signature of
-    // the mocked function -- namespace members (`one`, `more`, `time`) are
-    // stripped. See issue #15998.
-    expect(mockFunctionObject.mockImplementation).type.toBeCallableWith(
-      (a: number, b?: string) => {
-        return;
-      },
-    );
     expect(mockFunctionObject.mockImplementation).type.not.toBeCallableWith(
-      (a: Array<boolean>) => true,
+      () => true,
     );
 
     expect(mockFunctionObject.one.more.time.mock.calls[0]).type.toBe<
