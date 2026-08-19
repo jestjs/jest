@@ -163,29 +163,36 @@ function makeInvalidUrlError(): NodeJS.ErrnoException {
 
 // The WHATWG forgiving percent-decode: valid %XX escapes decode to their
 // byte, anything else passes through as its UTF-8 bytes instead of throwing.
+// Literal spans encode in one operation each, so an escape-free payload is a
+// single allocation.
 function forgivingPercentDecode(input: string): Buffer {
-  const bytes: Array<number> = [];
+  if (!input.includes('%')) {
+    return Buffer.from(input, 'utf8');
+  }
+  const chunks: Array<Buffer> = [];
+  let literalStart = 0;
   let index = 0;
   while (index < input.length) {
     if (
       input[index] === '%' &&
       /^[0-9A-Fa-f]{2}$/.test(input.slice(index + 1, index + 3))
     ) {
-      bytes.push(Number.parseInt(input.slice(index + 1, index + 3), 16));
-      index += 3;
-    } else {
-      const codePoint = input.codePointAt(index)!;
-      const charLength = codePoint > 0xff_ff ? 2 : 1;
-      for (const byte of Buffer.from(
-        input.slice(index, index + charLength),
-        'utf8',
-      )) {
-        bytes.push(byte);
+      if (literalStart < index) {
+        chunks.push(Buffer.from(input.slice(literalStart, index), 'utf8'));
       }
-      index += charLength;
+      chunks.push(
+        Buffer.of(Number.parseInt(input.slice(index + 1, index + 3), 16)),
+      );
+      index += 3;
+      literalStart = index;
+    } else {
+      index++;
     }
   }
-  return Buffer.from(bytes);
+  if (literalStart < input.length) {
+    chunks.push(Buffer.from(input.slice(literalStart), 'utf8'));
+  }
+  return Buffer.concat(chunks);
 }
 
 // The WHATWG forgiving base64: ASCII whitespace is stripped, up to two

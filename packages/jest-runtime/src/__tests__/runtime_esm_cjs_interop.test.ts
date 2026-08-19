@@ -334,16 +334,18 @@ describe('Runtime explicit "type": "commonjs" package', () => {
 
   it('require() throws the CJS SyntaxError instead of retrying as ESM', async () => {
     const runtime = await createRuntime(__filename, untransformedNodeModules);
-    let thrown: Error | undefined;
-    try {
+    const requireCommonjsMarked = () =>
       runtime.requireModule(FROM, 'commonjs-marked');
-    } catch (error) {
-      thrown = error as Error;
-    }
-    expect(thrown).toBeDefined();
-    expect(thrown!.name).toBe('SyntaxError');
-    expect(thrown!.message).toContain("Unexpected token 'export'");
-    expect((thrown as NodeJS.ErrnoException).code).toBeUndefined();
+    expect(requireCommonjsMarked).toThrow(
+      expect.objectContaining({
+        message: expect.stringContaining("Unexpected token 'export'"),
+        name: 'SyntaxError',
+      }),
+    );
+    // A plain SyntaxError, not a coded error like ERR_REQUIRE_ESM.
+    expect(requireCommonjsMarked).not.toThrow(
+      expect.objectContaining({code: expect.anything()}),
+    );
   });
 
   testWithVmEsm(

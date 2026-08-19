@@ -168,6 +168,14 @@ export class CjsLoader {
     return localModule.exports;
   }
 
+  // Runs after evaluation, unlike Node, which registers the child before the
+  // ESM body executes: the wrapper's `exports` is the require() result,
+  // which exists only once the module is `evaluated` - registering earlier
+  // would break the evaluated-only invariant the require.cache surface
+  // relies on. The end state matches Node either way (present on success,
+  // absent on failure), and a require() cycle back into the parent throws
+  // ERR_REQUIRE_CYCLE_MODULE before it could observe the difference.
+  //
   // The parent lookup targets the active CJS registry, so an internal
   // requiring module (registered elsewhere) never gains children.
   private recordEsmChildModule(from: string, modulePath: string): void {
