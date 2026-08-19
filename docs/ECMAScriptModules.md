@@ -72,6 +72,8 @@ Jest's module system diverges from Node's in a few places:
 - The `'module.exports'` named export of an imported CJS module is exposed on every Node version, including versions older than v23 where Node itself does not provide it.
 - Importing JSON without `with {type: 'json'}` emits a warning instead of throwing. This becomes an error in a future major version.
 - An `application/wasm` data: URI requires the `;base64` parameter and reports a descriptive error without it, where Node hands the percent-decoded text to WebAssembly and fails with `CompileError`.
+- A bare core specifier with a query or fragment (`import 'fs?q'`) throws `ERR_UNKNOWN_BUILTIN_MODULE`, where Node treats the whole string as a package name and fails with `ERR_MODULE_NOT_FOUND`. The `node:`-prefixed form throws the same error in both.
+- Stack traces show file paths, not `file://` URLs.
 
 ## Module mocking in ESM
 

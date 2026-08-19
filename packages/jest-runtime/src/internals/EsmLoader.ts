@@ -371,8 +371,53 @@ const ESM_TRANSFORM_OPTIONS: TransformOptions = {
   supportsTopLevelAwait: true,
 };
 
-function stripFileScheme(specifier: string): string {
-  return specifier.startsWith('file://') ? fileURLToPath(specifier) : specifier;
+type SplitSpecifier = {
+  pathOrSpecifier: string;
+  suffix: string;
+};
+
+// A `?` or `#` in an import specifier is a query/fragment delimiter, never a
+// filename character: the fragment starts at the first `#`, the query at the
+// first `?` before it. `data:` URIs pass through whole - their `?`/`#` belong
+// to the URI payload.
+function splitQueryAndFragment(specifier: string): SplitSpecifier {
+  if (specifier.startsWith('data:')) {
+    return {pathOrSpecifier: specifier, suffix: ''};
+  }
+  if (specifier.startsWith('file://')) {
+    const url = new URL(specifier);
+    return {
+      pathOrSpecifier: fileURLToPath(url),
+      suffix: url.search + url.hash,
+    };
+  }
+  const hashIndex = specifier.indexOf('#');
+  const beforeFragment =
+    hashIndex === -1 ? specifier : specifier.slice(0, hashIndex);
+  const queryIndex = beforeFragment.indexOf('?');
+  const splitIndex = queryIndex === -1 ? hashIndex : queryIndex;
+  if (splitIndex === -1) {
+    return {pathOrSpecifier: specifier, suffix: ''};
+  }
+  return {
+    pathOrSpecifier: specifier.slice(0, splitIndex),
+    suffix: specifier.slice(splitIndex),
+  };
+}
+
+// ESM registry keys are serialized URLs, matching Node's per-URL module
+// instancing: `?a`/`?a` share an instance while `?b`, `#frag` and the plain
+// form are all distinct.
+function fileCacheKey(modulePath: string, suffix: string): string {
+  return pathToFileURL(modulePath).href + suffix;
+}
+
+function makeUnknownBuiltinError(specifier: string): NodeJS.ErrnoException {
+  const error: NodeJS.ErrnoException = new Error(
+    `No such built-in module: ${specifier}`,
+  );
+  error.code = 'ERR_UNKNOWN_BUILTIN_MODULE';
+  return error;
 }
 
 // Every builtin has a `node:`-prefixed spelling, but not every builtin has a
@@ -534,7 +579,7 @@ export class EsmLoader {
   // (the legacy async entry, which first-tries this).
   tryLoadGraphSync(
     rootPath: string,
-    rootQuery: string,
+    rootSuffix: string,
     mode: SyncEsmMode,
     requiredFrom?: string,
   ): ESModule | LoadAsync {
@@ -543,10 +588,8 @@ export class EsmLoader {
     );
 
     const registry = this.registries.getActiveEsmRegistry();
-    const canonicalRootPath = this.resolution.isCoreModule(rootPath)
-      ? canonicalCoreSpecifier(rootPath)
-      : rootPath;
-    const rootKey = canonicalRootPath + rootQuery;
+    const {cacheKey: rootKey, modulePath: canonicalRootPath} =
+      this.canonicalizeRoot(rootPath, rootSuffix);
 
     const cached = registry.get(rootKey);
     if (cached) {
@@ -610,6 +653,26 @@ export class EsmLoader {
     } finally {
       this.activeSyncWalks.pop();
     }
+  }
+
+  // Node resolves a core specifier with a query or fragment as a builtin
+  // lookup of the whole string, which no builtin matches.
+  private canonicalizeRoot(
+    rootPath: string,
+    rootSuffix: string,
+  ): WorklistEntry {
+    if (this.resolution.isCoreModule(rootPath)) {
+      const canonical = canonicalCoreSpecifier(rootPath);
+      if (rootSuffix !== '') {
+        throw makeUnknownBuiltinError(canonical + rootSuffix);
+      }
+      return {cacheKey: canonical, modulePath: canonical};
+    }
+    if (rootPath.startsWith('data:')) {
+      const canonical = new URL(rootPath).href;
+      return {cacheKey: canonical, modulePath: canonical};
+    }
+    return {cacheKey: fileCacheKey(rootPath, rootSuffix), modulePath: rootPath};
   }
 
   private isReEnteringActiveWalk(
@@ -744,7 +807,7 @@ export class EsmLoader {
           identifier: modulePath,
           importModuleDynamically: this.dynamicImport,
           initializeImportMeta: meta => {
-            const metaUrl = pathToFileURL(modulePath).href;
+            const metaUrl = cacheKey;
             meta.url = metaUrl;
             // @ts-expect-error Jest uses @types/node@18.
             meta.filename = modulePath;
@@ -941,10 +1004,20 @@ export class EsmLoader {
   // Node answers `import.meta.resolve('fs')` with `'node:fs'`, not a file URL -
   // a builtin has no path to turn into one.
   private resolveForImportMeta(parentPath: string, specifier: string): string {
-    const resolved = this.resolution.resolveEsm(parentPath, specifier);
-    return this.resolution.isCoreModule(resolved)
-      ? canonicalCoreSpecifier(resolved)
-      : pathToFileURL(resolved).href;
+    // Node echoes `node:` specifiers verbatim - even with a query or fragment,
+    // which only fail later, at load time.
+    if (specifier.startsWith('node:')) {
+      return specifier;
+    }
+    const {pathOrSpecifier, suffix} = splitQueryAndFragment(specifier);
+    const resolved = this.resolution.resolveEsm(parentPath, pathOrSpecifier);
+    if (this.resolution.isCoreModule(resolved)) {
+      if (suffix !== '') {
+        throw makeUnknownBuiltinError(specifier);
+      }
+      return canonicalCoreSpecifier(resolved);
+    }
+    return pathToFileURL(resolved).href + suffix;
   }
 
   private resolveSpecifierForSyncGraph(
@@ -964,16 +1037,16 @@ export class EsmLoader {
     }
 
     if (specifier.startsWith('data:')) {
-      const cacheKey = specifier;
+      const cacheKey = new URL(specifier).href;
       return {
         cacheKey,
-        enqueue: {cacheKey, modulePath: specifier},
-        modulePath: specifier,
+        enqueue: {cacheKey, modulePath: cacheKey},
+        modulePath: cacheKey,
       };
     }
-    specifier = stripFileScheme(specifier);
 
-    const [specifierPath, query = ''] = specifier.split('?');
+    const {pathOrSpecifier: specifierPath, suffix} =
+      splitQueryAndFragment(specifier);
 
     const {shouldMock, moduleID} = this.mockState.shouldMockEsmSync(
       referencingIdentifier,
@@ -996,15 +1069,19 @@ export class EsmLoader {
     }
 
     if (this.resolution.isCoreModule(specifierPath)) {
+      if (suffix !== '') {
+        throw makeUnknownBuiltinError(
+          canonicalCoreSpecifier(specifierPath) + suffix,
+        );
+      }
       // `fs` and `node:fs` are one module to Node, so they have to share one
       // registry entry - otherwise each form gets its own synthetic wrapper and
       // `import * as a from 'fs'` !== `import * as b from 'node:fs'`.
-      const canonical = canonicalCoreSpecifier(specifierPath);
-      const cacheKey = canonical + query;
+      const cacheKey = canonicalCoreSpecifier(specifierPath);
       return {
         cacheKey,
-        enqueue: {cacheKey, modulePath: canonical},
-        modulePath: canonical,
+        enqueue: {cacheKey, modulePath: cacheKey},
+        modulePath: cacheKey,
       };
     }
 
@@ -1019,7 +1096,7 @@ export class EsmLoader {
       return LOAD_ASYNC;
     }
 
-    const cacheKey = resolved + query;
+    const cacheKey = fileCacheKey(resolved, suffix);
     if (
       !resolved.endsWith('.json') &&
       !isWasm(resolved) &&
@@ -1300,18 +1377,18 @@ export class EsmLoader {
       runtimeSupportsVmModules,
       'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
     );
-    const [specifierPath, query] = (moduleName ?? '').split('?');
+    const {pathOrSpecifier, suffix} = splitQueryAndFragment(moduleName ?? '');
     const modulePath = await this.resolution.resolveEsmAsync(
       from,
-      specifierPath,
+      pathOrSpecifier,
     );
-    const module = await this.loadEsmModule(modulePath, query);
+    const module = await this.loadEsmModule(modulePath, suffix);
     return this.linkAndEvaluateModule(module);
   }
 
   private async loadEsmModule(
     modulePath: string,
-    query = '',
+    suffix = '',
   ): Promise<ESModule> {
     // Two gates here. `supportsSyncEvaluate` is a Node-version check: the
     // sync core relies on `SyntheticModule` starting `'linked'` and on
@@ -1320,11 +1397,15 @@ export class EsmLoader {
     // user resolver `findNodeModule` silently falls back to the default
     // resolver and would silently miss user mappings.
     if (supportsSyncEvaluate && this.resolution.canResolveSync()) {
-      const synced = this.tryLoadGraphSync(modulePath, query, 'sync-preferred');
+      const synced = this.tryLoadGraphSync(
+        modulePath,
+        suffix,
+        'sync-preferred',
+      );
       if (synced !== LOAD_ASYNC) return synced;
     }
 
-    const cacheKey = modulePath + query;
+    const {cacheKey} = this.canonicalizeRoot(modulePath, suffix);
     const registry = this.registries.getActiveEsmRegistry();
 
     if (this.transformCache.hasMutex(cacheKey)) {
@@ -1395,7 +1476,7 @@ export class EsmLoader {
             identifier: modulePath,
             importModuleDynamically: this.dynamicImport,
             initializeImportMeta: meta => {
-              const metaUrl = pathToFileURL(modulePath).href;
+              const metaUrl = cacheKey;
               meta.url = metaUrl;
               // @ts-expect-error Jest uses @types/node@18.
               meta.filename = modulePath;
@@ -1472,6 +1553,10 @@ export class EsmLoader {
       if (dataDecision.shouldMock) {
         return this.importMock(specifier, dataDecision.moduleID, context);
       }
+      // The canonical serialization (whitespace stripped, non-ASCII
+      // percent-encoded) is the module's URL: spelling variants of one URL
+      // share an instance, exactly as in Node.
+      specifier = new URL(specifier).href;
       const fromCache = registry.get(specifier);
       if (fromCache) {
         return fromCache as T;
@@ -1505,11 +1590,8 @@ export class EsmLoader {
       return module as T;
     }
 
-    if (specifier.startsWith('file://')) {
-      specifier = fileURLToPath(specifier);
-    }
-
-    const [specifierPath, query] = specifier.split('?');
+    const {pathOrSpecifier: specifierPath, suffix} =
+      splitQueryAndFragment(specifier);
 
     const decision = await this.mockState.shouldMockEsmAsync(
       referencingIdentifier,
@@ -1529,10 +1611,15 @@ export class EsmLoader {
       this.resolution.isCoreModule(resolved) ||
       this.shouldLoadAsEsm(resolved)
     ) {
-      return this.loadEsmModule(resolved, query) as T;
+      return this.loadEsmModule(resolved, suffix) as T;
     }
 
-    return this.loadCjsAsEsm(referencingIdentifier, resolved, context) as T;
+    return this.loadCjsAsEsm(
+      referencingIdentifier,
+      resolved,
+      suffix,
+      context,
+    ) as T;
   }
 
   private async linkAndEvaluateModule(module: VMModule): Promise<VMModule> {
@@ -1630,10 +1717,12 @@ export class EsmLoader {
   private loadCjsAsEsm(
     from: string,
     modulePath: string,
+    suffix: string,
     context: VMContext,
   ): SyntheticModule | Promise<VMModule> {
     const registry = this.registries.getActiveEsmRegistry();
-    const cached = registry.get(modulePath);
+    const cacheKey = fileCacheKey(modulePath, suffix);
+    const cached = registry.get(cacheKey);
     if (cached) {
       return cached as SyntheticModule | Promise<VMModule>;
     }
@@ -1644,11 +1733,11 @@ export class EsmLoader {
     } catch (error) {
       if (!(error instanceof CjsParseError)) throw error;
       if (this.resolution.isExplicitlyCommonjs(modulePath)) throw error.cause;
-      return this.loadEsmModule(modulePath);
+      return this.loadEsmModule(modulePath, suffix);
     }
 
     const evaluated = evaluateSyntheticModule(synthetic);
-    registry.set(modulePath, evaluated);
+    registry.set(cacheKey, evaluated);
     return evaluated;
   }
 

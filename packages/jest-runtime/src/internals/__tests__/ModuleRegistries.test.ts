@@ -214,13 +214,13 @@ describe('ModuleRegistries', () => {
       registries.setCjs('/cjs.js', cjs);
 
       const liveEsm = fakeEsm('evaluated');
-      registries.setEsm('/live.mjs', liveEsm as JestModule);
+      registries.setEsm('file:///live.mjs', liveEsm as JestModule);
 
       const unlinkedEsm = fakeEsm('unlinked');
-      registries.setEsm('/unlinked.mjs', unlinkedEsm as JestModule);
+      registries.setEsm('file:///unlinked.mjs', unlinkedEsm as JestModule);
 
       const pending = Promise.resolve(fakeEsm()) as unknown as JestModule;
-      registries.setEsm('/pending.mjs', pending);
+      registries.setEsm('file:///pending.mjs', pending);
 
       const cache = registries.createRequireCacheProxy();
 
@@ -252,6 +252,34 @@ describe('ModuleRegistries', () => {
       cache['/x.js'] = fakeCjs('/x.js');
       expect(cache['/x.js']).toBeUndefined();
       expect(delete cache['/x.js']).toBe(true);
+    });
+
+    test('hides ESM instances that carry a query or fragment', () => {
+      const registries = new ModuleRegistries(module => module.namespace);
+      registries.setEsm(
+        'file:///live.mjs?q=1',
+        fakeEsm('evaluated') as JestModule,
+      );
+      registries.setEsm(
+        'file:///live.mjs#frag',
+        fakeEsm('evaluated') as JestModule,
+      );
+
+      const cache = registries.createRequireCacheProxy();
+      expect(Object.keys(cache)).toEqual([]);
+      expect(cache['/live.mjs']).toBeUndefined();
+      expect('/live.mjs' in cache).toBe(false);
+      expect(cache['file:///live.mjs?q=1']).toBeUndefined();
+    });
+
+    test('does not address file entries by URL string', () => {
+      const registries = new ModuleRegistries(module => module.namespace);
+      registries.setEsm('file:///live.mjs', fakeEsm('evaluated') as JestModule);
+
+      const cache = registries.createRequireCacheProxy();
+      expect(cache['/live.mjs']).toBeDefined();
+      expect(cache['file:///live.mjs']).toBeUndefined();
+      expect('file:///live.mjs' in cache).toBe(false);
     });
 
     test('wrapEsmForRequireCache caches the wrapper per VMModule', () => {

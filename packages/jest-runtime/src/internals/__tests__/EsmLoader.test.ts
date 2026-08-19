@@ -112,6 +112,20 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
 }
 
 describe('EsmLoader.tryLoadGraphSync', () => {
+  test('throws ERR_UNKNOWN_BUILTIN_MODULE for a core root with a suffix', () => {
+    const {loader} = makeLoader({
+      resolution: {
+        isCoreModule: jest.fn((name: string) => name === 'fs'),
+      } as unknown as jest.Mocked<Resolution>,
+    });
+    expect(() => loader.tryLoadGraphSync('fs', '?q', 'sync-preferred')).toThrow(
+      expect.objectContaining({
+        code: 'ERR_UNKNOWN_BUILTIN_MODULE',
+        message: 'No such built-in module: node:fs?q',
+      }),
+    );
+  });
+
   test('throws when testState reports torn down', () => {
     const {loader, stubs} = makeLoader();
     stubs.testState.teardown();
@@ -136,7 +150,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
         throw new Error('no deps');
       });
       await cached.evaluate();
-      esmRegistry.set('/m.mjs', cached);
+      esmRegistry.set('file:///m.mjs', cached);
       const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
       expect(result).toBe(cached);
     },
@@ -156,7 +170,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
         identifier: '/m.mjs',
       });
       expect(stashed.status).toBe('unlinked');
-      esmRegistry.set('/m.mjs', stashed);
+      esmRegistry.set('file:///m.mjs', stashed);
       const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
       expect(result).toBe(LOAD_ASYNC);
     },
@@ -179,7 +193,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       // Drive to `'errored'` by forcing evaluate to fail.
       await errored.evaluate().catch(() => {});
       expect(errored.status).toBe('errored');
-      esmRegistry.set('/m.mjs', errored);
+      esmRegistry.set('file:///m.mjs', errored);
       expect(() =>
         loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred'),
       ).toThrow('boom from module body');
@@ -209,7 +223,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       });
       await errored.evaluate().catch(() => {});
       expect(errored.status).toBe('errored');
-      esmRegistry.set('/dep.cjs', errored);
+      esmRegistry.set('file:///dep.cjs', errored);
 
       stubs.transformCache.transform.mockReturnValue(
         "import {x} from './dep.cjs'; globalThis.__x = x;",
@@ -293,7 +307,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
 
   test("returns 'load-async' when registry has a mid-flight Promise (legacy async load)", () => {
     const {esmRegistry, loader} = makeLoader();
-    esmRegistry.set('/m.mjs', Promise.resolve());
+    esmRegistry.set('file:///m.mjs', Promise.resolve());
     const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
     expect(result).toBe(LOAD_ASYNC);
   });
@@ -308,7 +322,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     });
     const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
     expect(result).toBe(LOAD_ASYNC);
-    expect(stubs.transformCache.hasMutex).toHaveBeenCalledWith('/m.mjs');
+    expect(stubs.transformCache.hasMutex).toHaveBeenCalledWith('file:///m.mjs');
   });
 
   testWithLinkedSyntheticModule(
@@ -615,7 +629,7 @@ describe('EsmLoader.requireEsmModule', () => {
         throw new Error('no deps');
       });
       await synth.evaluate();
-      esmRegistry.set('/m.mjs', synth);
+      esmRegistry.set('file:///m.mjs', synth);
       const ns = loader.requireEsmModule<{answer: number}>('/m.mjs');
       expect(ns.answer).toBe(42);
     },
@@ -623,7 +637,7 @@ describe('EsmLoader.requireEsmModule', () => {
 
   test('throws ERR_REQUIRE_ESM when the registry has a mid-flight Promise', () => {
     const {esmRegistry, loader} = makeLoader();
-    esmRegistry.set('/m.mjs', Promise.resolve());
+    esmRegistry.set('file:///m.mjs', Promise.resolve());
     expect(() => loader.requireEsmModule('/m.mjs')).toThrow(
       expect.objectContaining({
         code: 'ERR_REQUIRE_ESM',
@@ -649,7 +663,7 @@ describe('EsmLoader.requireEsmModule', () => {
         throw new Error('no deps');
       });
       await synth.evaluate();
-      esmRegistry.set('/m.mjs', synth);
+      esmRegistry.set('file:///m.mjs', synth);
       const result = loader.requireEsmModule<any>('/m.mjs');
       expect(result).toBe(unwrapped);
     },

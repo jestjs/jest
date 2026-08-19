@@ -7,6 +7,7 @@
 
 import nativeModule from 'node:module';
 import * as path from 'node:path';
+import {fileURLToPath, pathToFileURL} from 'node:url';
 import type {Module as VMModule} from 'node:vm';
 import type {Module} from '@jest/environment';
 import type {InitialModule, JestModule, ModuleRegistry} from './moduleTypes';
@@ -236,8 +237,25 @@ export class ModuleRegistries {
     return wrapper;
   }
 
+  // The ESM registry keys by serialized URL, but `require.cache` addresses
+  // modules by path (Node keys its `require(esm)` entries the same way).
+  // `pathToFileURL` percent-encodes `?`/`#`, so a path lookup can never reach
+  // an entry that carries a query or fragment - those instances exist only
+  // for `import`, exactly as in Node. URL-string keys are rejected so file
+  // entries stay path-addressed only.
+  private getEsmEntryForRequireCache(key: string): JestModule | undefined {
+    const registry = this.isolation?.esm ?? this.esModuleRegistry;
+    if (path.isAbsolute(key)) {
+      return registry.get(pathToFileURL(key).href);
+    }
+    if (key.startsWith('file:')) {
+      return undefined;
+    }
+    return registry.get(key);
+  }
+
   getEsmRequireCacheEntry(key: string): NodeModule | undefined {
-    const entry = (this.isolation?.esm ?? this.esModuleRegistry).get(key);
+    const entry = this.getEsmEntryForRequireCache(key);
     if (!isLiveEsm(entry)) return undefined;
     return this.wrapEsmForRequireCache(key, entry);
   }
@@ -260,7 +278,7 @@ export class ModuleRegistries {
         if (typeof key !== 'string') return false;
         return (
           (this.isolation?.cjs ?? this.moduleRegistry).has(key) ||
-          isLiveEsm((this.isolation?.esm ?? this.esModuleRegistry).get(key))
+          isLiveEsm(this.getEsmEntryForRequireCache(key))
         );
       },
       ownKeys: () => {
@@ -269,7 +287,16 @@ export class ModuleRegistries {
         );
         for (const [key, entry] of this.isolation?.esm ??
           this.esModuleRegistry) {
-          if (isLiveEsm(entry)) keys.add(key);
+          if (!isLiveEsm(entry)) continue;
+          if (key.startsWith('file://')) {
+            // `pathToFileURL` percent-encodes literal `?`/`#`, so their
+            // presence always means a query or fragment - an instance a
+            // path key cannot address.
+            if (key.includes('?') || key.includes('#')) continue;
+            keys.add(fileURLToPath(key));
+          } else {
+            keys.add(key);
+          }
         }
         return [...keys];
       },
