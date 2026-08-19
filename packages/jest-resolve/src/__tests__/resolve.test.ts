@@ -82,6 +82,20 @@ describe('isCoreModule', () => {
     const isCore = resolver.isCoreModule('node:not-a-core-module');
     expect(isCore).toBe(false);
   });
+
+  it('scans the moduleNameMapper once per specifier', () => {
+    const regex = /^constants$/;
+    const regexTest = jest.spyOn(regex, 'test');
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      moduleNameMapper: [{moduleName: '$1', regex}],
+    } as ResolverConfig);
+
+    expect(resolver.isCoreModule('constants')).toBe(false);
+    expect(resolver.isCoreModule('constants')).toBe(false);
+
+    expect(regexTest).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('findNodeModule', () => {
@@ -1136,6 +1150,16 @@ describe('preserveSymlinks', () => {
 
   it('preserves symlinks when NODE_PRESERVE_SYMLINKS=1', () => {
     process.env.NODE_PRESERVE_SYMLINKS = '1';
+    expect(findDep()).toBe(symlinkedModuleEntry);
+  });
+
+  it('caches the detection until the resolver cache is cleared', () => {
+    expect(findDep()).toBe(realModuleEntry);
+
+    process.env.NODE_PRESERVE_SYMLINKS = '1';
+    expect(findDep()).toBe(realModuleEntry);
+
+    Resolver.clearDefaultResolverCache();
     expect(findDep()).toBe(symlinkedModuleEntry);
   });
 

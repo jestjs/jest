@@ -11,7 +11,7 @@ import {
   ResolverFactory,
   type NapiResolveOptions as UpstreamResolveOptions,
 } from 'unrs-resolver';
-import {getResolver, setResolver} from './fileWalkers';
+import {getResolver, setResolver, shouldPreserveSymlinks} from './fileWalkers';
 
 export interface ResolverOptions extends Omit<
   UpstreamResolveOptions,
@@ -59,23 +59,6 @@ const handleResolveResult = (result: ResolveResult) => {
   }
   return result.path!;
 };
-
-/**
- * Whether Node was started with `--preserve-symlinks` / `NODE_PRESERVE_SYMLINKS`.
- *
- * @see https://nodejs.org/api/cli.html#--preserve-symlinks
- */
-function shouldPreserveSymlinks(): boolean {
-  // `NODE_PRESERVE_SYMLINKS` is on only when exactly `1`, and `--preserve-symlinks`
-  // is matched exactly so `--preserve-symlinks-main` (entry point only) is excluded.
-  return (
-    process.env.NODE_PRESERVE_SYMLINKS === '1' ||
-    process.execArgv.includes('--preserve-symlinks') ||
-    (process.env.NODE_OPTIONS ?? '')
-      .split(/\s+/)
-      .includes('--preserve-symlinks')
-  );
-}
 
 function baseResolver(path: string, options: ResolverOptions): string;
 function baseResolver(

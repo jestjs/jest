@@ -59,6 +59,8 @@ export default class Resolver {
   private readonly _moduleNameCache: Map<string, string>;
   private readonly _modulePathCache: Map<string, Array<string>>;
   private readonly _supportsNativePlatform: boolean;
+  private readonly _extensions: Array<string>;
+  private readonly _isCoreModuleCache: Map<string, boolean>;
   private _canResolveSync: boolean | undefined;
 
   constructor(moduleMap: IModuleMap, options: ResolverConfig) {
@@ -81,6 +83,22 @@ export default class Resolver {
     this._moduleIDCache = new Map();
     this._moduleNameCache = new Map();
     this._modulePathCache = new Map();
+    this._isCoreModuleCache = new Map();
+
+    const configuredExtensions = this._options.extensions ?? [];
+    const extensions = [...configuredExtensions];
+    if (this._supportsNativePlatform) {
+      extensions.unshift(
+        ...configuredExtensions.map(ext => `.${NATIVE_PLATFORM}${ext}`),
+      );
+    }
+    const defaultPlatform = this._options.defaultPlatform;
+    if (defaultPlatform) {
+      extensions.unshift(
+        ...configuredExtensions.map(ext => `.${defaultPlatform}${ext}`),
+      );
+    }
+    this._extensions = extensions;
   }
 
   static ModuleNotFoundError = ModuleNotFoundError;
@@ -420,26 +438,19 @@ export default class Resolver {
   ) {
     const paths = options?.paths || this._options.modulePaths;
     const moduleDirectory = this._options.moduleDirectories;
-    const stringifiedOptions = options ? JSON.stringify(options) : '';
-    const key = dirname + path.delimiter + moduleName + stringifiedOptions;
-    const defaultPlatform = this._options.defaultPlatform;
-    const extensions = [...this._options.extensions];
-
-    if (this._supportsNativePlatform) {
-      extensions.unshift(
-        ...this._options.extensions.map(ext => `.${NATIVE_PLATFORM}${ext}`),
-      );
-    }
-    if (defaultPlatform) {
-      extensions.unshift(
-        ...this._options.extensions.map(ext => `.${defaultPlatform}${ext}`),
-      );
-    }
+    const key =
+      dirname + path.delimiter + moduleName + stringifyOptions(options);
 
     const skipResolution =
       options && options.skipNodeResolution && !moduleName.includes(path.sep);
 
-    return {extensions, key, moduleDirectory, paths, skipResolution};
+    return {
+      extensions: this._extensions,
+      key,
+      moduleDirectory,
+      paths,
+      skipResolution,
+    };
   }
 
   /**
@@ -484,11 +495,15 @@ export default class Resolver {
   }
 
   isCoreModule(moduleName: string): boolean {
-    return (
-      this._options.hasCoreModules &&
-      isBuiltin(moduleName) &&
-      !this._isAliasModule(moduleName)
-    );
+    let result = this._isCoreModuleCache.get(moduleName);
+    if (result == null) {
+      result =
+        this._options.hasCoreModules &&
+        isBuiltin(moduleName) &&
+        !this._isAliasModule(moduleName);
+      this._isCoreModuleCache.set(moduleName, result);
+    }
+    return result;
   }
 
   normalizeCoreModuleSpecifier(specifier: string): string {
@@ -586,7 +601,7 @@ export default class Resolver {
     moduleName = '',
     options: ResolveModuleConfig,
   ): string {
-    const stringifiedOptions = options ? JSON.stringify(options) : '';
+    const stringifiedOptions = stringifyOptions(options);
     const key = this._getModuleIDCacheKey(
       virtualMocks,
       from,
@@ -625,7 +640,7 @@ export default class Resolver {
     moduleName = '',
     options: ResolveModuleConfig,
   ): Promise<string> {
-    const stringifiedOptions = options ? JSON.stringify(options) : '';
+    const stringifiedOptions = stringifyOptions(options);
     const key = this._getModuleIDCacheKey(
       virtualMocks,
       from,
@@ -796,56 +811,58 @@ export default class Resolver {
     moduleName: string,
     options?: Pick<ResolveModuleConfig, 'conditions'>,
   ): string | null {
+    const moduleNameMapper = this._options.moduleNameMapper;
+    if (moduleNameMapper == null || moduleNameMapper.length === 0) {
+      return null;
+    }
+
     const dirname = path.dirname(from);
 
     const {extensions, moduleDirectory, paths} = this._prepareForResolution(
       dirname,
       moduleName,
     );
-    const moduleNameMapper = this._options.moduleNameMapper;
     const resolver = this._options.resolver;
 
-    if (moduleNameMapper) {
-      for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
-        if (regex.test(moduleName)) {
-          // Note: once a moduleNameMapper matches the name, it must result
-          // in a module, or else an error is thrown.
-          const matches = moduleName.match(regex);
-          const mapModuleName = this._getMapModuleName(matches);
-          const possibleModuleNames = Array.isArray(mappedModuleName)
-            ? mappedModuleName
-            : [mappedModuleName];
-          let module: string | null = null;
-          for (const possibleModuleName of possibleModuleNames) {
-            const updatedName = mapModuleName(possibleModuleName);
-            module =
-              this.getModule(updatedName) ||
-              Resolver.findNodeModule(updatedName, {
-                basedir: dirname,
-                conditions: options?.conditions,
-                extensions,
-                moduleDirectory,
-                paths,
-                resolver,
-                rootDir: this._options.rootDir,
-              });
-
-            if (module) {
-              break;
-            }
-          }
-
-          if (!module) {
-            throw createNoMappedModuleFoundError(
-              moduleName,
-              mapModuleName,
-              mappedModuleName,
-              regex,
+    for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
+      const matches = moduleName.match(regex);
+      if (matches) {
+        // Note: once a moduleNameMapper matches the name, it must result
+        // in a module, or else an error is thrown.
+        const mapModuleName = this._getMapModuleName(matches);
+        const possibleModuleNames = Array.isArray(mappedModuleName)
+          ? mappedModuleName
+          : [mappedModuleName];
+        let module: string | null = null;
+        for (const possibleModuleName of possibleModuleNames) {
+          const updatedName = mapModuleName(possibleModuleName);
+          module =
+            this.getModule(updatedName) ||
+            Resolver.findNodeModule(updatedName, {
+              basedir: dirname,
+              conditions: options?.conditions,
+              extensions,
+              moduleDirectory,
+              paths,
               resolver,
-            );
+              rootDir: this._options.rootDir,
+            });
+
+          if (module) {
+            break;
           }
-          return module;
         }
+
+        if (!module) {
+          throw createNoMappedModuleFoundError(
+            moduleName,
+            mapModuleName,
+            mappedModuleName,
+            regex,
+            resolver,
+          );
+        }
+        return module;
       }
     }
     return null;
@@ -861,61 +878,80 @@ export default class Resolver {
       return this.normalizeCoreModuleSpecifier(moduleName);
     }
 
+    const moduleNameMapper = this._options.moduleNameMapper;
+    if (moduleNameMapper == null || moduleNameMapper.length === 0) {
+      return null;
+    }
+
     const dirname = path.dirname(from);
 
     const {extensions, moduleDirectory, paths} = this._prepareForResolution(
       dirname,
       moduleName,
     );
-    const moduleNameMapper = this._options.moduleNameMapper;
     const resolver = this._options.resolver;
 
-    if (moduleNameMapper) {
-      for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
-        if (regex.test(moduleName)) {
-          // Note: once a moduleNameMapper matches the name, it must result
-          // in a module, or else an error is thrown.
-          const matches = moduleName.match(regex);
-          const mapModuleName = this._getMapModuleName(matches);
-          const possibleModuleNames = Array.isArray(mappedModuleName)
-            ? mappedModuleName
-            : [mappedModuleName];
-          let module: string | null = null;
-          for (const possibleModuleName of possibleModuleNames) {
-            const updatedName = mapModuleName(possibleModuleName);
+    for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
+      const matches = moduleName.match(regex);
+      if (matches) {
+        // Note: once a moduleNameMapper matches the name, it must result
+        // in a module, or else an error is thrown.
+        const mapModuleName = this._getMapModuleName(matches);
+        const possibleModuleNames = Array.isArray(mappedModuleName)
+          ? mappedModuleName
+          : [mappedModuleName];
+        let module: string | null = null;
+        for (const possibleModuleName of possibleModuleNames) {
+          const updatedName = mapModuleName(possibleModuleName);
 
-            module =
-              this.getModule(updatedName) ||
-              (await Resolver.findNodeModuleAsync(updatedName, {
-                basedir: dirname,
-                conditions: options?.conditions,
-                extensions,
-                moduleDirectory,
-                paths,
-                resolver,
-                rootDir: this._options.rootDir,
-              }));
-
-            if (module) {
-              break;
-            }
-          }
-
-          if (!module) {
-            throw createNoMappedModuleFoundError(
-              moduleName,
-              mapModuleName,
-              mappedModuleName,
-              regex,
+          module =
+            this.getModule(updatedName) ||
+            (await Resolver.findNodeModuleAsync(updatedName, {
+              basedir: dirname,
+              conditions: options?.conditions,
+              extensions,
+              moduleDirectory,
+              paths,
               resolver,
-            );
+              rootDir: this._options.rootDir,
+            }));
+
+          if (module) {
+            break;
           }
-          return module;
         }
+
+        if (!module) {
+          throw createNoMappedModuleFoundError(
+            moduleName,
+            mapModuleName,
+            mappedModuleName,
+            regex,
+            resolver,
+          );
+        }
+        return module;
       }
     }
     return null;
   }
+}
+
+// Callers on the hot path pass long-lived options objects, so the
+// serialization for cache keys is memoized on object identity.
+const stringifiedOptionsCache = new WeakMap<object, string>();
+
+function stringifyOptions(options?: ResolveModuleConfig): string {
+  if (!options) {
+    return '';
+  }
+
+  let result = stringifiedOptionsCache.get(options);
+  if (result == null) {
+    result = JSON.stringify(options);
+    stringifiedOptionsCache.set(options, result);
+  }
+  return result;
 }
 
 const createNoMappedModuleFoundError = (

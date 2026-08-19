@@ -7,7 +7,7 @@
 
 import * as path from 'node:path';
 import * as fs from 'graceful-fs';
-import Resolver from 'jest-resolve';
+import Resolver, {type ResolveModuleConfig} from 'jest-resolve';
 import {supportsSyncEvaluate} from './nodeCapabilities';
 
 export const isWasm = (modulePath: string): boolean =>
@@ -17,6 +17,10 @@ export class Resolution {
   private readonly resolver: Resolver;
   private readonly cjsConditions: ReadonlyArray<string>;
   private readonly esmConditions: ReadonlyArray<string>;
+  // One long-lived, frozen object per condition set - the resolver memoizes
+  // its cache-key serialization on options-object identity.
+  private readonly cjsResolveOptions: ResolveModuleConfig;
+  private readonly esmResolveOptions: ResolveModuleConfig;
   private readonly extensionsToTreatAsEsm: ReadonlyArray<string>;
   private readonly cjsCache = new Map<string, string>();
   private readonly esmCache = new Map<string, string>();
@@ -43,6 +47,8 @@ export class Resolution {
     this.esmConditions = [
       ...new Set(['import', 'module-sync', 'default', ...envExportConditions]),
     ];
+    this.cjsResolveOptions = Object.freeze({conditions: this.cjsConditions});
+    this.esmResolveOptions = Object.freeze({conditions: this.esmConditions});
     this.extensionsToTreatAsEsm = extensionsToTreatAsEsm;
   }
 
@@ -58,19 +64,17 @@ export class Resolution {
 
   resolveCjs(from: string, to: string | undefined): string {
     if (!to) return from;
-    return this.resolveCached(from, to, this.cjsCache, this.cjsConditions);
+    return this.resolveCached(from, to, this.cjsCache, this.cjsResolveOptions);
   }
 
   resolveEsm(from: string, to: string | undefined): string {
     if (!to) return from;
-    return this.resolveCached(from, to, this.esmCache, this.esmConditions);
+    return this.resolveCached(from, to, this.esmCache, this.esmResolveOptions);
   }
 
   resolveEsmAsync(from: string, to: string | undefined): Promise<string> {
     if (!to) return Promise.resolve(from);
-    return this.resolver.resolveModuleAsync(from, to, {
-      conditions: this.esmConditions,
-    });
+    return this.resolver.resolveModuleAsync(from, to, this.esmResolveOptions);
   }
 
   getCjsModuleId(
@@ -78,9 +82,12 @@ export class Resolution {
     from: string,
     moduleName?: string,
   ): string {
-    return this.resolver.getModuleID(virtualMocks, from, moduleName, {
-      conditions: this.cjsConditions,
-    });
+    return this.resolver.getModuleID(
+      virtualMocks,
+      from,
+      moduleName,
+      this.cjsResolveOptions,
+    );
   }
 
   getEsmModuleId(
@@ -88,9 +95,12 @@ export class Resolution {
     from: string,
     moduleName?: string,
   ): string {
-    return this.resolver.getModuleID(virtualMocks, from, moduleName, {
-      conditions: this.esmConditions,
-    });
+    return this.resolver.getModuleID(
+      virtualMocks,
+      from,
+      moduleName,
+      this.esmResolveOptions,
+    );
   }
 
   getEsmModuleIdAsync(
@@ -98,30 +108,39 @@ export class Resolution {
     from: string,
     moduleName?: string,
   ): Promise<string> {
-    return this.resolver.getModuleIDAsync(virtualMocks, from, moduleName, {
-      conditions: this.esmConditions,
-    });
+    return this.resolver.getModuleIDAsync(
+      virtualMocks,
+      from,
+      moduleName,
+      this.esmResolveOptions,
+    );
   }
 
   getCjsMockModule(from: string, moduleName: string): string | null {
-    return this.resolver.getMockModule(from, moduleName, {
-      conditions: this.cjsConditions,
-    });
+    return this.resolver.getMockModule(
+      from,
+      moduleName,
+      this.cjsResolveOptions,
+    );
   }
 
   getEsmMockModule(from: string, moduleName: string): string | null {
-    return this.resolver.getMockModule(from, moduleName, {
-      conditions: this.esmConditions,
-    });
+    return this.resolver.getMockModule(
+      from,
+      moduleName,
+      this.esmResolveOptions,
+    );
   }
 
   getEsmMockModuleAsync(
     from: string,
     moduleName: string,
   ): Promise<string | null> {
-    return this.resolver.getMockModuleAsync(from, moduleName, {
-      conditions: this.esmConditions,
-    });
+    return this.resolver.getMockModuleAsync(
+      from,
+      moduleName,
+      this.esmResolveOptions,
+    );
   }
 
   // Resolves the manual mock module path from a (potentially aliased) module
@@ -178,9 +197,11 @@ export class Resolution {
   }
 
   resolveCjsStub(from: string, moduleName: string): string | null {
-    return this.resolver.resolveStubModuleName(from, moduleName, {
-      conditions: this.cjsConditions,
-    });
+    return this.resolver.resolveStubModuleName(
+      from,
+      moduleName,
+      this.cjsResolveOptions,
+    );
   }
 
   getModulePaths(from: string): Array<string> {
@@ -232,12 +253,12 @@ export class Resolution {
     from: string,
     to: string,
     cache: Map<string, string>,
-    conditions: ReadonlyArray<string>,
+    resolveOptions: ResolveModuleConfig,
   ): string {
     const key = `${from}\0${to}`;
     const cached = cache.get(key);
     if (cached !== undefined) return cached;
-    const resolved = this.resolver.resolveModule(from, to, {conditions});
+    const resolved = this.resolver.resolveModule(from, to, resolveOptions);
     cache.set(key, resolved);
     return resolved;
   }
