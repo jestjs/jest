@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import {pathToFileURL} from 'url';
 
 import {
   testWithLinkedSyntheticModule,
@@ -754,7 +755,10 @@ describe('Runtime sync ESM graph - require(esm)', () => {
       const aPath = path.join(ROOT_DIR, 'a.mjs');
       // Simulate a concurrent `await import()` by stashing a pending Promise
       // in the registry under the key require() will look up.
-      runtime.registries.setEsm(aPath, new Promise(() => {}));
+      runtime.registries.setEsm(
+        pathToFileURL(aPath).href,
+        new Promise(() => {}),
+      );
       expect(() => runtime.requireModule(FROM, './a.mjs')).toThrow(
         expect.objectContaining({
           code: 'ERR_REQUIRE_ESM',
@@ -763,6 +767,71 @@ describe('Runtime sync ESM graph - require(esm)', () => {
           ),
         }),
       );
+    },
+  );
+
+  testWithSyncEsm(
+    'a require() of a second root mid-walk shares overlapping dependencies',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './overlap-root.mjs',
+      )) as any;
+      expect(m.namespace.sameInstance).toBe(true);
+      expect(m.namespace.evaluations).toBe(1);
+    },
+  );
+
+  testWithSyncEsm(
+    'a require() of a second root mid-walk shares dependencies the outer walk scratched first',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './overlap-root-lifo.mjs',
+      )) as any;
+      expect(m.namespace.sameInstance).toBe(true);
+      expect(m.namespace.evaluations).toBe(1);
+    },
+  );
+
+  testWithSyncEsm(
+    'a require() of a second root mid-walk shares a scratched JSON module',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './overlap-json-root.mjs',
+      )) as any;
+      expect(m.namespace.sameJson).toBe(true);
+    },
+  );
+
+  testWithSyncEsm(
+    'a require() whose graph reaches the walked root throws ERR_REQUIRE_CYCLE_MODULE',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './cycle-through-nested-root.mjs',
+      )) as any;
+      expect(m.namespace.observed).toBe('ERR_REQUIRE_CYCLE_MODULE');
+    },
+  );
+
+  testWithSyncEsm(
+    'a dynamic import() fired from a CJS body mid-walk settles on the walked instance',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './reentrant-import-root.mjs',
+      )) as any;
+      const reentrant = await m.namespace.promiseFromCjs;
+      expect(reentrant).toBe(m.namespace);
+      expect(reentrant.marker).toBe('reentrant-root');
+      expect(reentrant.evaluations).toBe(1);
     },
   );
 
@@ -777,9 +846,201 @@ describe('Runtime sync ESM graph - require(esm)', () => {
       await m.namespace.loadCjs();
 
       const cjsPath = path.join(ROOT_DIR, 'cjs-dep.cjs');
-      const entry = runtime.registries.getEsm(cjsPath);
+      const entry = runtime.registries.getEsm(pathToFileURL(cjsPath).href);
       expect(entry).toBeDefined();
       expect(entry).not.toBeInstanceOf(Promise);
+    },
+  );
+});
+
+describe('Runtime sync ESM graph - URL-keyed module instances', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithVmEsm(
+    'shares an instance for an identical query and separates every other URL',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const importStateful = async (specifier: string) =>
+        (await runtime.unstable_importModule(FROM, specifier)) as any;
+
+      const queryA = await importStateful('./stateful.mjs?a');
+      const queryAAgain = await importStateful('./stateful.mjs?a');
+      const queryB = await importStateful('./stateful.mjs?b');
+      const plain = await importStateful('./stateful.mjs');
+      const fragment = await importStateful('./stateful.mjs#frag');
+      const doubleQuery = await importStateful('./stateful.mjs?a?b');
+
+      expect(queryAAgain.namespace).toBe(queryA.namespace);
+      const namespaces = new Set([
+        queryA.namespace,
+        queryB.namespace,
+        plain.namespace,
+        fragment.namespace,
+        doubleQuery.namespace,
+      ]);
+      expect(namespaces.size).toBe(5);
+    },
+  );
+
+  testWithVmEsm(
+    'a file: URL specifier shares the instance of its relative spelling',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const relative = (await runtime.unstable_importModule(
+        FROM,
+        './stateful.mjs?a',
+      )) as any;
+      const statefulUrl = pathToFileURL(
+        path.join(ROOT_DIR, 'stateful.mjs'),
+      ).href;
+      const viaUrl = (await runtime.unstable_importModule(
+        FROM,
+        `${statefulUrl}?a`,
+      )) as any;
+      expect(viaUrl.namespace).toBe(relative.namespace);
+    },
+  );
+
+  testWithVmEsm(
+    'a query on one extension never collides with a neighboring extension',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-keyed-collision.mjs',
+      )) as any;
+      expect(m.namespace.queried).toBe('js');
+      expect(m.namespace.neighbor).toBe('jsx');
+    },
+  );
+
+  testWithVmEsm(
+    'query variants of a CJS module get distinct namespaces over one evaluation',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-cjs-query-variants.mjs',
+      )) as any;
+      expect(m.namespace.distinctNamespaces).toBe(true);
+      expect(m.namespace.sharedExports).toBe(true);
+    },
+  );
+
+  testWithVmEsm(
+    'serializes the suffix, sharing percent-encoded spellings like Node',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const raw = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs?é',
+      )) as any;
+      const encoded = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs?%C3%A9',
+      )) as any;
+      expect(encoded.namespace).toBe(raw.namespace);
+      const reporterUrl = pathToFileURL(
+        path.join(ROOT_DIR, 'url-reporter.mjs'),
+      ).href;
+      expect(raw.namespace.url).toBe(`${reporterUrl}?%C3%A9`);
+    },
+  );
+
+  testWithVmEsm(
+    'an empty query or fragment names the plain module, like Node',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const plain = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs',
+      )) as any;
+      const emptyQuery = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs?',
+      )) as any;
+      const emptyFragment = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs#',
+      )) as any;
+      const emptyQueryWithFragment = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs?#frag',
+      )) as any;
+      const fragmentOnly = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs#frag',
+      )) as any;
+
+      expect(emptyQuery.namespace).toBe(plain.namespace);
+      expect(emptyFragment.namespace).toBe(plain.namespace);
+      expect(emptyQueryWithFragment.namespace).toBe(fragmentOnly.namespace);
+      expect(fragmentOnly.namespace).not.toBe(plain.namespace);
+    },
+  );
+
+  testWithVmEsm(
+    'accepts file: URLs without an authority and with an upper-case scheme',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const reporterPath = path.join(ROOT_DIR, 'url-reporter.mjs');
+      const relative = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs',
+      )) as any;
+      const singleSlash = (await runtime.unstable_importModule(
+        FROM,
+        `file:${reporterPath}`,
+      )) as any;
+      const upperCaseScheme = (await runtime.unstable_importModule(
+        FROM,
+        pathToFileURL(reporterPath).href.replace(/^file:/, 'FILE:'),
+      )) as any;
+      expect(singleSlash.namespace).toBe(relative.namespace);
+      expect(upperCaseScheme.namespace).toBe(relative.namespace);
+    },
+  );
+
+  testWithVmEsm('import.meta.url carries the query and fragment', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './url-reporter.mjs?tag=1#frag',
+    )) as any;
+    const reporterUrl = pathToFileURL(
+      path.join(ROOT_DIR, 'url-reporter.mjs'),
+    ).href;
+    expect(m.namespace.url).toBe(`${reporterUrl}?tag=1#frag`);
+  });
+
+  testWithVmEsm(
+    'import.meta.resolve keeps the query and fragment and echoes node: specifiers',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './meta-resolve-suffix.mjs',
+      )) as any;
+      const aUrl = pathToFileURL(path.join(ROOT_DIR, 'a.mjs')).href;
+      expect(m.namespace.relative).toBe(`${aUrl}?q=1#frag`);
+      expect(m.namespace.builtinEcho).toBe('node:fs?q');
+    },
+  );
+
+  testWithVmEsm(
+    'a core specifier with a query is an unknown builtin',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, 'node:fs?q'),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_UNKNOWN_BUILTIN_MODULE',
+          message: 'No such built-in module: node:fs?q',
+        }),
+      );
     },
   );
 });
@@ -913,6 +1174,21 @@ describe('Runtime sync ESM graph - data: URI mediatype parsing', () => {
     )) as any;
     expect(m.namespace.s).toBe(1);
   });
+
+  testWithVmEsm(
+    'whitespace spellings of one data: URI share an instance with a canonical import.meta.url',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-data-uri-tab-alias.mjs',
+      )) as any;
+      expect(m.namespace.sameInstance).toBe(true);
+      expect(m.namespace.url).toBe(
+        'data:text/javascript,export const url = import.meta.url;',
+      );
+    },
+  );
 
   // Node's percent-decoding is forgiving: an invalid escape sequence passes
   // through instead of throwing.
