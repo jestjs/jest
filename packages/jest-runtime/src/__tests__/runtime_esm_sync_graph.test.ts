@@ -110,6 +110,28 @@ describe('Runtime sync ESM graph', () => {
     expect(m.namespace.data).toEqual({answer: 42, label: 'json'});
   });
 
+  testWithVmEsm(
+    'keys a core root the same way it keys a core dependency',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+
+      // `import-core.mjs` pulls in `node:path` as a dependency, which the
+      // walker keys canonically. Importing the builtin as a *root* goes
+      // through a separate branch, and must land on that same entry rather
+      // than minting a second synthetic wrapper.
+      const viaDep = (await runtime.unstable_importModule(
+        FROM,
+        './import-core.mjs',
+      )) as any;
+      const asRoot = (await runtime.unstable_importModule(
+        FROM,
+        'node:path',
+      )) as any;
+
+      expect(asRoot.namespace).toBe(viaDep.namespace.nodePath);
+    },
+  );
+
   testWithVmEsm('imports core node modules through the ESM graph', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
@@ -131,6 +153,26 @@ describe('Runtime sync ESM graph', () => {
     );
   });
 
+  testWithVmEsm('sets import.meta.main only for the test file', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const imported = (await runtime.unstable_importModule(
+      FROM,
+      './import-meta-main.mjs',
+    )) as any;
+    expect(imported.namespace.ownMain).toBe(false);
+    expect(imported.namespace.depMain).toBe(false);
+
+    const entryRuntime = await createRuntime(
+      path.join(ROOT_DIR, 'meta-main.mjs'),
+      {rootDir: ROOT_DIR},
+    );
+    const entry = (await entryRuntime.unstable_importModule(
+      FROM,
+      './meta-main.mjs',
+    )) as any;
+    expect(entry.namespace.mainValue).toBe(true);
+  });
+
   testWithVmEsm('pulls a CJS dependency into the sync ESM graph', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
@@ -139,6 +181,19 @@ describe('Runtime sync ESM graph', () => {
     )) as any;
     expect(m.namespace.cjsValue).toBe('from-cjs');
   });
+
+  testWithVmEsm(
+    "exposes a CJS dependency's exports as the 'module.exports' named export",
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-cjs-namespace.mjs',
+      )) as any;
+      expect(m.namespace.moduleExportsValue).toEqual({cjsValue: 'from-cjs'});
+      expect(m.namespace.sameAsDefault).toBe(true);
+    },
+  );
 
   testWithVmEsm('imports a wasm module via data: URI', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -205,6 +260,38 @@ describe('Runtime sync ESM graph - mocks and isolation', () => {
     )) as any;
     expect(m.namespace.greeting).toBe('mocked-async');
   });
+
+  testWithVmEsm(
+    'a module mock first imported inside isolateModulesAsync does not leak out',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+
+      let invocations = 0;
+      runtime.setModuleMock(FROM, './mock-target.mjs', () => {
+        invocations++;
+        return {greeting: `mocked-${invocations}`};
+      });
+
+      let inside: any;
+      await runtime.isolateModulesAsync(async () => {
+        inside = (await runtime.unstable_importModule(
+          FROM,
+          './import-mock-target.mjs',
+        )) as any;
+      });
+      expect(inside.namespace.greeting).toBe('mocked-1');
+
+      const outside = (await runtime.unstable_importModule(
+        FROM,
+        './import-mock-target.mjs',
+      )) as any;
+
+      // The mock instance built inside the block must not be reused
+      // afterwards - the factory runs again, as it does for a CommonJS mock.
+      expect(outside.namespace.greeting).toBe('mocked-2');
+      expect(invocations).toBe(2);
+    },
+  );
 
   testWithVmEsm('isolateModulesAsync gives a fresh ESM namespace', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -315,6 +402,127 @@ describe('Runtime sync ESM graph - require(esm)', () => {
           message: expect.stringMatching(/with-tla\.mjs/),
         }),
       );
+    },
+  );
+
+  testWithSyncEsm(
+    'marks a required module that has a default export with __esModule',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const result = runtime.requireModule(FROM, './with-default.mjs');
+      expect(
+        Object.getOwnPropertyDescriptor(result, '__esModule'),
+      ).toStrictEqual({
+        configurable: false,
+        enumerable: true,
+        value: true,
+        writable: true,
+      });
+      expect(result.default).toBe('D');
+      expect(result.x).toBe(1);
+      expect(runtime.requireModule(FROM, './with-default.mjs')).toBe(result);
+    },
+  );
+
+  testWithSyncEsm(
+    'adds no __esModule marker without a default export',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const result = runtime.requireModule(FROM, './a.mjs');
+      expect('__esModule' in result).toBe(false);
+      expect(result.valueA).toBe('a');
+    },
+  );
+
+  testWithSyncEsm("keeps a module's own __esModule export as-is", async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const result = runtime.requireModule(FROM, './own-esmodule.mjs');
+    expect(result.__esModule).toBe(false);
+    expect(result.default).toBe('overridden');
+  });
+
+  testWithSyncEsm('keeps live bindings through the facade', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const result = runtime.requireModule(FROM, './live-bindings.mjs');
+    expect(result.__esModule).toBe(true);
+    expect(result.counter).toBe(0);
+    result.bump();
+    expect(result.counter).toBe(1);
+  });
+
+  testWithSyncEsm('exposes the require() result on require.cache', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const probe = runtime.requireModule(FROM, './reads-cache-for-esm.cjs');
+    expect(probe.cacheMatchesRequire).toBe(true);
+  });
+
+  testWithSyncEsm(
+    'throws ERR_REQUIRE_CYCLE_MODULE when a CJS dep requires back into the graph',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      expect(() => runtime.requireModule(FROM, './cycle-root.mjs')).toThrow(
+        expect.objectContaining({
+          code: 'ERR_REQUIRE_CYCLE_MODULE',
+          message: expect.stringMatching(
+            /Cannot require\(\) ES Module .*cycle-root\.mjs in a cycle\. \(from .*requires-cycle-root\.cjs\)/,
+          ),
+        }),
+      );
+    },
+  );
+
+  testWithSyncEsm(
+    'throws ERR_REQUIRE_CYCLE_MODULE for a self-require during evaluation',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const ns = runtime.requireModule(FROM, './eval-time-cycle.mjs');
+      expect(ns.observed).toBe('ERR_REQUIRE_CYCLE_MODULE');
+    },
+  );
+
+  testWithSyncEsm(
+    'throws ERR_REQUIRE_CYCLE_MODULE across nested walks',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const ns = runtime.requireModule(FROM, './deep-cycle-root.mjs');
+      expect(ns.rootOneValue).toBe(1);
+      const probe = runtime.requireModule(FROM, './requires-first-root.cjs');
+      expect(probe.observed).toBe('ERR_REQUIRE_CYCLE_MODULE');
+    },
+  );
+
+  testWithSyncEsm(
+    'scopes cycle detection to the registry the walk runs against',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const ns = runtime.requireModule(FROM, './isolation-reentry-root.mjs');
+      expect(ns.outerValue).toBe('outer');
+      const probe = runtime.requireModule(FROM, './isolates-same-root.cjs');
+      expect(probe.isolated.outerValue).toBe('outer');
+      expect(probe.isolated).not.toBe(ns);
+    },
+  );
+
+  testWithSyncEsm(
+    'allows a CJS dep to require an unrelated ESM root mid-walk',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const ns = runtime.requireModule(FROM, './nested-walk-root.mjs');
+      expect(ns.rootValue).toBe('root');
+      const unrelated = runtime.requireModule(FROM, './requires-unrelated.cjs');
+      expect(unrelated.otherValue).toBe('sibling');
+    },
+  );
+
+  testWithSyncEsm(
+    'serves an already-evaluated module to a CJS dep mid-walk',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const first = runtime.requireModule(FROM, './a.mjs');
+      const ns = runtime.requireModule(FROM, './reuse-evaluated-root.mjs');
+      expect(ns.reuseValue).toBe('reuse-root');
+      const probe = runtime.requireModule(FROM, './requires-evaluated.cjs');
+      expect(probe.aValue).toBe(first.valueA);
     },
   );
 
@@ -444,6 +652,98 @@ describe('Runtime sync ESM graph - require(esm)', () => {
       expect(() => runtime.requireModule(FROM, './throws-at-eval.mjs')).toThrow(
         'boom from esm eval',
       );
+    },
+  );
+
+  testWithSyncEsm(
+    'rethrows the original error when requiring a module that already failed',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      expect(() => runtime.requireModule(FROM, './throws-at-eval.mjs')).toThrow(
+        'boom from esm eval',
+      );
+      expect(() => runtime.requireModule(FROM, './throws-at-eval.mjs')).toThrow(
+        'boom from esm eval',
+      );
+    },
+  );
+
+  testWithSyncEsm(
+    'evaluates a module left linked when a sibling threw',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      expect(() =>
+        runtime.requireModule(FROM, './import-throwing-then-sibling.mjs'),
+      ).toThrow('boom from esm eval');
+      const ns = runtime.requireModule(FROM, './linked-sibling.mjs');
+      expect(ns.value).toBe('sibling');
+    },
+  );
+
+  testWithSyncEsm(
+    'adopts a linked module as a dependency of a later graph',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      expect(() =>
+        runtime.requireModule(FROM, './import-throwing-then-sibling.mjs'),
+      ).toThrow('boom from esm eval');
+
+      // A fresh root pulls the leftover in as a *dependency*, so it is adopted
+      // into the scratch graph and evaluated by the root's cascade rather than
+      // taking the root cache branch.
+      const ns = runtime.requireModule(FROM, './import-linked-sibling.mjs');
+      expect(ns.value).toBe('sibling');
+      expect(ns.wrapper).toBe('wrapper');
+    },
+  );
+
+  testWithSyncEsm(
+    'rejects a concurrent import() whose sibling evaluated the module to an error',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      // An async-only resolver forces the legacy path even on Node with sync
+      // evaluate; there, the first caller's sync-branch evaluation stores no
+      // promise in `evaluatingMap`, so the second caller must re-read the
+      // status after its awaits instead of returning the errored module.
+      runtime._resolution.canResolveSync = () => false;
+
+      const results = await Promise.allSettled([
+        runtime.unstable_importModule(
+          FROM,
+          './import-throwing-then-sibling.mjs',
+        ),
+        runtime.unstable_importModule(
+          FROM,
+          './import-throwing-then-sibling.mjs',
+        ),
+      ]);
+
+      expect(results.map(result => result.status)).toEqual([
+        'rejected',
+        'rejected',
+      ]);
+      for (const result of results) {
+        expect((result as PromiseRejectedResult).reason.message).toBe(
+          'boom from esm eval',
+        );
+      }
+    },
+  );
+
+  testWithSyncEsm(
+    'reports the same top-level await error when a failed graph is required again',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const expected = expect.objectContaining({
+        code: 'ERR_REQUIRE_ASYNC_MODULE',
+        message: expect.stringMatching(/top-level await/),
+      });
+      expect(() =>
+        runtime.requireModule(FROM, './import-cjs-then-tla.mjs'),
+      ).toThrow(expected);
+      expect(() =>
+        runtime.requireModule(FROM, './import-cjs-then-tla.mjs'),
+      ).toThrow(expected);
     },
   );
 

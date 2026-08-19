@@ -11,6 +11,7 @@ import * as path from 'node:path';
 import anymatch from 'anymatch';
 import watchman from 'fb-watchman';
 import fs from 'graceful-fs';
+import {isIgnorableFileError} from '../lib/isIgnorableFileError';
 import * as common from './common';
 
 const CHANGE_EVENT = common.CHANGE_EVENT;
@@ -61,6 +62,8 @@ export default function WatchmanWatcher(dir, opts) {
   this.hasIgnore = Boolean(opts.ignored);
   this.doIgnore = opts.ignored ? anymatch(opts.ignored) : () => false;
   this.root = path.resolve(dir);
+  this._console = opts.console || globalThis.console;
+  this._closed = false;
   this.init();
 }
 
@@ -84,7 +87,10 @@ WatchmanWatcher.prototype.init = function () {
   });
   this.client.on('subscription', this.handleChangeEvent.bind(this));
   this.client.on('end', () => {
-    console.warn(
+    if (self._closed) {
+      return;
+    }
+    self._console.warn(
       '[jest-haste-map] Warning: Lost connection to watchman, reconnecting..',
     );
     self.init();
@@ -102,7 +108,7 @@ WatchmanWatcher.prototype.init = function () {
       return;
     }
 
-    handleWarning(resp);
+    handleWarning(self, resp);
 
     self.capabilities = resp.capabilities;
 
@@ -118,7 +124,7 @@ WatchmanWatcher.prototype.init = function () {
       return;
     }
 
-    handleWarning(resp);
+    handleWarning(self, resp);
 
     self.watchProjectInfo = {
       relativePath: resp.relative_path ?? '',
@@ -133,7 +139,7 @@ WatchmanWatcher.prototype.init = function () {
       return;
     }
 
-    handleWarning(resp);
+    handleWarning(self, resp);
 
     self.client.command(['clock', getWatchRoot()], onClock);
   }
@@ -143,7 +149,7 @@ WatchmanWatcher.prototype.init = function () {
       return;
     }
 
-    handleWarning(resp);
+    handleWarning(self, resp);
 
     const options = {
       fields: ['name', 'exists', 'new'],
@@ -198,7 +204,7 @@ WatchmanWatcher.prototype.init = function () {
       return;
     }
 
-    handleWarning(resp);
+    handleWarning(self, resp);
 
     self.emit('ready');
   }
@@ -261,9 +267,9 @@ WatchmanWatcher.prototype.handleFileChange = function (changeDescriptor) {
 
   if (changeDescriptor.exists) {
     fs.lstat(absPath, (error, stat) => {
-      // Files can be deleted between the event and the lstat call
-      // the most reliable thing to do here is to ignore the event.
-      if (error && error.code === 'ENOENT') {
+      // Files can disappear or temporarily become unreadable between the
+      // Watchman event and the lstat call, so ignore that stale event.
+      if (error && isIgnorableFileError(error)) {
         return;
       }
 
@@ -299,6 +305,11 @@ WatchmanWatcher.prototype.emitEvent = function (
   root,
   stat,
 ) {
+  // An `lstat` started before close() can still complete after it. Delivering
+  // that event would feed the already-stopped ChangeQueue.
+  if (this._closed) {
+    return;
+  }
   this.emit(eventType, filepath, root, stat);
   this.emit(ALL_EVENT, eventType, filepath, root, stat);
 };
@@ -309,6 +320,7 @@ WatchmanWatcher.prototype.emitEvent = function (
  */
 
 WatchmanWatcher.prototype.close = function () {
+  this._closed = true;
   this.client.removeAllListeners();
   this.client.end();
   return Promise.resolve();
@@ -326,7 +338,9 @@ function handleError(self, error) {
   if (error == null) {
     return false;
   } else {
-    self.emit('error', error);
+    if (!self._closed) {
+      self.emit('error', error);
+    }
     return true;
   }
 }
@@ -334,16 +348,17 @@ function handleError(self, error) {
 /**
  * Handles a warning in the watchman resp object.
  *
+ * @param {WatchmanWatcher} self
  * @param {object} resp
  * @private
  */
 
-function handleWarning(resp) {
+function handleWarning(self, resp) {
   if ('warning' in resp) {
     if (isRecrawlWarningDupe(resp.warning)) {
       return true;
     }
-    console.warn(resp.warning);
+    self._console.warn(resp.warning);
     return true;
   } else {
     return false;

@@ -100,8 +100,10 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
     const {projectConfig} = config;
 
-    const globalsCleanupMode = readGlobalsCleanupConfig(projectConfig);
-    initializeGarbageCollectionUtils(globalThis, globalsCleanupMode);
+    const globalsCleanupMode = initializeGarbageCollectionUtils(
+      globalThis,
+      readGlobalsCleanupConfig(projectConfig),
+    );
 
     this._globalProxy = new GlobalProxy();
     this.context = createContext(this._globalProxy.proxy());
@@ -115,8 +117,12 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       Object.getOwnPropertyNames(global) as GlobalProperties,
     );
     for (const [nodeGlobalsKey, descriptor] of nodeGlobals) {
-      if (!storageGlobals.has(nodeGlobalsKey as string)) {
-        protectProperties(globalThis[nodeGlobalsKey]);
+      // Reading an accessor global resolves it - on Node 26 the builtin modules
+      // are lazy globals, so this would load every one of them (and emit their
+      // deprecation warnings) for each environment. Those are protected when the
+      // sandbox resolves them instead.
+      if ('value' in descriptor) {
+        protectProperties(descriptor.value);
       }
       if (!contextGlobals.has(nodeGlobalsKey)) {
         if (storageGlobals.has(nodeGlobalsKey as string)) {
@@ -139,6 +145,8 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
             enumerable: descriptor.enumerable,
             get() {
               const value = globalThis[nodeGlobalsKey];
+
+              protectProperties(value);
 
               // override lazy getter
               Object.defineProperty(global, nodeGlobalsKey, {
@@ -370,7 +378,7 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
 
 function readGlobalsCleanupConfig(
   projectConfig: Config.ProjectConfig,
-): DeletionMode {
+): DeletionMode | undefined {
   const rawConfig = projectConfig.testEnvironmentOptions.globalsCleanup;
   const config = rawConfig?.toString()?.toLowerCase();
   switch (config) {
@@ -386,7 +394,7 @@ function readGlobalsCleanupConfig(
           'Available options are: [on, soft, off]',
         );
       }
-      return 'soft';
+      return undefined;
     }
   }
 }

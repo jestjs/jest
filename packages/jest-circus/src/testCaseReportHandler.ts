@@ -14,7 +14,11 @@ import {
 } from './utils';
 
 const testCaseReportHandler =
-  (testPath: string, sendMessageToJest: TestFileEvent) =>
+  (
+    testPath: string,
+    sendMessageToJest: TestFileEvent,
+    formatRetryError: (error: Error) => string,
+  ) =>
   (event: Circus.Event): void => {
     switch (event.name) {
       case 'test_started': {
@@ -25,7 +29,10 @@ const testCaseReportHandler =
       case 'test_todo':
       case 'test_done': {
         const testResult = makeSingleTestResult(event.test);
-        const testCaseResult = parseSingleTestResult(testResult);
+        const testCaseResult = parseSingleTestResult(
+          testResult,
+          formatRetryError,
+        );
         sendMessageToJest('test-case-result', [testPath, testCaseResult]);
         break;
       }

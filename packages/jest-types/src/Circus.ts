@@ -24,6 +24,11 @@ export type HookFn = Global.HookFn;
 export type AsyncFn = TestFn | HookFn;
 export type SharedHookType = 'afterAll' | 'beforeAll';
 export type HookType = SharedHookType | 'afterEach' | 'beforeEach';
+export type DescribeRetryOptions = {
+  logErrorsBeforeRetry?: boolean;
+  numRetries: number;
+  waitBeforeRetry?: number;
+};
 export type TestContext = Global.TestContext;
 export type Exception = any; // Since in JS anything can be thrown as an error.
 export type FormattedError = string; // String representation of error.
@@ -135,6 +140,10 @@ export type AsyncEvent =
       test: TestEntry;
     }
   | {
+      name: 'describe_retry';
+      describeBlock: DescribeBlock;
+    }
+  | {
       // the `test` in this case is all hooks + it/test function, not just the
       // function passed to `it/test`
       name: 'test_start';
@@ -224,11 +233,13 @@ export type TestResult = {
   location?: {column: number; line: number} | null;
   numPassingAsserts: number;
   retryReasons: Array<FormattedError>;
+  retryReasonsDetailed: Array<Error>;
   testPath: TestNamesPath;
 };
 
 export type RunResult = {
   unhandledErrors: Array<FormattedError>;
+  unhandledErrorsDetailed: Array<Error>;
   testResults: TestResults;
 };
 
@@ -243,6 +254,7 @@ export type GlobalErrorHandlers = {
 export type State = {
   currentDescribeBlock: DescribeBlock;
   currentlyRunningTest?: TestEntry | null; // including when hooks are being executed
+  describeRetryOptions: WeakMap<DescribeBlock, DescribeRetryOptions>;
   expand?: boolean; // expand error messages
   hasFocusedTests: boolean; // that are defined using test.only
   hasStarted: boolean; // whether the rootDescribeBlock has started running
@@ -251,6 +263,7 @@ export type State = {
   // the original ones.
   originalGlobalErrorHandlers?: GlobalErrorHandlers;
   parentProcess: Process | null; // process object from the outer scope
+  processErrorGeneration: number;
   randomize?: boolean;
   rootDescribeBlock: DescribeBlock;
   seed: number;
@@ -260,6 +273,14 @@ export type State = {
   includeTestLocationInResult: boolean;
   maxConcurrency: number;
   unhandledRejectionErrorByPromise: Map<Promise<unknown>, Exception>;
+  unhandledRejectionErrorByPromiseByHook: WeakMap<
+    Hook,
+    Map<Promise<unknown>, Exception>
+  >;
+  unhandledRejectionErrorByPromiseTarget: WeakMap<
+    Promise<unknown>,
+    Map<Promise<unknown>, Exception>
+  >;
 };
 
 export type DescribeBlock = {

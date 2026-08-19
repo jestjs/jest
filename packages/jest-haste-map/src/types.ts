@@ -89,6 +89,7 @@ export type WorkerMetadata = {
 
 export type CrawlerOptions = {
   computeSha1: boolean;
+  console: Console;
   enableSymlinks: boolean;
   data: InternalHasteMap;
   extensions: Array<string>;
@@ -122,12 +123,17 @@ export type HasteRegExp = RegExp | ((str: string) => boolean);
 export type DuplicatesSet = Map<string, /* type */ number>;
 export type DuplicatesIndex = Map<string, Map<string, DuplicatesSet>>;
 
+export type MockDuplicates = Map<string, Set<string>>;
+
 export type InternalHasteMap = {
   clocks: WatchmanClocks;
   duplicates: DuplicatesIndex;
   files: FileData;
   map: ModuleMapData;
   mocks: MockData;
+  // Every file claiming a given mock name, so that removing the one `mocks`
+  // points at can fall back to a survivor instead of dropping the name.
+  mockDuplicates: MockDuplicates;
 };
 export type HasteMap = {
   hasteFS: HasteFS;

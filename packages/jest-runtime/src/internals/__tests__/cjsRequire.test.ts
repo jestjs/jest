@@ -116,7 +116,7 @@ describe('RequireBuilder', () => {
       expect(requireDispatch).not.toHaveBeenCalled();
     });
 
-    test('snapshots `main` at build time, not per call', () => {
+    test('reads `main` live, not as a build-time snapshot', () => {
       const testMainModule = new TestMainModule();
       const builder = makeBuilder({testMainModule});
 
@@ -124,10 +124,7 @@ describe('RequireBuilder', () => {
       expect(requireFn.main).toBeNull();
 
       testMainModule.current = {filename: '/test.js'} as Module;
-      expect(requireFn.main).toBeNull();
-
-      const laterRequire = builder.for(sampleFrom, undefined);
-      expect(laterRequire.main).toBe(testMainModule.current);
+      expect(requireFn.main).toBe(testMainModule.current);
     });
   });
 
@@ -309,7 +306,7 @@ describe('CoreModuleProvider', () => {
       normalizeCoreModuleSpecifier: () => 'process',
       process: fakeProcess,
     });
-    expect(provider.require('node:process', true)).toBe(fakeProcess);
+    expect(provider.require('node:process')).toBe(fakeProcess);
   });
 
   test('returns the mocked Module class for "module"', () => {
@@ -318,10 +315,9 @@ describe('CoreModuleProvider', () => {
     });
     const ModuleClass = provider.require(
       'module',
-      true,
     ) as typeof nativeModule.Module;
     expect(typeof ModuleClass.createRequire).toBe('function');
-    expect(provider.require('module', true)).toBe(ModuleClass);
+    expect(provider.require('module')).toBe(ModuleClass);
   });
 
   test('mocked Module.createRequire delegates to requireBuilder.forFilename with the filename', () => {
@@ -335,7 +331,6 @@ describe('CoreModuleProvider', () => {
     });
     const ModuleClass = provider.require(
       'module',
-      true,
     ) as typeof nativeModule.Module;
     const absolutePath = path.resolve('/some/abs/file.js');
     const requireFn = ModuleClass.createRequire(absolutePath);
@@ -355,7 +350,6 @@ describe('CoreModuleProvider', () => {
     });
     const ModuleClass = provider.require(
       'module',
-      true,
     ) as typeof nativeModule.Module;
     // Windows rejects `file:///abs/x.js` - needs a drive letter.
     const absolutePath = path.resolve('/abs/x.js');
@@ -369,7 +363,6 @@ describe('CoreModuleProvider', () => {
     });
     const ModuleClass = provider.require(
       'module',
-      true,
     ) as typeof nativeModule.Module;
     expect(() => ModuleClass.createRequire('relative.js')).toThrow(TypeError);
   });
@@ -378,29 +371,17 @@ describe('CoreModuleProvider', () => {
     const {provider} = makeProvider({
       normalizeCoreModuleSpecifier: () => 'path',
     });
-    const pathModule = provider.require(
-      'path',
-      true,
-    ) as typeof import('node:path');
+    const pathModule = provider.require('path') as typeof import('node:path');
     expect(typeof pathModule.join).toBe('function');
-  });
-
-  test('skips normalization when supportPrefix=false', () => {
-    const normalize = jest.fn<(name: string) => string | false>();
-    const {provider} = makeProvider({
-      normalizeCoreModuleSpecifier: normalize,
-    });
-    provider.require('path', false);
-    expect(normalize).not.toHaveBeenCalled();
   });
 
   test('reset() drops the cached Module class', () => {
     const {provider} = makeProvider({
       normalizeCoreModuleSpecifier: () => 'module',
     });
-    const first = provider.require('module', true);
+    const first = provider.require('module');
     provider.reset();
-    const second = provider.require('module', true);
+    const second = provider.require('module');
     expect(second).not.toBe(first);
   });
 });

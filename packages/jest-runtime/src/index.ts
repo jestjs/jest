@@ -133,7 +133,9 @@ export default class Runtime {
     this._config = config;
     this._coverageOptions = coverageOptions;
     this._environment = environment;
-    this.registries = new ModuleRegistries();
+    this.registries = new ModuleRegistries(module =>
+      this.esmLoader.requireResultFromModule(module),
+    );
     invariant(
       this._environment.moduleMocker,
       '`moduleMocker` must be set on an environment when created',
@@ -221,6 +223,7 @@ export default class Runtime {
         this.requireModuleOrMock(from, moduleName),
       resolution: this._resolution,
       shouldLoadAsEsm: modulePath => this.unstable_shouldLoadAsEsm(modulePath),
+      testPath: this._testPath,
       testState: this.testState,
       transformCache: this.transformCache,
     });
@@ -248,8 +251,8 @@ export default class Runtime {
       logFormattedReferenceError: msg => this._logFormattedReferenceError(msg),
       mockState: this.mockState,
       registries: this.registries,
-      requireEsm: <T>(modulePath: string) =>
-        this.esmLoader.requireEsmModule<T>(modulePath),
+      requireEsm: <T>(modulePath: string, requiredFrom: string) =>
+        this.esmLoader.requireEsmModule<T>(modulePath, requiredFrom),
       resolution: this._resolution,
       testState: this.testState,
       transformCache: this.transformCache,
@@ -551,7 +554,7 @@ export default class Runtime {
 
     this.v8Coverage.snapshotTransforms();
 
-    this.transformCache.clearForReset();
+    this.transformCache.clear();
 
     if (this._environment) {
       if (this._environment.global) {

@@ -27,7 +27,7 @@ export class TransformCache {
   ) => TransformationOptions;
   private readonly transforms = new Map<string, TransformResult>();
   private readonly mutex = new Map<string, Promise<void>>();
-  private readonly sourceMaps: SourceMapRegistry = new Map();
+  private readonly sourceMaps = new Map<string, string>();
 
   constructor(
     scriptTransformer: ScriptTransformer,
@@ -122,15 +122,11 @@ export class TransformCache {
     this.mutex.delete(key);
   }
 
-  // `resetModules` calls this; source maps are preserved so post-reset stack
-  // traces still resolve. `teardown` calls `clear()` instead.
-  clearForReset(): void {
+  // Source maps outlive both `resetModules` and `teardown`: a stack formatted
+  // afterwards — a stray timer, a floating promise — has nowhere else to
+  // resolve from, and the registry holds only path strings.
+  clear(): void {
     this.transforms.clear();
     this.mutex.clear();
-  }
-
-  clear(): void {
-    this.clearForReset();
-    this.sourceMaps.clear();
   }
 }

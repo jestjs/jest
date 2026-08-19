@@ -90,8 +90,10 @@ type ModuleLinkExtra = {
 };
 
 // Source-text entries carry their dep cacheKeys (used for `linkRequests`).
-// Synthetic entries (mocks, core, JSON, wasm, @jest/globals) start linked
-// and never appear in the link-requests pass.
+// `'prelinked'` covers everything that arrives already linked - mocks, core,
+// JSON, wasm, @jest/globals, plus modules adopted from the registry, which
+// may be `SourceTextModule`s rather than `SyntheticModule`s - so it never
+// appears in the link-requests pass.
 type ScratchEntry =
   | {
       kind: 'source';
@@ -99,7 +101,7 @@ type ScratchEntry =
       module: VMModuleWithAsyncGraph;
       deps: Array<string>;
     }
-  | {kind: 'synthetic'; cacheKey: string; module: VMModuleWithAsyncGraph};
+  | {kind: 'prelinked'; cacheKey: string; module: VMModuleWithAsyncGraph};
 
 // `SourceTextModule#hasAsyncGraph()` lets us prove a graph is sync-evaluable.
 // `SyntheticModule` does not expose it but is by definition sync (the user
@@ -119,6 +121,18 @@ function makeRequireAsyncError(
     `require() cannot be used to load ES Module ${modulePath}: ${detail}`,
   );
   error.code = 'ERR_REQUIRE_ASYNC_MODULE';
+  return error;
+}
+
+function makeRequireCycleError(
+  modulePath: string,
+  requiredFrom: string | undefined,
+): NodeJS.ErrnoException {
+  const fromPart = requiredFrom === undefined ? '' : ` (from ${requiredFrom})`;
+  const error: NodeJS.ErrnoException = new Error(
+    `Cannot require() ES Module ${modulePath} in a cycle.${fromPart} A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.`,
+  );
+  error.code = 'ERR_REQUIRE_CYCLE_MODULE';
   return error;
 }
 
@@ -259,6 +273,13 @@ function stripFileScheme(specifier: string): string {
   return specifier.startsWith('file://') ? fileURLToPath(specifier) : specifier;
 }
 
+// Every builtin has a `node:`-prefixed spelling, but not every builtin has a
+// bare one - `node:sea`, `node:sqlite`, `node:test` and `node:test/reporters`
+// exist only with the prefix. Prefixing is therefore the total direction.
+function canonicalCoreSpecifier(specifier: string): string {
+  return specifier.startsWith('node:') ? specifier : `node:${specifier}`;
+}
+
 export interface EsmLoaderOptions {
   resolution: Resolution;
   fileCache: FileCache;
@@ -272,6 +293,7 @@ export interface EsmLoaderOptions {
   shouldLoadAsEsm: (modulePath: string) => boolean;
   requireModuleOrMock: (from: string, moduleName: string) => unknown;
   testState: TestState;
+  testPath: string;
 }
 
 export class EsmLoader {
@@ -290,6 +312,18 @@ export class EsmLoader {
     moduleName: string,
   ) => unknown;
   private readonly testState: TestState;
+  private readonly testPath: string;
+  private readonly requireFacades = new WeakMap<ESModule, ESModule>();
+  // Every cacheKey popped by a sync walk that is still on the stack. Walks
+  // nest (a CJS body executing mid-walk can require() an unrelated ESM root),
+  // so this is a stack of one entry per walk rather than a single Set. Each
+  // walk records the registry it ran against: an isolation overlay or an
+  // automock scratch registry is a separate instance space, so a key match
+  // across registries is a fresh build, not a cycle.
+  private readonly activeSyncWalks: Array<{
+    registry: Map<string, JestModule>;
+    keys: Set<string>;
+  }> = [];
   // Used only by the legacy async path; deletable when min-Node ≥ v24.9
   // (delete the block at the bottom of this file too - eslint/tsc will
   // surface anything else that becomes unused).
@@ -309,6 +343,7 @@ export class EsmLoader {
     this.shouldLoadAsEsm = options.shouldLoadAsEsm;
     this.requireModuleOrMock = options.requireModuleOrMock;
     this.testState = options.testState;
+    this.testPath = options.testPath;
   }
 
   // `'load-async'` means the sync graph could not be completed — a concurrent
@@ -319,8 +354,13 @@ export class EsmLoader {
   // are not consulted - driving a SyntheticModule from `unlinked` to
   // `evaluated` needs the async link()/evaluate() pair. Transitive-dep mocks
   // still apply via the graph walker.
-  requireEsmModule<T>(modulePath: string): T {
-    const module = this.tryLoadGraphSync(modulePath, '', 'sync-required');
+  requireEsmModule<T>(modulePath: string, requiredFrom?: string): T {
+    const module = this.tryLoadGraphSync(
+      modulePath,
+      '',
+      'sync-required',
+      requiredFrom,
+    );
     if (module === LOAD_ASYNC) {
       const error: NodeJS.ErrnoException = new Error(
         `Cannot require() ES Module ${modulePath} synchronously: it is currently being loaded by a concurrent \`import()\`. Await that import before calling require(), or import this module instead of requiring it.`,
@@ -328,7 +368,63 @@ export class EsmLoader {
       error.code = 'ERR_REQUIRE_ESM';
       throw error;
     }
-    return module.namespace as T;
+    return this.requireResultFromModule(module) as T;
+  }
+
+  // Mirrors Node's `populateCJSExportsFromESM`: a `'module.exports'` named
+  // export wins outright; a module without a `default` export - or one that
+  // defines its own `__esModule`, which users may set to override tooling
+  // detection - hands back the raw namespace. Everything else gets a facade
+  // namespace carrying `__esModule: true`, so transpiled consumers that pick
+  // `mod.__esModule ? mod.default : mod` see require()d real ESM as ESM.
+  requireResultFromModule(module: ESModule): unknown {
+    const namespace = module.namespace as Record<string, unknown>;
+    if ('module.exports' in namespace) {
+      return namespace['module.exports'];
+    }
+    // The facade needs `linkRequests`/`instantiate` and a synchronously
+    // settling evaluate - the capabilities `require(esm)` itself is gated on.
+    // Below that gate this is reached only through `require.cache` reads,
+    // which keep handing out the raw namespace.
+    if (
+      !supportsSyncEvaluate ||
+      module.status !== 'evaluated' ||
+      !('default' in namespace) ||
+      '__esModule' in namespace
+    ) {
+      return namespace;
+    }
+    return this.requireFacadeFor(module).namespace;
+  }
+
+  // Node builds the facade as a real source-text module rather than a copy or
+  // a Proxy - re-exporting keeps the original's bindings live and enumerable
+  // with no per-access overhead. The original is already evaluated and the
+  // facade body has no top-level await, so evaluation completes synchronously.
+  private requireFacadeFor(module: ESModule): ESModule {
+    const cached = this.requireFacades.get(module);
+    if (cached) return cached;
+    const facade: VMModuleWithAsyncGraph = new SourceTextModule(
+      "export * from 'original';\nexport {default} from 'original';\nexport const __esModule = true;",
+      {
+        context: this.getContext(),
+        identifier: `jest-require-facade:${module.identifier}`,
+      },
+    );
+    invariant(
+      typeof facade.linkRequests === 'function' &&
+        typeof facade.instantiate === 'function',
+      'linkRequests/instantiate unavailable on the require facade',
+    );
+    facade.linkRequests([module]);
+    facade.instantiate();
+    facade.evaluate().catch(noop);
+    invariant(
+      facade.status === 'evaluated',
+      `Expected the require facade for ${module.identifier} to evaluate synchronously, but its status is "${facade.status}". This is a bug in Jest, please report it!`,
+    );
+    this.requireFacades.set(module, facade);
+    return facade;
   }
 
   // Public for unit-test access. Production callers reach the sync graph
@@ -338,13 +434,17 @@ export class EsmLoader {
     rootPath: string,
     rootQuery: string,
     mode: SyncEsmMode,
+    requiredFrom?: string,
   ): ESModule | LoadAsync {
     this.testState.throwIfTornDown(
       'You are trying to `import` a file after the Jest environment has been torn down.',
     );
 
     const registry = this.registries.getActiveEsmRegistry();
-    const rootKey = rootPath + rootQuery;
+    const canonicalRootPath = this.resolution.isCoreModule(rootPath)
+      ? canonicalCoreSpecifier(rootPath)
+      : rootPath;
+    const rootKey = canonicalRootPath + rootQuery;
 
     const cached = registry.get(rootKey);
     if (cached) {
@@ -352,11 +452,36 @@ export class EsmLoader {
       // The legacy `loadEsmModule` source-text branch does `registry.set`
       // while the `SourceTextModule` is still `'unlinked'` (link runs later
       // in `linkAndEvaluateModule`); accessing `.namespace` on a non-evaluated
-      // module throws `ERR_VM_MODULE_STATUS`. Surface settled entries
-      // (`'evaluated'` / `'errored'`); bail otherwise.
+      // module throws `ERR_VM_MODULE_STATUS`. So: reuse `'evaluated'`,
+      // rethrow `'errored'`, evaluate `'linked'` (already instantiated, just
+      // never evaluated), and bail on everything still being linked.
       if (cached.status === 'evaluated') return cached as ESModule;
       if (cached.status === 'errored') throw cached.error;
+      if (cached.status === 'linked') {
+        return this.evaluateLinkedModule(cached, mode);
+      }
+      // `'unlinked'` / `'linking'` / `'evaluating'`. When the key belongs to
+      // a walk still on the stack this is a require() of a module whose own
+      // evaluation is in progress - a cycle, not a concurrent import().
+      if (
+        mode === 'sync-required' &&
+        this.isReEnteringActiveWalk(rootKey, registry)
+      ) {
+        throw makeRequireCycleError(canonicalRootPath, requiredFrom);
+      }
       return LOAD_ASYNC;
+    }
+
+    // A require() re-entering a graph that is still being walked would build
+    // and evaluate a second copy of every uncommitted module (scratch entries
+    // reach the registry only after the root instantiates). Node throws
+    // ERR_REQUIRE_CYCLE_MODULE here; a dynamic import() of the same shape is
+    // a legal ESM cycle, so `'sync-preferred'` is exempt.
+    if (
+      mode === 'sync-required' &&
+      this.isReEnteringActiveWalk(rootKey, registry)
+    ) {
+      throw makeRequireCycleError(canonicalRootPath, requiredFrom);
     }
 
     const context = this.getContext();
@@ -365,26 +490,75 @@ export class EsmLoader {
 
     const scratch = new Map<string, ScratchEntry>();
     const worklist: Array<WorklistEntry> = [
-      {cacheKey: rootKey, modulePath: rootPath},
+      {cacheKey: rootKey, modulePath: canonicalRootPath},
     ];
 
+    const activeWalk = new Set<string>();
+    this.activeSyncWalks.push({keys: activeWalk, registry});
+    try {
+      return this.walkGraphSync({
+        activeWalk,
+        context,
+        mode,
+        registry,
+        rootKey,
+        scratch,
+        worklist,
+      });
+    } finally {
+      this.activeSyncWalks.pop();
+    }
+  }
+
+  private isReEnteringActiveWalk(
+    rootKey: string,
+    registry: Map<string, JestModule>,
+  ): boolean {
+    return this.activeSyncWalks.some(
+      walk => walk.registry === registry && walk.keys.has(rootKey),
+    );
+  }
+
+  private walkGraphSync({
+    rootKey,
+    activeWalk,
+    worklist,
+    scratch,
+    registry,
+    context,
+    mode,
+  }: {
+    rootKey: string;
+    activeWalk: Set<string>;
+    worklist: Array<WorklistEntry>;
+    scratch: Map<string, ScratchEntry>;
+    registry: Map<string, JestModule>;
+    context: VMContext;
+    mode: SyncEsmMode;
+  }): ESModule | LoadAsync {
     while (worklist.length > 0) {
       const {cacheKey, modulePath} = worklist.pop()!;
+      activeWalk.add(cacheKey);
       if (scratch.has(cacheKey)) continue;
 
-      // Registry first, mutex second. Same settled-status gate as the root -
-      // anything in `'unlinked'` / `'linking'` / `'linked'` / `'evaluating'`
-      // is the legacy path mid-flight on this dep. Plugging an unlinked
-      // module into the parent's `linkRequests` would fail Node's link
-      // cascade; plugging a `'linked'` one would skip its body. Bail.
+      // Registry first, mutex second. `'unlinked'` / `'linking'` /
+      // `'evaluating'` mean the legacy path is mid-flight on this dep;
+      // plugging an unlinked module into the parent's `linkRequests` would
+      // fail Node's link cascade, so bail. `'linked'` is adoptable: it is
+      // already instantiated, so the root's evaluate cascade runs its body.
       const fromRegistry = registry.get(cacheKey);
       if (fromRegistry instanceof Promise) return LOAD_ASYNC;
       if (fromRegistry) {
         if (fromRegistry.status === 'errored') throw fromRegistry.error;
-        if (fromRegistry.status !== 'evaluated') return LOAD_ASYNC;
+        if (
+          fromRegistry.status !== 'evaluated' &&
+          fromRegistry.status !== 'linked'
+        ) {
+          return LOAD_ASYNC;
+        }
         scratch.set(cacheKey, {
           cacheKey,
-          kind: 'synthetic',
+          kind: 'prelinked',
           module: fromRegistry,
         });
         continue;
@@ -394,11 +568,9 @@ export class EsmLoader {
       if (this.resolution.isCoreModule(modulePath)) {
         scratch.set(cacheKey, {
           cacheKey,
-          kind: 'synthetic',
-          module: buildCoreSyntheticModule(
-            modulePath,
-            context,
-            (name, prefix) => this.coreModule.require(name, prefix),
+          kind: 'prelinked',
+          module: buildCoreSyntheticModule(modulePath, context, name =>
+            this.coreModule.require(name),
           ),
         });
         continue;
@@ -448,7 +620,7 @@ export class EsmLoader {
       if (modulePath.endsWith('.json')) {
         scratch.set(cacheKey, {
           cacheKey,
-          kind: 'synthetic',
+          kind: 'prelinked',
           module: buildJsonSyntheticModule(
             this.transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS),
             modulePath,
@@ -478,10 +650,10 @@ export class EsmLoader {
             meta.dirname = path.dirname(modulePath);
             meta.resolve = (specifier, parent: string | URL = metaUrl) => {
               const parentPath = fileURLToPath(parent);
-              return pathToFileURL(
-                this.resolution.resolveEsm(parentPath, specifier),
-              ).href;
+              return this.resolveForImportMeta(parentPath, specifier);
             };
+            // @ts-expect-error Jest uses @types/node@18.
+            meta.main = modulePath === this.testPath;
             (meta as JestImportMeta).jest =
               this.jestGlobals.jestObjectFor(modulePath);
           },
@@ -593,6 +765,39 @@ export class EsmLoader {
     return rootModule;
   }
 
+  // A module sits in the registry linked-but-unevaluated when an earlier walk
+  // linked it and then failed before the evaluate cascade reached it - a
+  // sibling threw, or the walk bailed on an unsupported edge. It is fully
+  // instantiated, so evaluating it now is all that is left.
+  private evaluateLinkedModule(
+    module: VMModuleWithAsyncGraph,
+    mode: SyncEsmMode,
+  ): ESModule | LoadAsync {
+    if (moduleHasAsyncGraph(module)) {
+      if (mode === 'sync-required') {
+        throw makeRequireAsyncError(module.identifier, 'top-level await');
+      }
+      return LOAD_ASYNC;
+    }
+
+    // Deliberately not recorded in `evaluatingMap`, unlike the legacy path.
+    // The async-graph check above means this only ever evaluates a graph that
+    // finishes before `evaluate()` returns, so there is no pending promise for
+    // another caller to await - and the legacy path only populates that map in
+    // its own async branch. Neither path awaits between reading `status` and
+    // calling `evaluate()`, so a duplicate evaluation cannot start in between.
+    module.evaluate().catch(noop);
+
+    if (module.status === 'errored') {
+      throw module.error;
+    }
+    invariant(
+      module.status === 'evaluated',
+      `Expected synchronous evaluation to complete for ${module.identifier}, but module status is "${module.status}". This is a bug in Jest, please report it!`,
+    );
+    return module;
+  }
+
   private getContext(): VMContext {
     invariant(
       typeof this.environment.getVmContext === 'function',
@@ -606,8 +811,8 @@ export class EsmLoader {
   // Commits (or reuses) a synthetic-module entry under `cacheKey` in both the
   // local scratch and the long-lived registry. Returns `false` when the
   // registry holds something the caller must bail on: a mid-flight Promise
-  // from the legacy async path, or a non-evaluated module (legacy can stash
-  // an `'unlinked'` SourceTextModule here while link/evaluate runs).
+  // from the legacy async path, or a module still being linked (legacy can
+  // stash an `'unlinked'` SourceTextModule here while link/evaluate runs).
   private tryCommitSynthetic(
     cacheKey: string,
     registry: ModuleRegistry | Map<string, JestModule>,
@@ -620,13 +825,24 @@ export class EsmLoader {
     if (fromRegistry) {
       const cached = fromRegistry as VMModule;
       if (cached.status === 'errored') throw cached.error;
-      if (cached.status !== 'evaluated') return false;
+      if (cached.status !== 'evaluated' && cached.status !== 'linked') {
+        return false;
+      }
     }
     const module =
       (fromRegistry as VMModuleWithAsyncGraph | undefined) ?? build();
     if (!fromRegistry) registry.set(cacheKey, module);
-    scratch.set(cacheKey, {cacheKey, kind: 'synthetic', module});
+    scratch.set(cacheKey, {cacheKey, kind: 'prelinked', module});
     return true;
+  }
+
+  // Node answers `import.meta.resolve('fs')` with `'node:fs'`, not a file URL -
+  // a builtin has no path to turn into one.
+  private resolveForImportMeta(parentPath: string, specifier: string): string {
+    const resolved = this.resolution.resolveEsm(parentPath, specifier);
+    return this.resolution.isCoreModule(resolved)
+      ? canonicalCoreSpecifier(resolved)
+      : pathToFileURL(resolved).href;
   }
 
   private resolveSpecifierForSyncGraph(
@@ -678,11 +894,15 @@ export class EsmLoader {
     }
 
     if (this.resolution.isCoreModule(specifierPath)) {
-      const cacheKey = specifierPath + query;
+      // `fs` and `node:fs` are one module to Node, so they have to share one
+      // registry entry - otherwise each form gets its own synthetic wrapper and
+      // `import * as a from 'fs'` !== `import * as b from 'node:fs'`.
+      const canonical = canonicalCoreSpecifier(specifierPath);
+      const cacheKey = canonical + query;
       return {
         cacheKey,
-        enqueue: {cacheKey, modulePath: specifierPath},
-        modulePath: specifierPath,
+        enqueue: {cacheKey, modulePath: canonical},
+        modulePath: canonical,
       };
     }
 
@@ -742,7 +962,7 @@ export class EsmLoader {
       if (!scratch.has(moduleID)) {
         scratch.set(moduleID, {
           cacheKey: moduleID,
-          kind: 'synthetic',
+          kind: 'prelinked',
           module: existing,
         });
       }
@@ -773,7 +993,7 @@ export class EsmLoader {
     this.registries.setModuleMock(moduleID, synth);
     scratch.set(moduleID, {
       cacheKey: moduleID,
-      kind: 'synthetic',
+      kind: 'prelinked',
       module: synth,
     });
     return {cacheKey: moduleID};
@@ -826,7 +1046,7 @@ export class EsmLoader {
 
     return {
       cacheKey,
-      kind: 'synthetic',
+      kind: 'prelinked',
       module: synthetic,
     };
   }
@@ -859,7 +1079,7 @@ export class EsmLoader {
     if (mime === 'application/json') {
       return {
         cacheKey,
-        kind: 'synthetic',
+        kind: 'prelinked',
         module: buildJsonSyntheticModule(code as string, specifier, context),
       };
     }
@@ -870,6 +1090,8 @@ export class EsmLoader {
       importModuleDynamically: esmDynamicImport,
       initializeImportMeta(meta) {
         meta.url = specifier;
+        // @ts-expect-error Jest uses @types/node@18.
+        meta.main = false;
         if (meta.url.startsWith('file://')) {
           // @ts-expect-error Jest uses @types/node@18.
           meta.filename = fileURLToPath(meta.url);
@@ -1025,8 +1247,8 @@ export class EsmLoader {
 
         if (this.resolution.isCoreModule(modulePath)) {
           const core = evaluateSyntheticModule(
-            buildCoreSyntheticModule(modulePath, context, (name, prefix) =>
-              this.coreModule.require(name, prefix),
+            buildCoreSyntheticModule(modulePath, context, name =>
+              this.coreModule.require(name),
             ),
           );
           registry.set(cacheKey, core);
@@ -1062,10 +1284,10 @@ export class EsmLoader {
               meta.dirname = path.dirname(modulePath);
               meta.resolve = (specifier, parent: string | URL = metaUrl) => {
                 const parentPath = fileURLToPath(parent);
-                return pathToFileURL(
-                  this.resolution.resolveEsm(parentPath, specifier),
-                ).href;
+                return this.resolveForImportMeta(parentPath, specifier);
               };
+              // @ts-expect-error Jest uses @types/node@18.
+              meta.main = modulePath === this.testPath;
               (meta as JestImportMeta).jest =
                 this.jestGlobals.jestObjectFor(modulePath);
             },
@@ -1152,6 +1374,8 @@ export class EsmLoader {
           importModuleDynamically: this.dynamicImport,
           initializeImportMeta(meta) {
             meta.url = specifier;
+            // @ts-expect-error Jest uses @types/node@18.
+            meta.main = false;
             if (meta.url.startsWith('file://')) {
               // @ts-expect-error Jest uses @types/node@18.
               meta.filename = fileURLToPath(meta.url);
@@ -1276,6 +1500,13 @@ export class EsmLoader {
     }
 
     await this.evaluatingMap.get(module);
+
+    // A concurrent caller may have driven the evaluation while we awaited the
+    // link or evaluate promise, and it throws on its own stack - so re-read
+    // the status rather than assuming we are the one that evaluated.
+    if ((module.status as VMModule['status']) === 'errored') {
+      throw module.error;
+    }
 
     return module;
   }

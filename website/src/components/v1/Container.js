@@ -8,20 +8,25 @@
 import React from 'react';
 import clsx from 'clsx';
 
-export default function Container(props) {
+export default function Container({
+  background = null,
+  padding = [],
+  wrapper = true,
+  ...props
+}) {
   const containerClasses = clsx('containerV1', props.className, {
-    darkBackground: props.background === 'dark',
-    highlightBackground: props.background === 'highlight',
-    lightBackground: props.background === 'light',
-    paddingAll: props.padding.includes('all'),
-    paddingBottom: props.padding.includes('bottom'),
-    paddingLeft: props.padding.includes('left'),
-    paddingRight: props.padding.includes('right'),
-    paddingTop: props.padding.includes('top'),
+    darkBackground: background === 'dark',
+    highlightBackground: background === 'highlight',
+    lightBackground: background === 'light',
+    paddingAll: padding.includes('all'),
+    paddingBottom: padding.includes('bottom'),
+    paddingLeft: padding.includes('left'),
+    paddingRight: padding.includes('right'),
+    paddingTop: padding.includes('top'),
   });
   let wrappedChildren;
 
-  if (props.wrapper) {
+  if (wrapper) {
     wrappedChildren = <div className="wrapperV1">{props.children}</div>;
   } else {
     wrappedChildren = props.children;
@@ -32,9 +37,3 @@ export default function Container(props) {
     </div>
   );
 }
-
-Container.defaultProps = {
-  background: null,
-  padding: [],
-  wrapper: true,
-};

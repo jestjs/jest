@@ -29,7 +29,7 @@ const fakeEsm = (status: VMModule['status'] = 'evaluated'): VMModule =>
 describe('ModuleRegistries', () => {
   describe('CJS routing through isolation', () => {
     test('reads/writes go to the main map outside isolation', () => {
-      const registries = new ModuleRegistries();
+      const registries = new ModuleRegistries(module => module.namespace);
       const cjsModule = fakeCjs('/a.js');
       registries.setCjs('/a.js', cjsModule);
       expect(registries.hasCjs('/a.js')).toBe(true);
@@ -37,7 +37,7 @@ describe('ModuleRegistries', () => {
     });
 
     test('reads/writes go to the isolated overlay during isolation', () => {
-      const registries = new ModuleRegistries();
+      const registries = new ModuleRegistries(module => module.namespace);
       const main = fakeCjs('/a.js');
       registries.setCjs('/a.js', main);
 
@@ -53,7 +53,7 @@ describe('ModuleRegistries', () => {
     });
 
     test('internal CJS bypasses isolation', () => {
-      const registries = new ModuleRegistries();
+      const registries = new ModuleRegistries(module => module.namespace);
       const cjsModule = fakeCjs('/a.js');
       registries.setInternalCjs('/a.js', cjsModule);
 
@@ -65,7 +65,7 @@ describe('ModuleRegistries', () => {
 
   describe('isolation lifecycle', () => {
     test('throws on nested entry with caller-specific message', () => {
-      const registries = new ModuleRegistries();
+      const registries = new ModuleRegistries(module => module.namespace);
       registries.enterIsolated('isolateModules');
       expect(() => registries.enterIsolated('isolateModulesAsync')).toThrow(
         'isolateModulesAsync cannot be nested inside another isolateModulesAsync or isolateModules.',
@@ -73,7 +73,7 @@ describe('ModuleRegistries', () => {
     });
 
     test('exitIsolated empties the overlay maps before dropping the reference', () => {
-      const registries = new ModuleRegistries();
+      const registries = new ModuleRegistries(module => module.namespace);
       registries.enterIsolated('isolateModules');
       registries.setCjs('/a.js', fakeCjs('/a.js'));
       registries.setEsm('/b.mjs', fakeEsm() as JestModule);
@@ -100,9 +100,65 @@ describe('ModuleRegistries', () => {
     });
   });
 
+  describe('module mocks through isolation', () => {
+    test('inherits module mocks created outside the isolation block', () => {
+      const registries = new ModuleRegistries(module => module.namespace);
+      const outer = fakeEsm();
+      registries.setModuleMock('id', outer);
+
+      registries.enterIsolated('isolateModules');
+      expect(registries.hasModuleMock('id')).toBe(true);
+      expect(registries.getModuleMock('id')).toBe(outer);
+      registries.exitIsolated();
+    });
+
+    test('drops module mocks created inside the isolation block on exit', () => {
+      const registries = new ModuleRegistries(module => module.namespace);
+
+      registries.enterIsolated('isolateModulesAsync');
+      registries.setModuleMock('id', fakeEsm());
+      expect(registries.hasModuleMock('id')).toBe(true);
+      registries.exitIsolated();
+
+      expect(registries.hasModuleMock('id')).toBe(false);
+      expect(registries.getModuleMock('id')).toBeUndefined();
+    });
+
+    test('an inner module mock shadows the outer one without replacing it', () => {
+      const registries = new ModuleRegistries(module => module.namespace);
+      const outer = fakeEsm();
+      const inner = fakeEsm();
+      registries.setModuleMock('id', outer);
+
+      registries.enterIsolated('isolateModules');
+      registries.setModuleMock('id', inner);
+      expect(registries.getModuleMock('id')).toBe(inner);
+      registries.exitIsolated();
+
+      expect(registries.getModuleMock('id')).toBe(outer);
+    });
+  });
+
   describe('withScratchRegistries', () => {
+    test('suspends the isolation overlay so the scratch load cannot leak', () => {
+      const registries = new ModuleRegistries(module => module.namespace);
+      registries.enterIsolated('isolateModules');
+      registries.setCjs('/isolated.js', fakeCjs('/isolated.js'));
+
+      registries.withScratchRegistries(() => {
+        expect(registries.isIsolated()).toBe(false);
+        expect(registries.hasCjs('/isolated.js')).toBe(false);
+        registries.setCjs('/scratch.js', fakeCjs('/scratch.js'));
+      });
+
+      expect(registries.isIsolated()).toBe(true);
+      expect(registries.hasCjs('/isolated.js')).toBe(true);
+      expect(registries.hasCjs('/scratch.js')).toBe(false);
+      registries.exitIsolated();
+    });
+
     test('runs fn against fresh CJS + mock maps and restores originals', () => {
-      const registries = new ModuleRegistries();
+      const registries = new ModuleRegistries(module => module.namespace);
       const orig = fakeCjs('/a.js');
       registries.setCjs('/a.js', orig);
       registries.setMock('id', 'orig-mock');
@@ -122,8 +178,23 @@ describe('ModuleRegistries', () => {
       expect(registries.hasMock('scratch-id')).toBe(false);
     });
 
+    test('keeps ESM and module-mock writes out of the long-lived registries', () => {
+      const registries = new ModuleRegistries(module => module.namespace);
+      registries.enterIsolated('isolateModules');
+
+      registries.withScratchRegistries(() => {
+        registries.getActiveEsmRegistry().set('/scratch.mjs', fakeEsm());
+        registries.setModuleMock('scratch-id', fakeEsm());
+      });
+
+      registries.exitIsolated();
+
+      expect(registries.hasEsm('/scratch.mjs')).toBe(false);
+      expect(registries.hasModuleMock('scratch-id')).toBe(false);
+    });
+
     test('restores originals even when fn throws', () => {
-      const registries = new ModuleRegistries();
+      const registries = new ModuleRegistries(module => module.namespace);
       const orig = fakeCjs('/a.js');
       registries.setCjs('/a.js', orig);
 
@@ -138,7 +209,7 @@ describe('ModuleRegistries', () => {
 
   describe('require.cache Proxy', () => {
     test('exposes CJS modules and live ESM entries; hides Promise / unlinked', () => {
-      const registries = new ModuleRegistries();
+      const registries = new ModuleRegistries(module => module.namespace);
       const cjs = fakeCjs('/cjs.js');
       registries.setCjs('/cjs.js', cjs);
 
@@ -175,7 +246,7 @@ describe('ModuleRegistries', () => {
     });
 
     test('mutators silently no-op rather than throw', () => {
-      const registries = new ModuleRegistries();
+      const registries = new ModuleRegistries(module => module.namespace);
       const cache = registries.createRequireCacheProxy();
       // @ts-expect-error: write-through is intentionally not supported
       cache['/x.js'] = fakeCjs('/x.js');
@@ -184,7 +255,7 @@ describe('ModuleRegistries', () => {
     });
 
     test('wrapEsmForRequireCache caches the wrapper per VMModule', () => {
-      const registries = new ModuleRegistries();
+      const registries = new ModuleRegistries(module => module.namespace);
       const esm = fakeEsm('evaluated');
       const wrapper = registries.wrapEsmForRequireCache('/x.mjs', esm);
       const wrapperAgain = registries.wrapEsmForRequireCache('/x.mjs', esm);
@@ -194,7 +265,7 @@ describe('ModuleRegistries', () => {
 
   describe('clear semantics', () => {
     test('clearForReset drops everything except internal CJS', () => {
-      const registries = new ModuleRegistries();
+      const registries = new ModuleRegistries(module => module.namespace);
       registries.setCjs('/a.js', fakeCjs('/a.js'));
       registries.setEsm('/b.mjs', fakeEsm() as JestModule);
       registries.setMock('id', 'mock');
@@ -210,7 +281,7 @@ describe('ModuleRegistries', () => {
     });
 
     test('clear drops everything including internal CJS', () => {
-      const registries = new ModuleRegistries();
+      const registries = new ModuleRegistries(module => module.namespace);
       registries.setInternalCjs('/i.js', fakeCjs('/i.js'));
       registries.clear();
       expect(registries.hasInternalCjs('/i.js')).toBe(false);

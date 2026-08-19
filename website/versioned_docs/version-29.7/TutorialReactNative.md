@@ -73,16 +73,20 @@ const styles = StyleSheet.create({
 export default Intro;
 ```
 
-Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
+Now let's use [`@testing-library/react-native`](https://callstack.github.io/react-native-testing-library/) and Jest's snapshot feature to render the component and capture the rendered output as a snapshot file. `@testing-library/react-native` replaces the now-[deprecated](https://react.dev/warnings/react-test-renderer) `react-test-renderer`, and needs `test-renderer` installed alongside it as a peer dependency:
+
+```bash
+yarn add --dev @testing-library/react-native test-renderer
+```
 
 ```tsx title="__tests__/Intro-test.js"
+import {render, screen} from '@testing-library/react-native';
 import React from 'react';
-import renderer from 'react-test-renderer';
 import Intro from '../Intro';
 
-test('renders correctly', () => {
-  const tree = renderer.create(<Intro />).toJSON();
-  expect(tree).toMatchSnapshot();
+test('renders correctly', async () => {
+  await render(<Intro />);
+  expect(screen.toJSON()).toMatchSnapshot();
 });
 ```
 

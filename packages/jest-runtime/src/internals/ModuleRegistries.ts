@@ -27,20 +27,24 @@ class Isolation {
   readonly cjs: ModuleRegistry = new Map();
   readonly esm = new Map<string, JestModule>();
   readonly mock = new Map<string, unknown>();
+  readonly moduleMock = new Map<string, JestModule>();
 
   clear(): void {
     this.cjs.clear();
     this.esm.clear();
     this.mock.clear();
+    this.moduleMock.clear();
   }
 }
 
 export class ModuleRegistries {
+  private readonly requireEsmResult: (module: VMModule) => unknown;
+
   private moduleRegistry: ModuleRegistry = new Map();
   private readonly internalModuleRegistry: ModuleRegistry = new Map();
-  private readonly esModuleRegistry = new Map<string, JestModule>();
+  private esModuleRegistry = new Map<string, JestModule>();
   private mockRegistry = new Map<string, unknown>();
-  private readonly moduleMockRegistry = new Map<string, JestModule>();
+  private moduleMockRegistry = new Map<string, JestModule>();
 
   private isolation: Isolation | null = null;
 
@@ -48,6 +52,10 @@ export class ModuleRegistries {
     VMModule,
     NodeModule
   >();
+
+  constructor(requireEsmResult: (module: VMModule) => unknown) {
+    this.requireEsmResult = requireEsmResult;
+  }
 
   getCjs(modulePath: string): InitialModule | Module | JestModule | undefined {
     return (this.isolation?.cjs ?? this.moduleRegistry).get(modulePath);
@@ -110,14 +118,26 @@ export class ModuleRegistries {
     );
   }
 
+  // Same cascade as `getMock` above: an isolation block inherits the module
+  // mocks instantiated outside it, but the instances it creates itself go to
+  // the overlay and are dropped on exit.
   getModuleMock(moduleID: string): JestModule | undefined {
-    return this.moduleMockRegistry.get(moduleID);
+    return (
+      this.isolation?.moduleMock.get(moduleID) ??
+      this.moduleMockRegistry.get(moduleID)
+    );
   }
   setModuleMock(moduleID: string, module: JestModule): void {
-    this.moduleMockRegistry.set(moduleID, module);
+    (this.isolation?.moduleMock ?? this.moduleMockRegistry).set(
+      moduleID,
+      module,
+    );
   }
   hasModuleMock(moduleID: string): boolean {
-    return this.moduleMockRegistry.has(moduleID);
+    return (
+      (this.isolation?.moduleMock.has(moduleID) ?? false) ||
+      this.moduleMockRegistry.has(moduleID)
+    );
   }
 
   getActiveEsmRegistry(): Map<string, JestModule> {
@@ -164,13 +184,27 @@ export class ModuleRegistries {
   withScratchRegistries<T>(fn: () => T): T {
     const originalMock = this.mockRegistry;
     const originalModule = this.moduleRegistry;
+    const originalEsm = this.esModuleRegistry;
+    const originalModuleMock = this.moduleMockRegistry;
+    const originalIsolation = this.isolation;
     this.mockRegistry = new Map();
     this.moduleRegistry = new Map();
+    this.esModuleRegistry = new Map();
+    this.moduleMockRegistry = new Map();
+    // Every accessor prefers the isolation overlay, so leaving it in place
+    // would send the scratch load into the live isolated registry - the
+    // pollution this exists to prevent. All four base maps are swapped too,
+    // or an ESM target reached through `requireEsm` would write straight to
+    // the long-lived registry once the overlay is out of the way.
+    this.isolation = null;
     try {
       return fn();
     } finally {
       this.mockRegistry = originalMock;
       this.moduleRegistry = originalModule;
+      this.esModuleRegistry = originalEsm;
+      this.moduleMockRegistry = originalModuleMock;
+      this.isolation = originalIsolation;
     }
   }
 
@@ -180,7 +214,7 @@ export class ModuleRegistries {
     const dir = path.dirname(filename);
     const wrapper = {
       children: [],
-      exports: esm.namespace,
+      exports: this.requireEsmResult(esm),
       filename,
       id: filename,
       isPreloading: false,

@@ -86,12 +86,9 @@ export function buildWasmSyntheticModule(
 export function buildCoreSyntheticModule(
   moduleName: string,
   context: VMContext,
-  requireCoreModule: (moduleName: string, supportPrefix: boolean) => unknown,
+  requireCoreModule: (moduleName: string) => unknown,
 ): SyntheticModule {
-  const required = requireCoreModule(moduleName, true) as Record<
-    string,
-    unknown
-  >;
+  const required = requireCoreModule(moduleName) as Record<string, unknown>;
   // should identifier be `node://${moduleName}`?
   return syntheticFromExports(moduleName, context, {
     ...required,
@@ -126,15 +123,20 @@ export function buildCjsAsEsmSyntheticModule(
   ]);
 
   const cjsExports = [...allCandidates].filter(exportName => {
-    // `default` is handled separately below as the whole module.exports.
-    if (exportName === 'default' || cjsRecord == null) {
+    // `default` and `module.exports` are handled separately below as the
+    // whole module.exports.
+    if (
+      exportName === 'default' ||
+      exportName === 'module.exports' ||
+      cjsRecord == null
+    ) {
       return false;
     }
     return Object.hasOwn(cjsRecord, exportName);
   });
 
   return new SyntheticModule(
-    [...cjsExports, 'default'],
+    [...cjsExports, 'default', 'module.exports'],
     function () {
       if (cjsRecord != null) {
         for (const exportName of cjsExports) {
@@ -144,6 +146,7 @@ export function buildCjsAsEsmSyntheticModule(
       // module.exports is the ESM default, matching Node's CJS-from-ESM behavior.
       // __esModule is not honored — see Node docs on named exports from CJS.
       this.setExport('default', cjs);
+      this.setExport('module.exports', cjs);
     },
     {context, identifier: modulePath},
   );

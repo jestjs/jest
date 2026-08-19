@@ -6,7 +6,6 @@
  */
 
 import * as path from 'node:path';
-import type {Module as VMModule} from 'node:vm';
 import type {JestEnvironment, Module} from '@jest/environment';
 import {isError} from 'jest-util';
 import type {MockState} from './MockState';
@@ -20,7 +19,6 @@ import {hasEsmSyntax} from './esmLexer';
 import type {InitialModule, ModuleRegistry} from './moduleTypes';
 import {
   runtimeSupportsVmModules,
-  supportsNodeColonModulePrefixInRequire,
   supportsSyncEvaluate,
 } from './nodeCapabilities';
 
@@ -32,7 +30,7 @@ export interface CjsLoaderOptions {
   environment: JestEnvironment;
   coreModule: CoreModuleProvider;
   executor: ModuleExecutor;
-  requireEsm: <T>(modulePath: string) => T;
+  requireEsm: <T>(modulePath: string, requiredFrom: string) => T;
   testState: TestState;
   logFormattedReferenceError: (msg: string) => void;
 }
@@ -45,7 +43,10 @@ export class CjsLoader {
   private readonly environment: JestEnvironment;
   private readonly coreModule: CoreModuleProvider;
   private readonly executor: ModuleExecutor;
-  private readonly requireEsm: <T>(modulePath: string) => T;
+  private readonly requireEsm: <T>(
+    modulePath: string,
+    requiredFrom: string,
+  ) => T;
   private readonly testState: TestState;
   private readonly logFormattedReferenceError: (msg: string) => void;
 
@@ -89,10 +90,7 @@ export class CjsLoader {
     }
 
     if (moduleName && this.resolution.isCoreModule(moduleName)) {
-      return this.coreModule.require(
-        moduleName,
-        supportsNodeColonModulePrefixInRequire,
-      ) as T;
+      return this.coreModule.require(moduleName) as T;
     }
 
     if (!modulePath) {
@@ -102,13 +100,7 @@ export class CjsLoader {
     // On Node 24.9+ we can require() ESM natively. On older Node, fall
     // through to the CJS path so a configured transform can convert it.
     if (supportsSyncEvaluate && this.resolution.shouldLoadAsEsm(modulePath)) {
-      // Fast path: skip the graph walker on cache hits.
-      const reg = this.registries.getActiveEsmRegistry();
-      const cached = reg.get(modulePath);
-      if (cached && !(cached instanceof Promise)) {
-        return (cached as VMModule).namespace as T;
-      }
-      return this.requireEsm<T>(modulePath);
+      return this.requireEsm<T>(modulePath, from);
     }
 
     const moduleRegistry = isInternal
@@ -146,7 +138,7 @@ export class CjsLoader {
     } catch (error) {
       moduleRegistry.delete(modulePath);
       if (error instanceof CjsParseError) {
-        return this.handleCjsParseError(modulePath, error);
+        return this.handleCjsParseError(modulePath, from, error);
       }
       // Without --experimental-vm-modules, CjsParseError is never thrown.
       // Detect untransformed ESM syntax and surface an actionable error.
@@ -172,11 +164,12 @@ export class CjsLoader {
    */
   private handleCjsParseError<T>(
     modulePath: string,
+    from: string,
     parseError: CjsParseError,
   ): T {
     if (supportsSyncEvaluate) {
       try {
-        return this.requireEsm<T>(modulePath);
+        return this.requireEsm<T>(modulePath, from);
       } catch (esmError) {
         // Both CJS and ESM parsers rejected it — surface the original CJS error.
         if (esmError instanceof Error && esmError.name === 'SyntaxError') {

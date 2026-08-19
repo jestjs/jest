@@ -103,6 +103,7 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
     requireModuleOrMock: stubs.requireModuleOrMock,
     resolution: stubs.resolution,
     shouldLoadAsEsm: stubs.shouldLoadAsEsm,
+    testPath: '/test.js',
     testState: stubs.testState,
     transformCache: stubs.transformCache,
   });
@@ -320,13 +321,108 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       });
       stubs.coreModule.require.mockReturnValue({foo: 'bar'});
       const result = loader.tryLoadGraphSync('fs', '', 'sync-preferred');
-      expect(stubs.coreModule.require).toHaveBeenCalledWith('fs', true);
+      expect(stubs.coreModule.require).toHaveBeenCalledWith('node:fs');
       expect(result).not.toBe(LOAD_ASYNC);
       invariant(result !== LOAD_ASYNC, 'Asserted above by the expect');
       expect(result.namespace).toMatchObject({
         default: {foo: 'bar'},
         foo: 'bar',
       });
+    },
+  );
+
+  testWithLinkedSyntheticModule(
+    'gives `fs` and `node:fs` the same namespace object',
+    () => {
+      const {esmRegistry, loader, stubs} = makeLoader({
+        resolution: {
+          isCoreModule: jest.fn(
+            (name: string) => name === 'fs' || name === 'node:fs',
+          ),
+          resolveEsm: jest.fn(),
+        } as unknown as jest.Mocked<Resolution>,
+      });
+      stubs.coreModule.require.mockReturnValue({readFileSync: () => 'x'});
+      stubs.transformCache.transform.mockReturnValue(
+        [
+          "import * as bare from 'fs';",
+          "import * as prefixed from 'node:fs';",
+          'export const same = bare === prefixed;',
+        ].join('\n'),
+      );
+
+      const result = loader.tryLoadGraphSync(
+        '/entry.mjs',
+        '',
+        'sync-preferred',
+      );
+
+      expect(result).not.toBe(LOAD_ASYNC);
+      invariant(result !== LOAD_ASYNC, 'Asserted above by the expect');
+      expect((result.namespace as {same: boolean}).same).toBe(true);
+      expect(stubs.coreModule.require).toHaveBeenCalledTimes(1);
+      expect([...esmRegistry.keys()]).toContain('node:fs');
+      expect([...esmRegistry.keys()]).not.toContain('fs');
+    },
+  );
+
+  testWithLinkedSyntheticModule(
+    'keeps the prefix for builtins that only exist as `node:`',
+    () => {
+      // `node:sqlite` has no bare counterpart, so stripping the prefix would
+      // send the loader looking for a `sqlite` file on disk.
+      const {esmRegistry, loader, stubs} = makeLoader({
+        resolution: {
+          isCoreModule: jest.fn((name: string) => name === 'node:sqlite'),
+          resolveEsm: jest.fn(),
+        } as unknown as jest.Mocked<Resolution>,
+      });
+      stubs.coreModule.require.mockReturnValue({DatabaseSync: () => {}});
+      stubs.transformCache.transform.mockReturnValue(
+        "import * as sqlite from 'node:sqlite';\nexport const loaded = typeof sqlite.DatabaseSync;",
+      );
+
+      const result = loader.tryLoadGraphSync(
+        '/entry.mjs',
+        '',
+        'sync-preferred',
+      );
+
+      expect(result).not.toBe(LOAD_ASYNC);
+      invariant(result !== LOAD_ASYNC, 'Asserted above by the expect');
+      expect((result.namespace as {loaded: string}).loaded).toBe('function');
+      expect(stubs.coreModule.require).toHaveBeenCalledWith('node:sqlite');
+      expect([...esmRegistry.keys()]).toContain('node:sqlite');
+    },
+  );
+
+  testWithLinkedSyntheticModule(
+    'import.meta.resolve answers with `node:` for a specifier that maps to a builtin',
+    () => {
+      // Pins the order: the builtin check has to run on the *resolved* name.
+      // `my-dns` is not itself a core module, so checking the incoming
+      // specifier would fall through and hand back a bogus `file://` URL.
+      const {loader, stubs} = makeLoader({
+        resolution: {
+          isCoreModule: jest.fn((name: string) => name === 'dns'),
+          resolveEsm: jest.fn((_from: string, name: string) =>
+            name === 'my-dns' ? 'dns' : name,
+          ),
+        } as unknown as jest.Mocked<Resolution>,
+      });
+      stubs.transformCache.transform.mockReturnValue(
+        "export const mapped = import.meta.resolve('my-dns');",
+      );
+
+      const result = loader.tryLoadGraphSync(
+        '/entry.mjs',
+        '',
+        'sync-preferred',
+      );
+
+      expect(result).not.toBe(LOAD_ASYNC);
+      invariant(result !== LOAD_ASYNC, 'Asserted above by the expect');
+      expect((result.namespace as {mapped: string}).mapped).toBe('node:dns');
     },
   );
 
@@ -534,6 +630,29 @@ describe('EsmLoader.requireEsmModule', () => {
       }),
     );
   });
+
+  testWithVmEsm(
+    'unwraps a "module.exports" named export instead of returning the raw namespace',
+    async () => {
+      const {context, esmRegistry, loader} = makeLoader();
+      const unwrapped = {fromModuleExports: true};
+      const synth = new SyntheticModule(
+        ['module.exports', 'named'],
+        function () {
+          this.setExport('module.exports', unwrapped);
+          this.setExport('named', 'should-be-invisible');
+        },
+        {context, identifier: '/m.mjs'},
+      );
+      await synth.link(() => {
+        throw new Error('no deps');
+      });
+      await synth.evaluate();
+      esmRegistry.set('/m.mjs', synth);
+      const result = loader.requireEsmModule<any>('/m.mjs');
+      expect(result).toBe(unwrapped);
+    },
+  );
 });
 
 describe('EsmLoader.dynamicImportFromCjs (legacy linkAndEvaluate)', () => {
@@ -757,6 +876,43 @@ describe('validateImportAttributes', () => {
         error = error_ as NodeJS.ErrnoException;
       }
       expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_UNSUPPORTED');
+    });
+  });
+
+  describe('requireResultFromModule', () => {
+    test('hands out the raw namespace when sync evaluation is unavailable', () => {
+      const {stubs} = makeLoader();
+      jest.isolateModules(() => {
+        jest.doMock('../nodeCapabilities', () => ({
+          ...jest.requireActual<typeof import('../nodeCapabilities')>(
+            '../nodeCapabilities',
+          ),
+          supportsSyncEvaluate: false,
+        }));
+        const {EsmLoader: GatedEsmLoader} = require('../EsmLoader');
+        const loader = new GatedEsmLoader({
+          cjsExportsCache: stubs.cjsExportsCache,
+          coreModule: stubs.coreModule,
+          environment: stubs.environment,
+          fileCache: stubs.fileCache,
+          jestGlobals: stubs.jestGlobals,
+          mockState: stubs.mockState,
+          registries: stubs.registries,
+          requireModuleOrMock: stubs.requireModuleOrMock,
+          resolution: stubs.resolution,
+          shouldLoadAsEsm: stubs.shouldLoadAsEsm,
+          testPath: '/test.js',
+          testState: stubs.testState,
+          transformCache: stubs.transformCache,
+        });
+        const namespace = {default: 'D', x: 1};
+        const module = {
+          identifier: '/m.mjs',
+          namespace,
+          status: 'evaluated',
+        };
+        expect(loader.requireResultFromModule(module)).toBe(namespace);
+      });
     });
   });
 });

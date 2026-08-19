@@ -15,6 +15,7 @@ import type {
 } from '@parcel/watcher';
 import anymatch from 'anymatch';
 import * as fs from 'graceful-fs';
+import {isIgnorableFileError} from '../lib/isIgnorableFileError';
 import {
   ADD_EVENT,
   ALL_EVENT,
@@ -227,9 +228,10 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
       } else {
         const type = event.type === 'create' ? ADD_EVENT : CHANGE_EVENT;
         fs.lstat(absPath, (error, stat) => {
-          if (error?.code === 'ENOENT') return;
           if (error) {
-            this._emitError(error);
+            if (!isIgnorableFileError(error)) {
+              this._emitError(error);
+            }
             return;
           }
           this.emit(type, relPath, this.root, stat);

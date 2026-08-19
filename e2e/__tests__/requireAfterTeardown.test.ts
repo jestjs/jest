@@ -26,6 +26,11 @@ test('prints useful error for requires after test is done w/o `waitForUnhandledR
   expect(exitCode).toBe(1);
   expect(normalized).toMatchSnapshot();
   expect(stderr).toContain('(__tests__/lateRequire.test.js:11:20)');
+  // The stray timer throws once the run has already reported, and nothing
+  // formatted a stack from this file earlier, so line 13 — rather than the
+  // transformed file's line 12 — only appears if the source map registry
+  // outlived teardown.
+  expect(stderr).toContain('lateRequire.test.js:13:12');
 });
 
 test('prints useful error for requires after test is done w/ `waitForUnhandledRejections`', () => {

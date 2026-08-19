@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import dns from 'dns';
+import dns, * as dnsNamespace from 'dns';
 // the point here is that it's the node core module
 // eslint-disable-next-line no-restricted-imports
 import {readFileSync} from 'fs';
 import {createRequire} from 'module';
-import prefixDns from 'node:dns';
+import prefixDns, * as prefixDnsNamespace from 'node:dns';
 import {dirname, resolve} from 'path';
 import {fileURLToPath} from 'url';
 import {jest as jestObject} from '@jest/globals';
@@ -31,6 +31,7 @@ test('should have correct import.meta', () => {
     dirname: expect.any(String),
     filename: expect.any(String),
     jest: expect.anything(),
+    main: true,
     resolve: expect.any(Function),
     url: expect.any(String),
   });
@@ -60,13 +61,16 @@ test('should have correct import.meta', () => {
   expect(
     import.meta
       .resolve('colors')
-      .endsWith('jest/e2e/native-esm/node_modules/colors/lib/index.js'),
+      .endsWith('/e2e/native-esm/node_modules/colors/lib/index.js'),
   ).toBe(true);
   expect(
     import.meta
       .resolve('./native-esm.test')
-      .endsWith('jest/e2e/native-esm/__tests__/native-esm.test.js'),
+      .endsWith('/e2e/native-esm/__tests__/native-esm.test.js'),
   ).toBe(true);
+  // Builtins have no path, so Node answers with the `node:` specifier itself.
+  expect(import.meta.resolve('dns')).toBe('node:dns');
+  expect(import.meta.resolve('node:dns')).toBe('node:dns');
 });
 
 test('should double stuff', () => {
@@ -215,6 +219,7 @@ test('handle circular dependency', async () => {
 
 test('supports imports using "node:" prefix', () => {
   expect(dns).toBe(prefixDns);
+  expect(dnsNamespace).toBe(prefixDnsNamespace);
 });
 
 test('supports imports from "data:text/javascript" URI with charset=utf-8 encoding', async () => {

@@ -10,7 +10,7 @@ yarn install        # ~45 s. Python is required (node-gyp).
 yarn build:js       # ~5 s. Run this before tests — they import from build/, not src/.
 ```
 
-Tests transform on the fly via `babel-jest`, but their `import {x} from '../'` resolves to each package's `build/`. `yarn build:js` is required after every checkout. Full `yarn build` (`build:js && build:ts && bundle:ts`) is 3–5 min and only needed when working on type declarations or API Extractor output.
+Tests transform on the fly via `babel-jest`, but their `import {x} from '../'` resolves to each package's `build/`. `yarn build:js` is required after every checkout. Full `yarn build` (`build:js && build:ts && bundle:ts`) is 3–5 min and needed when working on type declarations or API Extractor output — and before `yarn typecheck:tests`, which resolves cross-package types from `build/*.d.ts` and reports phantom errors (e.g. missing custom matchers) in a fresh checkout without them.
 
 Iterative: `yarn watch` (webpack), `yarn watch:ts` (declarations). Clean: `yarn build-clean`; full reset: `yarn clean-all`.
 
@@ -45,7 +45,9 @@ cd e2e/<test-directory>
 node ../../packages/jest-cli/bin/jest.js --no-cache
 ```
 
-CI runs the test matrix with `nick-fields/retry` (10-min timeout, up to 3 retries on flake) across Ubuntu/macOS/Windows × Node 18/20/22/24/25. If a test is consistently failing locally but green in CI, suspect a retry-masked flake.
+CI runs the test matrix with `nick-fields/retry` (10-min timeout, up to 3 retries on flake) across Ubuntu/macOS/Windows × Node 18/20/22/24/25/26. If a test is consistently failing locally but green in CI, suspect a retry-masked flake.
+
+`codecov/patch` and `codecov/project` report before the four `Node LTS on Ubuntu with coverage (N/4)` shards have uploaded, so their numbers mean nothing until those jobs finish; both are advisory anyway (`require_ci_to_pass: false`, `target: auto`). Coverage is measured only in the process running the suite, so a line reachable only through an e2e fixture always reads as uncovered.
 
 ### Test gotchas worth memorizing
 
@@ -234,5 +236,5 @@ Alphabetize by first package name within each section. `yarn check-changelog` va
 
 ## When in doubt
 
-- Per-package `CLAUDE.md` files exist for: `expect`, `jest-circus`, `jest-config`, `jest-environment-node`, `jest-fake-timers`, `jest-haste-map`, `jest-mock`, `jest-reporters`, `jest-resolve`, `jest-runtime`, `jest-snapshot`, `jest-transform`, `jest-worker`. Read the relevant one for package-specific gotchas.
+- Per-package `CLAUDE.md` files exist for: `expect`, `jest-circus`, `jest-config`, `jest-environment-node`, `jest-fake-timers`, `jest-haste-map`, `jest-mock`, `jest-reporters`, `jest-resolve`, `jest-runtime`, `jest-snapshot`, `jest-source-map`, `jest-transform`, `jest-worker`. Read the relevant one for package-specific gotchas.
 - Trust the code over this file. When something contradicts what you see, fix this file as part of your change.

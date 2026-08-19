@@ -37,8 +37,7 @@ Require stack:
   ${this.requireStack
     .map(p => p.replace(`${rootDir}${path.sep}`, ''))
     .map(slash)
-    .join('\n  ')}
-`;
+    .join('\n  ')}`;
     }
 
     if (this.hint) {

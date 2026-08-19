@@ -1224,6 +1224,42 @@ test('will fail', () => {
 });
 ```
 
+`entireDescribe` retries all tests and hooks in the `describe` block where `jest.retryTimes()` is called. When called at the top level, it retries the root `describe` block for the test file. While a describe retry is active, per-test retries are not applied within its subtree.
+
+```js
+describe('workflow', () => {
+  jest.retryTimes(3, {entireDescribe: true});
+
+  beforeAll(() => {
+    // Runs again before each retry.
+  });
+
+  test('first step', () => {
+    // Passing tests run again with the rest of the block.
+  });
+
+  test('second step', () => {
+    // A failure retries the entire block.
+  });
+
+  afterAll(() => {
+    // Runs after every attempt.
+  });
+});
+```
+
+Each attempt runs the block's `beforeAll` hooks, child tests and nested describes, and `afterAll` hooks. When a retryable test or hook failure is recorded, passing tests run again with the rest of the block. If `entireDescribe` is omitted or `false`, `jest.retryTimes()` keeps its existing per-test behavior.
+
+Nested describe retry settings compose from the innermost block outwards. Each time an ancestor starts a new attempt, its descendant retry budgets start again. The maximum number of times a test can run from nested describe retries is therefore the product of `(numRetries + 1)` for each configured block. A block configured with zero describe retries still defines a retry boundary and disables per-test retries in its subtree.
+
+`afterAll` hooks still run after every attempt, but failures from `afterAll` and process-level errors do not trigger a describe retry. If either occurs during an attempt, no further attempts run, even if another failure would otherwise be retried, and all errors remain reported.
+
+Unhandled rejections owned by a test, `beforeAll`, `beforeEach`, or `afterEach` participate in describe retries. Ownerless rejections remain reported, while `afterAll` failures remain non-retryable.
+
+When test randomization is enabled, each describe block keeps the order selected for its first attempt across all of its retries.
+
+`retryImmediately` only applies to ordinary per-test retries. A describe retry always finishes the complete current attempt before starting the next one.
+
 Returns the `jest` object for chaining.
 
 :::caution

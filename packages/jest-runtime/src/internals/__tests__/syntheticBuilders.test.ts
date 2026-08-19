@@ -44,13 +44,13 @@ describe('syntheticBuilders', () => {
       async () => {
         const required = {readFile: () => 'r', writeFile: () => 'w'};
         const requireCoreModule: jest.MockedFunction<
-          (name: string, supportPrefix: boolean) => unknown
+          (name: string) => unknown
         > = jest.fn(() => required);
 
         const m = buildCoreSyntheticModule('fs', context(), requireCoreModule);
         const ns = await evaluate(m);
 
-        expect(requireCoreModule).toHaveBeenCalledWith('fs', true);
+        expect(requireCoreModule).toHaveBeenCalledWith('fs');
         expect(ns.default).toBe(required);
         expect(ns.readFile).toBe(required.readFile);
         expect(ns.writeFile).toBe(required.writeFile);

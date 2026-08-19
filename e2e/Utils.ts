@@ -206,7 +206,7 @@ const replaceTime = (str: string) =>
 export const replaceNodeInfo = (str: string) =>
   str
     .replaceAll(/[^\n]*node:internal\/[^\n]*\n?/g, '')
-    .replaceAll(/Node\.js v\d+\.\d+\.\d+/g, 'Node.js <<REPLACED>>');
+    .replaceAll(/Node\.js v\d+\.\d+\.\d+(?:-[\w.]+)?/g, 'Node.js <<REPLACED>>');
 
 export const replaceJestBuildLineNumbers = (str: string) =>
   str.replaceAll(

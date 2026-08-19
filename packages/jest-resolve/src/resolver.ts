@@ -10,7 +10,7 @@ import * as path from 'node:path';
 import chalk from 'chalk';
 import slash from 'slash';
 import type {IModuleMap} from 'jest-haste-map';
-import {tryRealpath} from 'jest-util';
+import {requireOrImportModule, tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
 import defaultResolver, {
   type AsyncResolver,
@@ -587,7 +587,12 @@ export default class Resolver {
     options: ResolveModuleConfig,
   ): string {
     const stringifiedOptions = options ? JSON.stringify(options) : '';
-    const key = from + path.delimiter + moduleName + stringifiedOptions;
+    const key = this._getModuleIDCacheKey(
+      virtualMocks,
+      from,
+      moduleName,
+      stringifiedOptions,
+    );
     const cachedModuleID = this._moduleIDCache.get(key);
     if (cachedModuleID) {
       return cachedModuleID;
@@ -621,13 +626,15 @@ export default class Resolver {
     options: ResolveModuleConfig,
   ): Promise<string> {
     const stringifiedOptions = options ? JSON.stringify(options) : '';
-    const key = from + path.delimiter + moduleName + stringifiedOptions;
+    const key = this._getModuleIDCacheKey(
+      virtualMocks,
+      from,
+      moduleName,
+      stringifiedOptions,
+    );
     const cachedModuleID = this._moduleIDCache.get(key);
     if (cachedModuleID) {
       return cachedModuleID;
-    }
-    if (moduleName.startsWith('data:')) {
-      return moduleName;
     }
 
     const moduleType = this._getModuleType(moduleName);
@@ -649,6 +656,26 @@ export default class Resolver {
 
     this._moduleIDCache.set(key, id);
     return id;
+  }
+
+  private _getModuleIDCacheKey(
+    virtualMocks: Map<string, boolean>,
+    from: string,
+    moduleName: string,
+    stringifiedOptions: string,
+  ): string {
+    const isVirtualMock =
+      virtualMocks.size > 0 &&
+      virtualMocks.get(this.getModulePath(from, moduleName)) === true;
+
+    return (
+      from +
+      path.delimiter +
+      moduleName +
+      stringifiedOptions +
+      path.delimiter +
+      String(isVirtualMock)
+    );
   }
 
   private _getModuleType(moduleName: string): 'node' | 'user' {
@@ -932,6 +959,81 @@ type ResolverSyncObject = {sync: SyncResolver; async?: AsyncResolver};
 type ResolverAsyncObject = {sync?: SyncResolver; async: AsyncResolver};
 export type ResolverObject = ResolverSyncObject | ResolverAsyncObject;
 
+function asResolver(
+  loadedResolver: unknown,
+): SyncResolver | ResolverObject | null {
+  if (typeof loadedResolver === 'function') {
+    return loadedResolver as SyncResolver;
+  }
+
+  if (
+    typeof loadedResolver === 'object' &&
+    loadedResolver != null &&
+    ((loadedResolver as ResolverObject).sync != null ||
+      (loadedResolver as ResolverObject).async != null)
+  ) {
+    return loadedResolver as ResolverObject;
+  }
+
+  return null;
+}
+
+function toResolver(
+  resolver: string,
+  loadedResolver: unknown,
+): SyncResolver | ResolverObject {
+  if (loadedResolver == null) {
+    throw new Error(`Resolver located at ${resolver} does not export anything`);
+  }
+
+  const resolverModule = asResolver(loadedResolver);
+
+  if (resolverModule != null) {
+    return resolverModule;
+  }
+
+  // An ES module is seen as a module namespace object, so a resolver written
+  // as `export default` arrives on `default`. Look there before giving up.
+  if (typeof loadedResolver === 'object') {
+    const defaultExport = asResolver(
+      (loadedResolver as {default?: unknown}).default,
+    );
+
+    if (defaultExport != null) {
+      return defaultExport;
+    }
+  }
+
+  throw new Error(
+    `Resolver located at ${resolver} does not export a function or an object with "sync" and "async" props`,
+  );
+}
+
+// `Resolver.findNodeModule` is synchronous, but an ES module resolver can only
+// be loaded asynchronously - and one with a top-level await can never be
+// `require`d at all. Resolvers are therefore loaded ahead of time, once per
+// process, and read back out of here when resolution actually runs.
+const preloadedResolvers = new Map<string, SyncResolver | ResolverObject>();
+
+/**
+ * Load a user resolver so that later synchronous resolution can use it.
+ * Called from `normalize` in the main process and from the test worker's
+ * `setup`, both of which run before any module is resolved.
+ */
+export async function preloadResolver(
+  resolver: string | undefined | null,
+): Promise<void> {
+  if (resolver == null || preloadedResolvers.has(resolver)) {
+    return;
+  }
+
+  // Keep the namespace object intact: a resolver may expose `sync`/`async`
+  // as named exports rather than a default export.
+  const loadedResolver = await requireOrImportModule<unknown>(resolver, false);
+
+  preloadedResolvers.set(resolver, toResolver(resolver, loadedResolver));
+}
+
 function loadResolver(
   resolver: string | undefined | null,
 ): SyncResolver | ResolverObject {
@@ -939,24 +1041,28 @@ function loadResolver(
     return defaultResolver;
   }
 
-  const loadedResolver = require(resolver);
+  const preloaded = preloadedResolvers.get(resolver);
 
-  if (loadedResolver == null) {
-    throw new Error(`Resolver located at ${resolver} does not export anything`);
+  if (preloaded != null) {
+    return preloaded;
   }
 
-  if (typeof loadedResolver === 'function') {
-    return loadedResolver as SyncResolver;
-  }
+  // Not preloaded - an embedder built a `Resolver` without going through
+  // `normalize`. `require` still covers CommonJS, and ES modules too on the
+  // versions of Node that can `require` them.
+  try {
+    return toResolver(resolver, require(resolver));
+  } catch (error: any) {
+    if (
+      error.code === 'ERR_REQUIRE_ESM' ||
+      error.code === 'ERR_REQUIRE_ASYNC_MODULE'
+    ) {
+      throw new Error(
+        `Jest: resolver located at ${resolver} could not be loaded synchronously. Call \`preloadResolver\` from "jest-resolve" before resolving - a resolver with a top-level await always needs it, and so does any ES module on Node older than 20.19 / 22.12.`,
+        {cause: error},
+      );
+    }
 
-  if (
-    typeof loadedResolver === 'object' &&
-    (loadedResolver.sync != null || loadedResolver.async != null)
-  ) {
-    return loadedResolver as ResolverObject;
+    throw error;
   }
-
-  throw new Error(
-    `Resolver located at ${resolver} does not export a function or an object with "sync" and "async" props`,
-  );
 }

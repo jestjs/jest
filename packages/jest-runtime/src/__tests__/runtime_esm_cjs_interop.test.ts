@@ -126,6 +126,33 @@ describe('Runtime loadCjsAsEsm', () => {
   );
 });
 
+describe('Runtime loadCjsAsEsm module.exports unwrapping', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithSyncEsm(
+    'require()s a ESM module exporting "module.exports"',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const first = runtime.requireModule(
+        FROM,
+        './module-exports-export-name.mjs',
+      );
+      expect(first).toEqual({fromModuleExports: true});
+      expect(first.named).toBeUndefined();
+
+      // Second require is served from the ESM registry, which must apply the
+      // same unwrapping as the cold path above.
+      const second = runtime.requireModule(
+        FROM,
+        './module-exports-export-name.mjs',
+      );
+      expect(second).toBe(first);
+    },
+  );
+});
+
 describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
   beforeEach(() => {
     createRuntime = require('createRuntime');

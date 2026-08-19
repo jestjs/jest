@@ -21,6 +21,7 @@ export function createEmptyMap(): InternalHasteMap {
     duplicates: new Map(),
     files: new Map(),
     map: new Map(),
+    mockDuplicates: new Map(),
     mocks: new Map(),
   };
 }

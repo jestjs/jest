@@ -647,6 +647,26 @@ const config = defineConfig(
     },
   },
   {
+    // The core of @jest/source-map is platform-neutral: everything that
+    // touches Node sits behind the `SourceMapFileReader` implemented in
+    // nodeFileReader.ts.
+    files: [
+      'packages/jest-source-map/src/SourceMapCache.ts',
+      'packages/jest-source-map/src/getCallsite.ts',
+      'packages/jest-source-map/src/SourceMapSupport.ts',
+    ],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          message:
+            'This module is platform-neutral — reach Node through the `SourceMapFileReader` implemented in nodeFileReader.ts.',
+          selector: 'ImportDeclaration[source.value=/^node:|^graceful-fs$/]',
+        },
+      ],
+    },
+  },
+  {
     files: ['packages/**/*.ts'],
     rules: {
       '@typescript-eslint/explicit-module-boundary-types': 'error',
@@ -842,6 +862,7 @@ const config = defineConfig(
   },
   globalIgnores([
     '!.*',
+    '.claude/**',
     '**/coverage/**',
     '**/node_modules/**',
     'bin/',
@@ -856,6 +877,23 @@ const config = defineConfig(
     // Third-party script
     'packages/jest-diff/src/cleanupSemantic.ts',
     'e2e/native-esm/wasm-bindgen/index_bg.js',
+
+    // Compiler output whose inline source map encodes its exact columns
+    'e2e/source-map-not-transformed/lib/boom.js',
+
+    // Written by the e2e tests that own them, and left behind by an
+    // interrupted run
+    'e2e/console-log-output-when-run-in-band/**',
+    'e2e/coverage-threshold/**',
+    'e2e/execute-tests-once-in-mpr/**',
+    'e2e/jest-config-js/**',
+    'e2e/jest-config-ts/**',
+    'e2e/resolve-no-extensions-no-js/**',
+    'e2e/timeouts/**',
+    'e2e/timeouts-legacy/**',
+    'e2e/ts-node-integration/**',
+    'e2e/to-match-inline-snapshot/__tests__/**',
+    'e2e/to-match-snapshot/__tests__/**',
 
     '**/.yarn',
     '**/.pnp.*',
