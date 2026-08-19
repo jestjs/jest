@@ -770,6 +770,59 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     },
   );
 
+  testWithSyncEsm(
+    'a require() of a second root mid-walk shares overlapping dependencies',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './overlap-root.mjs',
+      )) as any;
+      expect(m.namespace.sameInstance).toBe(true);
+      expect(m.namespace.evaluations).toBe(1);
+    },
+  );
+
+  testWithSyncEsm(
+    'a require() of a second root mid-walk shares dependencies the outer walk scratched first',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './overlap-root-lifo.mjs',
+      )) as any;
+      expect(m.namespace.sameInstance).toBe(true);
+      expect(m.namespace.evaluations).toBe(1);
+    },
+  );
+
+  testWithSyncEsm(
+    'a require() whose graph reaches the walked root throws ERR_REQUIRE_CYCLE_MODULE',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './cycle-through-nested-root.mjs',
+      )) as any;
+      expect(m.namespace.observed).toBe('ERR_REQUIRE_CYCLE_MODULE');
+    },
+  );
+
+  testWithSyncEsm(
+    'a dynamic import() fired from a CJS body mid-walk settles on the walked instance',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './reentrant-import-root.mjs',
+      )) as any;
+      const reentrant = await m.namespace.promiseFromCjs;
+      expect(reentrant).toBe(m.namespace);
+      expect(reentrant.marker).toBe('reentrant-root');
+      expect(reentrant.evaluations).toBe(1);
+    },
+  );
+
   testWithLinkedSyntheticModule(
     'dynamic import of a CJS dep stores the actual module in the ESM registry, not a Promise',
     async () => {

@@ -470,6 +470,7 @@ export class EsmLoader {
   private readonly activeSyncWalks: Array<{
     registry: Map<string, JestModule>;
     keys: Set<string>;
+    rootKey: string;
   }> = [];
   // Used only by the legacy async path; deletable when min-Node ≥ v24.9
   // (delete the block at the bottom of this file too - eslint/tsc will
@@ -639,7 +640,7 @@ export class EsmLoader {
     ];
 
     const activeWalk = new Set<string>();
-    this.activeSyncWalks.push({keys: activeWalk, registry});
+    this.activeSyncWalks.push({keys: activeWalk, registry, rootKey});
     try {
       return this.walkGraphSync({
         activeWalk,
@@ -682,6 +683,48 @@ export class EsmLoader {
     return this.activeSyncWalks.some(
       walk => walk.registry === registry && walk.keys.has(rootKey),
     );
+  }
+
+  // An ancestor walk's root maps to a module Node would report as
+  // `'evaluating'` when a mid-walk require()'s graph reaches back to it -
+  // Node throws ERR_REQUIRE_CYCLE_MODULE there. The current walk (the last
+  // stack entry) is excluded: a dep matching its own root is a static ESM
+  // cycle, which is legal.
+  private isAncestorWalkRoot(
+    cacheKey: string,
+    registry: ModuleRegistry | Map<string, JestModule>,
+  ): boolean {
+    return this.activeSyncWalks
+      .slice(0, -1)
+      .some(walk => walk.registry === registry && walk.rootKey === cacheKey);
+  }
+
+  // A require() fired from a CJS body executing mid-walk can run a nested
+  // walk that builds and commits modules this walk has also scratched but
+  // not committed (scratch entries are invisible to the nested walk).
+  // Adopt the committed instances: linking and evaluating our own copies
+  // would evaluate those modules a second time and leave this graph holding
+  // different instances than the registry serves everyone else. A dynamic
+  // import() cannot race the walk the same way - the walk never awaits, so
+  // an import()'s continuation only runs after the walk has settled and
+  // committed, where it finds the finished entries.
+  private adoptCommittedScratchEntries(
+    scratch: Map<string, ScratchEntry>,
+    registry: Map<string, JestModule>,
+  ): void {
+    for (const [cacheKey, entry] of scratch) {
+      if (entry.kind !== 'source') continue;
+      const committed = registry.get(cacheKey);
+      if (!committed || committed instanceof Promise) continue;
+      if (committed.status === 'errored') throw committed.error;
+      if (committed.status === 'evaluated' || committed.status === 'linked') {
+        scratch.set(cacheKey, {
+          cacheKey,
+          kind: 'prelinked',
+          module: committed,
+        });
+      }
+    }
   }
 
   private walkGraphSync({
@@ -858,6 +901,8 @@ export class EsmLoader {
 
       scratch.set(cacheKey, {cacheKey, deps, kind: 'source', module});
     }
+
+    this.adoptCommittedScratchEntries(scratch, registry);
 
     for (const entry of scratch.values()) {
       if (entry.kind !== 'source') continue;
@@ -1097,6 +1142,12 @@ export class EsmLoader {
     }
 
     const cacheKey = fileCacheKey(resolved, suffix);
+    if (
+      mode === 'sync-required' &&
+      this.isAncestorWalkRoot(cacheKey, registry)
+    ) {
+      throw makeRequireCycleError(resolved, referencingIdentifier);
+    }
     if (
       !resolved.endsWith('.json') &&
       !isWasm(resolved) &&
