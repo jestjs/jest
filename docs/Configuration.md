@@ -394,6 +394,8 @@ Default: `undefined`
 
 This will be used to configure minimum threshold enforcement for coverage results. Thresholds can be specified as `global`, as a [glob](https://github.com/isaacs/node-glob#glob-primer), and as a directory or file path. If thresholds aren't met, jest will fail.
 
+Thresholds are not checked when the run is a shard of several (see [`--shard`](CLI.md#--shard)). A shard runs only part of the suite, so its coverage is only part of the project's and a `global` threshold checked against it would fail for every shard. Merge the coverage reports from all shards and check the thresholds against the merged report instead.
+
 - If a threshold is set to a **positive** number, it will be interpreted as the **minimum** percentage of coverage required.
 
 - If a threshold is set to a **negative** number, it will be treated as the **maximum** number of uncovered items allowed.
