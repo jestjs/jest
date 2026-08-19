@@ -23,9 +23,38 @@ export function setResolver(nextResolver: ResolverFactory): void {
 
 export function clearFsCache(): void {
   unrsResolver?.clearCache();
+  preserveSymlinks = undefined;
   checkedPaths.clear();
   checkedRealpathPaths.clear();
   packageContents.clear();
+}
+
+let preserveSymlinks: boolean | undefined;
+
+/**
+ * Whether Node was started with `--preserve-symlinks` / `NODE_PRESERVE_SYMLINKS`.
+ *
+ * @see https://nodejs.org/api/cli.html#--preserve-symlinks
+ */
+export function shouldPreserveSymlinks(): boolean {
+  preserveSymlinks ??= detectPreserveSymlinks();
+  return preserveSymlinks;
+}
+
+function detectPreserveSymlinks(): boolean {
+  // on only when exactly `1`
+  if (process.env.NODE_PRESERVE_SYMLINKS === '1') {
+    return true;
+  }
+
+  // matched exactly so `--preserve-symlinks-main` (entry point only) is excluded
+  if (process.execArgv.includes('--preserve-symlinks')) {
+    return true;
+  }
+
+  return (process.env.NODE_OPTIONS ?? '')
+    .split(/\s+/)
+    .includes('--preserve-symlinks');
 }
 
 enum IPathType {

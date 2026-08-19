@@ -17,8 +17,8 @@ export class Resolution {
   private readonly resolver: Resolver;
   private readonly cjsConditions: ReadonlyArray<string>;
   private readonly esmConditions: ReadonlyArray<string>;
-  // One long-lived object per condition set - the resolver memoizes its
-  // cache-key serialization on options-object identity.
+  // One long-lived, frozen object per condition set - the resolver memoizes
+  // its cache-key serialization on options-object identity.
   private readonly cjsResolveOptions: ResolveModuleConfig;
   private readonly esmResolveOptions: ResolveModuleConfig;
   private readonly extensionsToTreatAsEsm: ReadonlyArray<string>;
@@ -47,8 +47,6 @@ export class Resolution {
     this.esmConditions = [
       ...new Set(['import', 'module-sync', 'default', ...envExportConditions]),
     ];
-    // Frozen: the resolver memoizes its cache-key serialization on
-    // options-object identity, so these must never be mutated.
     this.cjsResolveOptions = Object.freeze({conditions: this.cjsConditions});
     this.esmResolveOptions = Object.freeze({conditions: this.esmConditions});
     this.extensionsToTreatAsEsm = extensionsToTreatAsEsm;

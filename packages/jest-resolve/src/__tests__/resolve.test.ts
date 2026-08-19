@@ -1153,6 +1153,16 @@ describe('preserveSymlinks', () => {
     expect(findDep()).toBe(symlinkedModuleEntry);
   });
 
+  it('caches the detection until the resolver cache is cleared', () => {
+    expect(findDep()).toBe(realModuleEntry);
+
+    process.env.NODE_PRESERVE_SYMLINKS = '1';
+    expect(findDep()).toBe(realModuleEntry);
+
+    Resolver.clearDefaultResolverCache();
+    expect(findDep()).toBe(symlinkedModuleEntry);
+  });
+
   it('preserves symlinks when started with --preserve-symlinks', () => {
     process.execArgv = ['--preserve-symlinks'];
     expect(findDep()).toBe(symlinkedModuleEntry);
