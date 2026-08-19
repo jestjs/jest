@@ -20,7 +20,10 @@ import defaultResolver, {
 } from './defaultResolver';
 import {clearFsCache} from './fileWalkers';
 import nodeModulesPaths, {GlobalPaths} from './nodeModulesPaths';
-import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
+import shouldLoadAsEsm, {
+  clearCachedLookups,
+  isExplicitlyCommonjsPackage,
+} from './shouldLoadAsEsm';
 import type {ResolverConfig} from './types';
 
 export type FindNodeModuleConfig = {
@@ -205,6 +208,8 @@ export default class Resolver {
 
   // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
   static unstable_shouldLoadAsEsm = shouldLoadAsEsm;
+
+  static unstable_isExplicitlyCommonjs = isExplicitlyCommonjsPackage;
 
   resolveModuleFromDirIfExists(
     dirname: string,

@@ -57,6 +57,7 @@
 - `[jest-resolve]` Keep virtual and ordinary mock module IDs isolated across test files ([#16296](https://github.com/jestjs/jest/pull/16296))
 - `[jest-resolve]` Guard missing `require.resolve.paths` ([#16052](https://github.com/jestjs/jest/pull/16052))
 - `[jest-resolve, jest-config, jest-runner]` Support a user resolver written as an ES module ([#16332](https://github.com/jestjs/jest/pull/16332))
+- `[jest-resolve, jest-runtime]` Throw the CJS parse error for ESM syntax in a `"type": "commonjs"` package or a `.cjs` file instead of loading it as ESM, matching Node ([#16368](https://github.com/jestjs/jest/pull/16368))
 - `[@jest/source-map]` Keep source map sources that name a scheme, such as `webpack:///`, instead of resolving them into a path that does not exist ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[@jest/source-map]` Look up `--testLocationInResults` positions at the right column, and keep a mapping to the first column instead of discarding it ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[@jest/source-map]` Warn when a source map cannot be parsed, instead of silently leaving its frames untranslated ([#16327](https://github.com/jestjs/jest/pull/16327))
@@ -72,6 +73,8 @@
 - `[jest-runtime]` Mark the result of `require()`ing an ES module that has a default export with `__esModule: true` through a live-binding facade, and serve the same object from `require.cache`, matching Node ([#16367](https://github.com/jestjs/jest/pull/16367))
 - `[jest-runtime]` Provide a CommonJS module's exports under the `'module.exports'` named export when imported from ESM, matching Node 23+ ([#16367](https://github.com/jestjs/jest/pull/16367))
 - `[jest-runtime]` Give the test file itself a non-null `require.main` ([#16367](https://github.com/jestjs/jest/pull/16367))
+- `[jest-runtime]` Populate `module.children` with the modules a file loads, matching Node ([#16368](https://github.com/jestjs/jest/pull/16368))
+- `[jest-runtime]` Provide `import.meta.resolve` and `import.meta.jest` in `data:` URI modules, accept any-case mediatype parameters, and use Node's error codes for invalid `data:` URIs ([#16368](https://github.com/jestjs/jest/pull/16368))
 - `[jest-runtime]` Throw `ERR_REQUIRE_CYCLE_MODULE` like Node when a CommonJS module `require()`s an ES module that is still being loaded, instead of evaluating the module a second time ([#16366](https://github.com/jestjs/jest/pull/16366))
 - `[jest-runtime]` Key builtin modules in the ESM registry by one canonical specifier ([#16341](https://github.com/jestjs/jest/pull/16341))
 - `[jest-runtime]` `import.meta.resolve()` for a builtin uses its `node:` specifier ([#16341](https://github.com/jestjs/jest/pull/16341))
@@ -86,6 +89,7 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Document the intentional divergences from Node's module system in the ECMAScript Modules page ([#16368](https://github.com/jestjs/jest/pull/16368))
 - `[docs]` Note deprecation of `react-test-renderer` in React Native tutorial and `pretty-format` README ([#16294](https://github.com/jestjs/jest/pull/16294))
 - `[docs]` Use `@testing-library/react-native` in the React Native tutorial instead of the deprecated `react-test-renderer` ([#16318](https://github.com/jestjs/jest/pull/16318))
 - `[babel-jest, @jest/transform]` Update `babel-plugin-istanbul` to v8 ([#16049](https://github.com/jestjs/jest/pull/16049))

@@ -783,3 +783,316 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     },
   );
 });
+
+describe('Runtime sync ESM graph - data: URI modules', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithVmEsm(
+    'provides import.meta.jest and import.meta.resolve',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-data-uri-meta.mjs',
+      )) as any;
+      expect(m.namespace.hasJest).toBe('object');
+      expect(m.namespace.resolveType).toBe('function');
+      expect(m.namespace.absolute).toBe('node:fs');
+      expect(m.namespace.builtin).toBe('node:fs');
+      expect(m.namespace.relativeError).toBe('ERR_UNSUPPORTED_RESOLVE_REQUEST');
+      expect(m.namespace.bareError).toBe('ERR_UNSUPPORTED_RESOLVE_REQUEST');
+    },
+  );
+
+  testWithVmEsm('accepts an upper-case charset parameter', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-upper-charset.mjs',
+    )) as any;
+    expect(m.namespace.x).toBe(1);
+  });
+
+  testWithVmEsm(
+    'rejects an unsupported mime type with ERR_UNKNOWN_MODULE_FORMAT',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-data-uri-bad-mime.mjs'),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_UNKNOWN_MODULE_FORMAT',
+          message: 'Unknown module format: text/html for URL data:text/html,hi',
+        }),
+      );
+    },
+  );
+
+  testWithVmEsm('rejects a mime-less data: URI like Node', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    await expect(
+      runtime.unstable_importModule(FROM, './import-data-uri-no-mime.mjs'),
+    ).rejects.toThrow(
+      expect.objectContaining({
+        code: 'ERR_UNKNOWN_MODULE_FORMAT',
+        message: 'Unknown module format: null for URL data:,hello',
+      }),
+    );
+  });
+
+  testWithVmEsm(
+    'rejects a malformed data: URI with ERR_INVALID_URL',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-data-uri-invalid.mjs'),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_INVALID_URL',
+          message: 'Invalid URL',
+        }),
+      );
+    },
+  );
+});
+
+describe('Runtime sync ESM graph - data: URI mediatype parsing', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithVmEsm('accepts an upper-case mime type', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-upper-mime.mjs',
+    )) as any;
+    expect(m.namespace.upper).toBe(1);
+  });
+
+  testWithVmEsm(
+    'decodes base64 given as the final of several parameters',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-data-uri-multi-params.mjs',
+      )) as any;
+      expect(m.namespace.multi).toBe(2);
+    },
+  );
+
+  testWithVmEsm('keeps a URL fragment out of the module source', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-fragment.mjs',
+    )) as any;
+    expect(m.namespace.fragmentDefault).toBe(1);
+  });
+
+  testWithVmEsm(
+    'percent-decodes a base64 payload before decoding',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-data-uri-escaped-base64.mjs',
+      )) as any;
+      expect(m.namespace.escaped).toBe(42);
+    },
+  );
+
+  testWithVmEsm('strips whitespace around the mime type', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-space-mime.mjs',
+    )) as any;
+    expect(m.namespace.s).toBe(1);
+  });
+
+  // Node's percent-decoding is forgiving: an invalid escape sequence passes
+  // through instead of throwing.
+  testWithVmEsm('loads a payload with a malformed percent escape', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-bad-percent.mjs',
+    )) as any;
+    expect(m.namespace.m).toBe('\u{FFFD}%A');
+  });
+
+  testWithVmEsm(
+    'rejects invalid base64 with ERR_INVALID_URL like Node',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(
+          FROM,
+          './import-data-uri-invalid-base64.mjs',
+        ),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_INVALID_URL',
+          message: 'Invalid URL',
+        }),
+      );
+    },
+  );
+
+  // In a URL the fragment starts at the first #, so a fragment before the
+  // comma leaves the data: URL without a payload.
+  testWithVmEsm(
+    'rejects a fragment before the comma with ERR_INVALID_URL',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(
+          FROM,
+          './import-data-uri-early-fragment.mjs',
+        ),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_INVALID_URL',
+          message: 'Invalid URL',
+        }),
+      );
+    },
+  );
+
+  // Node echoes the mime essence in the rejection only when it parses as a
+  // MIME type, and reports null otherwise.
+  testWithVmEsm('reports null for an unparseable mime essence', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    await expect(
+      runtime.unstable_importModule(
+        FROM,
+        './import-data-uri-unparseable-mime.mjs',
+      ),
+    ).rejects.toThrow(
+      expect.objectContaining({
+        code: 'ERR_UNKNOWN_MODULE_FORMAT',
+        message:
+          'Unknown module format: null for URL data:text%2Fjavascript,export const q = 1',
+      }),
+    );
+  });
+
+  // The payload decode runs before the format check, so an invalid base64
+  // body wins over an unknown mime type.
+  testWithVmEsm(
+    'reports ERR_INVALID_URL for bad base64 even with an unknown mime',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(
+          FROM,
+          './import-data-uri-bad-mime-bad-base64.mjs',
+        ),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_INVALID_URL',
+          message: 'Invalid URL',
+        }),
+      );
+    },
+  );
+
+  // Only the JavaScript mime tolerates surrounding spaces - application/json
+  // must match exactly, and the rejection echoes the mediatype verbatim.
+  testWithVmEsm(
+    'rejects application/json with a leading space like Node',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-data-uri-space-json.mjs'),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_UNKNOWN_MODULE_FORMAT',
+          message:
+            'Unknown module format:  application/json for URL data: application/json,{}',
+        }),
+      );
+    },
+  );
+
+  // The URL parser strips ASCII tab and newline from the specifier entirely.
+  testWithVmEsm('strips a tab inside the mediatype', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-tab-mime.mjs',
+    )) as any;
+    expect(m.namespace.tabbed).toBe(1);
+  });
+
+  // Node never sees a literal non-ASCII character around the base64 token
+  // (its URL parser percent-encodes it), so the parameter is not recognized,
+  // the payload stays percent-decoded base64 text, and parsing that as
+  // JavaScript fails on the trailing padding.
+  testWithVmEsm(
+    'does not honor a base64 parameter padded with Unicode whitespace',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(
+          FROM,
+          './import-data-uri-nbsp-base64.mjs',
+        ),
+      ).rejects.toThrow('Unexpected end of input');
+    },
+  );
+
+  testWithVmEsm('accepts the application/javascript mime type', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-application-mime.mjs',
+    )) as any;
+    expect(m.namespace.appJs).toBe(3);
+  });
+
+  // Node matches the JavaScript mime case-insensitively but requires exact
+  // case for application/json, and reports the original spelling.
+  testWithVmEsm(
+    'rejects an upper-case application/json mime type like Node',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-data-uri-upper-json.mjs'),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_UNKNOWN_MODULE_FORMAT',
+          message:
+            'Unknown module format: APPLICATION/JSON for URL data:APPLICATION/JSON,{}',
+        }),
+      );
+    },
+  );
+});
+
+describe('Runtime sync ESM graph - require.cache proxy in isolation', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithSyncEsm(
+    'exposes an isolated ESM entry consistently across proxy traps',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      let result: any;
+      runtime.isolateModules(() => {
+        result = runtime.requireModule(FROM, './reads-cache-traps.cjs');
+      });
+      expect(result.entryExports).toBeDefined();
+      expect(result.hasEntry).toBe(true);
+      expect(result.listed).toBe(true);
+      expect(result.selfEntry).toBeDefined();
+      expect(result.selfHasEntry).toBe(true);
+      expect(result.selfListed).toBe(true);
+    },
+  );
+});

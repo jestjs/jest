@@ -81,6 +81,7 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
     requireModuleOrMock: jest.fn() as any,
     resolution: {
       isCoreModule: jest.fn(() => false),
+      isExplicitlyCommonjs: jest.fn(() => false),
       resolveEsm: jest.fn((_from, name) => name),
     } as unknown as jest.Mocked<Resolution>,
     shouldLoadAsEsm: jest.fn(() => true),
