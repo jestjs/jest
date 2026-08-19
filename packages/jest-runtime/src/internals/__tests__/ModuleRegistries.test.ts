@@ -5,9 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {fileURLToPath, pathToFileURL} from 'node:url';
 import type {Module as VMModule} from 'node:vm';
 import {ModuleRegistries} from '../ModuleRegistries';
 import type {InitialModule, JestModule} from '../moduleTypes';
+
+const LIVE_KEY = pathToFileURL('/live.mjs').href;
+const UNLINKED_KEY = pathToFileURL('/unlinked.mjs').href;
+const PENDING_KEY = pathToFileURL('/pending.mjs').href;
 
 const fakeCjs = (filename: string): InitialModule =>
   ({
@@ -214,13 +219,13 @@ describe('ModuleRegistries', () => {
       registries.setCjs('/cjs.js', cjs);
 
       const liveEsm = fakeEsm('evaluated');
-      registries.setEsm('file:///live.mjs', liveEsm as JestModule);
+      registries.setEsm(LIVE_KEY, liveEsm as JestModule);
 
       const unlinkedEsm = fakeEsm('unlinked');
-      registries.setEsm('file:///unlinked.mjs', unlinkedEsm as JestModule);
+      registries.setEsm(UNLINKED_KEY, unlinkedEsm as JestModule);
 
       const pending = Promise.resolve(fakeEsm()) as unknown as JestModule;
-      registries.setEsm('file:///pending.mjs', pending);
+      registries.setEsm(PENDING_KEY, pending);
 
       const cache = registries.createRequireCacheProxy();
 
@@ -240,9 +245,9 @@ describe('ModuleRegistries', () => {
 
       const keys = Object.keys(cache);
       expect(keys).toContain('/cjs.js');
-      expect(keys).toContain('/live.mjs');
-      expect(keys).not.toContain('/unlinked.mjs');
-      expect(keys).not.toContain('/pending.mjs');
+      expect(keys).toContain(fileURLToPath(LIVE_KEY));
+      expect(keys).not.toContain(fileURLToPath(UNLINKED_KEY));
+      expect(keys).not.toContain(fileURLToPath(PENDING_KEY));
     });
 
     test('mutators silently no-op rather than throw', () => {
@@ -256,30 +261,24 @@ describe('ModuleRegistries', () => {
 
     test('hides ESM instances that carry a query or fragment', () => {
       const registries = new ModuleRegistries(module => module.namespace);
-      registries.setEsm(
-        'file:///live.mjs?q=1',
-        fakeEsm('evaluated') as JestModule,
-      );
-      registries.setEsm(
-        'file:///live.mjs#frag',
-        fakeEsm('evaluated') as JestModule,
-      );
+      registries.setEsm(`${LIVE_KEY}?q=1`, fakeEsm('evaluated') as JestModule);
+      registries.setEsm(`${LIVE_KEY}#frag`, fakeEsm('evaluated') as JestModule);
 
       const cache = registries.createRequireCacheProxy();
       expect(Object.keys(cache)).toEqual([]);
       expect(cache['/live.mjs']).toBeUndefined();
       expect('/live.mjs' in cache).toBe(false);
-      expect(cache['file:///live.mjs?q=1']).toBeUndefined();
+      expect(cache[`${LIVE_KEY}?q=1`]).toBeUndefined();
     });
 
     test('does not address file entries by URL string', () => {
       const registries = new ModuleRegistries(module => module.namespace);
-      registries.setEsm('file:///live.mjs', fakeEsm('evaluated') as JestModule);
+      registries.setEsm(LIVE_KEY, fakeEsm('evaluated') as JestModule);
 
       const cache = registries.createRequireCacheProxy();
       expect(cache['/live.mjs']).toBeDefined();
-      expect(cache['file:///live.mjs']).toBeUndefined();
-      expect('file:///live.mjs' in cache).toBe(false);
+      expect(cache[LIVE_KEY]).toBeUndefined();
+      expect(LIVE_KEY in cache).toBe(false);
     });
 
     test('wrapEsmForRequireCache caches the wrapper per VMModule', () => {

@@ -797,6 +797,18 @@ describe('Runtime sync ESM graph - require(esm)', () => {
   );
 
   testWithSyncEsm(
+    'a require() of a second root mid-walk shares a scratched JSON module',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './overlap-json-root.mjs',
+      )) as any;
+      expect(m.namespace.sameJson).toBe(true);
+    },
+  );
+
+  testWithSyncEsm(
     'a require() whose graph reaches the walked root throws ERR_REQUIRE_CYCLE_MODULE',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -914,6 +926,26 @@ describe('Runtime sync ESM graph - URL-keyed module instances', () => {
       )) as any;
       expect(m.namespace.distinctNamespaces).toBe(true);
       expect(m.namespace.sharedExports).toBe(true);
+    },
+  );
+
+  testWithVmEsm(
+    'serializes the suffix, sharing percent-encoded spellings like Node',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const raw = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs?é',
+      )) as any;
+      const encoded = (await runtime.unstable_importModule(
+        FROM,
+        './url-reporter.mjs?%C3%A9',
+      )) as any;
+      expect(encoded.namespace).toBe(raw.namespace);
+      const reporterUrl = pathToFileURL(
+        path.join(ROOT_DIR, 'url-reporter.mjs'),
+      ).href;
+      expect(raw.namespace.url).toBe(`${reporterUrl}?%C3%A9`);
     },
   );
 

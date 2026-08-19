@@ -407,9 +407,12 @@ function splitQueryAndFragment(specifier: string): SplitSpecifier {
 
 // ESM registry keys are serialized URLs, matching Node's per-URL module
 // instancing: `?a`/`?a` share an instance while `?b`, `#frag` and the plain
-// form are all distinct.
+// form are all distinct. The suffix goes through URL serialization - the
+// parser percent-encodes non-ASCII and spaces, so `?é` and its `?%C3%A9`
+// spelling name one instance, exactly as in Node.
 function fileCacheKey(modulePath: string, suffix: string): string {
-  return pathToFileURL(modulePath).href + suffix;
+  const baseUrl = pathToFileURL(modulePath);
+  return suffix === '' ? baseUrl.href : new URL(suffix, baseUrl).href;
 }
 
 function makeUnknownBuiltinError(specifier: string): NodeJS.ErrnoException {
@@ -713,9 +716,11 @@ export class EsmLoader {
     registry: Map<string, JestModule>,
   ): void {
     for (const [cacheKey, entry] of scratch) {
-      if (entry.kind !== 'source') continue;
       const committed = registry.get(cacheKey);
       if (!committed || committed instanceof Promise) continue;
+      // Prelinked entries adopted from the registry (or committed eagerly,
+      // like @jest/globals synthetics) already hold the registry's module.
+      if (committed === entry.module) continue;
       if (committed.status === 'errored') throw committed.error;
       if (committed.status === 'evaluated' || committed.status === 'linked') {
         scratch.set(cacheKey, {
@@ -1062,7 +1067,7 @@ export class EsmLoader {
       }
       return canonicalCoreSpecifier(resolved);
     }
-    return pathToFileURL(resolved).href + suffix;
+    return fileCacheKey(resolved, suffix);
   }
 
   private resolveSpecifierForSyncGraph(
