@@ -21,6 +21,15 @@ export type EnvironmentContext = {
   testPath: string;
 };
 
+// `injectGlobals: false` drops the `jest` argument, which moves every
+// `sandboxInjectedGlobals` entry up one position.
+export type InjectedModuleArguments =
+  | [
+      jest: Jest,
+      ...sandboxInjectedGlobals: Array<Global.Global[keyof Global.Global]>,
+    ]
+  | [...sandboxInjectedGlobals: Array<Global.Global[keyof Global.Global]>];
+
 // Different Order than https://nodejs.org/api/modules.html#modules_the_module_wrapper , however needs to be in the form [jest-transform]ScriptTransformer accepts
 export type ModuleWrapper = (
   this: Module['exports'],
@@ -29,8 +38,7 @@ export type ModuleWrapper = (
   require: Module['require'],
   __dirname: string,
   __filename: Module['filename'],
-  jest?: Jest,
-  ...sandboxInjectedGlobals: Array<Global.Global[keyof Global.Global]>
+  ...injectedGlobals: InjectedModuleArguments
 ) => unknown;
 
 export interface JestImportMeta extends ImportMeta {
