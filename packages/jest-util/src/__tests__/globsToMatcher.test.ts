@@ -96,3 +96,32 @@ it('works like micromatch with negated extglobs', () => {
     micromatch(['tests/some-module.test.js'], globs).length > 0,
   );
 });
+
+it('works like micromatch when options are passed after the same glob was used without them', () => {
+  const globs = ['*.dotoption.js'];
+
+  expect(globsToMatcher(globs)('.hidden.dotoption.js')).toBe(
+    micromatch(['.hidden.dotoption.js'], globs, {dot: true}).length > 0,
+  );
+
+  expect(globsToMatcher(globs, {dot: false})('.hidden.dotoption.js')).toBe(
+    micromatch(['.hidden.dotoption.js'], globs, {dot: false}).length > 0,
+  );
+});
+
+it('works like micromatch when the same glob is used with different options', () => {
+  const globs = ['*.caseoption.js'];
+
+  expect(
+    globsToMatcher(globs, {nocase: true})('SOME-MODULE.CASEOPTION.JS'),
+  ).toBe(
+    micromatch(['SOME-MODULE.CASEOPTION.JS'], globs, {nocase: true}).length > 0,
+  );
+
+  expect(
+    globsToMatcher(globs, {nocase: false})('SOME-MODULE.CASEOPTION.JS'),
+  ).toBe(
+    micromatch(['SOME-MODULE.CASEOPTION.JS'], globs, {nocase: false}).length >
+      0,
+  );
+});

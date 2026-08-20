@@ -43,21 +43,31 @@ export default function globsToMatcher(
     return () => false;
   }
 
+  // The cache is keyed on the glob alone, so it can only answer for matchers
+  // that do not depend on caller supplied options.
+  const cacheable = picomatchOptions === undefined;
+
   const matchers = globs.map(glob => {
-    if (!globsToMatchersMap.has(glob)) {
-      const isMatch = picomatch(glob, {dot, ...picomatchOptions}, true);
+    const cached = cacheable ? globsToMatchersMap.get(glob) : undefined;
 
-      const matcher = {
-        isMatch,
-        // Matchers that are negated have different behavior than matchers that
-        // are not negated, so we need to store this information ahead of time.
-        negated: isMatch.state.negated || !!isMatch.state.negatedExtglob,
-      };
+    if (cached) {
+      return cached;
+    }
 
+    const isMatch = picomatch(glob, {dot, ...picomatchOptions}, true);
+
+    const matcher = {
+      isMatch,
+      // Matchers that are negated have different behavior than matchers that
+      // are not negated, so we need to store this information ahead of time.
+      negated: isMatch.state.negated || !!isMatch.state.negatedExtglob,
+    };
+
+    if (cacheable) {
       globsToMatchersMap.set(glob, matcher);
     }
 
-    return globsToMatchersMap.get(glob)!;
+    return matcher;
   });
 
   return path => {
