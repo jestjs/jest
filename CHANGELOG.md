@@ -102,6 +102,7 @@
 - `[jest-resolve]` Store the per-directory package-type lookup in the cache it reads, so it actually memoizes ([#16369](https://github.com/jestjs/jest/pull/16369))
 - `[jest-resolve, jest-runtime]` Cut repeated work on the resolution hot path: hoist the platform-extension list to construction, memoize `isCoreModule` and the options cache-key serialization, skip mapper preparation when no `moduleNameMapper` is configured, run each mapper regex once, and stop re-parsing `NODE_OPTIONS` on every default-resolver call ([#16371](https://github.com/jestjs/jest/pull/16371))
 - `[jest-runner, @jest/source-map]` Replace `source-map-support` with an implementation in `@jest/source-map` ([#16327](https://github.com/jestjs/jest/pull/16327))
+- `[jest-runtime]` Reduce per-require overhead: skip module ID resolution when no mock can apply, answer core modules before probing for a manual mock, share one `require.cache` proxy across modules, and cache empty files ([#16376](https://github.com/jestjs/jest/pull/16376))
 - `[@jest/source-map]` Deprecate `getCallsite` in favour of `SourceMapSupport#getCallsite` ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[jest-runtime]` Avoid magical `null` value in ESM loader ([#16160](https://github.com/jestjs/jest/pull/16160))
 

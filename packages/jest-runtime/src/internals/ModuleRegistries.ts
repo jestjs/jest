@@ -54,6 +54,8 @@ export class ModuleRegistries {
     NodeModule
   >();
 
+  private requireCacheProxy: NodeJS.Require['cache'] | undefined;
+
   constructor(requireEsmResult: (module: VMModule) => unknown) {
     this.requireEsmResult = requireEsmResult;
   }
@@ -260,48 +262,52 @@ export class ModuleRegistries {
     return this.wrapEsmForRequireCache(key, entry);
   }
 
-  createRequireCacheProxy(): NodeJS.Require['cache'] {
-    return new Proxy<NodeJS.Require['cache']>(Object.create(null), {
-      defineProperty: notPermittedMethod,
-      deleteProperty: notPermittedMethod,
-      get: (_target, key) => {
-        if (typeof key !== 'string') return undefined;
-        return (
-          ((this.isolation?.cjs ?? this.moduleRegistry).get(key) as
-            NodeModule | undefined) ?? this.getEsmRequireCacheEntry(key)
-        );
-      },
-      getOwnPropertyDescriptor() {
-        return {configurable: true, enumerable: true};
-      },
-      has: (_target, key) => {
-        if (typeof key !== 'string') return false;
-        return (
-          (this.isolation?.cjs ?? this.moduleRegistry).has(key) ||
-          isLiveEsm(this.getEsmEntryForRequireCache(key))
-        );
-      },
-      ownKeys: () => {
-        const keys = new Set<string>(
-          (this.isolation?.cjs ?? this.moduleRegistry).keys(),
-        );
-        for (const [key, entry] of this.isolation?.esm ??
-          this.esModuleRegistry) {
-          if (!isLiveEsm(entry)) continue;
-          if (key.startsWith('file://')) {
-            // `pathToFileURL` percent-encodes literal `?`/`#`, so their
-            // presence always means a query or fragment - an instance a
-            // path key cannot address.
-            if (key.includes('?') || key.includes('#')) continue;
-            keys.add(fileURLToPath(key));
-          } else {
-            keys.add(key);
+  getRequireCacheProxy(): NodeJS.Require['cache'] {
+    this.requireCacheProxy ??= new Proxy<NodeJS.Require['cache']>(
+      Object.create(null),
+      {
+        defineProperty: notPermittedMethod,
+        deleteProperty: notPermittedMethod,
+        get: (_target, key) => {
+          if (typeof key !== 'string') return undefined;
+          return (
+            ((this.isolation?.cjs ?? this.moduleRegistry).get(key) as
+              NodeModule | undefined) ?? this.getEsmRequireCacheEntry(key)
+          );
+        },
+        getOwnPropertyDescriptor() {
+          return {configurable: true, enumerable: true};
+        },
+        has: (_target, key) => {
+          if (typeof key !== 'string') return false;
+          return (
+            (this.isolation?.cjs ?? this.moduleRegistry).has(key) ||
+            isLiveEsm(this.getEsmEntryForRequireCache(key))
+          );
+        },
+        ownKeys: () => {
+          const keys = new Set<string>(
+            (this.isolation?.cjs ?? this.moduleRegistry).keys(),
+          );
+          for (const [key, entry] of this.isolation?.esm ??
+            this.esModuleRegistry) {
+            if (!isLiveEsm(entry)) continue;
+            if (key.startsWith('file://')) {
+              // `pathToFileURL` percent-encodes literal `?`/`#`, so their
+              // presence always means a query or fragment - an instance a
+              // path key cannot address.
+              if (key.includes('?') || key.includes('#')) continue;
+              keys.add(fileURLToPath(key));
+            } else {
+              keys.add(key);
+            }
           }
-        }
-        return [...keys];
+          return [...keys];
+        },
+        set: notPermittedMethod,
       },
-      set: notPermittedMethod,
-    });
+    );
+    return this.requireCacheProxy;
   }
 
   clearForReset(): void {

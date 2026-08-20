@@ -69,28 +69,31 @@ export class CjsLoader {
     options?: TransformOptions,
     isRequireActual = false,
   ): T {
+    if (moduleName && this.resolution.isCoreModule(moduleName)) {
+      return this.coreModule.require(moduleName) as T;
+    }
+
     const isInternal = options?.isInternalModule ?? false;
-    const moduleID = this.mockState.getCjsModuleId(from, moduleName);
     let modulePath: string | undefined;
 
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
-    const moduleResource = moduleName && this.resolution.getModule(moduleName);
-    const manualMock =
-      moduleName && this.resolution.getCjsMockModule(from, moduleName);
     if (
-      !options?.isInternalModule &&
+      moduleName &&
+      !isInternal &&
       !isRequireActual &&
-      !moduleResource &&
-      manualMock &&
-      manualMock !== this.executor.getCurrentlyExecutingManualMock() &&
-      !this.mockState.isExplicitlyUnmocked(moduleID)
+      !this.resolution.getModule(moduleName)
     ) {
-      modulePath = manualMock;
-    }
-
-    if (moduleName && this.resolution.isCoreModule(moduleName)) {
-      return this.coreModule.require(moduleName) as T;
+      const manualMock = this.resolution.getCjsMockModule(from, moduleName);
+      if (
+        manualMock &&
+        manualMock !== this.executor.getCurrentlyExecutingManualMock() &&
+        !this.mockState.isExplicitlyUnmocked(
+          this.mockState.getCjsModuleId(from, moduleName),
+        )
+      ) {
+        modulePath = manualMock;
+      }
     }
 
     if (!modulePath) {

@@ -17,7 +17,7 @@ export class FileCache {
 
   readFile(filename: string): string {
     let source = this.strings.get(filename);
-    if (!source) {
+    if (source === undefined) {
       source = this.readFileBuffer(filename).toString();
       this.strings.set(filename, source);
     }

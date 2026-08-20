@@ -98,6 +98,8 @@ describe('MockState', () => {
     test('shouldMockCjs computes moduleID exactly once and returns it', () => {
       const {resolution, stub} = makeResolution();
       const mockState = new MockState(resolution, config({automock: false}));
+      mockState.unmockCjs('/from', './unrelated');
+      stub.getCjsModuleId.mockClear();
       const result = mockState.shouldMockCjs('/from', './a');
       expect(stub.getCjsModuleId).toHaveBeenCalledTimes(1);
       // The returned moduleID is what callers would otherwise have to recompute
@@ -109,6 +111,8 @@ describe('MockState', () => {
     test('shouldMockEsmSync computes moduleID exactly once and returns it', () => {
       const {resolution, stub} = makeResolution();
       const mockState = new MockState(resolution, config({automock: false}));
+      mockState.unmockEsm('/from', './unrelated');
+      stub.getEsmModuleId.mockClear();
       const result = mockState.shouldMockEsmSync('/from', './a');
       expect(stub.getEsmModuleId).toHaveBeenCalledTimes(1);
       expect(result.moduleID).toBe('esm:/from:./a');
@@ -177,9 +181,51 @@ describe('MockState', () => {
     test('shouldMockEsmAsync computes moduleID exactly once and returns it', async () => {
       const {resolution, stub} = makeResolution();
       const mockState = new MockState(resolution, config({automock: false}));
+      mockState.unmockEsm('/from', './unrelated');
+      stub.getEsmModuleIdAsync.mockClear();
       const result = await mockState.shouldMockEsmAsync('/from', './a');
       expect(stub.getEsmModuleIdAsync).toHaveBeenCalledTimes(1);
       expect(result.moduleID).toBe('esm:/from:./a');
+    });
+
+    test('skips module ID resolution when no mock can apply (CJS)', () => {
+      const {resolution, stub} = makeResolution();
+      const mockState = new MockState(resolution, config({automock: false}));
+      expect(mockState.shouldMockCjs('/from', './a')).toEqual({
+        moduleID: '',
+        shouldMock: false,
+      });
+      expect(stub.getCjsModuleId).not.toHaveBeenCalled();
+    });
+
+    test('skips module ID resolution when no mock can apply (ESM sync)', () => {
+      const {resolution, stub} = makeResolution();
+      const mockState = new MockState(resolution, config({automock: false}));
+      expect(mockState.shouldMockEsmSync('/from', './a')).toEqual({
+        moduleID: '',
+        shouldMock: false,
+      });
+      expect(stub.getEsmModuleId).not.toHaveBeenCalled();
+    });
+
+    test('skips module ID resolution when no mock can apply (ESM async)', async () => {
+      const {resolution, stub} = makeResolution();
+      const mockState = new MockState(resolution, config({automock: false}));
+      await expect(
+        mockState.shouldMockEsmAsync('/from', './a'),
+      ).resolves.toEqual({moduleID: '', shouldMock: false});
+      expect(stub.getEsmModuleIdAsync).not.toHaveBeenCalled();
+    });
+
+    test('resumes computing module IDs once a mock is registered', () => {
+      const {resolution, stub} = makeResolution();
+      const mockState = new MockState(resolution, config({automock: false}));
+      mockState.markExplicitCjsMock('/from', './a');
+      stub.getCjsModuleId.mockClear();
+      expect(mockState.shouldMockCjs('/from', './a')).toEqual({
+        moduleID: 'cjs:/from:./a',
+        shouldMock: true,
+      });
     });
   });
 

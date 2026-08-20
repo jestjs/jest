@@ -213,6 +213,13 @@ describe('ModuleRegistries', () => {
   });
 
   describe('require.cache Proxy', () => {
+    test('hands out one proxy for every module', () => {
+      const registries = new ModuleRegistries(module => module.namespace);
+      expect(registries.getRequireCacheProxy()).toBe(
+        registries.getRequireCacheProxy(),
+      );
+    });
+
     test('exposes CJS modules and live ESM entries; hides Promise / unlinked', () => {
       const registries = new ModuleRegistries(module => module.namespace);
       const cjs = fakeCjs('/cjs.js');
@@ -227,7 +234,7 @@ describe('ModuleRegistries', () => {
       const pending = Promise.resolve(fakeEsm()) as unknown as JestModule;
       registries.setEsm(PENDING_KEY, pending);
 
-      const cache = registries.createRequireCacheProxy();
+      const cache = registries.getRequireCacheProxy();
 
       expect(cache['/cjs.js']).toBe(cjs);
       expect('/cjs.js' in cache).toBe(true);
@@ -252,7 +259,7 @@ describe('ModuleRegistries', () => {
 
     test('mutators silently no-op rather than throw', () => {
       const registries = new ModuleRegistries(module => module.namespace);
-      const cache = registries.createRequireCacheProxy();
+      const cache = registries.getRequireCacheProxy();
       // @ts-expect-error: write-through is intentionally not supported
       cache['/x.js'] = fakeCjs('/x.js');
       expect(cache['/x.js']).toBeUndefined();
@@ -264,7 +271,7 @@ describe('ModuleRegistries', () => {
       registries.setEsm(`${LIVE_KEY}?q=1`, fakeEsm('evaluated') as JestModule);
       registries.setEsm(`${LIVE_KEY}#frag`, fakeEsm('evaluated') as JestModule);
 
-      const cache = registries.createRequireCacheProxy();
+      const cache = registries.getRequireCacheProxy();
       expect(Object.keys(cache)).toEqual([]);
       expect(cache['/live.mjs']).toBeUndefined();
       expect('/live.mjs' in cache).toBe(false);
@@ -275,7 +282,7 @@ describe('ModuleRegistries', () => {
       const registries = new ModuleRegistries(module => module.namespace);
       registries.setEsm(LIVE_KEY, fakeEsm('evaluated') as JestModule);
 
-      const cache = registries.createRequireCacheProxy();
+      const cache = registries.getRequireCacheProxy();
       expect(cache['/live.mjs']).toBeDefined();
       expect(cache[LIVE_KEY]).toBeUndefined();
       expect(LIVE_KEY in cache).toBe(false);

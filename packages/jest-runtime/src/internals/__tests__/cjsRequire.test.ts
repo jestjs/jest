@@ -49,7 +49,7 @@ function makeResolution(
 
 function makeRegistries(): ModuleRegistries {
   return {
-    createRequireCacheProxy: jest.fn(() => ({})),
+    getRequireCacheProxy: jest.fn(() => ({})),
   } as unknown as ModuleRegistries;
 }
 

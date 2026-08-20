@@ -36,6 +36,14 @@ it('mocks modules by default when using automocking', async () => {
   expect(exports.setModuleStateValue._isMockFunction).toBe(true);
 });
 
+it('maps a core module specifier through moduleNameMapper', async () => {
+  const runtime = await createRuntime(__filename, {
+    moduleNameMapper: {...moduleNameMapper, '^fs$': '<rootDir>/RegularModule'},
+  });
+  const exports = runtime.requireModule(runtime.__mockRootPath, 'fs');
+  expect(exports.isRealModule).toBe(true);
+});
+
 it("doesn't mock modules when explicitly unmocked when using automocking", async () => {
   const runtime = await createRuntime(__filename, {
     automock: true,
