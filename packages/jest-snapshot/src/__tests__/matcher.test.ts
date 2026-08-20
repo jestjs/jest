@@ -5,11 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {type Context, toMatchSnapshot} from '../';
+import {type Context, toMatchInlineSnapshot, toMatchSnapshot} from '../';
 
-test('returns matcher name, expected and actual values', () => {
+test('returns matcher name, expected, actual and snapshot path values', () => {
   const testIdentity = {};
-  const match = jest.fn((_options: unknown) => ({actual: 'a', expected: 'b'}));
+  const match = jest.fn((_options: unknown) => ({
+    actual: 'a',
+    expected: 'b',
+    snapshotPath: '/path/to/test.snap',
+  }));
   const mockedContext = {
     currentTestIdentity: () => testIdentity,
     snapshotState: {
@@ -26,12 +30,13 @@ test('returns matcher name, expected and actual values', () => {
       actual: 'a',
       expected: 'b',
       name: 'toMatchSnapshot',
+      snapshotPath: '/path/to/test.snap',
     }),
   );
   expect(match).toHaveBeenCalledWith(expect.objectContaining({testIdentity}));
 });
 
-test('passes the test identity to failed property snapshots', () => {
+test('returns the snapshot path only for external failed property snapshots', () => {
   const testIdentity = {};
   const fail = jest.fn(
     (
@@ -45,13 +50,32 @@ test('passes the test identity to failed property snapshots', () => {
     currentTestIdentity: () => testIdentity,
     currentTestName: 'test name',
     equals: () => false,
-    snapshotState: {expand: false, fail},
+    snapshotState: {
+      expand: false,
+      fail,
+      snapshotPath: '/path/to/test.snap',
+    },
     utils: {iterableEquality: jest.fn(), subsetEquality: jest.fn()},
   } as unknown as Context;
   const received = {value: 1};
 
-  toMatchSnapshot.call(mockedContext, received, {value: 2});
+  const matcherResult = toMatchSnapshot.call(mockedContext, received, {
+    value: 2,
+  });
+  const inlineMatcherResult = toMatchInlineSnapshot.call(
+    mockedContext,
+    received,
+    {value: 2},
+  );
 
+  expect(matcherResult).toEqual(
+    expect.objectContaining({
+      name: 'toMatchSnapshot',
+      pass: false,
+      snapshotPath: '/path/to/test.snap',
+    }),
+  );
+  expect(inlineMatcherResult).not.toHaveProperty('snapshotPath');
   expect(fail).toHaveBeenCalledWith(
     'test name',
     received,

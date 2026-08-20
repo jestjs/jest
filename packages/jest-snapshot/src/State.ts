@@ -48,6 +48,7 @@ type SnapshotReturnOptions = {
   readonly expected?: string;
   readonly key: string;
   readonly pass: boolean;
+  readonly snapshotPath?: string;
 };
 
 type SaveStatus = {
@@ -125,6 +126,11 @@ export default class SnapshotState {
     this.updated = 0;
     this.snapshotFormat = options.snapshotFormat;
     this._rootDir = options.rootDir;
+  }
+
+  /** @internal */
+  get snapshotPath(): string {
+    return this._snapshotPath;
   }
 
   markSnapshotsAsCheckedForTest(testName: string): void {
@@ -392,7 +398,7 @@ export default class SnapshotState {
         // Retain current snapshot values.
         this._addSnapshot(key, expected, {error, isInline, testIdentity});
       }
-      return {
+      const result = {
         actual: removeExtraLineBreaks(receivedSerialized),
         count,
         expected:
@@ -400,6 +406,10 @@ export default class SnapshotState {
         key,
         pass,
       };
+
+      return !pass && !isInline
+        ? {...result, snapshotPath: this._snapshotPath}
+        : result;
     }
 
     // These are the conditions on when to write snapshots:
@@ -457,7 +467,7 @@ export default class SnapshotState {
         };
       } else {
         this._incrementSnapshotCount('unmatched', testIdentity);
-        return {
+        const result = {
           actual: removeExtraLineBreaks(receivedSerialized),
           count,
           expected:
@@ -467,6 +477,10 @@ export default class SnapshotState {
           key,
           pass: false,
         };
+
+        return isInline
+          ? result
+          : {...result, snapshotPath: this._snapshotPath};
       }
     }
   }
