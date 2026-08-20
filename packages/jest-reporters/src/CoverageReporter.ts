@@ -252,8 +252,10 @@ export default class CoverageReporter extends BaseReporter {
     //
     // The check is skipped rather than adjusted because there is no adjustment
     // to make: the number a `global` threshold is about is the whole project's
-    // coverage, and no single shard has it. Enforcing it belongs after the
-    // shards' coverage is merged (#12751).
+    // coverage, and no single shard has it. Jest has no step that merges the
+    // shards' coverage or checks a threshold against a report it did not just
+    // produce, so enforcing a whole-project number happens outside Jest
+    // (#12751).
     //
     // `--shard=1/1` is a complete run, so it keeps its thresholds.
     if (coverageThreshold && shard && shard.shardCount > 1) {
@@ -261,8 +263,9 @@ export default class CoverageReporter extends BaseReporter {
         WARN_COLOR(
           'Jest: Coverage thresholds are not checked when running a shard, ' +
             `as shard ${shard.shardIndex}/${shard.shardCount} only covers ` +
-            'part of the project. Merge the coverage reports from all shards ' +
-            'and check the thresholds against the merged report.',
+            'part of the project. Jest cannot merge coverage across shards, ' +
+            'so enforce a whole-project threshold outside Jest, against the ' +
+            'merged coverage from every shard.',
         ),
       );
       return;
