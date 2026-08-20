@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[expect, jest-circus, jest-test-result, jest-types]` expose failed matcher metadata ([#16380](https://github.com/jestjs/jest/pull/16380))
+
 ### Fixes
 
 ### Chore & Maintenance

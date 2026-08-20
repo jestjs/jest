@@ -1576,7 +1576,7 @@ test('is divisible by external value', async () => {
 
 #### Custom Matchers API
 
-Matchers should return an object (or a Promise of an object) with two keys. `pass` indicates whether there was a match or not, and `message` provides a function with no arguments that returns an error message in case of failure. Thus, when `pass` is false, `message` should return the error message for when `expect(x).yourMatcher()` fails. And when `pass` is true, `message` should return the error message for when `expect(x).not.yourMatcher()` fails.
+Matchers should return an object (or a Promise of an object) with two required keys. `pass` indicates whether there was a match or not, and `message` provides a function with no arguments that returns an error message in case of failure. Thus, when `pass` is false, `message` should return the error message for when `expect(x).yourMatcher()` fails. And when `pass` is true, `message` should return the error message for when `expect(x).not.yourMatcher()` fails.
 
 Matchers are called with the argument passed to `expect(x)` followed by the arguments passed to `.yourMatcher(y, z)`:
 
@@ -1590,6 +1590,48 @@ expect.extend({
   },
 });
 ```
+
+##### Custom matcher metadata
+
+Matchers can also return an optional `metadata` object containing JSON-compatible data for custom reporters, such as the path to a generated image diff:
+
+```js
+expect.extend({
+  toMatchImage(received, expected) {
+    const {matches, diffPath} = compareImages(received, expected);
+    return {
+      pass: matches,
+      message: () => 'Images differ',
+      metadata: {diffPath},
+    };
+  },
+});
+```
+
+With the default `jest-circus` runner, failed assertions expose a `matcherResults` array on each test result. Each entry contains `message` (a string), `pass` (the original matcher value), and optional `metadata`. A failing `.not` assertion therefore has `pass: true`. Multiple failures appear in failure order; `matcherResults` is absent when no matcher failures were recorded. Successful assertions do not contribute entries.
+
+A [custom reporter](Configuration.md#reporters-arraymodulename--modulename-options) can read the data in `onTestResult`:
+
+```js title="image-reporter.js"
+class ImageReporter {
+  onTestResult(_test, result) {
+    for (const testCase of result.testResults) {
+      for (const matcher of testCase.matcherResults ?? []) {
+        const diffPath = matcher.metadata?.diffPath;
+        if (typeof diffPath === 'string') {
+          console.log(`${testCase.fullName}: ${diffPath}`);
+        }
+      }
+    }
+  }
+}
+
+module.exports = ImageReporter;
+```
+
+The same array is available on the test-case result passed to `onTestCaseResult` and in `--json` output under `testResults[].assertionResults[].matcherResults`. The legacy `jest-jasmine2` runner does not populate this array.
+
+Jest copies metadata when the assertion fails using JSON serialization rules, so subsequent mutations do not change the reported data. Use objects containing strings, booleans, finite numbers, `null`, arrays, and nested objects. Functions, symbols, and `undefined` object properties are omitted; unsupported array entries and non-finite numbers become `null`. `toJSON` methods are honored. If serialization throws (for example, for circular references or `BigInt`), or the result is not an object record, Jest omits the entire metadata payload and preserves the assertion failure. Raw matcher fields such as `actual` and `expected` are not copied into `matcherResults`.
 
 These helper functions and properties can be found on `this` inside a custom matcher:
 

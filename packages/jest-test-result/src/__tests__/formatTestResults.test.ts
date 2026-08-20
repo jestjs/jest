@@ -32,6 +32,41 @@ describe('formatTestResults', () => {
     );
   });
 
+  it('includes portable matcher results in formatted output', () => {
+    const assertion: AssertionResult = {
+      ancestorTitles: ['TestedModule#aMethod'],
+      failureDetails: [],
+      failureMessages: ['matcher failed'],
+      fullName: 'TestedModule#aMethod reports matcher metadata',
+      matcherResults: [
+        {
+          message: 'matcher failed',
+          metadata: {diffPath: 'diff.png'},
+          pass: false,
+        },
+      ],
+      numPassingAsserts: 0,
+      status: 'failed',
+      title: 'reports matcher metadata',
+    };
+    const results = {
+      testResults: [
+        {
+          numFailingTests: 1,
+          numPendingTests: 0,
+          perfStats: {end: 2, runtime: 1, slow: false, start: 1},
+          testResults: [assertion],
+        },
+      ],
+    } as AggregatedResult;
+
+    const formattedResults = formatTestResults(results, undefined, null);
+    expect(
+      JSON.parse(JSON.stringify(formattedResults)).testResults[0]
+        .assertionResults[0],
+    ).toEqual(assertion);
+  });
+
   it('should mark result status to skipped', () => {
     const skippedAssertion = {
       fullName: 'Pending test',
