@@ -7,9 +7,13 @@
 
 import {type Context, toMatchSnapshot} from '../';
 
-test('returns matcher name, expected and actual values', () => {
+test('returns matcher name, expected, actual and snapshot path values', () => {
   const testIdentity = {};
-  const match = jest.fn((_options: unknown) => ({actual: 'a', expected: 'b'}));
+  const match = jest.fn((_options: unknown) => ({
+    actual: 'a',
+    expected: 'b',
+    snapshotPath: '/path/to/test.snap',
+  }));
   const mockedContext = {
     currentTestIdentity: () => testIdentity,
     snapshotState: {
@@ -26,6 +30,7 @@ test('returns matcher name, expected and actual values', () => {
       actual: 'a',
       expected: 'b',
       name: 'toMatchSnapshot',
+      snapshotPath: '/path/to/test.snap',
     }),
   );
   expect(match).toHaveBeenCalledWith(expect.objectContaining({testIdentity}));

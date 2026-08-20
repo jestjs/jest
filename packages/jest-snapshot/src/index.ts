@@ -378,7 +378,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     testIdentity,
     testName: fullTestName,
   });
-  const {actual, count, expected, pass} = result;
+  const {actual, count, expected, pass, snapshotPath} = result;
 
   if (pass) {
     return {message: () => '', pass: true};
@@ -415,13 +415,17 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
   // Passing the actual and expected objects so that a custom reporter
   // could access them, for example in order to display a custom visual diff,
   // or create a different error message
-  return {
+  const matcherResult = {
     actual,
     expected,
     message,
     name: matcherName,
     pass: false,
   };
+
+  return snapshotPath === undefined
+    ? matcherResult
+    : {...matcherResult, snapshotPath};
 };
 
 export const toThrowErrorMatchingSnapshot: MatcherFunctionWithContext<

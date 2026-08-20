@@ -13,6 +13,7 @@
 - `[jest-resolve]` Honor Node's `--preserve-symlinks` / `NODE_PRESERVE_SYMLINKS` in the default resolver by passing `symlinks: false` to `unrs-resolver` ([#16260](https://github.com/jestjs/jest/pull/16260))
 - `[jest-runtime]` Set `import.meta.main` to `true` in the test file and `false` in every module it loads, matching Node 24+ ([#16367](https://github.com/jestjs/jest/pull/16367))
 - `[jest-runtime]` Resolve the `module-sync` export condition, so a package that exposes its ESM entry point for `require()` loads the same file Node would ([#16336](https://github.com/jestjs/jest/pull/16336))
+- `[jest-snapshot]` Add external snapshot paths to custom reporter failure details ([#16374](https://github.com/jestjs/jest/pull/16374))
 
 ### Fixes
 
