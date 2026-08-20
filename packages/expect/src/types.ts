@@ -19,6 +19,7 @@ import type {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
 export type SyncExpectationResult = {
   pass: boolean;
   message(): string;
+  [key: string]: unknown;
 };
 
 export type AsyncExpectationResult = Promise<SyncExpectationResult>;
