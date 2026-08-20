@@ -56,10 +56,10 @@ describe('ModuleExecutor', () => {
     });
   }
 
-  describe('constructInjectedModuleParameters', () => {
+  describe('injectedModuleParameters', () => {
     test('default set + jest', () => {
       const executor = makeExecutor();
-      expect(executor.constructInjectedModuleParameters()).toEqual([
+      expect(executor.injectedModuleParameters).toEqual([
         'module',
         'exports',
         'require',
@@ -76,9 +76,7 @@ describe('ModuleExecutor', () => {
           sandboxInjectedGlobals: [],
         }),
       });
-      expect(executor.constructInjectedModuleParameters()).not.toContain(
-        'jest',
-      );
+      expect(executor.injectedModuleParameters).not.toContain('jest');
     });
 
     test('appends sandboxInjectedGlobals', () => {
@@ -88,7 +86,7 @@ describe('ModuleExecutor', () => {
           sandboxInjectedGlobals: ['Math', 'Reflect'],
         }),
       });
-      expect(executor.constructInjectedModuleParameters()).toEqual([
+      expect(executor.injectedModuleParameters).toEqual([
         'module',
         'exports',
         'require',
