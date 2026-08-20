@@ -11,7 +11,7 @@ import {
   compileFunction,
 } from 'node:vm';
 import type {
-  Jest,
+  InjectedModuleArguments,
   JestEnvironment,
   Module,
   ModuleWrapper,
@@ -132,11 +132,8 @@ export class ModuleExecutor {
         return 'env-disposed';
       }
 
-      const jestObject = this.jestGlobals.jestObjectFor(filename);
-
-      const lastArgs: [Jest | undefined, ...Array<Global.Global>] = [
-        this.config.injectGlobals ? jestObject : undefined,
-        ...this.config.sandboxInjectedGlobals.map<Global.Global>(
+      const sandboxGlobals =
+        this.config.sandboxInjectedGlobals.map<Global.Global>(
           globalVariable => {
             if (this.environment.global[globalVariable]) {
               return this.environment.global[globalVariable];
@@ -146,8 +143,14 @@ export class ModuleExecutor {
               `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
             );
           },
-        ),
-      ];
+        );
+
+      // Positional, so this has to line up with
+      // `constructInjectedModuleParameters` name for name.
+      const injectedModuleArguments: InjectedModuleArguments = this.config
+        .injectGlobals
+        ? [this.jestGlobals.jestObjectFor(filename), ...sandboxGlobals]
+        : sandboxGlobals;
 
       if (!this.testMainModule.current && filename === this.testPath) {
         this.testMainModule.current = module;
@@ -166,8 +169,7 @@ export class ModuleExecutor {
           module.require, // require implementation
           module.path, // __dirname
           module.filename, // __filename
-          lastArgs[0],
-          ...lastArgs.slice(1).filter(isNonNullable),
+          ...injectedModuleArguments,
         );
       } catch (error: any) {
         this.handleExecutionError(error, module);
