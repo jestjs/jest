@@ -20,6 +20,8 @@ const transitiveCacheKey = (from: string, moduleID: string) =>
 
 export type MockDecision = {shouldMock: boolean; moduleID: string};
 
+const NO_MOCK: MockDecision = Object.freeze({moduleID: '', shouldMock: false});
+
 export class MockState {
   private readonly resolution: Resolution;
   private readonly unmockList: RegExp | undefined;
@@ -61,6 +63,10 @@ export class MockState {
   }
 
   shouldMockCjs(from: string, moduleName: string): MockDecision {
+    if (this.noMockCanApply(this.explicitCjsMock)) {
+      return NO_MOCK;
+    }
+
     const moduleID = this.resolution.getCjsModuleId(
       this.virtualCjsMocks,
       from,
@@ -73,6 +79,10 @@ export class MockState {
   }
 
   shouldMockEsmSync(from: string, moduleName: string): MockDecision {
+    if (this.noMockCanApply(this.explicitEsmMock)) {
+      return NO_MOCK;
+    }
+
     const moduleID = this.resolution.getEsmModuleId(
       this.virtualEsmMocks,
       from,
@@ -88,6 +98,10 @@ export class MockState {
     from: string,
     moduleName: string,
   ): Promise<MockDecision> {
+    if (this.noMockCanApply(this.explicitEsmMock)) {
+      return NO_MOCK;
+    }
+
     const moduleID = await this.resolution.getEsmModuleIdAsync(
       this.virtualEsmMocks,
       from,
@@ -97,6 +111,14 @@ export class MockState {
       moduleID,
       shouldMock: await this.decideEsmAsync(from, moduleName, moduleID),
     };
+  }
+
+  // Deriving a module ID resolves the specifier and runs every
+  // `moduleNameMapper` pattern, so the decision skips it when neither an
+  // explicit mock nor automocking can make the answer anything but false.
+  // Callers read `moduleID` only when `shouldMock` is true.
+  private noMockCanApply(explicitMocks: Map<string, boolean>): boolean {
+    return !this.shouldAutoMock && explicitMocks.size === 0;
   }
 
   private async decideEsmAsync(
