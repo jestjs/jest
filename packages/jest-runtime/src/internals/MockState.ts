@@ -129,12 +129,12 @@ export class MockState {
     const explicit = this.explicitEsmMock.get(moduleID);
     if (explicit !== undefined) return explicit;
 
+    if (!this.shouldAutoMock || this.resolution.isCoreModule(moduleName)) {
+      return false;
+    }
+
     const key = transitiveCacheKey(from, moduleID);
-    if (
-      !this.shouldAutoMock ||
-      this.resolution.isCoreModule(moduleName) ||
-      this.shouldUnmockTransitiveDepsCache.get(key)
-    ) {
+    if (this.shouldUnmockTransitiveDepsCache.get(key)) {
       return false;
     }
 
@@ -186,12 +186,12 @@ export class MockState {
     const explicit = explicitMap.get(moduleID);
     if (explicit !== undefined) return explicit;
 
+    if (!this.shouldAutoMock || this.resolution.isCoreModule(moduleName)) {
+      return false;
+    }
+
     const key = transitiveCacheKey(from, moduleID);
-    if (
-      !this.shouldAutoMock ||
-      this.resolution.isCoreModule(moduleName) ||
-      this.shouldUnmockTransitiveDepsCache.get(key)
-    ) {
+    if (this.shouldUnmockTransitiveDepsCache.get(key)) {
       return false;
     }
 
