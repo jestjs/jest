@@ -1172,7 +1172,12 @@ export class EsmLoader {
     mode: SyncEsmMode,
   ): {cacheKey: string} | LoadAsync {
     const existing = this.registries.getModuleMock(moduleID);
-    if (existing instanceof Promise) return LOAD_ASYNC;
+    if (existing instanceof Promise) {
+      if (mode === 'sync-required') {
+        throw makeRequireAsyncError(moduleName, 'mock factory is async');
+      }
+      return LOAD_ASYNC;
+    }
     if (existing) {
       if (existing.status === 'errored') throw existing.error;
 
@@ -1196,6 +1201,21 @@ export class EsmLoader {
 
     const result = factory();
     if (isPromise(result)) {
+      // The factory has already run - discarding the promise would invoke it
+      // a second time on the legacy retry and turn a rejection into an
+      // unhandled rejection that kills the worker. Register the in-flight
+      // module instead so the retry (or a later import) adopts it.
+      const pending = Promise.resolve(result).then(exports =>
+        evaluateSyntheticModule(
+          syntheticFromExports(
+            moduleName,
+            context,
+            exports as Record<string, unknown>,
+          ),
+        ),
+      );
+      pending.catch(noop);
+      this.registries.setModuleMock(moduleID, pending);
       if (mode === 'sync-required') {
         throw makeRequireAsyncError(moduleName, 'mock factory is async');
       }

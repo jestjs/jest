@@ -541,6 +541,37 @@ describe('Runtime sync ESM graph - require(esm)', () => {
   );
 
   testWithSyncEsm(
+    'invokes an async mock factory once across sync bail and async retry',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      let factoryCalls = 0;
+      runtime.setModuleMock(FROM, './mock-target.mjs', async () => {
+        factoryCalls++;
+        return {greeting: 'mocked-async'};
+      });
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-mock-target.mjs',
+      )) as any;
+      expect(m.namespace.greeting).toBe('mocked-async');
+      expect(factoryCalls).toBe(1);
+    },
+  );
+
+  testWithSyncEsm(
+    'a rejecting async mock factory rejects the import',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      runtime.setModuleMock(FROM, './mock-target.mjs', async () => {
+        throw new Error('factory failed');
+      });
+      await expect(
+        runtime.unstable_importModule(FROM, './import-mock-target.mjs'),
+      ).rejects.toThrow('factory failed');
+    },
+  );
+
+  testWithSyncEsm(
     'honors jest.unstable_mockModule for transitive deps',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
