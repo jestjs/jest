@@ -40,6 +40,9 @@ type Stubs = {
   coreModule: jest.Mocked<CoreModuleProvider>;
   jestGlobals: jest.Mocked<JestGlobals>;
   shouldLoadAsEsm: jest.MockedFunction<(modulePath: string) => boolean>;
+  requireModule: jest.MockedFunction<
+    (from: string, moduleName: string) => unknown
+  >;
   requireModuleOrMock: jest.MockedFunction<
     (from: string, moduleName: string) => unknown
   >;
@@ -82,6 +85,7 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
       getModuleMock: jest.fn(),
       setModuleMock: jest.fn(),
     } as unknown as jest.Mocked<ModuleRegistries>,
+    requireModule: jest.fn() as any,
     requireModuleOrMock: jest.fn() as any,
     resolution: {
       canResolveSync: jest.fn(() => true),
@@ -106,6 +110,7 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
     jestGlobals: stubs.jestGlobals,
     mockState: stubs.mockState,
     registries: stubs.registries,
+    requireModule: stubs.requireModule,
     requireModuleOrMock: stubs.requireModuleOrMock,
     resolution: stubs.resolution,
     shouldLoadAsEsm: stubs.shouldLoadAsEsm,
@@ -929,6 +934,7 @@ describe('validateImportAttributes', () => {
           jestGlobals: stubs.jestGlobals,
           mockState: stubs.mockState,
           registries: stubs.registries,
+          requireModule: stubs.requireModule,
           requireModuleOrMock: stubs.requireModuleOrMock,
           resolution: stubs.resolution,
           shouldLoadAsEsm: stubs.shouldLoadAsEsm,

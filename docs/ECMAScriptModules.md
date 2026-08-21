@@ -81,6 +81,8 @@ Since ESM evaluates static `import` statements before looking at the code, the h
 
 ESM mocking is supported through `jest.unstable_mockModule`. As the name suggests, this API is still work in progress, please follow [this issue](https://github.com/jestjs/jest/issues/10025) for updates.
 
+On Node 24.9+, [automocking](Configuration.md#automock-boolean) and manual `__mocks__` files also apply to ESM: an automock is generated from the real module's namespace, and a sibling `__mocks__` file replaces it, for static imports, dynamic `import()` and `require()` alike.
+
 The usage of `jest.unstable_mockModule` is essentially the same as `jest.mock` with two differences: the factory function is required and it can be sync or async:
 
 ```js

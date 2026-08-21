@@ -451,6 +451,7 @@ export interface EsmLoaderOptions {
   coreModule: CoreModuleProvider;
   jestGlobals: JestGlobals;
   shouldLoadAsEsm: (modulePath: string) => boolean;
+  requireModule: (from: string, moduleName: string) => unknown;
   requireModuleOrMock: (from: string, moduleName: string) => unknown;
   testState: TestState;
   testPath: string;
@@ -467,6 +468,7 @@ export class EsmLoader {
   private readonly coreModule: CoreModuleProvider;
   private readonly jestGlobals: JestGlobals;
   private readonly shouldLoadAsEsm: (modulePath: string) => boolean;
+  private readonly requireModule: (from: string, moduleName: string) => unknown;
   private readonly requireModuleOrMock: (
     from: string,
     moduleName: string,
@@ -502,6 +504,7 @@ export class EsmLoader {
     this.coreModule = options.coreModule;
     this.jestGlobals = options.jestGlobals;
     this.shouldLoadAsEsm = options.shouldLoadAsEsm;
+    this.requireModule = options.requireModule;
     this.requireModuleOrMock = options.requireModuleOrMock;
     this.testState = options.testState;
     this.testPath = options.testPath;
@@ -538,7 +541,11 @@ export class EsmLoader {
       );
       if (shouldMock) {
         return this.requireResultFromModule(
-          this.requireMockedEsmModule(modulePath, moduleID),
+          this.requireMockedEsmModule(
+            requiredFrom ?? modulePath,
+            modulePath,
+            moduleID,
+          ),
         ) as T;
       }
     }
@@ -589,11 +596,13 @@ export class EsmLoader {
   // reuse and factory invocation; a fresh synthetic arrives `'linked'`
   // (evaluation normally belongs to the walk's cascade), so evaluate it here.
   private requireMockedEsmModule(
+    from: string,
     modulePath: string,
     moduleID: string,
   ): ESModule {
     const scratch = new Map<string, ScratchEntry>();
     const mocked = this.importMockSync(
+      from,
       modulePath,
       moduleID,
       this.getContext(),
@@ -1140,6 +1149,7 @@ export class EsmLoader {
     );
     if (shouldMock) {
       const mocked = this.importMockSync(
+        referencingIdentifier,
         specifierPath,
         moduleID,
         context,
@@ -1229,6 +1239,7 @@ export class EsmLoader {
   }
 
   private importMockSync(
+    from: string,
     moduleName: string,
     moduleID: string,
     context: VMContext,
@@ -1256,12 +1267,19 @@ export class EsmLoader {
     }
 
     const factory = this.mockState.getEsmFactory(moduleID);
-    // `shouldMockEsmSync` said this spec is mocked but no factory was
-    // registered.
-    invariant(
-      factory !== undefined,
-      'Attempting to import a mock without a factory',
-    );
+    // No registered factory means the decision came from automocking (or a
+    // manual `__mocks__` file found for an unresolvable name) - the ESM
+    // counterpart of `Runtime._requireMockWithId`'s factory-less branches.
+    if (factory === undefined) {
+      return this.importGeneratedMockSync(
+        from,
+        moduleName,
+        moduleID,
+        context,
+        scratch,
+        mode,
+      );
+    }
 
     const result = factory();
     if (isPromise(result)) {
@@ -1298,6 +1316,128 @@ export class EsmLoader {
       module: synth,
     });
     return {cacheKey: moduleID};
+  }
+
+  private importGeneratedMockSync(
+    from: string,
+    moduleName: string,
+    moduleID: string,
+    context: VMContext,
+    scratch: Map<string, ScratchEntry>,
+    mode: SyncEsmMode,
+  ): {cacheKey: string} | LoadAsync {
+    const manualMockPath = this.resolution.findManualMock(from, moduleName);
+    // The load runs against scratch registries so the module executed here
+    // (the mock file, or the real module inspected for automock metadata)
+    // doesn't pollute the live caches - mirroring `withScratchRegistries` in
+    // the CJS automock path.
+    const mockModule = manualMockPath
+      ? this.registries.withScratchRegistries(() =>
+          this.loadModuleForMockSync(from, manualMockPath, context, mode),
+        )
+      : this.buildAutomockSync(from, moduleName, context, mode);
+    if (mockModule === LOAD_ASYNC) return LOAD_ASYNC;
+    this.registries.setModuleMock(moduleID, mockModule);
+    scratch.set(moduleID, {
+      cacheKey: moduleID,
+      kind: 'prelinked',
+      module: mockModule,
+    });
+    return {cacheKey: moduleID};
+  }
+
+  // Loads a module by path with mocks out of the picture: either the manual
+  // mock file itself, or the real module automocking needs metadata from.
+  // CJS files can't go through the graph walker (their transform output
+  // expects the CJS wrapper), so they load through the mock-free
+  // `Runtime.requireModule` seam and get the usual synthetic wrapper.
+  private loadModuleForMockSync(
+    from: string,
+    modulePath: string,
+    context: VMContext,
+    mode: SyncEsmMode,
+  ): ESModule | LoadAsync {
+    if (
+      !modulePath.endsWith('.json') &&
+      !isWasm(modulePath) &&
+      !this.shouldLoadAsEsm(modulePath)
+    ) {
+      try {
+        const synthetic = buildCjsAsEsmSyntheticModule(
+          from,
+          modulePath,
+          context,
+          this.requireModule,
+          this.cjsExportsCache,
+        );
+        const evaluated = evaluateSyntheticModule(synthetic);
+        if (isPromise(evaluated)) return LOAD_ASYNC;
+        return evaluated;
+      } catch (error) {
+        if (!(error instanceof CjsParseError)) throw error;
+        if (this.resolution.isExplicitlyCommonjs(modulePath)) throw error.cause;
+        // ESM syntax without an ESM marker - load through the walker below.
+      }
+    }
+    return this.tryLoadGraphSync(modulePath, '', mode);
+  }
+
+  private buildAutomockSync(
+    from: string,
+    moduleName: string,
+    context: VMContext,
+    mode: SyncEsmMode,
+  ): SyntheticModule | LoadAsync {
+    const moduleMocker = this.environment.moduleMocker;
+    invariant(
+      moduleMocker,
+      '`moduleMocker` must be set on an environment when created',
+    );
+    const modulePath = this.resolution.resolveEsm(from, moduleName);
+    if (!this.mockState.hasMockMetadata(modulePath)) {
+      // Seeded before the load so a mock cycle resolves against the
+      // placeholder instead of recursing - same trick as `generateMock`.
+      this.mockState.setMockMetadata(
+        modulePath,
+        moduleMocker.getMetadata({}) ?? {},
+      );
+      let realModule: ESModule | LoadAsync;
+      try {
+        realModule = this.registries.withScratchRegistries(() =>
+          this.loadModuleForMockSync(from, modulePath, context, mode),
+        );
+      } catch (error) {
+        this.mockState.deleteMockMetadata(modulePath);
+        throw error;
+      }
+      if (realModule === LOAD_ASYNC) {
+        // The placeholder must not survive a bail: the legacy retry would
+        // read it back as finished metadata and produce an empty mock.
+        this.mockState.deleteMockMetadata(modulePath);
+        return LOAD_ASYNC;
+      }
+      const metadata = moduleMocker.getMetadata(realModule.namespace);
+      if (metadata == null) {
+        this.mockState.deleteMockMetadata(modulePath);
+        throw new Error(
+          `Failed to get mock metadata: ${modulePath}\n\n` +
+            'See: https://jestjs.io/docs/manual-mocks#content',
+        );
+      }
+      this.mockState.setMockMetadata(modulePath, metadata);
+    }
+    const generated = moduleMocker.generateFromMetadata(
+      this.mockState.getMockMetadata(modulePath)!,
+    );
+    const mockRecord = this.mockState.notifyMockGenerated(
+      modulePath,
+      generated,
+    );
+    return syntheticFromExports(
+      moduleName,
+      context,
+      mockRecord as Record<string, unknown>,
+    );
   }
 
   // Construct a wasm SyntheticModule for the sync graph. Wasm imports are
@@ -1747,7 +1887,12 @@ export class EsmLoader {
         specifier,
       );
       if (dataDecision.shouldMock) {
-        return this.importMock(specifier, dataDecision.moduleID, context);
+        return this.importMock(
+          referencingIdentifier,
+          specifier,
+          dataDecision.moduleID,
+          context,
+        );
       }
       // The canonical serialization (whitespace stripped, non-ASCII
       // percent-encoded) is the module's URL: spelling variants of one URL
@@ -1794,7 +1939,12 @@ export class EsmLoader {
       specifierPath,
     );
     if (decision.shouldMock) {
-      return this.importMock(specifierPath, decision.moduleID, context);
+      return this.importMock(
+        referencingIdentifier,
+        specifierPath,
+        decision.moduleID,
+        context,
+      );
     }
 
     const resolved = await this.resolution.resolveEsmAsync(
@@ -1938,6 +2088,7 @@ export class EsmLoader {
   }
 
   private async importMock<T = unknown>(
+    from: string,
     moduleName: string,
     moduleID: string,
     context: VMContext,
@@ -1952,6 +2103,25 @@ export class EsmLoader {
       const module = syntheticFromExports(moduleName, context, invokedFactory);
       this.registries.setModuleMock(moduleID, module);
       return evaluateSyntheticModule(module) as T;
+    }
+
+    // Factory-less decision (automock or manual mock). The generated-mock
+    // builder is sync-core only; on capable Nodes reuse it here so dynamic
+    // `import()` gets the same mocks as static imports and require(esm).
+    if (supportsSyncEvaluate && this.resolution.canResolveSync()) {
+      const scratch = new Map<string, ScratchEntry>();
+      const generated = this.importGeneratedMockSync(
+        from,
+        moduleName,
+        moduleID,
+        context,
+        scratch,
+        'sync-preferred',
+      );
+      if (generated !== LOAD_ASYNC) {
+        // `linkAndEvaluateModule` evaluates the module for this caller.
+        return scratch.get(generated.cacheKey)!.module as T;
+      }
     }
 
     throw new Error('Attempting to import a mock without a factory');

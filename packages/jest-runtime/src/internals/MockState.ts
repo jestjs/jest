@@ -418,6 +418,9 @@ export class MockState {
   setMockMetadata(modulePath: string, metadata: MockMetadata<unknown>): void {
     this.mockMetaDataCache.set(modulePath, metadata);
   }
+  deleteMockMetadata(modulePath: string): void {
+    this.mockMetaDataCache.delete(modulePath);
+  }
 
   notifyMockGenerated<T>(moduleName: string, moduleMock: T): T {
     let result: unknown = moduleMock;

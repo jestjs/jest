@@ -50,7 +50,10 @@ import {
   type ModuleRegistry,
   createInitialModule,
 } from './internals/moduleTypes';
-import {runtimeSupportsVmModules} from './internals/nodeCapabilities';
+import {
+  runtimeSupportsVmModules,
+  supportsSyncEvaluate,
+} from './internals/nodeCapabilities';
 import type {EnvironmentGlobals} from './internals/types';
 
 // Modules safe to require from the outside (not stateful, not prone to
@@ -219,6 +222,7 @@ export default class Runtime {
       jestGlobals: this.jestGlobals,
       mockState: this.mockState,
       registries: this.registries,
+      requireModule: (from, moduleName) => this.requireModule(from, moduleName),
       requireModuleOrMock: (from, moduleName) =>
         this.requireModuleOrMock(from, moduleName),
       resolution: this._resolution,
@@ -464,10 +468,26 @@ export default class Runtime {
       mockRegistry.set(moduleID, localModule.exports);
     } else {
       // Look for a real module to generate an automock from
-      mockRegistry.set(moduleID, this._generateMock(from, moduleName));
+      mockRegistry.set(moduleID, this._generateMockForTarget(from, moduleName));
     }
 
     return mockRegistry.get(moduleID) as T;
+  }
+
+  // require(esm) targets generate through the ESM loader's automock, which
+  // loads the real namespace for metadata. Running the CJS `generateMock`
+  // against them would recurse into the ESM mock consult and automock the
+  // freshly generated mock a second time.
+  private _generateMockForTarget(from: string, moduleName: string): unknown {
+    if (supportsSyncEvaluate) {
+      const modulePath =
+        this._resolution.resolveCjsStub(from, moduleName) ||
+        this._resolution.resolveCjs(from, moduleName);
+      if (this._resolution.shouldLoadAsEsm(modulePath)) {
+        return this.requireModule(from, moduleName);
+      }
+    }
+    return this._generateMock(from, moduleName);
   }
 
   private _getFullTransformationOptions(
