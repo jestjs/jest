@@ -13,6 +13,7 @@
 - `[jest-resolve]` Honor Node's `--preserve-symlinks` / `NODE_PRESERVE_SYMLINKS` in the default resolver by passing `symlinks: false` to `unrs-resolver` ([#16260](https://github.com/jestjs/jest/pull/16260))
 - `[jest-runtime]` Apply automocking and manual `__mocks__` files to ESM on Node 24.9+ - static imports, dynamic `import()` and `require()` of an ESM file now generate an automock from the real module's namespace instead of failing with "Attempting to import a mock without a factory" ([#16391](https://github.com/jestjs/jest/pull/16391))
 - `[jest-runtime]` Route `process.getBuiltinModule` through the sandbox, so it returns the sandbox `process` and the hooked `node:module` instead of the host's ([#16391](https://github.com/jestjs/jest/pull/16391))
+- `[jest-runtime]` Throw an actionable error from `module.register()` and `module.registerHooks()` inside a test - the hooks attached to the loader running Jest itself, never saw the sandboxed requires they were meant for, and stayed registered for every later test file in the worker ([#16391](https://github.com/jestjs/jest/pull/16391))
 - `[jest-runtime]` Set `import.meta.main` to `true` in the test file and `false` in every module it loads, matching Node 24+ ([#16367](https://github.com/jestjs/jest/pull/16367))
 - `[jest-runtime]` Resolve the `module-sync` export condition, so a package that exposes its ESM entry point for `require()` loads the same file Node would ([#16336](https://github.com/jestjs/jest/pull/16336))
 
