@@ -469,6 +469,47 @@ describe('onRunComplete', () => {
     expect(testReporter.getLastError()).toBeUndefined();
   });
 
+  test('collects untested files from project-level collectCoverageFrom', async () => {
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        coverageReporters: ['json'],
+      },
+      {
+        maxWorkers: 2,
+      },
+    );
+    testReporter.log = jest.fn();
+
+    // Each project carries its own collectCoverageFrom/rootDir, and the global
+    // config has neither, so every project must be globbed on its own terms.
+    const makeContext = (rootDir, glob) => ({
+      config: {
+        collectCoverageFrom: [glob],
+        rootDir,
+      },
+      hasteFS: {matchFilesWithGlob: jest.fn(() => [])},
+    });
+
+    const first = makeContext('/path/to/project-a', '**/*.js');
+    const second = makeContext('/path/to/project-b', '**/*.ts');
+
+    await testReporter.onRunComplete(
+      new Set([first, second]),
+      {},
+      mockAggResults,
+    );
+
+    expect(first.hasteFS.matchFilesWithGlob).toHaveBeenCalledWith(
+      ['**/*.js'],
+      '/path/to/project-a',
+    );
+    expect(second.hasteFS.matchFilesWithGlob).toHaveBeenCalledWith(
+      ['**/*.ts'],
+      '/path/to/project-b',
+    );
+  });
+
   describe('maxCols fallback logic in CI', () => {
     const originalEnv = process.env;
 
