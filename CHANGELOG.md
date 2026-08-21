@@ -65,6 +65,7 @@
 - `[@jest/source-map]` Warn when a source map cannot be parsed, instead of silently leaving its frames untranslated ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[jest-runner, @jest/source-map]` Keep a source-mapped stack for an error thrown after the test environment was torn down ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[jest-runtime, @jest/source-map]` Keep source maps past teardown and past the next test file's `install`, so a stack from a file no earlier stack mentioned still points at the original source ([#16330](https://github.com/jestjs/jest/pull/16330))
+- `[jest-runtime]` Report that no coverage was collected when `getAllV8CoverageInfoCopy` is called after `teardown`, instead of returning an empty result ([#16385](https://github.com/jestjs/jest/pull/16385))
 - `[jest-runtime]` Cache a CJS module's parsed exports before walking its re-exports, so two modules that re-export each other no longer overflow the stack when imported from ESM ([#16363](https://github.com/jestjs/jest/pull/16363))
 - `[jest-runtime]` Keep a re-exported ES module's parse failure from marking the re-exporting CommonJS file as ESM, so `module.exports = require('./dep.mjs')` loads instead of failing with `module is not defined` ([#16363](https://github.com/jestjs/jest/pull/16363))
 - `[jest-runtime]` Scope module mocks instantiated inside `jest.isolateModules`/`isolateModulesAsync` to that block, so a mock first imported there no longer outlives it - matching how CommonJS mocks already behave ([#16365](https://github.com/jestjs/jest/pull/16365))

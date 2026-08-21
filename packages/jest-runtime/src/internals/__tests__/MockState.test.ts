@@ -236,18 +236,16 @@ describe('MockState', () => {
       const factory = jest.fn(() => ({foo: 1}));
       mockState.setMock('/from', './a', factory);
       const moduleID = mockState.getCjsModuleId('/from', './a');
-      expect(mockState.hasCjsFactory(moduleID)).toBe(true);
       expect(mockState.getCjsFactory(moduleID)).toBe(factory);
       expect(mockState.shouldMockCjs('/from', './a').shouldMock).toBe(true);
     });
 
     test('setModuleMock registers an ESM factory', () => {
-      const {resolution} = makeResolution();
+      const {resolution, stub} = makeResolution();
       const mockState = new MockState(resolution, config({}));
       const factory = jest.fn();
       mockState.setModuleMock('/from', './a', factory);
-      const moduleID = mockState.getEsmModuleId('/from', './a');
-      expect(mockState.hasEsmFactory(moduleID)).toBe(true);
+      const moduleID = stub.getEsmModuleId(new Map(), '/from', './a');
       expect(mockState.getEsmFactory(moduleID)).toBe(factory);
     });
 
@@ -308,7 +306,7 @@ describe('MockState', () => {
 
   describe('clear', () => {
     test('drops factories, explicit marks, virtual marks, callbacks, caches', () => {
-      const {resolution} = makeResolution();
+      const {resolution, stub} = makeResolution();
       const mockState = new MockState(resolution, config({}));
       mockState.setMock('/from', './a', () => ({}));
       mockState.setModuleMock('/from', './b', () => ({}));
@@ -319,11 +317,11 @@ describe('MockState', () => {
       mockState.clear();
 
       expect(
-        mockState.hasCjsFactory(mockState.getCjsModuleId('/from', './a')),
-      ).toBe(false);
+        mockState.getCjsFactory(mockState.getCjsModuleId('/from', './a')),
+      ).toBeUndefined();
       expect(
-        mockState.hasEsmFactory(mockState.getEsmModuleId('/from', './b')),
-      ).toBe(false);
+        mockState.getEsmFactory(stub.getEsmModuleId(new Map(), '/from', './b')),
+      ).toBeUndefined();
       expect(mockState.hasMockMetadata('/path')).toBe(false);
       expect(mockState.notifyMockGenerated('/path', 'x')).toBe('x');
     });

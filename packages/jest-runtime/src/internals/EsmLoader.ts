@@ -857,63 +857,35 @@ export class EsmLoader {
         ESM_TRANSFORM_OPTIONS,
       );
 
-      const module: VMModuleWithAsyncGraph = new SourceTextModule(
-        transformedCode,
-        {
-          context,
-          identifier: modulePath,
-          importModuleDynamically: this.dynamicImport,
-          initializeImportMeta: meta => {
-            const metaUrl = cacheKey;
-            meta.url = metaUrl;
-            // @ts-expect-error Jest uses @types/node@18.
-            meta.filename = modulePath;
-            // @ts-expect-error Jest uses @types/node@18.
-            meta.dirname = path.dirname(modulePath);
-            meta.resolve = (specifier, parent: string | URL = metaUrl) => {
-              const parentPath = fileURLToPath(parent);
-              return this.resolveForImportMeta(parentPath, specifier);
-            };
-            // @ts-expect-error Jest uses @types/node@18.
-            meta.main = modulePath === this.testPath;
-            (meta as JestImportMeta).jest =
-              this.jestGlobals.jestObjectFor(modulePath);
-          },
+      const entry = this.buildSyncSourceEntry({
+        cacheKey,
+        code: transformedCode,
+        context,
+        identifier: modulePath,
+        initializeImportMeta: meta => {
+          const metaUrl = cacheKey;
+          meta.url = metaUrl;
+          // @ts-expect-error Jest uses @types/node@18.
+          meta.filename = modulePath;
+          // @ts-expect-error Jest uses @types/node@18.
+          meta.dirname = path.dirname(modulePath);
+          meta.resolve = (specifier, parent: string | URL = metaUrl) => {
+            const parentPath = fileURLToPath(parent);
+            return this.resolveForImportMeta(parentPath, specifier);
+          };
+          // @ts-expect-error Jest uses @types/node@18.
+          meta.main = modulePath === this.testPath;
+          (meta as JestImportMeta).jest =
+            this.jestGlobals.jestObjectFor(modulePath);
         },
-      );
+        mode,
+        registry,
+        scratch,
+        worklist,
+      });
+      if (entry === LOAD_ASYNC) return LOAD_ASYNC;
 
-      if (
-        typeof module.hasTopLevelAwait === 'function' &&
-        module.hasTopLevelAwait()
-      ) {
-        if (mode === 'sync-required') {
-          throw makeRequireAsyncError(modulePath, 'top-level await');
-        }
-        return LOAD_ASYNC;
-      }
-
-      // If we got here without `moduleRequests`, the capability gate is lying.
-      invariant(
-        module.moduleRequests !== undefined,
-        `moduleRequests unavailable on ${modulePath}`,
-      );
-      const deps: Array<string> = [];
-      for (const {specifier, attributes} of module.moduleRequests) {
-        const resolved = this.resolveSpecifierForSyncGraph(
-          modulePath,
-          specifier,
-          context,
-          scratch,
-          registry,
-          mode,
-        );
-        if (resolved === LOAD_ASYNC) return LOAD_ASYNC;
-        validateImportAttributes(resolved.modulePath, attributes, modulePath);
-        deps.push(resolved.cacheKey);
-        if (resolved.enqueue) worklist.push(resolved.enqueue);
-      }
-
-      scratch.set(cacheKey, {cacheKey, deps, kind: 'source', module});
+      scratch.set(cacheKey, entry);
     }
 
     this.adoptCommittedScratchEntries(scratch, registry);
@@ -1324,7 +1296,6 @@ export class EsmLoader {
     worklist: Array<WorklistEntry>,
     mode: SyncEsmMode,
   ): ScratchEntry | LoadAsync {
-    const esmDynamicImport = this.dynamicImport;
     const {mime, code} = parseDataUri(specifier);
 
     if (mime === 'application/wasm') {
@@ -1348,10 +1319,11 @@ export class EsmLoader {
       };
     }
 
-    const module = new SourceTextModule(code as string, {
+    return this.buildSyncSourceEntry({
+      cacheKey,
+      code: code as string,
       context,
       identifier: specifier,
-      importModuleDynamically: esmDynamicImport,
       initializeImportMeta: meta => {
         meta.url = specifier;
         // @ts-expect-error Jest uses @types/node@18.
@@ -1360,6 +1332,42 @@ export class EsmLoader {
         (meta as JestImportMeta).jest =
           this.jestGlobals.jestObjectFor(specifier);
       },
+      mode,
+      registry,
+      scratch,
+      worklist,
+    });
+  }
+
+  // The source-module half of a sync walk: construct, refuse top-level await,
+  // then resolve each static import so the caller can link the graph. Callers
+  // differ only in what `import.meta` gets.
+  private buildSyncSourceEntry({
+    cacheKey,
+    code,
+    context,
+    identifier,
+    initializeImportMeta,
+    mode,
+    registry,
+    scratch,
+    worklist,
+  }: {
+    cacheKey: string;
+    code: string;
+    context: VMContext;
+    identifier: string;
+    initializeImportMeta: (meta: ImportMeta) => void;
+    mode: SyncEsmMode;
+    registry: ModuleRegistry | Map<string, JestModule>;
+    scratch: Map<string, ScratchEntry>;
+    worklist: Array<WorklistEntry>;
+  }): ScratchEntry | LoadAsync {
+    const module = new SourceTextModule(code, {
+      context,
+      identifier,
+      importModuleDynamically: this.dynamicImport,
+      initializeImportMeta,
     }) as VMModuleWithAsyncGraph;
 
     if (
@@ -1367,27 +1375,28 @@ export class EsmLoader {
       module.hasTopLevelAwait()
     ) {
       if (mode === 'sync-required') {
-        throw makeRequireAsyncError(specifier, 'top-level await');
+        throw makeRequireAsyncError(identifier, 'top-level await');
       }
       return LOAD_ASYNC;
     }
 
+    // If we got here without `moduleRequests`, the capability gate is lying.
     invariant(
       module.moduleRequests !== undefined,
-      `moduleRequests unavailable on ${specifier}`,
+      `moduleRequests unavailable on ${identifier}`,
     );
     const deps: Array<string> = [];
-    for (const {specifier: depSpec, attributes} of module.moduleRequests) {
+    for (const {specifier, attributes} of module.moduleRequests) {
       const resolved = this.resolveSpecifierForSyncGraph(
+        identifier,
         specifier,
-        depSpec,
         context,
         scratch,
         registry,
         mode,
       );
       if (resolved === LOAD_ASYNC) return LOAD_ASYNC;
-      validateImportAttributes(resolved.modulePath, attributes, specifier);
+      validateImportAttributes(resolved.modulePath, attributes, identifier);
       deps.push(resolved.cacheKey);
       if (resolved.enqueue) worklist.push(resolved.enqueue);
     }

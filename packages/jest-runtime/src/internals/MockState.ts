@@ -359,35 +359,15 @@ export class MockState {
       moduleName,
     );
   }
-  getEsmModuleId(from: string, moduleName?: string): string {
-    return this.resolution.getEsmModuleId(
-      this.virtualEsmMocks,
-      from,
-      moduleName,
-    );
-  }
-  getEsmModuleIdAsync(from: string, moduleName?: string): Promise<string> {
-    return this.resolution.getEsmModuleIdAsync(
-      this.virtualEsmMocks,
-      from,
-      moduleName,
-    );
-  }
 
   isExplicitlyUnmocked(moduleID: string): boolean {
     return this.explicitCjsMock.get(moduleID) === false;
   }
 
-  hasCjsFactory(moduleID: string): boolean {
-    return this.cjsFactories.has(moduleID);
-  }
   getCjsFactory(moduleID: string): (() => unknown) | undefined {
     return this.cjsFactories.get(moduleID);
   }
 
-  hasEsmFactory(moduleID: string): boolean {
-    return this.esmFactories.has(moduleID);
-  }
   getEsmFactory(
     moduleID: string,
   ): (() => Promise<unknown> | unknown) | undefined {

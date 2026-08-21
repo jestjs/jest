@@ -16,7 +16,7 @@ import type {ModuleRegistries} from './ModuleRegistries';
 import type {Resolution} from './Resolution';
 import type {TestMainModule} from './TestMainModule';
 import type {TransformOptions} from './TransformCache';
-import type {InitialModule} from './moduleTypes';
+import {type InitialModule, createInitialModule} from './moduleTypes';
 
 export const JEST_RESOLVE_OUTSIDE_VM_OPTION = Symbol.for(
   'jest-resolve-outside-vm-option',
@@ -98,18 +98,7 @@ export class RequireBuilder {
   }
 
   forFilename(filename: string): NodeJS.Require {
-    return this.for(
-      {
-        children: [],
-        exports: {},
-        filename,
-        id: filename,
-        isPreloading: false,
-        loaded: false,
-        path: path.dirname(filename),
-      },
-      undefined,
-    );
+    return this.for(createInitialModule(filename), undefined);
   }
 
   private resolve(
