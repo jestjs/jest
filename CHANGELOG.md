@@ -19,6 +19,7 @@
 - `[jest-runtime]` Emit the JSON-without-import-attribute deprecation warning once per test file instead of once per worker, so it is no longer silently swallowed for every file after the first ([#16391](https://github.com/jestjs/jest/pull/16391))
 - `[jest-runtime]` Set `import.meta.main` to `true` in the test file and `false` in every module it loads, matching Node 24+ ([#16367](https://github.com/jestjs/jest/pull/16367))
 - `[jest-runtime]` Resolve the `module-sync` export condition, so a package that exposes its ESM entry point for `require()` loads the same file Node would ([#16336](https://github.com/jestjs/jest/pull/16336))
+- `[jest-snapshot]` Add external snapshot paths to custom reporter failure details ([#16374](https://github.com/jestjs/jest/pull/16374))
 
 ### Fixes
 
