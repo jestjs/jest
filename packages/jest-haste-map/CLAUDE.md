@@ -39,7 +39,7 @@ Key files to know:
 
 **`WatchmanWatcher` ≠ parcel-watcher.** They both may use watchman internally but are independent codepaths. `WatchmanWatcher` stores clocks in `InternalHasteMap.clocks`; `ParcelWatcher` keeps no persistent state.
 
-**`useWatchman`, `enableSymlinks`, `forceNodeFilesystemAPI` are flat fields on `InternalOptions`**, copied directly from the `Options` input in the constructor. All decisions flow through `shouldUseWatchman(useWatchman)`.
+**`useWatchman`, `enableSymlinks`, `forceNodeFilesystemAPI` are flat fields on `InternalOptions`**, copied directly from the `Options` input in the constructor. Availability is decided by `lib/watchmanSockname.ts`'s `getWatchmanAvailability(cacheDirectory)` (memoized per process): it validates a cached socket path with a throwaway connect, else runs `watchman --no-pretty get-sockname` and caches the result next to the haste-map cache. Spawn failure (`ENOENT`) means "not installed" → silent node fallback; any other failure means "installed but broken" → the crawl still runs so the existing warn-and-retry path surfaces the error. The crawler skips fb-watchman's own `get-sockname` spawn via `connectClientToSockname`, which sets `WATCHMAN_SOCK` only for the synchronous `client.connect()` window. `_watch` still goes through `shouldUseWatchman(useWatchman, cacheDirectory)`.
 
 **`enableSymlinks` guard** fires when `enableSymlinks && useWatchman`.
 

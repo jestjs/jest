@@ -6,7 +6,7 @@
  */
 
 import type {Stats} from 'graceful-fs';
-import isWatchmanInstalled from '../lib/isWatchmanInstalled';
+import {getWatchmanAvailability} from '../lib/watchmanSockname';
 import type {HasteRegExp} from '../types';
 import {ParcelWatcher} from './ParcelWatcher';
 // @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/5387
@@ -15,18 +15,15 @@ import type {IWatcher, WatcherCtor} from './types';
 
 const WatchmanWatcher = WatchmanWatcherImpl as WatcherCtor;
 
-let isWatchmanInstalledPromise: Promise<boolean> | undefined;
-
 export async function shouldUseWatchman(
   useWatchmanOption: boolean,
+  cacheDirectory: string,
 ): Promise<boolean> {
   if (!useWatchmanOption) {
     return false;
   }
-  if (!isWatchmanInstalledPromise) {
-    isWatchmanInstalledPromise = isWatchmanInstalled();
-  }
-  return isWatchmanInstalledPromise;
+  const availability = await getWatchmanAvailability(cacheDirectory);
+  return availability.installed;
 }
 
 type OnChangeCallback = (
