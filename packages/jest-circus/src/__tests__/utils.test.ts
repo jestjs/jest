@@ -163,6 +163,24 @@ test('makeSingleTestResult keeps primitive retry errors independent', () => {
   expect(asyncError.message).toBe('hook location');
 });
 
+test('parseSingleTestResult exposes failed matcher metadata', () => {
+  const error = new Error('matcher failed') as Error & {
+    matcherResult: unknown;
+  };
+  error.matcherResult = {
+    actual: 'actual',
+    diffPath: 'relative/path.png',
+    expected: 'expected',
+    message: 'matcher failed',
+    name: 'toMatchImageSnapshot',
+    pass: false,
+  };
+
+  const result = parseSingleTestResult(makeFailedTestResult(error));
+
+  expect(result.matcherResult).toEqual(error.matcherResult);
+});
+
 test('makeRunResult keeps the unserialized unhandled errors', () => {
   const error = new Error('unhandled');
   const result = makeRunResult(makeDescribe(ROOT_DESCRIBE_BLOCK_NAME), [error]);

@@ -4,6 +4,7 @@
 
 - `[@jest/expect-utils, jest-mock]` Add `mockFn.whenCalledWith(...args)` for configuring return values per argument list, with first-class asymmetric-matcher support ([#16053](https://github.com/jestjs/jest/pull/16053))
 - `[@jest/expect-utils]` Export `AsymmetricMatcher` and `FunctionParameters` types (previously private to `expect`) ([#16053](https://github.com/jestjs/jest/pull/16053))
+- `[expect, jest-circus, jest-test-result, jest-types]` Expose failed custom matcher metadata through `TestCaseResult.matcherResult` for reporters ([#16380](https://github.com/jestjs/jest/pull/16380))
 - `[jest-circus, jest-core, jest-jasmine2, jest-test-result, jest-types]` `--collectTests` now expands `test.each`/`describe.each` cases and reports per-status counts (skipped/todo via the new `wouldRun` flag for selected tests) plus a summary line that match a real run, including under `--testNamePattern` and `.only`/`fdescribe` focus on both the circus and jasmine2 runners ([#16259](https://github.com/jestjs/jest/pull/16259))
 - `[jest-circus, jest-environment, jest-runtime, jest-types]` Add describe-level retries via `jest.retryTimes(..., {entireDescribe: true})` ([#16322](https://github.com/jestjs/jest/pull/16322))
 - `[jest-circus, jest-message-util, jest-reporters, jest-types]` Add `retryMessages` to `AssertionResult` and export `formatErrorStack`, so the retry log renders nested `cause` and `AggregateError` sections with code frames instead of serialized `[cause]:`/`[errors]:` markers ([#16316](https://github.com/jestjs/jest/pull/16316))
