@@ -519,6 +519,12 @@ export class EsmLoader {
     // With an async-only configured resolver that silently falls back to the
     // default resolver, missing every user mapping - throw the same typed
     // error an async-only transformer gets.
+    //
+    // The guard sits here, after `CjsLoader` has already resolved the entry:
+    // sync require() resolution falls back to the default resolver for CJS
+    // targets too, and gating all of require() would break configs where
+    // that fallback resolves correctly. A name only the async resolver can
+    // map therefore still fails as unresolvable before ESM handling starts.
     if (!this.resolution.canResolveSync()) {
       throw makeRequireAsyncError(
         modulePath,

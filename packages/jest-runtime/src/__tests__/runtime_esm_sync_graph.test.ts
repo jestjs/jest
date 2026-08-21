@@ -596,6 +596,28 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     },
   );
 
+  // Sync require() resolution falls back to the default resolver when the
+  // configured resolver is async-only - long-standing behavior for CJS and
+  // ESM targets alike, and gating all of require() on a sync resolver would
+  // break configs where the fallback resolves correctly. The
+  // ERR_REQUIRE_ASYNC_MODULE guard therefore only covers entries the
+  // fallback resolved to an ESM file.
+  testWithSyncEsm(
+    'require() of a name only the async resolver can map fails to resolve',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        resolver: path.join(ROOT_DIR, 'async-only-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      expect(() => runtime.requireModule(FROM, 'async-alias-esm')).toThrow(
+        "Cannot find module 'async-alias-esm'",
+      );
+      expect(() => runtime.requireModule(FROM, 'async-alias-cjs')).toThrow(
+        "Cannot find module 'async-alias-cjs'",
+      );
+    },
+  );
+
   testWithSyncEsm(
     'honors jest.unstable_mockModule for the require()d file itself',
     async () => {

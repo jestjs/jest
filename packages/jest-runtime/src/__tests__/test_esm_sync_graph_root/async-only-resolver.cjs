@@ -5,6 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const path = require('node:path');
+
 module.exports = {
-  async: async (path, options) => options.defaultResolver(path, options),
+  async: async (specifier, options) => {
+    if (specifier === 'async-alias-esm') {
+      return path.join(__dirname, 'a.mjs');
+    }
+    if (specifier === 'async-alias-cjs') {
+      return path.join(__dirname, 'cjs-dep.cjs');
+    }
+    return options.defaultResolver(specifier, options);
+  },
 };
