@@ -815,6 +815,58 @@ describe('core module specifiers', () => {
       ).resolves.toBeNull();
     },
   );
+
+  describe('moduleNameMapper', () => {
+    const mappedModule = require.resolve('../__mocks__/mockJsDependency.js');
+
+    function createMappingResolver(regex: RegExp) {
+      return new Resolver(ModuleMap.create('/'), {
+        extensions: ['.js'],
+        hasCoreModules: true,
+        moduleNameMapper: [{moduleName: './__mocks__/mockJsDependency', regex}],
+      } as ResolverConfig);
+    }
+
+    it.each(['fs', 'node:fs'])(
+      'maps %s when the pattern targets the bare specifier',
+      async specifier => {
+        const mappingResolver = createMappingResolver(/^fs$/);
+
+        expect(mappingResolver.isCoreModule(specifier)).toBe(false);
+        expect(mappingResolver.resolveModule(src, specifier)).toBe(
+          mappedModule,
+        );
+        await expect(
+          mappingResolver.resolveModuleAsync(src, specifier),
+        ).resolves.toBe(mappedModule);
+      },
+    );
+
+    it.each(['fs', 'node:fs'])(
+      'maps %s when the pattern targets the prefixed specifier',
+      async specifier => {
+        const mappingResolver = createMappingResolver(/^node:fs$/);
+
+        expect(mappingResolver.isCoreModule(specifier)).toBe(false);
+        expect(mappingResolver.resolveModule(src, specifier)).toBe(
+          mappedModule,
+        );
+        await expect(
+          mappingResolver.resolveModuleAsync(src, specifier),
+        ).resolves.toBe(mappedModule);
+      },
+    );
+
+    it('does not map `node:test` from a pattern targeting bare `test`', async () => {
+      const mappingResolver = createMappingResolver(/^test$/);
+
+      expect(mappingResolver.isCoreModule('node:test')).toBe(true);
+      expect(mappingResolver.resolveModule(src, 'node:test')).toBe('node:test');
+      await expect(
+        mappingResolver.resolveModuleAsync(src, 'node:test'),
+      ).resolves.toBe('node:test');
+    });
+  });
 });
 
 describe('getMockModule', () => {
