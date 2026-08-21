@@ -526,7 +526,12 @@ export default class Runtime {
   // package can resolve `require` and `import` to different ESM files, and a
   // mock served to require() must describe the file require() would load.
   private _esmMockTarget(from: string, moduleName: string): string | null {
-    if (!supportsSyncEvaluate) return null;
+    // With an async-only resolver the sync resolution below silently falls
+    // back to the default resolver; declining the shortcut lets the fallback
+    // load reach requireEsmModule's ERR_REQUIRE_ASYNC_MODULE guard.
+    if (!supportsSyncEvaluate || !this._resolution.canResolveSync()) {
+      return null;
+    }
     let modulePath: string;
     try {
       modulePath =

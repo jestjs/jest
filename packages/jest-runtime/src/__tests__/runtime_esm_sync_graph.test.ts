@@ -1731,7 +1731,19 @@ describe('Runtime sync ESM graph - automock', () => {
     },
   );
 
-
+  testWithSyncEsm(
+    'an async-only resolver still fails require() of an automocked ESM target',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        resolver: path.join(ROOT_DIR, 'async-only-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      expect(() =>
+        runtime.requireModuleOrMock(FROM, './automock-dep.mjs'),
+      ).toThrow(expect.objectContaining({code: 'ERR_REQUIRE_ASYNC_MODULE'}));
+    },
+  );
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,
