@@ -635,6 +635,20 @@ describe('Runtime sync ESM graph - require(esm)', () => {
   );
 
   testWithSyncEsm(
+    'honors jest.unstable_mockModule for a data: URI dependency',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      runtime.setModuleMock(
+        FROM,
+        'data:text/javascript,export const value = "real"',
+        () => ({value: 'mocked'}),
+      );
+      const ns = runtime.requireModule(FROM, './import-data-uri-mocked.mjs');
+      expect(ns.value).toBe('mocked');
+    },
+  );
+
+  testWithSyncEsm(
     'jest.mock (CJS map) does not apply to an ESM target',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});

@@ -1109,18 +1109,11 @@ export class EsmLoader {
       return ok ? {cacheKey, enqueue: null, modulePath: cacheKey} : LOAD_ASYNC;
     }
 
-    if (specifier.startsWith('data:')) {
-      const cacheKey = new URL(specifier).href;
-      return {
-        cacheKey,
-        enqueue: {cacheKey, modulePath: cacheKey},
-        modulePath: cacheKey,
-      };
-    }
-
     const {pathOrSpecifier: specifierPath, suffix} =
       splitQueryAndFragment(specifier);
 
+    // `data:` URIs pass through the split whole, so the mock decision sees
+    // the full specifier - the same form the mock was registered under.
     const {shouldMock, moduleID} = this.mockState.shouldMockEsmSync(
       referencingIdentifier,
       specifierPath,
@@ -1138,6 +1131,15 @@ export class EsmLoader {
         cacheKey: mocked.cacheKey,
         enqueue: null,
         modulePath: specifierPath,
+      };
+    }
+
+    if (specifierPath.startsWith('data:')) {
+      const cacheKey = new URL(specifierPath).href;
+      return {
+        cacheKey,
+        enqueue: {cacheKey, modulePath: cacheKey},
+        modulePath: cacheKey,
       };
     }
 
