@@ -65,6 +65,7 @@ On Node versions older than v24.9, `require()` of an ESM file still throws `ERR_
 Jest's module system diverges from Node's in a few places:
 
 - In a graph that mixes ESM and CJS, the CJS dependencies execute after the graph resolves but before the ESM bodies run, so a CJS module can run earlier relative to its ESM siblings than it would in Node. As in Node, a graph with a resolution or import-attribute error executes nothing.
+- Automock metadata is collected after the importing graph resolves, one mocked module at a time: each decision loads its real module, so a load failure in one mocked module's own graph does not undo the metadata loads that came before it.
 - The named exports of a CJS module imported from ESM are a superset of Node's: keys present on `module.exports` after evaluation are exposed in addition to what static analysis finds.
 - Writes to and deletes from `require.cache` are silently ignored.
 - The static members of `require('module')` (such as `Module._resolveFilename`) come from the host Node, not from Jest's module system.

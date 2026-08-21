@@ -702,6 +702,12 @@ export class EsmLoader {
         continue;
       }
       if (worklist.length === 0 && pendingBuilds.generatedMocks.length > 0) {
+        // Generation runs after this graph resolves, but each mock's
+        // metadata load evaluates its own real-module graph as it goes - a
+        // later pending mock whose real graph fails to load does not undo an
+        // earlier one's execution. Preflighting every mock target's graph
+        // would need a resolve-only walker mode; documented as a divergence
+        // instead.
         const pending = pendingBuilds.generatedMocks.shift()!;
         const mocked = this.importMockSync(
           pending.from,
