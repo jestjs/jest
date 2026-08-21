@@ -266,11 +266,13 @@ export default class Runtime {
         modulePath: string,
         requiredFrom: string,
         isRequireActual: boolean,
+        moduleName: string | undefined,
       ) =>
         this.esmLoader.requireEsmModule<T>(
           modulePath,
           requiredFrom,
           isRequireActual,
+          moduleName,
         ),
       resolution: this._resolution,
       testState: this.testState,

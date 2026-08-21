@@ -1956,7 +1956,23 @@ describe('Runtime sync ESM graph - automock', () => {
     },
   );
 
-
+  testWithSyncEsm(
+    'jest.unmock of a root-mocked bare package returns the real module',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        moduleFileExtensions: ['js', 'mjs', 'cjs', 'json'],
+        rootDir: ROOT_DIR,
+      });
+      const {jest: jestObject} = runtime.requireModuleOrMock(
+        FROM,
+        '@jest/globals',
+      );
+      jestObject.unmock('rooted-mock-pkg');
+      const exports = runtime.requireModuleOrMock(FROM, 'rooted-mock-pkg');
+      expect(exports.marker).toEqual({kind: 'real'});
+    },
+  );
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,

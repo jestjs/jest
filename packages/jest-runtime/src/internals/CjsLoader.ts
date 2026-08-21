@@ -38,6 +38,7 @@ export interface CjsLoaderOptions {
     modulePath: string,
     requiredFrom: string,
     isRequireActual: boolean,
+    moduleName: string | undefined,
   ) => T;
   testState: TestState;
   logFormattedReferenceError: (msg: string) => void;
@@ -55,6 +56,7 @@ export class CjsLoader {
     modulePath: string,
     requiredFrom: string,
     isRequireActual: boolean,
+    moduleName: string | undefined,
   ) => T;
   private readonly testState: TestState;
   private readonly logFormattedReferenceError: (msg: string) => void;
@@ -112,7 +114,12 @@ export class CjsLoader {
     // On Node 24.9+ we can require() ESM natively. On older Node, fall
     // through to the CJS path so a configured transform can convert it.
     if (supportsSyncEvaluate && this.resolution.shouldLoadAsEsm(modulePath)) {
-      const exports = this.requireEsm<T>(modulePath, from, isRequireActual);
+      const exports = this.requireEsm<T>(
+        modulePath,
+        from,
+        isRequireActual,
+        moduleName,
+      );
       if (!isInternal) {
         this.recordEsmChildModule(from, modulePath);
       }
@@ -158,6 +165,7 @@ export class CjsLoader {
           from,
           error,
           isRequireActual,
+          moduleName,
         );
       }
       // Without --experimental-vm-modules, CjsParseError is never thrown.
@@ -239,6 +247,7 @@ export class CjsLoader {
     from: string,
     parseError: CjsParseError,
     isRequireActual: boolean,
+    moduleName: string | undefined,
   ): T {
     // A package that declares `"type": "commonjs"` opted out of ESM for its
     // `.js` files - Node throws the parse error instead of retrying.
@@ -248,7 +257,12 @@ export class CjsLoader {
     if (supportsSyncEvaluate) {
       let exports: T;
       try {
-        exports = this.requireEsm<T>(modulePath, from, isRequireActual);
+        exports = this.requireEsm<T>(
+          modulePath,
+          from,
+          isRequireActual,
+          moduleName,
+        );
       } catch (esmError) {
         // Both CJS and ESM parsers rejected it — surface the original CJS error.
         if (esmError instanceof Error && esmError.name === 'SyntaxError') {

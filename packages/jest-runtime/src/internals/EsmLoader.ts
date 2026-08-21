@@ -350,6 +350,7 @@ export class EsmLoader {
     modulePath: string,
     requiredFrom?: string,
     isRequireActual = false,
+    moduleName?: string,
   ): T {
     // The graph walk (and the mock decision below) resolves synchronously.
     // With an async-only configured resolver that silently falls back to the
@@ -376,7 +377,11 @@ export class EsmLoader {
       if (
         shouldMock &&
         this.mockDecisionServable(moduleID) &&
-        !this.cjsUnmockBlocksGeneratedMock(from, modulePath, moduleID)
+        !this.cjsUnmockBlocksGeneratedMock(
+          from,
+          moduleName ?? modulePath,
+          moduleID,
+        )
       ) {
         return this.requireResultFromModule(
           this.requireMockedEsmModule(from, modulePath, moduleID),
@@ -1356,14 +1361,17 @@ export class EsmLoader {
   // documented guarantee that require() returns the real module. Registered
   // `unstable_mockModule` factories still serve: unmocking those is
   // `unstable_unmockModule`'s job.
+  // Consults the ID the CJS decision derived - jest.unmock records it from
+  // the requested name, and for a root-mocked bare package the name-derived
+  // ID embeds the mock path while a path-derived one does not.
   private cjsUnmockBlocksGeneratedMock(
     from: string,
-    modulePath: string,
+    moduleName: string,
     moduleID: string,
   ): boolean {
     if (this.mockState.getEsmFactory(moduleID) !== undefined) return false;
     return this.mockState.isExplicitlyUnmocked(
-      this.mockState.getCjsModuleId(from, modulePath),
+      this.mockState.getCjsModuleId(from, moduleName),
     );
   }
 
