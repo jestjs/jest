@@ -425,10 +425,19 @@ export class EsmLoader {
   // the mock without re-consulting the ESM decision maps, which know nothing
   // about CJS registrations.
   requireEsmMock<T>(from: string, moduleName: string, modulePath: string): T {
-    // The ID derives from the resolved path, so the instance is shared with
-    // imports whenever both condition sets select the same file - and stays
-    // distinct when a conditional package resolves them differently.
-    const moduleID = this.mockState.getEsmModuleId(from, modulePath);
+    // Prefer the ID an `import` of the same name produces - it also carries
+    // any root manual-mock path, so require() and import share one mock
+    // instance. The path-derived ID stays for conditional packages whose
+    // condition sets diverge: those genuinely reference different files.
+    let moduleID: string;
+    try {
+      moduleID =
+        this.resolution.resolveEsm(from, moduleName) === modulePath
+          ? this.mockState.getEsmModuleId(from, moduleName)
+          : this.mockState.getEsmModuleId(from, modulePath);
+    } catch {
+      moduleID = this.mockState.getEsmModuleId(from, modulePath);
+    }
     return this.requireResultFromModule(
       this.requireMockedEsmModule(from, moduleName, moduleID, modulePath),
     ) as T;

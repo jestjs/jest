@@ -1746,7 +1746,23 @@ describe('Runtime sync ESM graph - automock', () => {
     },
   );
 
-
+  testWithSyncEsm(
+    'require() and import share one instance of a root manual mock',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        moduleFileExtensions: ['js', 'mjs', 'cjs', 'json'],
+        rootDir: ROOT_DIR,
+      });
+      const required = runtime.requireModuleOrMock(FROM, 'rooted-mock-pkg');
+      expect(required.marker).toEqual({kind: 'rooted-mock'});
+      const imported = (await runtime.unstable_importModule(
+        FROM,
+        './import-rooted-mock-pkg.mjs',
+      )) as any;
+      expect(imported.namespace.marker).toBe(required.marker);
+    },
+  );
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,
