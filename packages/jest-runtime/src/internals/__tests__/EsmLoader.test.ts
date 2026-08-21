@@ -85,8 +85,9 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
       getModuleMock: jest.fn(),
       setModuleMock: jest.fn(),
     } as unknown as jest.Mocked<ModuleRegistries>,
-    requireModule: jest.fn() as any,
-    requireModuleOrMock: jest.fn() as any,
+    requireModule: jest.fn<(from: string, moduleName: string) => unknown>(),
+    requireModuleOrMock:
+      jest.fn<(from: string, moduleName: string) => unknown>(),
     resolution: {
       canResolveSync: jest.fn(() => true),
       isCoreModule: jest.fn(() => false),
