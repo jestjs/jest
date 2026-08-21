@@ -886,7 +886,10 @@ export class EsmLoader {
           cacheKey,
           kind: 'prelinked',
           module: buildJsonSyntheticModule(
-            this.transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS),
+            this.transformCache.transformJson(
+              modulePath,
+              ESM_TRANSFORM_OPTIONS,
+            ),
             modulePath,
             context,
           ),
@@ -1594,21 +1597,25 @@ export class EsmLoader {
           return core;
         }
 
-        const transformedCode = this.transformCache.canTransformSync(modulePath)
-          ? this.transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS)
-          : await this.transformCache.transformAsync(
-              modulePath,
-              ESM_TRANSFORM_OPTIONS,
-            );
-
         let module: VMModule;
         if (modulePath.endsWith('.json')) {
           module = buildJsonSyntheticModule(
-            transformedCode,
+            this.transformCache.transformJson(
+              modulePath,
+              ESM_TRANSFORM_OPTIONS,
+            ),
             modulePath,
             context,
           );
         } else {
+          const transformedCode = this.transformCache.canTransformSync(
+            modulePath,
+          )
+            ? this.transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS)
+            : await this.transformCache.transformAsync(
+                modulePath,
+                ESM_TRANSFORM_OPTIONS,
+              );
           module = new SourceTextModule(transformedCode, {
             context,
             identifier: modulePath,

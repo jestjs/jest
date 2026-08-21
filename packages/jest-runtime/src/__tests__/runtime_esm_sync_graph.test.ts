@@ -726,6 +726,18 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     expect(ns.data).toEqual({answer: 42, label: 'json'});
   });
 
+  testWithSyncEsm('imports a JSON dep that starts with a BOM', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const ns = runtime.requireModule(FROM, './import-bom-json.mjs');
+    expect(ns.key).toBe('bom-value');
+  });
+
+  testWithVmEsm('imports a JSON module that starts with a BOM', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(FROM, './bom.json')) as any;
+    expect(m.namespace.default).toEqual({key: 'bom-value'});
+  });
+
   testWithSyncEsm('require()s an ESM file with a data: URI dep', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const ns = runtime.requireModule(FROM, './import-data-uri.mjs');
