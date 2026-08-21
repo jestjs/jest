@@ -172,6 +172,12 @@ export default class Resolver {
     options: FindNodeModuleConfig,
   ): Promise<string | null> {
     const resolverModule = loadResolver(options.resolver);
+    // Without a custom resolver this is the sync `defaultResolver`, and
+    // resolution stays sync from here: awaiting one resolution per module
+    // costs about 6x more per specifier, and the sync entry points
+    // (`require`, `require(esm)`, the sync ESM graph walker) cannot await at
+    // all. Node made `import.meta.resolve` sync for the same reasons.
+    const isDefaultResolver = resolverModule === defaultResolver;
     let resolver: ResolverInterface = defaultAsyncResolver;
 
     if (typeof resolverModule === 'function') {
@@ -206,9 +212,8 @@ export default class Resolver {
 
     try {
       // A swallowed miss doesn't need the Error the throwing contract builds.
-      if (resolver === defaultAsyncResolver && !throwOnMiss) {
-        const result = await baseResolver(path, resolverOptions, true);
-        return result.path ?? null;
+      if (isDefaultResolver && !throwOnMiss) {
+        return baseResolver(path, resolverOptions).path ?? null;
       }
 
       return await resolver(path, resolverOptions);
