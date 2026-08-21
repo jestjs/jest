@@ -135,6 +135,24 @@ function makeRequireAsyncError(
   return error;
 }
 
+// Node satisfies a source-phase request (`import source` / `import.source()`,
+// used for WebAssembly) by attaching the compiled `WebAssembly.Module` to the
+// target module via the internal `ModuleWrap#setModuleSourceObject`. `node:vm`
+// exposes no equivalent - no option on `SyntheticModule`, no method on
+// `vm.Module` - so the phase cannot be implemented here until it does.
+// Without this check V8 fails at `instantiate()` with a bare "Source phase
+// import object is not defined" SyntaxError pointing at Jest internals.
+function makeSourcePhaseUnsupportedError(
+  specifier: string,
+  referencingIdentifier: string,
+): NodeJS.ErrnoException {
+  const error: NodeJS.ErrnoException = new SyntaxError(
+    `Jest cannot load '${specifier}' (imported from ${referencingIdentifier}): source phase imports ('import source' / 'import.source()') are not supported, because node:vm has no way to provide a module source object.`,
+  );
+  error.code = 'ERR_SOURCE_PHASE_NOT_DEFINED';
+  return error;
+}
+
 function makeRequireCycleError(
   modulePath: string,
   requiredFrom: string | undefined,
@@ -1115,6 +1133,20 @@ export class EsmLoader {
     return module;
   }
 
+  // Legacy-path counterpart of the walker's per-request check: scan a freshly
+  // constructed module's requests where Node exposes them.
+  private throwOnSourcePhaseRequests(
+    module: VMModuleWithAsyncGraph,
+    identifier: string,
+  ): void {
+    if (module.moduleRequests === undefined) return;
+    for (const {specifier, phase} of module.moduleRequests) {
+      if (phase === 'source') {
+        throw makeSourcePhaseUnsupportedError(specifier, identifier);
+      }
+    }
+  }
+
   private getContext(): VMContext {
     invariant(
       typeof this.environment.getVmContext === 'function',
@@ -1692,7 +1724,10 @@ export class EsmLoader {
       `moduleRequests unavailable on ${identifier}`,
     );
     const deps: Array<string> = [];
-    for (const {specifier, attributes} of module.moduleRequests) {
+    for (const {specifier, attributes, phase} of module.moduleRequests) {
+      if (phase === 'source') {
+        throw makeSourcePhaseUnsupportedError(specifier, identifier);
+      }
       const resolved = this.resolveSpecifierForSyncGraph(
         identifier,
         specifier,
@@ -1748,7 +1783,13 @@ export class EsmLoader {
     identifier: string,
     context: VMContext,
     importAttributes?: ImportAttributes,
+    phase?: string,
   ): Promise<VMModule> {
+    if (phase === 'source') {
+      return Promise.reject(
+        makeSourcePhaseUnsupportedError(specifier, identifier),
+      );
+    }
     return this.resolveModule<VMModule>(specifier, identifier, context).then(
       m => {
         validateImportAttributes(
@@ -1896,6 +1937,11 @@ export class EsmLoader {
           });
         }
 
+        this.throwOnSourcePhaseRequests(
+          module as VMModuleWithAsyncGraph,
+          modulePath,
+        );
+
         invariant(
           !registry.has(cacheKey),
           `Module cache already has entry ${cacheKey}. This is a bug in Jest, please report it!`,
@@ -1993,6 +2039,10 @@ export class EsmLoader {
           },
         });
       }
+      this.throwOnSourcePhaseRequests(
+        module as VMModuleWithAsyncGraph,
+        specifier,
+      );
       registry.set(specifier, module);
       return module as T;
     }
@@ -2234,7 +2284,14 @@ export class EsmLoader {
     specifier: string,
     referencingModule: VMModule,
     importAttributes?: ImportAttributes,
+    phase?: string,
   ): Promise<VMModule> => {
+    if (phase === 'source') {
+      throw makeSourcePhaseUnsupportedError(
+        specifier,
+        referencingModule.identifier,
+      );
+    }
     invariant(
       runtimeSupportsVmModules,
       'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',

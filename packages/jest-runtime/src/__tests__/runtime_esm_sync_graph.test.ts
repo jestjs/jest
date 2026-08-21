@@ -1695,3 +1695,43 @@ describe('Runtime sync ESM graph - link-time errors before CJS execution', () =>
     },
   );
 });
+
+describe('Runtime sync ESM graph - source phase imports', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithSyncEsm(
+    'throws an actionable error for a static import source',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-source-phase.mjs'),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_SOURCE_PHASE_NOT_DEFINED',
+          message: expect.stringContaining('source phase imports'),
+        }),
+      );
+      expect(() =>
+        runtime.requireModule(FROM, './import-source-phase.mjs'),
+      ).toThrow(
+        expect.objectContaining({code: 'ERR_SOURCE_PHASE_NOT_DEFINED'}),
+      );
+    },
+  );
+
+  testWithSyncEsm(
+    'rejects a dynamic import.source() with the same error',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './dynamic-source-phase.mjs',
+      )) as any;
+      await expect(m.namespace.loadSource()).rejects.toThrow(
+        expect.objectContaining({code: 'ERR_SOURCE_PHASE_NOT_DEFINED'}),
+      );
+    },
+  );
+});

@@ -73,6 +73,7 @@ Jest's module system diverges from Node's in a few places:
 - Importing JSON without `with {type: 'json'}` emits a warning instead of throwing. This becomes an error in a future major version.
 - An `application/wasm` data: URI requires the `;base64` parameter and reports a descriptive error without it, where Node hands the percent-decoded text to WebAssembly and fails with `CompileError`.
 - A bare core specifier with a query or fragment (`import 'fs?q'`) throws `ERR_UNKNOWN_BUILTIN_MODULE`, where Node treats the whole string as a package name and fails with `ERR_MODULE_NOT_FOUND`. The `node:`-prefixed form throws the same error in both.
+- Source phase imports (`import source` / `import.source()`, used for WebAssembly) throw `ERR_SOURCE_PHASE_NOT_DEFINED`: Node attaches the compiled `WebAssembly.Module` to the target through an internal API that `node:vm` does not expose, so Jest cannot provide the source object.
 - Stack traces show file paths, not `file://` URLs.
 
 ## Module mocking in ESM
