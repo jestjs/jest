@@ -270,6 +270,8 @@ export default class Runtime {
       transformCache: this.transformCache,
     });
 
+    this.installGetBuiltinModule();
+
     if (config.automock) {
       for (const filePath of config.setupFiles) {
         if (filePath.includes(NODE_MODULES)) {
@@ -472,6 +474,27 @@ export default class Runtime {
     }
 
     return mockRegistry.get(moduleID) as T;
+  }
+
+  // The sandbox `process` is a copy, so its `getBuiltinModule` is the host
+  // function by reference: it handed back the host `process` (Node guarantees
+  // `process.getBuiltinModule('process') === process`) and the host
+  // `node:module`, whose `createRequire` loads files outside Jest's registry,
+  // mocks and transforms. Route it through the same provider a `require()` of
+  // a core module uses.
+  private installGetBuiltinModule(): void {
+    // `getBuiltinModule` is Node 22.3+ and not in @types/node@18.
+    const sandboxProcess = this._environment.global?.process as
+      | (NodeJS.Process & {getBuiltinModule?: (id: string) => unknown})
+      | undefined;
+    if (
+      sandboxProcess === undefined ||
+      typeof sandboxProcess.getBuiltinModule !== 'function'
+    ) {
+      return;
+    }
+    sandboxProcess.getBuiltinModule = (id: string) =>
+      nativeModule.isBuiltin(id) ? this.coreModule.require(id) : undefined;
   }
 
   // require(esm) targets generate through the ESM loader's automock, which
