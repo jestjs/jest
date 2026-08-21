@@ -66,6 +66,7 @@ exports[`prints the config object 1`] = `
     "slowTestThreshold": 5,
     "snapshotFormat": {},
     "snapshotSerializers": [],
+    "stackTraceIgnorePatterns": [],
     "testEnvironment": "node",
     "testEnvironmentOptions": {},
     "testLocationInResults": false,

@@ -48,6 +48,7 @@ export default function getConsoleOutput(
     const options: StackTraceOptions = {
       noCodeFrame,
       noStackTrace,
+      stackTraceIgnorePatterns: config.stackTraceIgnorePatterns,
     };
 
     const formattedStackTrace = formatStackTrace(origin, config, options);

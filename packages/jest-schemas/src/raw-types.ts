@@ -323,6 +323,7 @@ export const InitialOptions = Type.Partial(
     snapshotResolver: Type.String(),
     snapshotSerializers: Type.Array(Type.String()),
     snapshotFormat: SnapshotFormat,
+    stackTraceIgnorePatterns: Type.Array(Type.String()),
     errorOnDeprecated: Type.Boolean(),
     testEnvironment: Type.String(),
     testEnvironmentOptions: Type.Record(Type.String(), Type.Unknown()),

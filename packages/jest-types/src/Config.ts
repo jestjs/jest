@@ -201,6 +201,7 @@ export type DefaultOptions = {
   slowTestThreshold: number;
   snapshotFormat: SnapshotFormat;
   snapshotSerializers: Array<string>;
+  stackTraceIgnorePatterns: Array<string>;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
   testFailureExitCode: number;
@@ -389,6 +390,7 @@ export type ProjectConfig = {
   snapshotResolver?: string;
   snapshotSerializers: Array<string>;
   snapshotFormat: SnapshotFormat;
+  stackTraceIgnorePatterns: Array<string>;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
   testMatch: Array<string>;
@@ -481,6 +483,7 @@ export type Argv = Arguments<
     showConfig: boolean;
     silent: boolean;
     snapshotSerializers: Array<string>;
+    stackTraceIgnorePatterns: Array<string>;
     testEnvironment: string;
     testEnvironmentOptions: string;
     testFailureExitCode: string | null | undefined;

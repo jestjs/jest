@@ -181,12 +181,12 @@ exports[`should return the error cause if there is one 1`] = `
 
     Test exception
 
-      <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:570:17)</intensity>
+      <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:630:17)</intensity>
 
     Cause:
      Cause Error
 
-          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:571:12)</intensity>
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:631:12)</intensity>
 "
 `;
 
@@ -195,16 +195,16 @@ exports[`should return the inner errors of an AggregateError 1`] = `
 
     AggregateError:
 
-      <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:588:20)</intensity>
+      <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:649:20)</intensity>
 
     Errors contained in AggregateError:
      Err 1
 
-          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:588:40)</intensity>
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:649:40)</intensity>
 
      Err 2
 
-          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:588:60)</intensity>
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:649:60)</intensity>
 "
 `;
 
@@ -213,16 +213,16 @@ exports[`should return the inner errors of an AggregateError test failure with t
 
     AggregateError:
 
-<dim>      <dim>at Object.<anonymous> (</intensity><dim>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:632:20)</intensity><dim></intensity>
+<dim>      <dim>at Object.<anonymous> (</intensity><dim>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:695:20)</intensity><dim></intensity>
 
     Errors contained in AggregateError:
         inner reason A
 
-    <dim>      <dim>at Object.<anonymous> (</intensity><dim>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:633:5)</intensity><dim></intensity>
+    <dim>      <dim>at Object.<anonymous> (</intensity><dim>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:696:5)</intensity><dim></intensity>
 
         inner reason B
 
-    <dim>      <dim>at Object.<anonymous> (</intensity><dim>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:634:5)</intensity><dim></intensity>
+    <dim>      <dim>at Object.<anonymous> (</intensity><dim>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:697:5)</intensity><dim></intensity>
 "
 `;
 

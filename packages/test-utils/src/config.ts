@@ -127,6 +127,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   snapshotFormat: {},
   snapshotResolver: undefined,
   snapshotSerializers: [],
+  stackTraceIgnorePatterns: [],
   testEnvironment: 'node',
   testEnvironmentOptions: {},
   testLocationInResults: false,

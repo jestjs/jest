@@ -34,12 +34,13 @@ try {
 
 export type StackTraceConfig = Pick<
   Config.ProjectConfig,
-  'rootDir' | 'testMatch'
+  'rootDir' | 'stackTraceIgnorePatterns' | 'testMatch'
 >;
 
 export type StackTraceOptions = {
-  noStackTrace: boolean;
+  noStackTrace?: boolean;
   noCodeFrame?: boolean;
+  stackTraceIgnorePatterns?: Array<string>;
 };
 
 const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
@@ -87,6 +88,15 @@ const colorStackLines = (stack: string): string =>
 const isJestInternalFrame = (line: string) =>
   JEST_INTERNALS_IGNORE.test(line) ||
   (PATH_JEST_PACKAGES !== null && line.includes(PATH_JEST_PACKAGES));
+
+const matchesStackTraceIgnorePatterns = (
+  line: string,
+  patterns: Array<RegExp>,
+) => patterns.some(pattern => pattern.test(line));
+
+const compileStackTraceIgnorePatterns = (
+  patterns: Array<string> | undefined,
+): Array<RegExp> => (patterns ?? []).map(pattern => new RegExp(pattern));
 
 const trim = (string: string) => (string || '').trim();
 
@@ -285,6 +295,9 @@ const removeInternalStackEntries = (
   options: StackTraceOptions,
 ): Array<string> => {
   let pathCounter = 0;
+  const stackTraceIgnorePatterns = compileStackTraceIgnorePatterns(
+    options.stackTraceIgnorePatterns,
+  );
 
   return lines.filter(line => {
     if (!line) {
@@ -316,6 +329,12 @@ const removeInternalStackEntries = (
     }
 
     if (JASMINE_IGNORE.test(line)) {
+      return false;
+    }
+
+    if (
+      matchesStackTraceIgnorePatterns(slash(line), stackTraceIgnorePatterns)
+    ) {
       return false;
     }
 
@@ -395,7 +414,11 @@ export function formatStackTrace(
   options: StackTraceOptions,
   testPath?: string,
 ): string {
-  const lines = getStackTraceLines(stack, options);
+  const lines = getStackTraceLines(stack, {
+    ...options,
+    stackTraceIgnorePatterns:
+      options.stackTraceIgnorePatterns ?? config.stackTraceIgnorePatterns,
+  });
   let renderedCallsite = '';
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
