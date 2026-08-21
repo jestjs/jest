@@ -28,6 +28,7 @@ jest.mock('fb-watchman', () => {
       callback(null, response.next ? response.next().value : response);
     }),
   );
+  Client.prototype.connect = jest.fn();
   Client.prototype.on = jest.fn();
   Client.prototype.end = jest.fn();
   return {Client};
@@ -123,6 +124,7 @@ describe('watchman watch', () => {
 
   afterEach(() => {
     watchman.Client.mock.instances[0].command.mockClear();
+    watchman.Client.prototype.connect.mockClear();
   });
 
   test('returns a list of all files when there are no clocks', async () => {
@@ -681,5 +683,47 @@ describe('watchman watch', () => {
         [TOMATO_RELATIVE]: ['', 31, 41, 0, '', null],
       }),
     );
+  });
+
+  test('connects through a known sockname scoped to the connect call', async () => {
+    delete process.env.WATCHMAN_SOCK;
+    let socknameDuringConnect;
+    watchman.Client.prototype.connect.mockImplementationOnce(() => {
+      socknameDuringConnect = process.env.WATCHMAN_SOCK;
+    });
+
+    await watchmanCrawl({
+      data: {
+        clocks: new Map(),
+        files: new Map(),
+      },
+      extensions: ['js', 'json'],
+      ignore: pearMatcher,
+      rootDir: ROOT_MOCK,
+      roots: ROOTS,
+      watchmanSockname: '/known/sock',
+    });
+
+    const client = watchman.Client.mock.instances[0];
+    expect(client.connect).toHaveBeenCalledTimes(1);
+    expect(socknameDuringConnect).toBe('/known/sock');
+    expect(process.env.WATCHMAN_SOCK).toBeUndefined();
+  });
+
+  test('does not connect explicitly without a known sockname', async () => {
+    await watchmanCrawl({
+      data: {
+        clocks: new Map(),
+        files: new Map(),
+      },
+      extensions: ['js', 'json'],
+      ignore: pearMatcher,
+      rootDir: ROOT_MOCK,
+      roots: ROOTS,
+      watchmanSockname: undefined,
+    });
+
+    const client = watchman.Client.mock.instances[0];
+    expect(client.connect).not.toHaveBeenCalled();
   });
 });

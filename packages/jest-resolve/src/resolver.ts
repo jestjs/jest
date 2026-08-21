@@ -565,16 +565,36 @@ export default class Resolver {
     name: string,
     options?: Pick<ResolveModuleConfig, 'conditions'>,
   ): string | null {
+    const mock = this._lookupManualMock(name);
+    if (mock) {
+      return mock;
+    }
+
+    const resolvedName = this.resolveStubModuleName(from, name, options);
+    if (resolvedName) {
+      return this._lookupManualMock(resolvedName);
+    }
+    return null;
+  }
+
+  // A colon is not a legal filename character on Windows, so a manual mock for
+  // `node:fs` lives at `__mocks__/fs`. Both specifier forms have to find it.
+  private _lookupManualMock(name: string): string | null {
     const mock = this._moduleMap.getMockModule(name);
     if (mock) {
       return mock;
-    } else {
-      const resolvedName = this.resolveStubModuleName(from, name, options);
-      if (resolvedName) {
-        return this._moduleMap.getMockModule(resolvedName) ?? null;
-      }
     }
-    return null;
+
+    if (!this.isCoreModule(name)) {
+      return null;
+    }
+
+    const normalized = this.normalizeCoreModuleSpecifier(name);
+    if (normalized === name) {
+      return null;
+    }
+
+    return this._moduleMap.getMockModule(normalized) ?? null;
   }
 
   async getMockModuleAsync(
@@ -582,18 +602,18 @@ export default class Resolver {
     name: string,
     options: Pick<ResolveModuleConfig, 'conditions'>,
   ): Promise<string | null> {
-    const mock = this._moduleMap.getMockModule(name);
+    const mock = this._lookupManualMock(name);
     if (mock) {
       return mock;
-    } else {
-      const resolvedName = await this.resolveStubModuleNameAsync(
-        from,
-        name,
-        options,
-      );
-      if (resolvedName) {
-        return this._moduleMap.getMockModule(resolvedName) ?? null;
-      }
+    }
+
+    const resolvedName = await this.resolveStubModuleNameAsync(
+      from,
+      name,
+      options,
+    );
+    if (resolvedName) {
+      return this._lookupManualMock(resolvedName);
     }
     return null;
   }
@@ -900,11 +920,6 @@ export default class Resolver {
     moduleName: string,
     options?: Pick<ResolveModuleConfig, 'conditions'>,
   ): Promise<string | null> {
-    // Strip node URL scheme from core modules imported using it
-    if (this.isCoreModule(moduleName)) {
-      return this.normalizeCoreModuleSpecifier(moduleName);
-    }
-
     const moduleNameMapper = this._options.moduleNameMapper;
     if (moduleNameMapper == null || moduleNameMapper.length === 0) {
       return null;

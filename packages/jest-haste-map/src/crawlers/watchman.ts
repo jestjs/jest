@@ -10,6 +10,7 @@ import * as watchman from 'fb-watchman';
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
 import normalizePathSep from '../lib/normalizePathSep';
+import {connectClientToSockname} from '../lib/watchmanSockname';
 import type {
   CrawlerOptions,
   FileData,
@@ -107,6 +108,10 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   // crawler, so subscribe before issuing any command.
   let clientError;
   client.on('error', error => (clientError = watchmanError(error)));
+
+  if (options.watchmanSockname !== undefined) {
+    connectClientToSockname(client, options.watchmanSockname);
+  }
 
   const cmd = <T>(...args: Array<any>): Promise<T> =>
     new Promise((resolve, reject) =>
