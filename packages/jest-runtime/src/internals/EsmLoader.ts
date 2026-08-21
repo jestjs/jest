@@ -1199,6 +1199,13 @@ export class EsmLoader {
 
   // Node answers `import.meta.resolve('fs')` with `'node:fs'`, not a file URL -
   // a builtin has no path to turn into one.
+  //
+  // Deliberate divergence: Node's `import.meta.resolve` is resolution-only -
+  // `resolve('./missing.js')` returns the URL without checking existence, and
+  // an unresolvable bare specifier throws ERR_MODULE_NOT_FOUND. Here the full
+  // jest-resolve pipeline answers (moduleNameMapper, extension resolution,
+  // haste), which is the point of the API inside a test - so a missing file
+  // throws jest-resolve's MODULE_NOT_FOUND instead of returning a URL.
   private resolveForImportMeta(parentPath: string, specifier: string): string {
     // Node echoes `node:` specifiers verbatim - even with a query or fragment,
     // which only fail later, at load time.
