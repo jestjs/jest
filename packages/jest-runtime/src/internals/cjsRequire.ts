@@ -18,6 +18,11 @@ import type {TestMainModule} from './TestMainModule';
 import type {TransformOptions} from './TransformCache';
 import {type InitialModule, createInitialModule} from './moduleTypes';
 
+// Node hands every string with a `file:` scheme to the URL parser, which
+// matches the scheme case-insensitively and normalizes missing slashes and a
+// `localhost` authority away.
+const fileUrlSchemeRegex = /^file:/i;
+
 export const JEST_RESOLVE_OUTSIDE_VM_OPTION = Symbol.for(
   'jest-resolve-outside-vm-option',
 );
@@ -230,11 +235,9 @@ export class CoreModuleProvider {
     }
 
     const createRequire = (modulePath: string | URL) => {
-      // Node treats any string starting with `file://` as a URL - the parser
-      // normalizes a `localhost` authority away, so those spellings work too.
       const filename =
         typeof modulePath === 'string'
-          ? modulePath.startsWith('file://')
+          ? fileUrlSchemeRegex.test(modulePath)
             ? fileURLToPath(new URL(modulePath))
             : modulePath
           : fileURLToPath(modulePath);

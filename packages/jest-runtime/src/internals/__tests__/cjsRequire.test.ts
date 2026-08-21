@@ -379,6 +379,27 @@ describe('CoreModuleProvider', () => {
     expect(forFilename).toHaveBeenCalledWith(absolutePath);
   });
 
+  test('mocked Module.createRequire accepts single-slash and upper-case file: URLs', () => {
+    const requireBuilder = makeBuilder();
+    const forFilename: jest.SpiedFunction<typeof requireBuilder.forFilename> =
+      jest
+        .spyOn(requireBuilder, 'forFilename')
+        .mockReturnValue({} as NodeJS.Require);
+    const {provider} = makeProvider({
+      normalizeCoreModuleSpecifier: () => 'module',
+      requireBuilder,
+    });
+    const ModuleClass = provider.require(
+      'module',
+    ) as typeof nativeModule.Module;
+    const absolutePath = path.resolve('/abs/x.js');
+    const href = pathToFileURL(absolutePath).href;
+    ModuleClass.createRequire(href.replace('file://', 'file:'));
+    expect(forFilename).toHaveBeenLastCalledWith(absolutePath);
+    ModuleClass.createRequire(href.replace('file://', 'FILE://'));
+    expect(forFilename).toHaveBeenLastCalledWith(absolutePath);
+  });
+
   test('mocked Module.createRequire rejects relative filenames', () => {
     const {provider} = makeProvider({
       normalizeCoreModuleSpecifier: () => 'module',
