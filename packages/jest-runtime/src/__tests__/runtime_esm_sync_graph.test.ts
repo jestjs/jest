@@ -1823,6 +1823,21 @@ describe('Runtime sync ESM graph - automock', () => {
     },
   );
 
+  testWithSyncEsm(
+    'a static import of an async-only alias retries through the legacy loader',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        resolver: path.join(ROOT_DIR, 'dual-hook-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-dual-alias-static.mjs',
+      )) as any;
+      expect(m.namespace.greet._isMockFunction).toBe(true);
+    },
+  );
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,

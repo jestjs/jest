@@ -20,7 +20,7 @@ import {noop} from '../helpers';
 import type {CjsExportsCache} from './CjsExportsCache';
 import type {FileCache} from './FileCache';
 import type {JestGlobals} from './JestGlobals';
-import type {MockState} from './MockState';
+import type {MockDecision, MockState} from './MockState';
 import {CjsParseError} from './ModuleExecutor';
 import type {ModuleRegistries} from './ModuleRegistries';
 import {type Resolution, isWasm} from './Resolution';
@@ -1126,10 +1126,24 @@ export class EsmLoader {
 
     // `data:` URIs pass through the split whole, so the mock decision sees
     // the full specifier - the same form the mock was registered under.
-    const {shouldMock, moduleID} = this.mockState.shouldMockEsmSync(
-      referencingIdentifier,
-      specifierPath,
-    );
+    // The decision resolves the specifier internally, so it can fail before
+    // the resolution below applies its dual-hook fallback - same rule here.
+    let decision: MockDecision;
+    try {
+      decision = this.mockState.shouldMockEsmSync(
+        referencingIdentifier,
+        specifierPath,
+      );
+    } catch (error) {
+      if (
+        mode === 'sync-required' ||
+        !this.resolution.hasDistinctAsyncResolver()
+      ) {
+        throw error;
+      }
+      return LOAD_ASYNC;
+    }
+    const {shouldMock, moduleID} = decision;
     if (shouldMock && this.mockDecisionServable(moduleID)) {
       // Import-attribute validation runs against the returned module path -
       // an extensionless or bare specifier of a JSON module must still
