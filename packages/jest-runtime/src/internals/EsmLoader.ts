@@ -27,6 +27,8 @@ import {type Resolution, isWasm} from './Resolution';
 import type {TestState} from './TestState';
 import type {TransformCache, TransformOptions} from './TransformCache';
 import type {CoreModuleProvider} from './cjsRequire';
+import {parseDataUri} from './dataUri';
+import {ImportAttributeValidator} from './importAttributes';
 import type {
   ESModule,
   ImportAttributes,
@@ -165,232 +167,7 @@ function makeRequireCycleError(
   return error;
 }
 
-// Decode a `data:` URI specifier into its mime type and decoded code/body.
-// `application/wasm` returns a Buffer; everything else returns a UTF-8 string.
-const dataURIRegex =
-  /^data:(?<mime>[^;,]*)(?<parameters>(?:;[^;,]*)*),(?<code>.*)$/;
-
-// Node's own mediatype extraction (lib/internal/modules/esm/load.js) - the
-// capture is both the format-decision input and what the rejection message
-// echoes, and a failed capture reports the literal string "null".
-const nodeMediatypeRegex = /^data:([^/]+\/[^;,]+)[^,]*,/;
-
-// Node's mimeToFormat: the JavaScript mime tolerates surrounding spaces and
-// matches case-insensitively (text/ and application/ alike), while
-// application/json and application/wasm require an exact match.
-const javaScriptMimeRegex = /^ *(?:text|application)\/javascript *$/i;
-
-function makeInvalidUrlError(): NodeJS.ErrnoException {
-  const error: NodeJS.ErrnoException = new TypeError('Invalid URL');
-  error.code = 'ERR_INVALID_URL';
-  return error;
-}
-
-// The `data-urls` package implements the full WHATWG data URL processor,
-// but it is too heavy for this limited use case - it drags in `whatwg-url`
-// and its Unicode tables. See https://github.com/jsdom/data-urls/issues/7.
-
-// The WHATWG forgiving percent-decode: valid %XX escapes decode to their
-// byte, anything else passes through as its UTF-8 bytes instead of throwing.
-// Literal spans encode in one operation each, so an escape-free payload is a
-// single allocation.
-function forgivingPercentDecode(input: string): Buffer {
-  if (!input.includes('%')) {
-    return Buffer.from(input, 'utf8');
-  }
-  const chunks: Array<Buffer> = [];
-  let literalStart = 0;
-  let index = 0;
-  while (index < input.length) {
-    if (
-      input[index] === '%' &&
-      /^[0-9A-Fa-f]{2}$/.test(input.slice(index + 1, index + 3))
-    ) {
-      if (literalStart < index) {
-        chunks.push(Buffer.from(input.slice(literalStart, index), 'utf8'));
-      }
-      chunks.push(
-        Buffer.of(Number.parseInt(input.slice(index + 1, index + 3), 16)),
-      );
-      index += 3;
-      literalStart = index;
-    } else {
-      index++;
-    }
-  }
-  if (literalStart < input.length) {
-    chunks.push(Buffer.from(input.slice(literalStart), 'utf8'));
-  }
-  return Buffer.concat(chunks);
-}
-
-// The WHATWG forgiving base64: ASCII whitespace is stripped, up to two
-// trailing `=` are allowed, and anything else outside the base64 alphabet
-// (or a leftover length of 1 mod 4) is an invalid URL.
-function forgivingBase64Decode(input: string): Buffer {
-  let data = input.replaceAll(/[\t\n\f\r ]/g, '');
-  if (data.length % 4 === 0) {
-    data = data.replace(/={1,2}$/, '');
-  }
-  if (data.length % 4 === 1 || !/^[A-Za-z0-9+/]*$/.test(data)) {
-    throw makeInvalidUrlError();
-  }
-  return Buffer.from(data, 'base64');
-}
-
-function parseDataUri(specifier: string): {
-  mime: string;
-  code: string | Buffer;
-} {
-  // The URL parser strips ASCII tab and newline from the input entirely, and
-  // the fragment starts at the first # - a fragment before the comma leaves
-  // the data: URL without a payload at all.
-  const serialized = specifier.replaceAll(/[\t\n\r]/g, '').split('#', 1)[0];
-  const match = serialized.match(dataURIRegex);
-  if (!match || !match.groups) {
-    throw makeInvalidUrlError();
-  }
-  // The payload decodes before the format check, so an invalid body wins
-  // over an unknown mime type. Mediatype parameters are case-insensitive and
-  // unknown ones are ignored; base64 applies only as the final parameter.
-  const parameters = match.groups.parameters.split(';').slice(1);
-  // Spaces are the only whitespace that can surround the token: the URL
-  // parser strips tab and newline and percent-encodes everything else.
-  const isBase64 =
-    parameters
-      .at(-1)
-      ?.replaceAll(/^ +| +$/g, '')
-      .toLowerCase() === 'base64';
-  const decodedBody = isBase64
-    ? forgivingBase64Decode(
-        forgivingPercentDecode(match.groups.code).toString(),
-      )
-    : forgivingPercentDecode(match.groups.code);
-  const mediatype = serialized.match(nodeMediatypeRegex)?.[1] ?? null;
-  let mime: string | null = null;
-  if (mediatype !== null) {
-    if (javaScriptMimeRegex.test(mediatype)) {
-      mime = 'text/javascript';
-    } else if (
-      mediatype === 'application/json' ||
-      mediatype === 'application/wasm'
-    ) {
-      mime = mediatype;
-    }
-  }
-  if (mime === null) {
-    const error: NodeJS.ErrnoException = new RangeError(
-      `Unknown module format: ${mediatype} for URL ${specifier}`,
-    );
-    error.code = 'ERR_UNKNOWN_MODULE_FORMAT';
-    throw error;
-  }
-  if (mime === 'application/wasm') {
-    if (parameters.length === 0) throw new Error('Missing data URI encoding');
-    if (!isBase64) {
-      throw new Error(`Invalid data URI encoding: ${parameters.join(';')}`);
-    }
-    return {code: decodedBody, mime};
-  }
-  return {code: decodedBody.toString(), mime};
-}
-
 const urlSchemeRegex = /^[A-Za-z][A-Za-z0-9+.-]*:/;
-
-// Mirrors Node's `validateAttributes` in lib/internal/modules/esm/assert.js.
-// The only deliberate divergence: missing `type: 'json'` warns instead of
-// throwing — see the JSON branch below.
-const warnedMissingJsonAttributePairs = new Set<string>();
-// Soft cap so a long-lived process (watch mode, --runInBand) can't grow the
-// set without bound. When we hit it we drop everything; users see at most one
-// extra repeated warning per pair, which is benign.
-const MAX_WARNED_PAIRS = 10_000;
-
-function isJsonModule(modulePath: string): boolean {
-  return (
-    modulePath.endsWith('.json') ||
-    modulePath.startsWith('data:application/json')
-  );
-}
-
-// Avoid dumping the full payload of data: URIs (or other very long specifiers)
-// into stderr.
-function describeForWarning(modulePath: string): string {
-  if (modulePath.startsWith('data:')) {
-    const comma = modulePath.indexOf(',');
-    if (comma > 0) return `${modulePath.slice(0, comma)},…`;
-  }
-  return modulePath;
-}
-
-function makeImportAttributeError(
-  code:
-    | 'ERR_IMPORT_ATTRIBUTE_UNSUPPORTED'
-    | 'ERR_IMPORT_ATTRIBUTE_MISSING'
-    | 'ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE',
-  message: string,
-): NodeJS.ErrnoException {
-  const error: NodeJS.ErrnoException = new TypeError(message);
-  error.code = code;
-  return error;
-}
-
-export function validateImportAttributes(
-  modulePath: string,
-  attributes: ImportAttributes,
-  referencingIdentifier: string,
-): void {
-  for (const key of Object.keys(attributes)) {
-    if (key !== 'type') {
-      throw makeImportAttributeError(
-        'ERR_IMPORT_ATTRIBUTE_UNSUPPORTED',
-        `Import attribute "${key}" with value "${attributes[key]}" is not supported (importing "${modulePath}" from ${referencingIdentifier})`,
-      );
-    }
-  }
-
-  const declaredType = attributes.type;
-  const isJson = isJsonModule(modulePath);
-
-  if (isJson) {
-    if (declaredType === undefined) {
-      // TODO(jest next major): match Node and throw
-      // ERR_IMPORT_ATTRIBUTE_MISSING here. Until then, warn so existing users
-      // without `with { type: 'json' }` keep working.
-      const dedupeKey = `${referencingIdentifier}::${modulePath}`;
-      if (!warnedMissingJsonAttributePairs.has(dedupeKey)) {
-        if (warnedMissingJsonAttributePairs.size >= MAX_WARNED_PAIRS) {
-          warnedMissingJsonAttributePairs.clear();
-        }
-        warnedMissingJsonAttributePairs.add(dedupeKey);
-        const moduleLabel = describeForWarning(modulePath);
-        console.warn(
-          'Jest: importing JSON without an import attribute is deprecated and will be a hard error in the next major. ' +
-            `Update the import of "${moduleLabel}" (from ${referencingIdentifier}): ` +
-            "use `with { type: 'json' }` for static imports, or pass " +
-            "`{ with: { type: 'json' } }` as the second argument to dynamic `import()`.",
-        );
-      }
-      return;
-    }
-    if (declaredType !== 'json') {
-      throw makeImportAttributeError(
-        'ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE',
-        `Module "${modulePath}" is not of type "${declaredType}"`,
-      );
-    }
-    return;
-  }
-
-  // Non-JSON (implicit-type) module. Per HTML spec, the default type cannot
-  // be re-asserted, so any explicit `type` attribute is rejected.
-  if (declaredType !== undefined) {
-    throw makeImportAttributeError(
-      'ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE',
-      `Module "${modulePath}" is not of type "${declaredType}"`,
-    );
-  }
-}
 
 const ESM_TRANSFORM_OPTIONS: TransformOptions = {
   isInternalModule: false,
@@ -504,6 +281,7 @@ export class EsmLoader {
   private readonly testState: TestState;
   private readonly testPath: string;
   private readonly requireFacades = new WeakMap<ESModule, ESModule>();
+  private readonly importAttributeValidator = new ImportAttributeValidator();
   // Every cacheKey popped by a sync walk that is still on the stack. Walks
   // nest (a CJS body executing mid-walk can require() an unrelated ESM root),
   // so this is a stack of one entry per walk rather than a single Set. Each
@@ -1745,7 +1523,11 @@ export class EsmLoader {
         pendingCjsBuilds,
       );
       if (resolved === LOAD_ASYNC) return LOAD_ASYNC;
-      validateImportAttributes(resolved.modulePath, attributes, identifier);
+      this.importAttributeValidator.validate(
+        resolved.modulePath,
+        attributes,
+        identifier,
+      );
       deps.push(resolved.cacheKey);
       if (resolved.enqueue) worklist.push(resolved.enqueue);
     }
@@ -1799,7 +1581,7 @@ export class EsmLoader {
     }
     return this.resolveModule<VMModule>(specifier, identifier, context).then(
       m => {
-        validateImportAttributes(
+        this.importAttributeValidator.validate(
           m.identifier,
           importAttributes ?? {},
           identifier,
@@ -2116,7 +1898,7 @@ export class EsmLoader {
             referencingModule.context,
           );
           const extraAttrs = extra as ModuleLinkExtra | undefined;
-          validateImportAttributes(
+          this.importAttributeValidator.validate(
             resolved.identifier,
             extraAttrs?.attributes ?? extraAttrs?.assert ?? {},
             referencingModule.identifier,
@@ -2314,7 +2096,7 @@ export class EsmLoader {
       referencingModule.identifier,
       referencingModule.context,
     );
-    validateImportAttributes(
+    this.importAttributeValidator.validate(
       dyn.identifier,
       importAttributes ?? {},
       referencingModule.identifier,

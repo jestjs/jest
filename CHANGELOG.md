@@ -16,6 +16,7 @@
 - `[jest-runtime]` Throw an actionable error from `module.register()` and `module.registerHooks()` inside a test - the hooks attached to the loader running Jest itself, never saw the sandboxed requires they were meant for, and stayed registered for every later test file in the worker ([#16391](https://github.com/jestjs/jest/pull/16391))
 - `[jest-runtime]` Surface resolution and import-attribute errors in an ESM graph before executing any of its CJS dependencies, matching Node's run-nothing-on-a-broken-graph behavior ([#16391](https://github.com/jestjs/jest/pull/16391))
 - `[jest-runtime]` Throw `ERR_SOURCE_PHASE_NOT_DEFINED` with an actionable message for `import source` and `import.source()`, instead of failing at instantiation with V8's bare "Source phase import object is not defined" ([#16391](https://github.com/jestjs/jest/pull/16391))
+- `[jest-runtime]` Emit the JSON-without-import-attribute deprecation warning once per test file instead of once per worker, so it is no longer silently swallowed for every file after the first ([#16391](https://github.com/jestjs/jest/pull/16391))
 - `[jest-runtime]` Set `import.meta.main` to `true` in the test file and `false` in every module it loads, matching Node 24+ ([#16367](https://github.com/jestjs/jest/pull/16367))
 - `[jest-runtime]` Resolve the `module-sync` export condition, so a package that exposes its ESM entry point for `require()` loads the same file Node would ([#16336](https://github.com/jestjs/jest/pull/16336))
 
