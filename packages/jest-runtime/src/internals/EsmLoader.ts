@@ -20,7 +20,7 @@ import {noop} from '../helpers';
 import type {CjsExportsCache} from './CjsExportsCache';
 import type {FileCache} from './FileCache';
 import type {JestGlobals} from './JestGlobals';
-import type {MockDecision, MockState} from './MockState';
+import type {MockState} from './MockState';
 import {CjsParseError} from './ModuleExecutor';
 import type {ModuleRegistries} from './ModuleRegistries';
 import {type Resolution, isWasm} from './Resolution';
@@ -1135,24 +1135,10 @@ export class EsmLoader {
 
     // `data:` URIs pass through the split whole, so the mock decision sees
     // the full specifier - the same form the mock was registered under.
-    // The decision resolves the specifier internally, so it can fail before
-    // the resolution below applies its dual-hook fallback - same rule here.
-    let decision: MockDecision;
-    try {
-      decision = this.mockState.shouldMockEsmSync(
-        referencingIdentifier,
-        specifierPath,
-      );
-    } catch (error) {
-      if (
-        mode === 'sync-required' ||
-        !this.resolution.hasDistinctAsyncResolver()
-      ) {
-        throw error;
-      }
-      return LOAD_ASYNC;
-    }
-    const {shouldMock, moduleID} = decision;
+    const {shouldMock, moduleID} = this.mockState.shouldMockEsmSync(
+      referencingIdentifier,
+      specifierPath,
+    );
     if (shouldMock && this.mockDecisionServable(moduleID)) {
       // Import-attribute validation runs against the returned module path -
       // an extensionless or bare specifier of a JSON module must still
@@ -1217,28 +1203,15 @@ export class EsmLoader {
       };
     }
 
-    // For the default and sync-only resolvers the sync failure is
-    // authoritative - retrying through the legacy path would execute
-    // already-resolved CJS deps before rediscovering the same error, where
-    // Node runs nothing when the graph fails to resolve. A configured
-    // resolver with a distinct `async` hook may resolve what its sync hook
-    // cannot, so only then does an `import()` bail to the legacy retry;
-    // `require()` cannot await and throws either way.
-    let resolved: string;
-    try {
-      resolved = this.resolution.resolveEsm(
-        referencingIdentifier,
-        specifierPath,
-      );
-    } catch (error) {
-      if (
-        mode === 'sync-required' ||
-        !this.resolution.hasDistinctAsyncResolver()
-      ) {
-        throw error;
-      }
-      return LOAD_ASYNC;
-    }
+    // The sync resolution is authoritative in both modes: sync-preferred
+    // walks never start under a resolver with a distinct async hook, and
+    // require() cannot await one. Bailing to the legacy path on failure
+    // would execute already-resolved CJS deps before rediscovering the same
+    // error, where Node runs nothing when the graph fails to resolve.
+    const resolved = this.resolution.resolveEsm(
+      referencingIdentifier,
+      specifierPath,
+    );
 
     const cacheKey = fileCacheKey(resolved, suffix);
     if (
@@ -1824,13 +1797,20 @@ export class EsmLoader {
     modulePath: string,
     suffix = '',
   ): Promise<ESModule> {
-    // Two gates here. `supportsSyncEvaluate` is a Node-version check: the
+    // Three gates here. `supportsSyncEvaluate` is a Node-version check: the
     // sync core relies on `SyntheticModule` starting `'linked'` and on
     // `evaluate()` completing sync, both of which need v22.21+ / v24.8+.
     // `canResolveSync` is a configured-resolver check: with an async-only
     // user resolver `findNodeModule` silently falls back to the default
-    // resolver and would silently miss user mappings.
-    if (supportsSyncEvaluate && this.resolution.canResolveSync()) {
+    // resolver and would silently miss user mappings. A resolver with a
+    // distinct `async` hook next to its sync one never takes the sync walk
+    // for imports at all - even a successful sync resolution may disagree
+    // with the async hook `resolveModuleAsync` would pick.
+    if (
+      supportsSyncEvaluate &&
+      this.resolution.canResolveSync() &&
+      !this.resolution.hasDistinctAsyncResolver()
+    ) {
       const synced = this.tryLoadGraphSync(
         modulePath,
         suffix,

@@ -1838,6 +1838,34 @@ describe('Runtime sync ESM graph - automock', () => {
       expect(m.namespace.greet._isMockFunction).toBe(true);
     },
   );
+  testWithSyncEsm(
+    'imports honor the async hook when the two hooks disagree',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        resolver: path.join(ROOT_DIR, 'disagreeing-hook-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-disagreeing-alias.mjs',
+      )) as any;
+      expect(m.namespace.greet()).toBe('real');
+      expect(m.namespace.kind).toBeUndefined();
+      // A fresh runtime: the wrapper is one module instance per registry,
+      // and the import above already evaluated it with the async target.
+      const requireRuntime = await createRuntime(__filename, {
+        resolver: path.join(ROOT_DIR, 'disagreeing-hook-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      const required = requireRuntime.requireModule(
+        FROM,
+        './import-disagreeing-alias.mjs',
+      );
+      expect(required.kind).toBe('real-manual');
+      expect(required.greet).toBeUndefined();
+    },
+  );
+
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,
