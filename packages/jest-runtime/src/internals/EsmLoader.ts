@@ -424,26 +424,31 @@ export class EsmLoader {
   // already made on the CJS side (explicit `jest.mock` or automock): serve
   // the mock without re-consulting the ESM decision maps, which know nothing
   // about CJS registrations.
-  requireEsmMock<T>(from: string, moduleName: string): T {
-    const moduleID = this.mockState.getEsmModuleId(from, moduleName);
+  requireEsmMock<T>(from: string, moduleName: string, modulePath: string): T {
+    // The ID derives from the resolved path, so the instance is shared with
+    // imports whenever both condition sets select the same file - and stays
+    // distinct when a conditional package resolves them differently.
+    const moduleID = this.mockState.getEsmModuleId(from, modulePath);
     return this.requireResultFromModule(
-      this.requireMockedEsmModule(from, moduleName, moduleID),
+      this.requireMockedEsmModule(from, moduleName, moduleID, modulePath),
     ) as T;
   }
 
   private requireMockedEsmModule(
     from: string,
-    modulePath: string,
+    moduleName: string,
     moduleID: string,
+    resolvedPath?: string,
   ): ESModule {
     const scratch = new Map<string, ScratchEntry>();
     const mocked = this.importMockSync(
       from,
-      modulePath,
+      moduleName,
       moduleID,
       this.getContext(),
       scratch,
       'sync-required',
+      resolvedPath,
     );
     invariant(
       mocked !== LOAD_ASYNC,
@@ -1228,6 +1233,7 @@ export class EsmLoader {
     context: VMContext,
     scratch: Map<string, ScratchEntry>,
     mode: SyncEsmMode,
+    resolvedPath?: string,
   ): {cacheKey: string} | LoadAsync {
     const existing = this.registries.getModuleMock(moduleID);
     if (existing instanceof Promise) {
@@ -1261,6 +1267,7 @@ export class EsmLoader {
         context,
         scratch,
         mode,
+        resolvedPath,
       );
     }
 
@@ -1323,6 +1330,7 @@ export class EsmLoader {
     context: VMContext,
     scratch: Map<string, ScratchEntry>,
     mode: SyncEsmMode,
+    resolvedPath?: string,
   ): {cacheKey: string} | LoadAsync {
     const manualMockPath = this.resolution.findManualMock(from, moduleName);
     // The load runs against scratch registries so the module executed here
@@ -1333,7 +1341,7 @@ export class EsmLoader {
       ? this.registries.withScratchRegistries(() =>
           this.loadModuleForMockSync(from, manualMockPath, context, mode),
         )
-      : this.buildAutomockSync(from, moduleName, context, mode);
+      : this.buildAutomockSync(from, moduleName, context, mode, resolvedPath);
     if (mockModule === LOAD_ASYNC) return LOAD_ASYNC;
     this.registries.setModuleMock(moduleID, mockModule);
     scratch.set(moduleID, {
@@ -1385,13 +1393,15 @@ export class EsmLoader {
     moduleName: string,
     context: VMContext,
     mode: SyncEsmMode,
+    resolvedPath?: string,
   ): SyntheticModule | LoadAsync {
     const moduleMocker = this.environment.moduleMocker;
     invariant(
       moduleMocker,
       '`moduleMocker` must be set on an environment when created',
     );
-    const modulePath = this.resolution.resolveEsm(from, moduleName);
+    const modulePath =
+      resolvedPath ?? this.resolution.resolveEsm(from, moduleName);
     if (!this.mockState.hasMockMetadata(modulePath)) {
       // Seeded before the load so a mock cycle resolves against the
       // placeholder instead of recursing - same trick as `generateMock`.

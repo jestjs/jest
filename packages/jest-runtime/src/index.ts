@@ -465,10 +465,11 @@ export default class Runtime {
     // CJS branches below would execute an ESM mock file as CommonJS, and the
     // CJS generateMock would recurse into the ESM mock consult and automock
     // the freshly generated mock a second time.
-    if (this._servesMockThroughEsm(from, moduleName)) {
+    const esmMockTarget = this._esmMockTarget(from, moduleName);
+    if (esmMockTarget !== null) {
       mockRegistry.set(
         moduleID,
-        this.esmLoader.requireEsmMock(from, moduleName),
+        this.esmLoader.requireEsmMock(from, moduleName, esmMockTarget),
       );
       return mockRegistry.get(moduleID) as T;
     }
@@ -521,8 +522,11 @@ export default class Runtime {
         : undefined;
   }
 
-  private _servesMockThroughEsm(from: string, moduleName: string): boolean {
-    if (!supportsSyncEvaluate) return false;
+  // The CJS-resolved path travels with the mock request: a conditional
+  // package can resolve `require` and `import` to different ESM files, and a
+  // mock served to require() must describe the file require() would load.
+  private _esmMockTarget(from: string, moduleName: string): string | null {
+    if (!supportsSyncEvaluate) return null;
     let modulePath: string;
     try {
       modulePath =
@@ -530,9 +534,9 @@ export default class Runtime {
         this._resolution.resolveCjs(from, moduleName);
     } catch {
       // A name that only resolves to a manual mock has no ESM target.
-      return false;
+      return null;
     }
-    return this._resolution.shouldLoadAsEsm(modulePath);
+    return this._resolution.shouldLoadAsEsm(modulePath) ? modulePath : null;
   }
 
   private _getFullTransformationOptions(

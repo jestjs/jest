@@ -1662,6 +1662,19 @@ describe('Runtime sync ESM graph - automock', () => {
     expect(m.namespace.dep.value).toBe(42);
   });
 
+  testWithSyncEsm(
+    'mocks the file each condition set resolves for a conditional package',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const required = runtime.requireModuleOrMock(FROM, 'dual-conditions-pkg');
+      expect(required.syncOnly._isMockFunction).toBe(true);
+      expect(required.importOnly).toBeUndefined();
+    },
+  );
+
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,
