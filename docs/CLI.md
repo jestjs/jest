@@ -185,7 +185,7 @@ Alternatively you can set the environment variable `FORCE_COLOR=true` to forcefu
 
 ### `--config=<path>`
 
-Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the directory containing the config file is assumed to be the `rootDir` for the project. This can also be a JSON-encoded value which Jest will use as configuration.
+Alias: `-c`. The path to a JavaScript, TypeScript, JSON, YAML, or rc Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the directory containing the config file is assumed to be the `rootDir` for the project. This can also be a JSON-encoded value which Jest will use as configuration.
 
 ### `--coverage[=<boolean>]`
 

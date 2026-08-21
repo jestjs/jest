@@ -23,7 +23,7 @@ const {
   JEST_CONFIG_EXT_MJS,
   JEST_CONFIG_EXT_JS,
   JEST_CONFIG_EXT_TS,
-  JEST_CONFIG_EXT_ORDER,
+  JEST_CONFIG_SEARCH_PLACES,
   PACKAGE_JSON,
 } = constants;
 
@@ -72,11 +72,11 @@ export async function runCreate(rootDir = process.cwd()): Promise<void> {
     hasJestProperty = true;
   }
 
-  const existingJestConfigExt = JEST_CONFIG_EXT_ORDER.find(ext =>
-    fs.existsSync(path.join(rootDir, getConfigFilename(ext))),
+  const existingJestConfigPlaces = JEST_CONFIG_SEARCH_PLACES.filter(
+    place => place !== PACKAGE_JSON && fs.existsSync(path.join(rootDir, place)),
   );
 
-  if (hasJestProperty || existingJestConfigExt != null) {
+  if (hasJestProperty || existingJestConfigPlaces.length > 0) {
     const result: {continue: boolean} = await prompts({
       initial: true,
       message:
@@ -127,10 +127,14 @@ export async function runCreate(rootDir = process.cwd()): Promise<void> {
       : JEST_CONFIG_EXT_JS;
 
   // Determine Jest config path
-  const jestConfigPath =
-    existingJestConfigExt == null
-      ? path.join(rootDir, getConfigFilename(jestConfigFileExt))
-      : getConfigFilename(existingJestConfigExt);
+  const generatedConfigPath = path.join(
+    rootDir,
+    getConfigFilename(jestConfigFileExt),
+  );
+  const existingJestConfigPaths = existingJestConfigPlaces.map(place =>
+    path.join(rootDir, place),
+  );
+  const jestConfigPath = generatedConfigPath;
 
   const shouldModifyScripts = results.scripts;
 
@@ -153,6 +157,12 @@ export async function runCreate(rootDir = process.cwd()): Promise<void> {
   );
 
   fs.writeFileSync(jestConfigPath, generatedConfig);
+
+  for (const existingConfigPath of existingJestConfigPaths) {
+    if (existingConfigPath !== jestConfigPath) {
+      fs.unlinkSync(existingConfigPath);
+    }
+  }
 
   console.log('');
   console.log(

@@ -43,6 +43,7 @@
     "babel-jest": "workspace:*",
     "chalk": "^4.1.2",
     "ci-info": "^4.2.0",
+    "cosmiconfig": "^9.0.2",
     "deepmerge": "^4.3.1",
     "glob": "^10.5.0",
     "graceful-fs": "^4.2.11",
