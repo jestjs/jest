@@ -7,6 +7,7 @@
 
 import {makeProjectConfig} from '@jest/test-utils';
 import type {ModuleMocker} from 'jest-mock';
+import Resolver from 'jest-resolve';
 import {MockState, generateMock} from '../MockState';
 import type {ModuleRegistries} from '../ModuleRegistries';
 import type {Resolution} from '../Resolution';
@@ -247,6 +248,38 @@ describe('MockState', () => {
       mockState.setModuleMock('/from', './a', factory);
       const moduleID = stub.getEsmModuleId(new Map(), '/from', './a');
       expect(mockState.getEsmFactory(moduleID)).toBe(factory);
+    });
+
+    test('setMock hints at virtual: true when the module does not resolve', () => {
+      const {resolution, stub} = makeResolution();
+      const mockState = new MockState(resolution, config({}));
+      stub.getCjsModuleId.mockImplementation(() => {
+        throw new Resolver.ModuleNotFoundError(
+          "Cannot find module 'missing-pkg' from '/from'",
+          'missing-pkg',
+        );
+      });
+      expect(() =>
+        mockState.setMock('/from', 'missing-pkg', () => ({})),
+      ).toThrow(
+        /Cannot find module 'missing-pkg' from '\/from'[\S\s]*pass `\{virtual: true\}`/,
+      );
+    });
+
+    test('setModuleMock hints at virtual: true when the module does not resolve', () => {
+      const {resolution, stub} = makeResolution();
+      const mockState = new MockState(resolution, config({}));
+      stub.getEsmModuleId.mockImplementation(() => {
+        throw new Resolver.ModuleNotFoundError(
+          "Cannot find module 'missing-pkg' from '/from'",
+          'missing-pkg',
+        );
+      });
+      expect(() =>
+        mockState.setModuleMock('/from', 'missing-pkg', () => ({})),
+      ).toThrow(
+        /Cannot find module 'missing-pkg' from '\/from'[\S\s]*pass `\{virtual: true\}`/,
+      );
     });
 
     test('setMock with virtual: true registers via getModulePath', () => {

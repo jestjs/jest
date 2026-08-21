@@ -8,6 +8,7 @@
 import * as path from 'node:path';
 import type {Config} from '@jest/types';
 import type {MockMetadata, ModuleMocker} from 'jest-mock';
+import Resolver from 'jest-resolve';
 import type {ModuleRegistries} from './ModuleRegistries';
 import type {Resolution} from './Resolution';
 
@@ -24,6 +25,7 @@ const NO_MOCK: MockDecision = Object.freeze({moduleID: '', shouldMock: false});
 
 export class MockState {
   private readonly resolution: Resolution;
+  private readonly rootDir: string;
   private readonly unmockList: RegExp | undefined;
 
   private shouldAutoMock: boolean;
@@ -52,6 +54,7 @@ export class MockState {
 
   constructor(resolution: Resolution, config: Config.ProjectConfig) {
     this.resolution = resolution;
+    this.rootDir = config.rootDir;
     this.shouldAutoMock = config.automock;
 
     let unmock = unmockRegExpCache.get(config);
@@ -271,10 +274,10 @@ export class MockState {
       const mockPath = this.resolution.getModulePath(from, moduleName);
       this.virtualCjsMocks.set(mockPath, true);
     }
-    const moduleID = this.resolution.getCjsModuleId(
-      this.virtualCjsMocks,
+    const moduleID = this.getModuleIdForMockRegistration(
       from,
       moduleName,
+      'cjs',
     );
     this.explicitCjsMock.set(moduleID, true);
     this.cjsFactories.set(moduleID, factory);
@@ -290,13 +293,41 @@ export class MockState {
       const mockPath = this.resolution.getModulePath(from, moduleName);
       this.virtualEsmMocks.set(mockPath, true);
     }
-    const moduleID = this.resolution.getEsmModuleId(
-      this.virtualEsmMocks,
+    const moduleID = this.getModuleIdForMockRegistration(
       from,
       moduleName,
+      'esm',
     );
     this.explicitEsmMock.set(moduleID, true);
     this.esmFactories.set(moduleID, factory);
+  }
+
+  // Registering a factory mock resolves the mocked name, so mocking a module
+  // that does not exist on disk fails right here with a bare
+  // "Cannot find module" - point at the `virtual` option, which is the
+  // supported way to mock such a module.
+  private getModuleIdForMockRegistration(
+    from: string,
+    moduleName: string,
+    mode: 'cjs' | 'esm',
+  ): string {
+    try {
+      return mode === 'cjs'
+        ? this.resolution.getCjsModuleId(this.virtualCjsMocks, from, moduleName)
+        : this.resolution.getEsmModuleId(
+            this.virtualEsmMocks,
+            from,
+            moduleName,
+          );
+    } catch (error) {
+      const moduleNotFound = Resolver.tryCastModuleNotFoundError(error);
+      if (moduleNotFound) {
+        moduleNotFound.hint =
+          '\n\nTo mock a module that does not exist on disk, pass `{virtual: true}` in the mock options. See https://jestjs.io/docs/jest-object#jestmockmodulename-factory-options';
+        moduleNotFound.buildMessage(this.rootDir);
+      }
+      throw error;
+    }
   }
 
   disableAutomock(): void {
