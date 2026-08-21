@@ -20,6 +20,8 @@ export default function getMaxWorkers(
     return parseWorkers(argv.maxWorkers);
   } else if (defaultOptions && defaultOptions.maxWorkers) {
     return parseWorkers(defaultOptions.maxWorkers);
+  } else if (typeof process.env.JEST_MAX_WORKERS === 'string') {
+    return parseWorkers(process.env.JEST_MAX_WORKERS);
   } else {
     // In watch mode, Jest should be unobtrusive and not use all available CPUs.
     const numCpus = availableParallelism();
