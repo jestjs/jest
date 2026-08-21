@@ -119,8 +119,10 @@ test('support re-exports from CJS of core module', () => {
 });
 
 // `node:sqlite` is the first builtin without a bare counterpart that is stable
-// enough to import here.
-onNodeVersions('>=22.5.0', () => {
+// enough to import here. The range is where it no longer needs
+// `--experimental-sqlite`, so the fixture exercises resolution rather than the
+// flag.
+onNodeVersions('>=22.13.0 <23.0.0 || >=23.4.0', () => {
   test('supports importing a builtin that only exists prefixed', () => {
     const {exitCode, stderr, stdout} = runJest(
       DIR,

@@ -788,7 +788,7 @@ describe('core module specifiers', () => {
   });
 
   it.each(['fs', 'node:fs'])(
-    'resolves %s to the prefixed specifier Node itself reports',
+    'resolves %s to the incoming specifier, sync and async alike',
     async specifier => {
       expect(resolver.resolveModule(src, specifier)).toBe(specifier);
       await expect(resolver.resolveModuleAsync(src, specifier)).resolves.toBe(
