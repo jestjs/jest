@@ -54,7 +54,7 @@ export default function globsToMatcher(
       return cached;
     }
 
-    const isMatch = picomatch(glob, {dot, ...picomatchOptions}, true);
+    const isMatch = picomatch(glob, {...picomatchOptions, dot}, true);
 
     const matcher = {
       isMatch,

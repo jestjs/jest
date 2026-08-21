@@ -125,3 +125,25 @@ it('works like micromatch when the same glob is used with different options', ()
       0,
   );
 });
+
+it('works like micromatch when a glob is used without options after being used with them', () => {
+  const globs = ['*.reverseoption.js'];
+
+  expect(globsToMatcher(globs, {dot: false})('.hidden.reverseoption.js')).toBe(
+    micromatch(['.hidden.reverseoption.js'], globs, {dot: false}).length > 0,
+  );
+
+  expect(globsToMatcher(globs)('.hidden.reverseoption.js')).toBe(
+    micromatch(['.hidden.reverseoption.js'], globs, {dot: true}).length > 0,
+  );
+});
+
+it('works like micromatch when dot is passed as undefined', () => {
+  const globs = ['*.undefineddot.js'];
+
+  expect(
+    globsToMatcher(globs, {dot: undefined})('.hidden.undefineddot.js'),
+  ).toBe(
+    micromatch(['.hidden.undefineddot.js'], globs, {dot: true}).length > 0,
+  );
+});
