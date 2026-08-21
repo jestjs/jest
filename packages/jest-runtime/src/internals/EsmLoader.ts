@@ -2156,6 +2156,13 @@ export class EsmLoader {
     // builder is sync-core only; on capable Nodes reuse it here so dynamic
     // `import()` gets the same mocks as static imports and require(esm).
     if (supportsSyncEvaluate && this.resolution.canResolveSync()) {
+      // Resolve through the async API first: the decision to mock may have
+      // come from a distinct async resolver hook, and the sync-only
+      // generation below would re-resolve the name differently or throw.
+      const resolvedPath = await this.resolution.resolveEsmAsync(
+        from,
+        moduleName,
+      );
       const scratch = new Map<string, ScratchEntry>();
       const generated = this.importGeneratedMockSync(
         from,
@@ -2164,6 +2171,7 @@ export class EsmLoader {
         context,
         scratch,
         'sync-preferred',
+        resolvedPath,
       );
       if (generated !== LOAD_ASYNC) {
         // `linkAndEvaluateModule` evaluates the module for this caller.

@@ -1695,7 +1695,23 @@ describe('Runtime sync ESM graph - automock', () => {
     },
   );
 
-
+  testWithSyncEsm(
+    'automocks the async-resolved target for a dynamic import',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        resolver: path.join(ROOT_DIR, 'dual-hook-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      const loadDualAlias = runtime.requireModule(
+        FROM,
+        './dynamic-imports-dual-alias.cjs',
+      );
+      const namespace = await loadDualAlias();
+      expect(namespace.valueA).toBe('a');
+      expect(namespace.fromA).toEqual({valueA: 'a', valueB: 'b', valueC: 'c'});
+    },
+  );
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,
