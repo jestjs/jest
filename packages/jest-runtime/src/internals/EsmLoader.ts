@@ -296,6 +296,11 @@ export class EsmLoader {
   private readonly testPath: string;
   private readonly requireFacades = new WeakMap<ESModule, ESModule>();
   private readonly importAttributeValidator = new ImportAttributeValidator();
+  // Depth of automock-metadata loads in progress. Generation loads the real
+  // module, whose graph must not recurse into generating its own deps: a
+  // cycle back into an in-progress generation would link against an empty
+  // placeholder mock. See `mockDecisionServable`.
+  private generatingMockDepth = 0;
   // Every cacheKey popped by a sync walk that is still on the stack. Walks
   // nest (a CJS body executing mid-walk can require() an unrelated ESM root),
   // so this is a stack of one entry per walk rather than a single Set. Each
@@ -359,7 +364,7 @@ export class EsmLoader {
         requiredFrom ?? modulePath,
         modulePath,
       );
-      if (shouldMock) {
+      if (shouldMock && this.mockDecisionServable(moduleID)) {
         return this.requireResultFromModule(
           this.requireMockedEsmModule(
             requiredFrom ?? modulePath,
@@ -1105,7 +1110,7 @@ export class EsmLoader {
       referencingIdentifier,
       specifierPath,
     );
-    if (shouldMock) {
+    if (shouldMock && this.mockDecisionServable(moduleID)) {
       if (
         this.registries.getModuleMock(moduleID) !== undefined ||
         this.mockState.getEsmFactory(moduleID) !== undefined
@@ -1296,6 +1301,21 @@ export class EsmLoader {
     return {cacheKey: moduleID};
   }
 
+  // A mock decision is servable mid-generation only when an instance or a
+  // registered factory already exists. A factory-less decision would recurse
+  // into generation, and a synchronously evaluable cycle (a.mjs <-> b.mjs)
+  // then links the in-progress module against its empty metadata placeholder
+  // and fails with "does not provide an export". Loading the real module
+  // instead keeps the metadata faithful; the dep's own mock generates at its
+  // own import edges.
+  private mockDecisionServable(moduleID: string): boolean {
+    return (
+      this.generatingMockDepth === 0 ||
+      this.registries.getModuleMock(moduleID) !== undefined ||
+      this.mockState.getEsmFactory(moduleID) !== undefined
+    );
+  }
+
   private importGeneratedMockSync(
     from: string,
     moduleName: string,
@@ -1380,6 +1400,7 @@ export class EsmLoader {
         moduleMocker.getMetadata({}) ?? {},
       );
       let realModule: ESModule | LoadAsync;
+      this.generatingMockDepth++;
       try {
         realModule = this.registries.withScratchRegistries(() =>
           this.loadModuleForMockSync(from, modulePath, context, mode),
@@ -1387,6 +1408,8 @@ export class EsmLoader {
       } catch (error) {
         this.mockState.deleteMockMetadata(modulePath);
         throw error;
+      } finally {
+        this.generatingMockDepth--;
       }
       if (realModule === LOAD_ASYNC) {
         // The placeholder must not survive a bail: the legacy retry would

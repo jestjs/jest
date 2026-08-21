@@ -1662,6 +1662,16 @@ describe('Runtime sync ESM graph - automock', () => {
     expect(m.namespace.dep.value).toBe(42);
   });
 
+  testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
+    const runtime = await createRuntime(__filename, {
+      automock: true,
+      rootDir: ROOT_DIR,
+    });
+    const exports = runtime.requireModule(FROM, './automock-cycle-a.mjs');
+    expect(exports.fromA).toBe('a');
+    expect(exports.readB._isMockFunction).toBe(true);
+  });
+
   testWithSyncEsm('requireActual bypasses the automock', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,
