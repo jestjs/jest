@@ -6,17 +6,18 @@
  */
 
 import {EventEmitter} from 'node:events';
-import isWatchmanInstalled from '../../lib/isWatchmanInstalled';
+import {getWatchmanAvailability} from '../../lib/watchmanSockname';
 import {ParcelWatcher} from '../ParcelWatcher';
 import {WatcherDriver, shouldUseWatchman} from '../index';
 
-jest.mock('../../lib/isWatchmanInstalled');
+jest.mock('../../lib/watchmanSockname');
 jest.mock('../ParcelWatcher');
 jest.mock('../WatchmanWatcher');
 
-const mockIsWatchmanInstalled = isWatchmanInstalled as jest.MockedFunction<
-  typeof isWatchmanInstalled
->;
+const mockGetWatchmanAvailability =
+  getWatchmanAvailability as jest.MockedFunction<
+    typeof getWatchmanAvailability
+  >;
 const MockParcelWatcher = ParcelWatcher as jest.MockedClass<
   typeof ParcelWatcher
 >;
@@ -47,23 +48,25 @@ describe('shouldUseWatchman', () => {
   });
 
   it('returns false when useWatchmanOption is false', async () => {
-    expect(await shouldUseWatchman(false)).toBe(false);
-    expect(mockIsWatchmanInstalled).not.toHaveBeenCalled();
+    expect(await shouldUseWatchman(false, '/cache')).toBe(false);
+    expect(mockGetWatchmanAvailability).not.toHaveBeenCalled();
   });
 
   it('returns true when useWatchmanOption is true and watchman is installed', async () => {
-    mockIsWatchmanInstalled.mockResolvedValue(true);
-    expect(await shouldUseWatchman(true)).toBe(true);
+    mockGetWatchmanAvailability.mockResolvedValue({
+      installed: true,
+      sockname: '/sock',
+    });
+    expect(await shouldUseWatchman(true, '/cache')).toBe(true);
+    expect(mockGetWatchmanAvailability).toHaveBeenCalledWith('/cache');
   });
 
   it('returns false when useWatchmanOption is true but watchman is not installed', async () => {
-    // Isolate so the module-level isWatchmanInstalledPromise cache is fresh.
-    let fn!: typeof shouldUseWatchman;
-    jest.isolateModules(() => {
-      mockIsWatchmanInstalled.mockResolvedValue(false);
-      fn = require('../index').shouldUseWatchman as typeof shouldUseWatchman;
+    mockGetWatchmanAvailability.mockResolvedValue({
+      installed: false,
+      sockname: undefined,
     });
-    expect(await fn(true)).toBe(false);
+    expect(await shouldUseWatchman(true, '/cache')).toBe(false);
   });
 });
 

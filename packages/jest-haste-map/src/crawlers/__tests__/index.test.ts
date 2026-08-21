@@ -30,6 +30,7 @@ const crawlerOptions = {
   ignore: () => false,
   rootDir: '/root',
   roots: ['/root'],
+  watchmanSockname: undefined,
 };
 
 const mockResult = {

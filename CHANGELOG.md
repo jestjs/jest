@@ -100,6 +100,7 @@
 - `[jest-haste-map]` Refactor massive class into multiple files ([#16180](https://github.com/jestjs/jest/pull/16180))
 - `[jest-haste-map]` Drop `walker` dependency; replace hand-rolled directory recursion in the JS crawler and watcher startup with `fdir` ([#16187](https://github.com/jestjs/jest/pull/16187))
 - `[jest-haste-map]` Reuse cached metadata for files whose haste name is a known duplicate, instead of re-reading and re-parsing them on every startup ([#16351](https://github.com/jestjs/jest/pull/16351))
+- `[jest-haste-map]` Cache the watchman socket path and replace the `watchman --version` probe with `get-sockname`, so warm runs spawn no watchman processes ([#16386](https://github.com/jestjs/jest/pull/16386))
 - `[jest-resolve]` Store the per-directory package-type lookup in the cache it reads, so it actually memoizes ([#16369](https://github.com/jestjs/jest/pull/16369))
 - `[jest-resolve, jest-runtime]` Cut repeated work on the resolution hot path: hoist the platform-extension list to construction, memoize `isCoreModule` and the options cache-key serialization, skip mapper preparation when no `moduleNameMapper` is configured, run each mapper regex once, and stop re-parsing `NODE_OPTIONS` on every default-resolver call ([#16371](https://github.com/jestjs/jest/pull/16371))
 - `[jest-runner, @jest/source-map]` Replace `source-map-support` with an implementation in `@jest/source-map` ([#16327](https://github.com/jestjs/jest/pull/16327))
