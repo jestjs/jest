@@ -11,6 +11,7 @@
 
 import {
   type FunctionParameters,
+  type FunctionSignatures,
   equals,
   iterableEquality,
 } from '@jest/expect-utils';
@@ -104,8 +105,14 @@ export type SpiedClass<T extends ClassLike = UnknownClass> = MockInstance<
   (...args: ConstructorParameters<T>) => InstanceType<T>
 >;
 
+// Keep the pre-existing implementation signature while retaining every
+// overload in `T` for the return-value helpers on `MockInstance<T>`.
 export type SpiedFunction<T extends FunctionLike = UnknownFunction> =
-  MockInstance<(...args: Parameters<T>) => ReturnType<T>>;
+  MockInstance<T> &
+    Pick<
+      MockInstance<(...args: Parameters<T>) => ReturnType<T>>,
+      'mockImplementation' | 'mockImplementationOnce' | 'withImplementation'
+    >;
 
 export type SpiedGetter<T> = MockInstance<() => T>;
 
@@ -131,49 +138,45 @@ export interface Mock<T extends FunctionLike = UnknownFunction>
   (...args: Parameters<T>): ReturnType<T>;
 }
 
-// `ReturnType<T>` picks the LAST overload signature of `T`, so for a function
-// like `pg.Client['end']` whose overloads are `(): Promise<void>` and
-// `(cb): void`, `ReturnType` collapses to `void` and the Promise-shaped
-// overload disappears — `mockResolvedValue` / `mockRejectedValue` then infer
-// `never` and reject any value. Walk up to four overloads and union their
-// return types so the Promise-shaped overload (if any) survives.
-type OverloadedReturnType<T> = T extends {
-  (...args: Array<any>): infer R1;
-  (...args: Array<any>): infer R2;
-  (...args: Array<any>): infer R3;
-  (...args: Array<any>): infer R4;
-}
-  ? R1 | R2 | R3 | R4
-  : T extends {
-        (...args: Array<any>): infer R1;
-        (...args: Array<any>): infer R2;
-        (...args: Array<any>): infer R3;
-      }
-    ? R1 | R2 | R3
-    : T extends {
-          (...args: Array<any>): infer R1;
-          (...args: Array<any>): infer R2;
-        }
-      ? R1 | R2
-      : T extends (...args: Array<any>) => infer R
-        ? R
-        : never;
+type ResolveType<T extends FunctionLike> =
+  ReturnType<T> extends PromiseLike<infer U> ? U : never;
 
-type ResolveType<T extends FunctionLike> = [
-  Extract<OverloadedReturnType<T>, PromiseLike<any>>,
-] extends [never]
-  ? never
-  : Extract<OverloadedReturnType<T>, PromiseLike<any>> extends PromiseLike<
-        infer U
-      >
-    ? U
+type RejectType<T extends FunctionLike> =
+  ReturnType<T> extends PromiseLike<any> ? unknown : never;
+
+/**
+ * Like the built-in `ReturnType<T>`, but for overloaded functions yields a
+ * union of every overload's return type instead of only the last one.
+ */
+type FunctionReturnType<T extends FunctionLike> =
+  FunctionSignatures<T> extends infer S
+    ? S extends FunctionLike
+      ? ReturnType<S>
+      : never
     : never;
 
-type RejectType<T extends FunctionLike> = [
-  Extract<OverloadedReturnType<T>, PromiseLike<any>>,
-] extends [never]
-  ? never
-  : unknown;
+/**
+ * Distributes {@link ResolveType} over every overload of `T` so any overload
+ * that returns a `PromiseLike` contributes its resolved value type to the
+ * resulting union.
+ */
+type FunctionResolveType<T extends FunctionLike> =
+  FunctionSignatures<T> extends infer S
+    ? S extends FunctionLike
+      ? ResolveType<S>
+      : never
+    : never;
+
+/**
+ * `unknown` if any overload of `T` returns a `PromiseLike`, otherwise `never`.
+ * Lets `mockRejectedValue` stay usable on partially-async overloaded methods.
+ */
+type FunctionRejectType<T extends FunctionLike> =
+  FunctionSignatures<T> extends infer S
+    ? S extends FunctionLike
+      ? RejectType<S>
+      : never
+    : never;
 
 export interface MockInstance<
   T extends FunctionLike = UnknownFunction,
@@ -192,12 +195,12 @@ export interface MockInstance<
   withImplementation(fn: T, callback: () => void): void;
   mockName(name: string): this;
   mockReturnThis(): this;
-  mockReturnValue(value: ReturnType<T>): this;
-  mockReturnValueOnce(value: ReturnType<T>): this;
-  mockResolvedValue(value: ResolveType<T>): this;
-  mockResolvedValueOnce(value: ResolveType<T>): this;
-  mockRejectedValue(value: RejectType<T>): this;
-  mockRejectedValueOnce(value: RejectType<T>): this;
+  mockReturnValue(value: FunctionReturnType<T>): this;
+  mockReturnValueOnce(value: FunctionReturnType<T>): this;
+  mockResolvedValue(value: FunctionResolveType<T>): this;
+  mockResolvedValueOnce(value: FunctionResolveType<T>): this;
+  mockRejectedValue(value: FunctionRejectType<T>): this;
+  mockRejectedValueOnce(value: FunctionRejectType<T>): this;
   whenCalledWith(...args: FunctionParameters<T>): Mock<T>;
 }
 
