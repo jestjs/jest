@@ -11,6 +11,7 @@ jest.mock('graceful-fs', () => ({
 }));
 
 import {strict as assert} from 'assert';
+import {spawnSync} from 'child_process';
 import {
   addExtraLineBreaks,
   deepMerge,
@@ -339,4 +340,36 @@ describe('DeepMerge with property matchers', () => {
     // Ensure original target is not modified
     expect(target).toStrictEqual(originalTarget);
   });
+});
+
+test('requiring the package does not load babel, semver or synckit', () => {
+  const {status, stdout, stderr} = spawnSync(
+    process.execPath,
+    [
+      '-e',
+      `
+        require(process.argv[1]);
+        const loaded = Object.keys(require.cache).map(key =>
+          key.replaceAll('\\\\', '/'),
+        );
+        console.log(
+          JSON.stringify(
+            loaded.filter(
+              key =>
+                key.includes('@babel/core') ||
+                key.includes('@babel/generator') ||
+                key.includes('/semver/') ||
+                key.includes('synckit'),
+            ),
+          ),
+        );
+      `,
+      require.resolve('jest-snapshot'),
+    ],
+    {encoding: 'utf8'},
+  );
+
+  expect(stderr).toBe('');
+  expect(status).toBe(0);
+  expect(JSON.parse(stdout)).toEqual([]);
 });

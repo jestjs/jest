@@ -541,6 +541,37 @@ describe('Runtime sync ESM graph - require(esm)', () => {
   );
 
   testWithSyncEsm(
+    'invokes an async mock factory once across sync bail and async retry',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      let factoryCalls = 0;
+      runtime.setModuleMock(FROM, './mock-target.mjs', async () => {
+        factoryCalls++;
+        return {greeting: 'mocked-async'};
+      });
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-mock-target.mjs',
+      )) as any;
+      expect(m.namespace.greeting).toBe('mocked-async');
+      expect(factoryCalls).toBe(1);
+    },
+  );
+
+  testWithSyncEsm(
+    'a rejecting async mock factory rejects the import',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      runtime.setModuleMock(FROM, './mock-target.mjs', async () => {
+        throw new Error('factory failed');
+      });
+      await expect(
+        runtime.unstable_importModule(FROM, './import-mock-target.mjs'),
+      ).rejects.toThrow('factory failed');
+    },
+  );
+
+  testWithSyncEsm(
     'honors jest.unstable_mockModule for transitive deps',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -549,6 +580,106 @@ describe('Runtime sync ESM graph - require(esm)', () => {
       }));
       const ns = runtime.requireModule(FROM, './import-mock-target.mjs');
       expect(ns.greeting).toBe('mocked-via-require');
+    },
+  );
+
+  testWithSyncEsm(
+    'require(esm) with an async-only resolver throws ERR_REQUIRE_ASYNC_MODULE',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        resolver: path.join(ROOT_DIR, 'async-only-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      expect(() => runtime.requireModule(FROM, './a.mjs')).toThrow(
+        expect.objectContaining({code: 'ERR_REQUIRE_ASYNC_MODULE'}),
+      );
+    },
+  );
+
+  // Sync require() resolution falls back to the default resolver when the
+  // configured resolver is async-only - long-standing behavior for CJS and
+  // ESM targets alike, and gating all of require() on a sync resolver would
+  // break configs where the fallback resolves correctly. The
+  // ERR_REQUIRE_ASYNC_MODULE guard therefore only covers entries the
+  // fallback resolved to an ESM file.
+  testWithSyncEsm(
+    'require() of a name only the async resolver can map fails to resolve',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        resolver: path.join(ROOT_DIR, 'async-only-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      expect(() => runtime.requireModule(FROM, 'async-alias-esm')).toThrow(
+        "Cannot find module 'async-alias-esm'",
+      );
+      expect(() => runtime.requireModule(FROM, 'async-alias-cjs')).toThrow(
+        "Cannot find module 'async-alias-cjs'",
+      );
+    },
+  );
+
+  testWithSyncEsm(
+    'honors jest.unstable_mockModule for the require()d file itself',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      runtime.setModuleMock(FROM, './mock-target.mjs', () => ({
+        greeting: 'mocked-root',
+      }));
+      const ns = runtime.requireModule(FROM, './mock-target.mjs');
+      expect(ns.greeting).toBe('mocked-root');
+    },
+  );
+
+  testWithSyncEsm(
+    'repeated require() of a mocked ESM file returns the same instance',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      runtime.setModuleMock(FROM, './mock-target.mjs', () => ({
+        greeting: 'mocked-instance',
+      }));
+      const first = runtime.requireModule(FROM, './mock-target.mjs');
+      const second = runtime.requireModule(FROM, './mock-target.mjs');
+      expect(first.greeting).toBe('mocked-instance');
+      expect(second).toBe(first);
+    },
+  );
+
+  testWithSyncEsm(
+    'requireActual bypasses unstable_mockModule for an ESM target',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      runtime.setModuleMock(FROM, './mock-target.mjs', () => ({
+        greeting: 'mocked-root',
+      }));
+      const ns = runtime.requireActual(FROM, './mock-target.mjs');
+      expect(ns.greeting).toBe('real');
+    },
+  );
+
+  testWithSyncEsm(
+    'require() of a root mock with an async factory throws ERR_REQUIRE_ASYNC_MODULE',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      runtime.setModuleMock(FROM, './mock-target.mjs', async () => ({
+        greeting: 'never',
+      }));
+      expect(() => runtime.requireModule(FROM, './mock-target.mjs')).toThrow(
+        expect.objectContaining({code: 'ERR_REQUIRE_ASYNC_MODULE'}),
+      );
+    },
+  );
+
+  testWithSyncEsm(
+    'honors jest.unstable_mockModule for a data: URI dependency',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      runtime.setModuleMock(
+        FROM,
+        'data:text/javascript,export const value = "real"',
+        () => ({value: 'mocked'}),
+      );
+      const ns = runtime.requireModule(FROM, './import-data-uri-mocked.mjs');
+      expect(ns.value).toBe('mocked');
     },
   );
 
@@ -629,6 +760,47 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     const ns = runtime.requireModule(FROM, './import-json.mjs');
     expect(ns.data).toEqual({answer: 42, label: 'json'});
   });
+
+  testWithSyncEsm(
+    'imported JSON objects belong to the test realm, like require()d ones',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const imported = runtime.requireModule(FROM, './import-json.mjs');
+      const required = runtime.requireModule(FROM, './data.json');
+      expect(Object.getPrototypeOf(imported.data)).toBe(
+        Object.getPrototypeOf(required),
+      );
+    },
+  );
+
+  testWithSyncEsm('imports a JSON dep that starts with a BOM', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const ns = runtime.requireModule(FROM, './import-bom-json.mjs');
+    expect(ns.key).toBe('bom-value');
+  });
+
+  testWithVmEsm('imports a JSON module that starts with a BOM', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const m = (await runtime.unstable_importModule(FROM, './bom.json')) as any;
+    expect(m.namespace.default).toEqual({key: 'bom-value'});
+  });
+
+  testWithVmEsm(
+    'imports a JSON module through an async-only transformer',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transform: {
+          '\\.json$': path.join(ROOT_DIR, 'async-json-transformer.cjs'),
+        },
+      });
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './bom.json',
+      )) as any;
+      expect(m.namespace.default).toEqual({key: 'bom-value'});
+    },
+  );
 
   testWithSyncEsm('require()s an ESM file with a data: URI dep', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -755,10 +927,9 @@ describe('Runtime sync ESM graph - require(esm)', () => {
       const aPath = path.join(ROOT_DIR, 'a.mjs');
       // Simulate a concurrent `await import()` by stashing a pending Promise
       // in the registry under the key require() will look up.
-      runtime.registries.setEsm(
-        pathToFileURL(aPath).href,
-        new Promise(() => {}),
-      );
+      runtime.registries
+        .getActiveEsmRegistry()
+        .set(pathToFileURL(aPath).href, new Promise(() => {}));
       expect(() => runtime.requireModule(FROM, './a.mjs')).toThrow(
         expect.objectContaining({
           code: 'ERR_REQUIRE_ESM',
@@ -846,7 +1017,9 @@ describe('Runtime sync ESM graph - require(esm)', () => {
       await m.namespace.loadCjs();
 
       const cjsPath = path.join(ROOT_DIR, 'cjs-dep.cjs');
-      const entry = runtime.registries.getEsm(pathToFileURL(cjsPath).href);
+      const entry = runtime.registries
+        .getActiveEsmRegistry()
+        .get(pathToFileURL(cjsPath).href);
       expect(entry).toBeDefined();
       expect(entry).not.toBeInstanceOf(Promise);
     },

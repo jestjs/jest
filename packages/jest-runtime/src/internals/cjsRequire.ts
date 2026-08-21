@@ -16,7 +16,12 @@ import type {ModuleRegistries} from './ModuleRegistries';
 import type {Resolution} from './Resolution';
 import type {TestMainModule} from './TestMainModule';
 import type {TransformOptions} from './TransformCache';
-import type {InitialModule} from './moduleTypes';
+import {type InitialModule, createInitialModule} from './moduleTypes';
+
+// Node hands every string with a `file:` scheme to the URL parser, which
+// matches the scheme case-insensitively and normalizes missing slashes and a
+// `localhost` authority away.
+const fileUrlSchemeRegex = /^file:/i;
 
 export const JEST_RESOLVE_OUTSIDE_VM_OPTION = Symbol.for(
   'jest-resolve-outside-vm-option',
@@ -98,18 +103,7 @@ export class RequireBuilder {
   }
 
   forFilename(filename: string): NodeJS.Require {
-    return this.for(
-      {
-        children: [],
-        exports: {},
-        filename,
-        id: filename,
-        isPreloading: false,
-        loaded: false,
-        path: path.dirname(filename),
-      },
-      undefined,
-    );
+    return this.for(createInitialModule(filename), undefined);
   }
 
   private resolve(
@@ -243,7 +237,7 @@ export class CoreModuleProvider {
     const createRequire = (modulePath: string | URL) => {
       const filename =
         typeof modulePath === 'string'
-          ? modulePath.startsWith('file:///')
+          ? fileUrlSchemeRegex.test(modulePath)
             ? fileURLToPath(new URL(modulePath))
             : modulePath
           : fileURLToPath(modulePath);

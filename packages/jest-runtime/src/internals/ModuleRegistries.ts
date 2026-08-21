@@ -9,17 +9,17 @@ import nativeModule from 'node:module';
 import * as path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 import type {Module as VMModule} from 'node:vm';
-import type {Module} from '@jest/environment';
-import type {InitialModule, JestModule, ModuleRegistry} from './moduleTypes';
+import type {JestModule, ModuleRegistry} from './moduleTypes';
 
 // Only expose ESM entries whose `namespace` is readable without throwing or
-// exposing TDZ values: `unlinked`/`linking` throw `ERR_VM_MODULE_STATUS`, and
-// a `linked` SourceTextModule's namespace properties are in TDZ until
-// evaluate runs (reading them throws `ReferenceError`).
+// exposing TDZ values: `unlinked`/`linking` throw `ERR_VM_MODULE_STATUS`,
+// and anything short of `evaluated` keeps uninitialized (TDZ) bindings that
+// throw `ReferenceError` on read - including `errored`, whose evaluation
+// stopped partway. Node likewise drops a failed `require(esm)` entry from
+// `require.cache`.
 const isLiveEsm = (entry: JestModule | undefined): entry is VMModule => {
   if (!entry || entry instanceof Promise) return false;
-  const status = (entry as VMModule).status;
-  return status === 'evaluated' || status === 'errored';
+  return (entry as VMModule).status === 'evaluated';
 };
 
 const notPermittedMethod = () => true;
@@ -58,47 +58,6 @@ export class ModuleRegistries {
 
   constructor(requireEsmResult: (module: VMModule) => unknown) {
     this.requireEsmResult = requireEsmResult;
-  }
-
-  getCjs(modulePath: string): InitialModule | Module | JestModule | undefined {
-    return (this.isolation?.cjs ?? this.moduleRegistry).get(modulePath);
-  }
-  setCjs(
-    modulePath: string,
-    module: InitialModule | Module | JestModule,
-  ): void {
-    (this.isolation?.cjs ?? this.moduleRegistry).set(modulePath, module);
-  }
-  hasCjs(modulePath: string): boolean {
-    return (this.isolation?.cjs ?? this.moduleRegistry).has(modulePath);
-  }
-  deleteCjs(modulePath: string): void {
-    (this.isolation?.cjs ?? this.moduleRegistry).delete(modulePath);
-  }
-
-  getInternalCjs(
-    modulePath: string,
-  ): InitialModule | Module | JestModule | undefined {
-    return this.internalModuleRegistry.get(modulePath);
-  }
-  setInternalCjs(
-    modulePath: string,
-    module: InitialModule | Module | JestModule,
-  ): void {
-    this.internalModuleRegistry.set(modulePath, module);
-  }
-  hasInternalCjs(modulePath: string): boolean {
-    return this.internalModuleRegistry.has(modulePath);
-  }
-
-  getEsm(key: string): JestModule | undefined {
-    return (this.isolation?.esm ?? this.esModuleRegistry).get(key);
-  }
-  setEsm(key: string, module: JestModule): void {
-    (this.isolation?.esm ?? this.esModuleRegistry).set(key, module);
-  }
-  hasEsm(key: string): boolean {
-    return (this.isolation?.esm ?? this.esModuleRegistry).has(key);
   }
 
   // Reads cascade: isolated overlay first, fall back to main. Writes go to
@@ -159,7 +118,7 @@ export class ModuleRegistries {
     return this.isolation?.mock ?? this.mockRegistry;
   }
 
-  isIsolated(): boolean {
+  private isIsolated(): boolean {
     return this.isolation !== null;
   }
 

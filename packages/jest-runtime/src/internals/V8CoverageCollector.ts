@@ -97,7 +97,7 @@ export class V8CoverageCollector {
 
   reset(): void {
     this.sources?.clear();
-    this.result = [];
+    this.result = undefined;
     this.instrumenter = undefined;
   }
 }

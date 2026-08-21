@@ -431,6 +431,70 @@ describe('findNodeModule', () => {
   });
 });
 
+describe('swallowed misses', () => {
+  // Counting constructions rather than timing: building the Error is what
+  // costs, since it captures a stack the caller throws away.
+  async function countErrorsConstructed(
+    run: () => unknown | Promise<unknown>,
+  ): Promise<number> {
+    const OriginalError = globalThis.Error;
+    let constructed = 0;
+    class CountingError extends OriginalError {
+      constructor(...args: ConstructorParameters<ErrorConstructor>) {
+        super(...args);
+        constructed++;
+      }
+    }
+    globalThis.Error = CountingError as unknown as ErrorConstructor;
+    try {
+      await run();
+    } finally {
+      globalThis.Error = OriginalError;
+    }
+    return constructed;
+  }
+
+  const missOptions = {
+    basedir: __dirname,
+    conditions: ['require', 'node', 'default'],
+    extensions: ['.js'],
+    moduleDirectory: ['node_modules'],
+  };
+
+  it('findNodeModule reports a miss without building an Error', async () => {
+    expect(
+      Resolver.findNodeModule('not-a-real-package', missOptions),
+    ).toBeNull();
+
+    const constructed = await countErrorsConstructed(() =>
+      Resolver.findNodeModule('not-a-real-package', missOptions),
+    );
+
+    expect(constructed).toBe(0);
+  });
+
+  it('findNodeModuleAsync reports a miss without building an Error', async () => {
+    await expect(
+      Resolver.findNodeModuleAsync('not-a-real-package', missOptions),
+    ).resolves.toBeNull();
+
+    const constructed = await countErrorsConstructed(() =>
+      Resolver.findNodeModuleAsync('not-a-real-package', missOptions),
+    );
+
+    expect(constructed).toBe(0);
+  });
+
+  it('still throws for an unresolved internal import', async () => {
+    expect(() => Resolver.findNodeModule('#nope', missOptions)).toThrow(
+      /#nope/,
+    );
+    await expect(
+      Resolver.findNodeModuleAsync('#nope', missOptions),
+    ).rejects.toThrow(/#nope/);
+  });
+});
+
 describe('findNodeModuleAsync', () => {
   it('is possible to override the default resolver with an ES module', async () => {
     const resolver = require.resolve('../__mocks__/userResolverEsmAsync');
@@ -712,6 +776,47 @@ describe('resolveModuleAsync', () => {
   });
 });
 
+describe('core module specifiers', () => {
+  let resolver: Resolver;
+  const src = require.resolve('../');
+
+  beforeEach(() => {
+    resolver = new Resolver(ModuleMap.create('/'), {
+      extensions: ['.js'],
+      hasCoreModules: true,
+    } as ResolverConfig);
+  });
+
+  it.each(['fs', 'node:fs'])(
+    'resolves %s to the incoming specifier, sync and async alike',
+    async specifier => {
+      expect(resolver.resolveModule(src, specifier)).toBe(specifier);
+      await expect(resolver.resolveModuleAsync(src, specifier)).resolves.toBe(
+        specifier,
+      );
+    },
+  );
+
+  // `node:test` has no bare counterpart, so stripping the prefix leaves a bare
+  // specifier that resolves to nothing - or to a userland package by that name.
+  it('keeps the prefix on a builtin that only exists prefixed', async () => {
+    expect(resolver.resolveModule(src, 'node:test')).toBe('node:test');
+    await expect(resolver.resolveModuleAsync(src, 'node:test')).resolves.toBe(
+      'node:test',
+    );
+  });
+
+  it.each(['fs', 'node:fs'])(
+    'reports no stub module for %s without a moduleNameMapper entry',
+    async specifier => {
+      expect(resolver.resolveStubModuleName(src, specifier)).toBeNull();
+      await expect(
+        resolver.resolveStubModuleNameAsync(src, specifier),
+      ).resolves.toBeNull();
+    },
+  );
+});
+
 describe('getMockModule', () => {
   it('is possible to use custom resolver to resolve deps inside mock modules with moduleNameMapper', () => {
     mockUserResolver.mockImplementation(() => 'module');
@@ -737,6 +842,25 @@ describe('getMockModule', () => {
       path.dirname(src),
     );
   });
+
+  it.each(['fs', 'node:fs'])(
+    'finds the manual mock stored under the unprefixed name for %s',
+    specifier => {
+      const mockPath = path.join('/root', '__mocks__', 'fs.js');
+      const moduleMap = ModuleMap.create('/');
+      jest
+        .spyOn(moduleMap, 'getMockModule')
+        .mockImplementation(name => (name === 'fs' ? mockPath : undefined));
+      const resolver = new Resolver(moduleMap, {
+        extensions: ['.js'],
+        hasCoreModules: true,
+      } as ResolverConfig);
+
+      expect(resolver.getMockModule(require.resolve('../'), specifier)).toBe(
+        mockPath,
+      );
+    },
+  );
 });
 
 describe('getMockModuleAsync', () => {
@@ -773,6 +897,25 @@ describe('getMockModuleAsync', () => {
       ['browser'],
     );
   });
+
+  it.each(['fs', 'node:fs'])(
+    'finds the manual mock stored under the unprefixed name for %s',
+    async specifier => {
+      const mockPath = path.join('/root', '__mocks__', 'fs.js');
+      const moduleMap = ModuleMap.create('/');
+      jest
+        .spyOn(moduleMap, 'getMockModule')
+        .mockImplementation(name => (name === 'fs' ? mockPath : undefined));
+      const resolver = new Resolver(moduleMap, {
+        extensions: ['.js'],
+        hasCoreModules: true,
+      } as ResolverConfig);
+
+      await expect(
+        resolver.getMockModuleAsync(require.resolve('../'), specifier, {}),
+      ).resolves.toBe(mockPath);
+    },
+  );
 });
 
 describe('getModuleID', () => {
@@ -869,6 +1012,42 @@ describe('getModuleID', () => {
 
     expect(secondID).toBe(firstID);
     expect(getAbsolutePath).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('default resolver factory reuse', () => {
+  const {ResolverFactory} = require('unrs-resolver') as {
+    ResolverFactory: typeof import('unrs-resolver').ResolverFactory;
+  };
+
+  test('reuses one factory per options shape instead of cloning per call', () => {
+    const cloneWithOptions = jest.spyOn(
+      ResolverFactory.prototype,
+      'cloneWithOptions',
+    );
+
+    const findOptions = {
+      basedir: __dirname,
+      conditions: ['require', 'node', 'default'],
+      extensions: ['.js'],
+      moduleDirectory: ['node_modules'],
+    };
+    Resolver.findNodeModule('jest-util', findOptions);
+    Resolver.findNodeModule('jest-util', findOptions);
+    Resolver.findNodeModule('jest-haste-map', findOptions);
+
+    expect(cloneWithOptions).not.toHaveBeenCalled();
+
+    Resolver.findNodeModule('jest-util', {
+      ...findOptions,
+      conditions: ['import', 'default'],
+    });
+    Resolver.findNodeModule('jest-util', {
+      ...findOptions,
+      conditions: ['import', 'default'],
+    });
+
+    expect(cloneWithOptions).toHaveBeenCalledTimes(1);
   });
 });
 

@@ -11,21 +11,21 @@ describe('TestState', () => {
   test('starts in `loading`: not tornDown, not betweenTests', () => {
     const state = new TestState(jest.fn());
     expect(state.isTornDown()).toBe(false);
-    expect(state.isBetweenTests()).toBe(false);
+    expect(() => state.throwIfBetweenTests('msg')).not.toThrow();
   });
 
   test('enterTestCode does not register as betweenTests or tornDown', () => {
     const state = new TestState(jest.fn());
     state.enterTestCode();
-    expect(state.isBetweenTests()).toBe(false);
+    expect(() => state.throwIfBetweenTests('msg')).not.toThrow();
     expect(state.isTornDown()).toBe(false);
   });
 
-  test('leaveTestCode flips isBetweenTests', () => {
+  test('leaveTestCode enters the betweenTests window', () => {
     const state = new TestState(jest.fn());
     state.enterTestCode();
     state.leaveTestCode();
-    expect(state.isBetweenTests()).toBe(true);
+    expect(() => state.throwIfBetweenTests('msg')).toThrow(ReferenceError);
     expect(state.isTornDown()).toBe(false);
   });
 
@@ -35,7 +35,7 @@ describe('TestState', () => {
     state.leaveTestCode();
     state.teardown();
     expect(state.isTornDown()).toBe(true);
-    expect(state.isBetweenTests()).toBe(false);
+    expect(() => state.throwIfBetweenTests('msg')).not.toThrow();
   });
 
   test('bailIfTornDown returns false and does not log before teardown', () => {

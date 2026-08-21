@@ -84,6 +84,7 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
     } as unknown as jest.Mocked<ModuleRegistries>,
     requireModuleOrMock: jest.fn() as any,
     resolution: {
+      canResolveSync: jest.fn(() => true),
       isCoreModule: jest.fn(() => false),
       isExplicitlyCommonjs: jest.fn(() => false),
       resolveEsm: jest.fn((_from, name) => name),
@@ -638,6 +639,17 @@ describe('EsmLoader.requireEsmModule', () => {
       expect(ns.answer).toBe(42);
     },
   );
+
+  test('throws ERR_REQUIRE_ASYNC_MODULE when the resolver is async-only', () => {
+    const {loader, stubs} = makeLoader();
+    stubs.resolution.canResolveSync.mockReturnValue(false);
+    expect(() => loader.requireEsmModule('/m.mjs')).toThrow(
+      expect.objectContaining({
+        code: 'ERR_REQUIRE_ASYNC_MODULE',
+        message: expect.stringContaining('resolver is async-only'),
+      }),
+    );
+  });
 
   test('throws ERR_REQUIRE_ESM when the registry has a mid-flight Promise', () => {
     const {esmRegistry, loader} = makeLoader();

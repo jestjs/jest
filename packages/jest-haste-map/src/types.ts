@@ -97,6 +97,7 @@ export type CrawlerOptions = {
   ignore: IgnoreMatcher;
   rootDir: string;
   roots: Array<string>;
+  watchmanSockname: string | undefined;
 };
 
 export type HasteImpl = {

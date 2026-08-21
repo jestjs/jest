@@ -11,7 +11,12 @@ import {
   ResolverFactory,
   type NapiResolveOptions as UpstreamResolveOptions,
 } from 'unrs-resolver';
-import {getResolver, setResolver, shouldPreserveSymlinks} from './fileWalkers';
+import {
+  getAnyResolver,
+  getResolver,
+  setResolver,
+  shouldPreserveSymlinks,
+} from './fileWalkers';
 
 export interface ResolverOptions extends Omit<
   UpstreamResolveOptions,
@@ -60,107 +65,183 @@ const handleResolveResult = (result: ResolveResult) => {
   return result.path!;
 };
 
-function baseResolver(path: string, options: ResolverOptions): string;
-function baseResolver(
+const KEY_SEPARATOR = '\u0001';
+// Distinct from an empty array's join: for example `extensions: []` and
+// `extensions: undefined` configure the factory differently.
+const ABSENT = '\u0002';
+
+const arrayCacheKeys = new WeakMap<ReadonlyArray<string>, string>();
+
+// JSON escapes control characters, so no element can smuggle a
+// KEY_SEPARATOR or ABSENT byte into the composed key.
+function cacheKeyForArray(array: ReadonlyArray<string> | undefined): string {
+  if (array == null) {
+    return ABSENT;
+  }
+  let key = arrayCacheKeys.get(array);
+  if (key === undefined) {
+    key = JSON.stringify(array);
+    arrayCacheKeys.set(array, key);
+  }
+  return key;
+}
+
+function cacheKeyForValue(value: string | undefined): string {
+  return value == null ? ABSENT : JSON.stringify(value);
+}
+
+function resolverForOptions(
+  resolveOptions: UpstreamResolveOptions,
+  key = `json${KEY_SEPARATOR}${JSON.stringify(resolveOptions)}`,
+): ResolverFactory {
+  let resolver = getResolver(key);
+  if (!resolver) {
+    // Clone from an existing factory when there is one, so every options
+    // shape shares the same underlying fs cache.
+    const existingResolver = getAnyResolver();
+    resolver = existingResolver
+      ? existingResolver.cloneWithOptions(resolveOptions)
+      : new ResolverFactory(resolveOptions);
+    setResolver(key, resolver);
+  }
+  return resolver;
+}
+
+// The custom-resolver fall-through hooks ride along in the rest object but
+// are not factory options - only other passthrough keys disqualify the
+// fast key.
+function hasPassthroughOptions(rest: object): boolean {
+  for (const key in rest) {
+    if (key !== 'defaultAsyncResolver' && key !== 'defaultResolver') {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function baseResolver(
+  path: string,
+  options: ResolverOptions,
+): ResolveResult;
+export function baseResolver(
   path: string,
   options: ResolverOptions,
   async: true,
-): Promise<string>;
-function baseResolver(
+): Promise<ResolveResult>;
+export function baseResolver(
   path: string,
   options: ResolverOptions,
   async?: true,
-): string | Promise<string> {
+): ResolveResult | Promise<ResolveResult> {
   // `builtins` in `unrs-resolver` is static which could be wrong at runtime.
   if (isBuiltin(path)) {
-    return path;
+    return {path};
   }
 
-  /* eslint-disable prefer-const */
-  let {
+  const {
     basedir,
     conditions,
     conditionNames,
     extensions,
-    modules,
+    modules: modulesOption,
     moduleDirectory,
     paths,
     roots,
     rootDir,
     ...rest
-    /* eslint-enable prefer-const */
   } = options;
 
-  modules = modules || (moduleDirectory as Array<string>);
+  const modules = modulesOption || (moduleDirectory as Array<string>);
 
-  const resolveOptions: UpstreamResolveOptions = {
-    conditionNames: conditionNames ||
-      (conditions as Array<string> | undefined) || [
-        'require',
-        'node',
-        'default',
-      ],
-    extensions: extensions as Array<string> | undefined,
-    modules,
-    roots: roots || (rootDir ? [rootDir] : undefined),
-    // Honor Node's `--preserve-symlinks`; `unrs-resolver` realpaths by default.
-    // An explicit `symlinks` option still wins via the `...rest` spread below.
-    ...(shouldPreserveSymlinks() ? {symlinks: false} : {}),
-    ...rest,
-  };
-
-  let unrsResolver = getResolver();
-
-  if (unrsResolver) {
-    unrsResolver = unrsResolver.cloneWithOptions(resolveOptions);
-  } else {
-    unrsResolver = new ResolverFactory(resolveOptions);
+  // Options without passthrough keys are fully described by a handful of
+  // long-lived arrays and scalars, so the factory key composes from
+  // per-array cached strings instead of serializing the whole object. The
+  // preserve-symlinks setting is constant per resolver-cache generation, so
+  // it needs no key part.
+  let fastKey: string | undefined;
+  if (!hasPassthroughOptions(rest)) {
+    const conditionsKey = cacheKeyForArray(
+      conditionNames || (conditions as Array<string> | undefined),
+    );
+    const extensionsKey = cacheKeyForArray(extensions);
+    const modulesKey = Array.isArray(modules)
+      ? cacheKeyForArray(modules)
+      : cacheKeyForValue(modules);
+    const rootsKey = roots
+      ? cacheKeyForArray(roots)
+      : cacheKeyForValue(rootDir);
+    fastKey = ['fast', conditionsKey, extensionsKey, modulesKey, rootsKey].join(
+      KEY_SEPARATOR,
+    );
   }
 
-  setResolver(unrsResolver);
-
-  const finalResolver = (
-    resolve: () => ResolveResult | Promise<ResolveResult>,
-  ) => {
-    const resolveWithPathsFallback = (result: ResolveResult) => {
-      if (!result.path && paths?.length) {
-        const modulesArr =
-          modules == null || Array.isArray(modules) ? modules : [modules];
-        if (modulesArr?.length) {
-          paths = paths.filter(p => !modulesArr.includes(p));
-        }
-        if (paths.length > 0) {
-          unrsResolver = unrsResolver!.cloneWithOptions({
-            ...resolveOptions,
-            modules: paths as Array<string>,
-          });
-          setResolver(unrsResolver);
-          return resolve();
-        }
-      }
-      return result;
+  // Only built when no cached factory serves the fast key.
+  let resolveOptions: UpstreamResolveOptions | undefined;
+  function getResolveOptions(): UpstreamResolveOptions {
+    resolveOptions ??= {
+      conditionNames: conditionNames ||
+        (conditions as Array<string> | undefined) || [
+          'require',
+          'node',
+          'default',
+        ],
+      extensions: extensions as Array<string> | undefined,
+      modules,
+      roots: roots || (rootDir ? [rootDir] : undefined),
+      // Honor Node's `--preserve-symlinks`; `unrs-resolver` realpaths by
+      // default. An explicit `symlinks` option still wins via `...rest`.
+      ...(shouldPreserveSymlinks() ? {symlinks: false} : {}),
+      ...rest,
     };
-    const result = resolve();
-    if ('then' in result) {
-      return result.then(resolveWithPathsFallback).then(handleResolveResult);
-    }
-    return handleResolveResult(
-      resolveWithPathsFallback(result) as ResolveResult,
-    );
-  };
+    return resolveOptions;
+  }
 
-  return finalResolver(() =>
-    async
+  let unrsResolver = fastKey == null ? undefined : getResolver(fastKey);
+  unrsResolver ??= resolverForOptions(getResolveOptions(), fastKey);
+
+  function attemptResolve(): ResolveResult | Promise<ResolveResult> {
+    return async
       ? unrsResolver!.async(basedir, path)
-      : unrsResolver!.sync(basedir, path),
-  );
+      : unrsResolver!.sync(basedir, path);
+  }
+
+  // `require.paths` semantics: when nothing resolves in the regular module
+  // directories, retry with the caller-provided paths as the module
+  // directories. Applies at most once.
+  function resolveWithPathsFallback(
+    result: ResolveResult,
+  ): ResolveResult | Promise<ResolveResult> {
+    if (result.path || !paths?.length) {
+      return result;
+    }
+
+    const moduleDirectories =
+      modules == null || Array.isArray(modules) ? (modules ?? []) : [modules];
+    const fallbackPaths = paths.filter(
+      fallbackPath => !moduleDirectories.includes(fallbackPath),
+    );
+    if (fallbackPaths.length === 0) {
+      return result;
+    }
+
+    unrsResolver = resolverForOptions({
+      ...getResolveOptions(),
+      modules: fallbackPaths as Array<string>,
+    });
+    return attemptResolve();
+  }
+
+  const result = attemptResolve();
+  if ('then' in result) {
+    return result.then(resolveWithPathsFallback);
+  }
+  return resolveWithPathsFallback(result) as ResolveResult;
 }
 
-export const defaultResolver: SyncResolver = baseResolver;
+export const defaultResolver: SyncResolver = (path, options) =>
+  handleResolveResult(baseResolver(path, options));
 
-export const defaultAsyncResolver: AsyncResolver = (
-  path: string,
-  options: ResolverOptions,
-) => baseResolver(path, options, true);
+export const defaultAsyncResolver: AsyncResolver = async (path, options) =>
+  handleResolveResult(await baseResolver(path, options, true));
 
 export default defaultResolver;
