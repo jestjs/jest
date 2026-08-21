@@ -1998,6 +1998,28 @@ describe('Runtime sync ESM graph - automock', () => {
     },
   );
 
+  testWithSyncEsm(
+    'jest.deepUnmock keeps ESM dependencies real for require()',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const {jest: jestObject} = runtime.requireModuleOrMock(
+        FROM,
+        '@jest/globals',
+      );
+      jestObject.deepUnmock('./import-automock-dep.mjs');
+      const exports = runtime.requireModuleOrMock(
+        FROM,
+        './import-automock-dep.mjs',
+      );
+      expect(exports.greetIsMock).toBe(false);
+      expect(exports.greetResult).toBe('real');
+    },
+  );
+
+
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,

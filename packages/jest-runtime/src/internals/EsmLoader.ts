@@ -380,6 +380,7 @@ export class EsmLoader {
         !this.cjsUnmockBlocksGeneratedMock(
           from,
           moduleName ?? modulePath,
+          modulePath,
           moduleID,
         )
       ) {
@@ -1366,12 +1367,23 @@ export class EsmLoader {
   private cjsUnmockBlocksGeneratedMock(
     from: string,
     moduleName: string,
+    modulePath: string,
     moduleID: string,
   ): boolean {
     if (this.mockState.getEsmFactory(moduleID) !== undefined) return false;
-    return this.mockState.isExplicitlyUnmocked(
-      this.mockState.getCjsModuleId(from, moduleName),
-    );
+    const cjsModuleId = this.mockState.getCjsModuleId(from, moduleName);
+    if (!this.mockState.isExplicitlyUnmocked(cjsModuleId)) return false;
+    // jest.deepUnmock records its transitive scope under the CJS ID; the
+    // real graph about to be walked consults the ESM ID of this root as the
+    // importer, so mirror the mark - otherwise the root loads real while its
+    // ESM deps stay automocked.
+    if (this.mockState.isTransitivelyUnmocked(cjsModuleId)) {
+      this.mockState.markTransitive(
+        this.mockState.getEsmModuleId(from, modulePath),
+        false,
+      );
+    }
+    return true;
   }
 
   private mockDecisionServable(moduleID: string): boolean {

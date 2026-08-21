@@ -455,6 +455,10 @@ export class MockState {
     return this.explicitCjsMock.get(moduleID) === false;
   }
 
+  isTransitivelyUnmocked(moduleID: string): boolean {
+    return this.transitiveShouldMock.get(moduleID) === false;
+  }
+
   getCjsFactory(moduleID: string): (() => unknown) | undefined {
     return this.cjsFactories.get(moduleID);
   }
