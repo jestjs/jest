@@ -246,21 +246,20 @@ test('supports imports from "data:text/javascript" URI without explicit encoding
   expect(importedEncoded.something).toBe('some value');
 });
 
-test('imports from "data:text/javascript" URI with invalid encoding fail', async () => {
+test('imports from "data:text/javascript" URI with an unknown parameter', async () => {
   const code = 'export const something = "some value"';
-  await expect(
-    () =>
-      import(
-        `data:text/javascript;charset=badEncoding,${encodeURIComponent(code)}`
-      ),
-  ).rejects.toThrow('Invalid data URI');
+  const module = await import(
+    `data:text/javascript;charset=badEncoding,${encodeURIComponent(code)}`
+  );
+
+  expect(module.something).toBe('some value');
 });
 
 test('imports from "data:" URI with invalid mime type fail', async () => {
   const code = 'export const something = "some value"';
   await expect(
     () => import(`data:something/else,${encodeURIComponent(code)}`),
-  ).rejects.toThrow('Invalid data URI');
+  ).rejects.toThrow('Unknown module format: something/else');
 });
 
 test('imports from "data:text/javascript" URI with invalid data fail', async () => {

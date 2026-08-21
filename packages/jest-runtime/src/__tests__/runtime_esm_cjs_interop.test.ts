@@ -204,6 +204,23 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
   );
 
   testWithSyncEsm(
+    "records an ESM-fallback module on the requiring module's children",
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transformIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
+      });
+      const {noMarkerExports, module: parentModule} = runtime.requireModule(
+        FROM,
+        './requires-esm-no-marker.cjs',
+      );
+      expect(noMarkerExports.esmNoMarkerValue).toBe(456);
+      expect(parentModule.children).toHaveLength(1);
+      expect(parentModule.children[0].exports).toBe(noMarkerExports);
+    },
+  );
+
+  testWithSyncEsm(
     'deduplicates an ESM-fallback module imported via a diamond graph (same module, two importers)',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -299,6 +316,127 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
       expect(() =>
         runtime.requireModule(FROM, './throws-syntaxerror.cjs'),
       ).toThrow('user-thrown SyntaxError from CJS body');
+    },
+  );
+});
+
+// A package that declares "type": "commonjs" opted out of ESM for its .js
+// files. Node throws the CJS parse error instead of retrying as ESM.
+describe('Runtime explicit "type": "commonjs" package', () => {
+  const untransformedNodeModules = {
+    rootDir: ROOT_DIR,
+    transformIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
+  };
+
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  it('require() throws the CJS SyntaxError instead of retrying as ESM', async () => {
+    const runtime = await createRuntime(__filename, untransformedNodeModules);
+    const requireCommonjsMarked = () =>
+      runtime.requireModule(FROM, 'commonjs-marked');
+    expect(requireCommonjsMarked).toThrow(
+      expect.objectContaining({
+        message: expect.stringContaining("Unexpected token 'export'"),
+        name: 'SyntaxError',
+      }),
+    );
+    // A plain SyntaxError, not a coded error like ERR_REQUIRE_ESM.
+    expect(requireCommonjsMarked).not.toThrow(
+      expect.objectContaining({code: expect.anything()}),
+    );
+  });
+
+  testWithVmEsm(
+    'a static import fails with the CJS SyntaxError instead of loading as ESM',
+    async () => {
+      const runtime = await createRuntime(__filename, untransformedNodeModules);
+      await expect(
+        runtime.unstable_importModule(FROM, './import-commonjs-marked.mjs'),
+      ).rejects.toThrow("Unexpected token 'export'");
+    },
+  );
+
+  testWithVmEsm(
+    'a dynamic import() rejects with the CJS SyntaxError instead of loading as ESM',
+    async () => {
+      const runtime = await createRuntime(__filename, untransformedNodeModules);
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-commonjs-marked-dynamic.mjs',
+      )) as any;
+      const importResult = await m.namespace.importResult;
+      expect(importResult).not.toBe('loaded-as-esm');
+      expect(importResult.name).toBe('SyntaxError');
+      expect(importResult.message).toContain("Unexpected token 'export'");
+    },
+  );
+
+  // Package "type" governs only .js files - an .mjs file is ESM regardless.
+  testWithSyncEsm(
+    'require()s an .mjs file inside the package as ESM',
+    async () => {
+      const runtime = await createRuntime(__filename, untransformedNodeModules);
+      const ns = runtime.requireModule(FROM, 'commonjs-marked/entry.mjs');
+      expect(ns.esmEntry).toBe('esm-entry');
+    },
+  );
+
+  testWithoutSyncEsm(
+    'throws ERR_REQUIRE_ESM for an untransformed .mjs file inside the package',
+    async () => {
+      const runtime = await createRuntime(__filename, untransformedNodeModules);
+      expect(() =>
+        runtime.requireModule(FROM, 'commonjs-marked/entry.mjs'),
+      ).toThrow(
+        expect.objectContaining({
+          code: 'ERR_REQUIRE_ESM',
+        }),
+      );
+    },
+  );
+});
+
+// The .cjs extension marks a file CommonJS regardless of package type, so
+// ESM syntax in it surfaces the parse error instead of retrying as ESM.
+describe('Runtime .cjs file with ESM syntax', () => {
+  const untransformedNodeModules = {
+    rootDir: ROOT_DIR,
+    transformIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
+  };
+
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithSyncEsm('require() throws the CJS SyntaxError', async () => {
+    const runtime = await createRuntime(__filename, untransformedNodeModules);
+    expect(() =>
+      runtime.requireModule(FROM, 'cjs-ext-pkg/esm-syntax.cjs'),
+    ).toThrow(
+      expect.objectContaining({
+        message: expect.stringContaining("Unexpected token 'export'"),
+        name: 'SyntaxError',
+      }),
+    );
+  });
+
+  testWithVmEsm('a static import fails with the CJS SyntaxError', async () => {
+    const runtime = await createRuntime(__filename, untransformedNodeModules);
+    await expect(
+      runtime.unstable_importModule(FROM, './import-cjs-ext.mjs'),
+    ).rejects.toThrow("Unexpected token 'export'");
+  });
+
+  // Package "type" governs only .js files, so other extensions keep the
+  // syntax-based ESM fallback even inside a "type": "commonjs" package.
+  testWithSyncEsm(
+    'retries a .jsx file with ESM syntax as ESM despite the package type',
+    async () => {
+      const runtime = await createRuntime(__filename, untransformedNodeModules);
+      const ns = runtime.requireModule(FROM, 'commonjs-marked/esm-syntax.jsx');
+      expect(ns.jsxValue).toBe('jsx-esm');
     },
   );
 });

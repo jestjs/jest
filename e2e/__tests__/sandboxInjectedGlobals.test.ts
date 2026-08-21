@@ -14,14 +14,33 @@ const DIR = path.resolve(tmpdir(), 'extra-globals');
 
 beforeEach(() => {
   cleanup(DIR);
-  createEmptyPackage(DIR, {jest: {sandboxInjectedGlobals: ['Math']}});
 });
 
 afterAll(() => cleanup(DIR));
 
 test('works with injected globals', () => {
+  createEmptyPackage(DIR, {jest: {sandboxInjectedGlobals: ['Math']}});
   writeFiles(DIR, {
     'test.js': `
+       test('Math works when injected', () => {
+         expect(Math.floor(1.5)).toBe(1);
+       });
+  `,
+  });
+
+  const {exitCode} = runJest(DIR);
+
+  expect(exitCode).toBe(0);
+});
+
+test('works with injected globals when `injectGlobals` is false', () => {
+  createEmptyPackage(DIR, {
+    jest: {injectGlobals: false, sandboxInjectedGlobals: ['Math']},
+  });
+  writeFiles(DIR, {
+    'test.js': `
+       const {expect, test} = require('@jest/globals');
+
        test('Math works when injected', () => {
          expect(Math.floor(1.5)).toBe(1);
        });

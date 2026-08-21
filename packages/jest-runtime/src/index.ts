@@ -388,13 +388,12 @@ export default class Runtime {
 
   requireInternalModule<T = unknown>(from: string, to?: string): T {
     if (to) {
-      const require = nativeModule.createRequire(from);
       if (INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES.has(to)) {
-        return require(to);
+        return nativeModule.createRequire(from)(to);
       }
       const outsideJestVmPath = decodePossibleOutsideJestVmPath(to);
       if (outsideJestVmPath) {
-        return require(outsideJestVmPath);
+        return nativeModule.createRequire(from)(outsideJestVmPath);
       }
     }
 

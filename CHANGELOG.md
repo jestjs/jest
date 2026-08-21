@@ -32,8 +32,10 @@
 - `[jest-config]` Add missing `findRelatedTests`, `outputFile`, and `replname` entries to `ValidConfig` so they no longer trigger spurious "Unknown option" warnings ([#16224](https://github.com/jestjs/jest/pull/16224))
 - `[jest-config]` Use `--config` for the global config when multiple `--projects` are specified ([#16273](https://github.com/jestjs/jest/pull/16273))
 - `[jest-core]` Serialize `bigint` values in `--json` and `--outputFile` output as their literal form (`4n`), instead of failing the run with `TypeError: Do not know how to serialize a BigInt` ([#16338](https://github.com/jestjs/jest/pull/16338))
+- `[jest-core]` Do not report a `CustomGC` async resource (used by N-API addons such as napi-rs for per-isolate GC bookkeeping) as an open handle, since it is `napi_unref`'d by the addon and can never keep the event loop alive ([#16379](https://github.com/jestjs/jest/pull/16379))
 - `[jest-each]` Keep a `$&`, `` $` ``, `$'` or `$$` inside a `%p` param value out of the replacement, so the title shows the value instead of the text around it ([#16338](https://github.com/jestjs/jest/pull/16338))
 - `[jest-each]` Interpolate a `bigint` into a `%j` title as its literal form (`"4n"`) at any depth, instead of throwing `TypeError: Do not know how to serialize a BigInt` while collecting the tests ([#16338](https://github.com/jestjs/jest/pull/16338))
+- `[jest-environment, jest-runtime]` Bind `sandboxInjectedGlobals` to the right values when `injectGlobals` is `false`, instead of shifting every one of them by a position ([#16377](https://github.com/jestjs/jest/pull/16377))
 - `[jest-environment-node, jest-util]` Only warn about a conflicting `globalsCleanup` mode when one was explicitly configured, and follow the mode that is actually in effect ([#16323](https://github.com/jestjs/jest/pull/16323))
 - `[jest-environment-node, jest-util]` Stop resolving lazy globals when setting up an environment, so Node 26's builtin module globals are no longer loaded (and no longer emit their deprecation warnings) for every test file ([#16324](https://github.com/jestjs/jest/pull/16324))
 - `[jest-haste-map]` Keep watch mode alive when an outside process briefly makes a file unreadable on Windows, instead of tearing the watcher down on `EPERM` ([#16295](https://github.com/jestjs/jest/pull/16295))
@@ -57,6 +59,7 @@
 - `[jest-resolve]` Keep virtual and ordinary mock module IDs isolated across test files ([#16296](https://github.com/jestjs/jest/pull/16296))
 - `[jest-resolve]` Guard missing `require.resolve.paths` ([#16052](https://github.com/jestjs/jest/pull/16052))
 - `[jest-resolve, jest-config, jest-runner]` Support a user resolver written as an ES module ([#16332](https://github.com/jestjs/jest/pull/16332))
+- `[jest-resolve, jest-runtime]` Throw the CJS parse error for ESM syntax in a `"type": "commonjs"` package or a `.cjs` file instead of loading it as ESM, matching Node ([#16368](https://github.com/jestjs/jest/pull/16368))
 - `[@jest/source-map]` Keep source map sources that name a scheme, such as `webpack:///`, instead of resolving them into a path that does not exist ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[@jest/source-map]` Look up `--testLocationInResults` positions at the right column, and keep a mapping to the first column instead of discarding it ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[@jest/source-map]` Warn when a source map cannot be parsed, instead of silently leaving its frames untranslated ([#16327](https://github.com/jestjs/jest/pull/16327))
@@ -72,6 +75,10 @@
 - `[jest-runtime]` Mark the result of `require()`ing an ES module that has a default export with `__esModule: true` through a live-binding facade, and serve the same object from `require.cache`, matching Node ([#16367](https://github.com/jestjs/jest/pull/16367))
 - `[jest-runtime]` Provide a CommonJS module's exports under the `'module.exports'` named export when imported from ESM, matching Node 23+ ([#16367](https://github.com/jestjs/jest/pull/16367))
 - `[jest-runtime]` Give the test file itself a non-null `require.main` ([#16367](https://github.com/jestjs/jest/pull/16367))
+- `[jest-runtime]` Populate `module.children` with the modules a file loads, matching Node ([#16368](https://github.com/jestjs/jest/pull/16368))
+- `[jest-runtime]` Provide `import.meta.resolve` and `import.meta.jest` in `data:` URI modules, accept any-case mediatype parameters, and use Node's error codes for invalid `data:` URIs ([#16368](https://github.com/jestjs/jest/pull/16368))
+- `[jest-runtime]` Key ES modules by full URL, so query and fragment suffixes create the same module instances as Node and show up in `import.meta.url` ([#16375](https://github.com/jestjs/jest/pull/16375))
+- `[jest-runtime]` Share modules between overlapping graphs when a CommonJS module `require()`s an ES module mid-load, instead of evaluating shared dependencies twice ([#16375](https://github.com/jestjs/jest/pull/16375))
 - `[jest-runtime]` Throw `ERR_REQUIRE_CYCLE_MODULE` like Node when a CommonJS module `require()`s an ES module that is still being loaded, instead of evaluating the module a second time ([#16366](https://github.com/jestjs/jest/pull/16366))
 - `[jest-runtime]` Key builtin modules in the ESM registry by one canonical specifier ([#16341](https://github.com/jestjs/jest/pull/16341))
 - `[jest-runtime]` `import.meta.resolve()` for a builtin uses its `node:` specifier ([#16341](https://github.com/jestjs/jest/pull/16341))
@@ -86,6 +93,7 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Document the intentional divergences from Node's module system in the ECMAScript Modules page ([#16368](https://github.com/jestjs/jest/pull/16368))
 - `[docs]` Note deprecation of `react-test-renderer` in React Native tutorial and `pretty-format` README ([#16294](https://github.com/jestjs/jest/pull/16294))
 - `[docs]` Use `@testing-library/react-native` in the React Native tutorial instead of the deprecated `react-test-renderer` ([#16318](https://github.com/jestjs/jest/pull/16318))
 - `[babel-jest, @jest/transform]` Update `babel-plugin-istanbul` to v8 ([#16049](https://github.com/jestjs/jest/pull/16049))
@@ -96,6 +104,7 @@
 - `[jest-resolve, jest-runtime]` Cut repeated work on the resolution hot path: hoist the platform-extension list to construction, memoize `isCoreModule` and the options cache-key serialization, skip mapper preparation when no `moduleNameMapper` is configured, run each mapper regex once, and stop re-parsing `NODE_OPTIONS` on every default-resolver call ([#16371](https://github.com/jestjs/jest/pull/16371))
 - `[jest-resolve]` Cut warm resolution cost to about a third: reuse one `unrs-resolver` factory per options shape instead of cloning per resolution, compose the factory cache key from per-array cached strings instead of serializing options, and stop constructing an `Error` for misses that `findNodeModule` swallows; add a `__benchmarks__` suite for the default resolver ([#16373](https://github.com/jestjs/jest/pull/16373))
 - `[jest-runner, @jest/source-map]` Replace `source-map-support` with an implementation in `@jest/source-map` ([#16327](https://github.com/jestjs/jest/pull/16327))
+- `[jest-runtime]` Reduce per-require overhead: skip module ID resolution when no mock can apply, answer core modules before probing for a manual mock, share one `require.cache` proxy across modules, and cache empty files ([#16376](https://github.com/jestjs/jest/pull/16376))
 - `[@jest/source-map]` Deprecate `getCallsite` in favour of `SourceMapSupport#getCallsite` ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[jest-runtime]` Avoid magical `null` value in ESM loader ([#16160](https://github.com/jestjs/jest/pull/16160))
 

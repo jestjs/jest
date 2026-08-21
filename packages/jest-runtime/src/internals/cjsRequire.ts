@@ -84,7 +84,7 @@ export class RequireBuilder {
     ) as NodeJS.Require;
     moduleRequire.extensions = Object.create(null);
     moduleRequire.resolve = resolveImpl;
-    moduleRequire.cache = this.registries.createRequireCacheProxy();
+    moduleRequire.cache = this.registries.getRequireCacheProxy();
 
     // A getter, not a snapshot: the test file's own require object is built
     // before the executor assigns the main module, so a captured value would

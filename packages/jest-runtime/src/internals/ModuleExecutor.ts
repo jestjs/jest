@@ -11,7 +11,7 @@ import {
   compileFunction,
 } from 'node:vm';
 import type {
-  Jest,
+  InjectedModuleArguments,
   JestEnvironment,
   Module,
   ModuleWrapper,
@@ -63,6 +63,8 @@ export interface ModuleExecutorOptions {
 }
 
 export class ModuleExecutor {
+  readonly injectedModuleParameters: ReadonlyArray<string>;
+
   private readonly resolution: Resolution;
   private readonly transformCache: TransformCache;
   private readonly environment: JestEnvironment;
@@ -84,6 +86,15 @@ export class ModuleExecutor {
     this.testMainModule = options.testMainModule;
     this.jestGlobals = options.jestGlobals;
     this.dynamicImport = options.dynamicImport;
+    this.injectedModuleParameters = [
+      'module',
+      'exports',
+      'require',
+      '__dirname',
+      '__filename',
+      this.config.injectGlobals ? 'jest' : undefined,
+      ...this.config.sandboxInjectedGlobals,
+    ].filter(isNonNullable);
   }
 
   getCurrentlyExecutingManualMock(): string | null {
@@ -132,11 +143,8 @@ export class ModuleExecutor {
         return 'env-disposed';
       }
 
-      const jestObject = this.jestGlobals.jestObjectFor(filename);
-
-      const lastArgs: [Jest | undefined, ...Array<Global.Global>] = [
-        this.config.injectGlobals ? jestObject : undefined,
-        ...this.config.sandboxInjectedGlobals.map<Global.Global>(
+      const sandboxGlobals =
+        this.config.sandboxInjectedGlobals.map<Global.Global>(
           globalVariable => {
             if (this.environment.global[globalVariable]) {
               return this.environment.global[globalVariable];
@@ -146,8 +154,14 @@ export class ModuleExecutor {
               `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
             );
           },
-        ),
-      ];
+        );
+
+      // Positional, so this has to line up with
+      // `injectedModuleParameters` name for name.
+      const injectedModuleArguments: InjectedModuleArguments = this.config
+        .injectGlobals
+        ? [this.jestGlobals.jestObjectFor(filename), ...sandboxGlobals]
+        : sandboxGlobals;
 
       if (!this.testMainModule.current && filename === this.testPath) {
         this.testMainModule.current = module;
@@ -166,8 +180,7 @@ export class ModuleExecutor {
           module.require, // require implementation
           module.path, // __dirname
           module.filename, // __filename
-          lastArgs[0],
-          ...lastArgs.slice(1).filter(isNonNullable),
+          ...injectedModuleArguments,
         );
       } catch (error: any) {
         this.handleExecutionError(error, module);
@@ -193,30 +206,26 @@ export class ModuleExecutor {
       const scriptFilename = this.resolution.isCoreModule(filename)
         ? `jest-nodejs-core-${filename}`
         : filename;
-      return compileFunction(
-        scriptSource,
-        this.constructInjectedModuleParameters(),
-        {
-          filename: scriptFilename,
-          importModuleDynamically: async (
+      return compileFunction(scriptSource, this.injectedModuleParameters, {
+        filename: scriptFilename,
+        importModuleDynamically: async (
+          specifier,
+          _function,
+          importAttributes,
+        ) => {
+          invariant(
+            runtimeSupportsVmModules,
+            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
+          );
+          return this.dynamicImport(
             specifier,
-            _function,
-            importAttributes,
-          ) => {
-            invariant(
-              runtimeSupportsVmModules,
-              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-            );
-            return this.dynamicImport(
-              specifier,
-              scriptFilename,
-              vmContext,
-              importAttributes as ImportAttributes | undefined,
-            );
-          },
-          parsingContext: vmContext,
+            scriptFilename,
+            vmContext,
+            importAttributes as ImportAttributes | undefined,
+          );
         },
-      ) as ModuleWrapper;
+        parsingContext: vmContext,
+      }) as ModuleWrapper;
     } catch (error: any) {
       if (
         runtimeSupportsVmModules &&
@@ -228,18 +237,6 @@ export class ModuleExecutor {
       }
       throw handlePotentialSyntaxError(error);
     }
-  }
-
-  constructInjectedModuleParameters(): Array<string> {
-    return [
-      'module',
-      'exports',
-      'require',
-      '__dirname',
-      '__filename',
-      this.config.injectGlobals ? 'jest' : undefined,
-      ...this.config.sandboxInjectedGlobals,
-    ].filter(isNonNullable);
   }
 
   private handleExecutionError(error: Error, module: Module): never {
