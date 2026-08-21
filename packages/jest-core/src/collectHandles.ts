@@ -92,6 +92,13 @@ export default function collectHandles(): HandleCollectionResult {
           'SIGNREQUEST',
           'TLSWRAP',
           'TCPWRAP',
+          // Per-isolate threadsafe function that some N-API addons (e.g.
+          // napi-rs, used by Nx, swc, and others) register for their own
+          // garbage-collection bookkeeping. It's `napi_unref`'d by the addon
+          // itself immediately after creation, so it can never keep the
+          // event loop alive, but it has no JS-exposed `hasRef()`, so it
+          // would otherwise always be reported as an open handle below.
+          'CustomGC',
         ].includes(type)
       ) {
         return;

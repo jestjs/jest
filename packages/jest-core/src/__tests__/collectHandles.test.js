@@ -6,6 +6,7 @@
  *
  */
 
+import {AsyncResource} from 'async_hooks';
 import * as crypto from 'crypto';
 import {promises as dns} from 'dns';
 import http from 'http';
@@ -146,5 +147,24 @@ describe('collectHandles', () => {
     const openHandles = await handleCollector();
 
     expect(openHandles).toHaveLength(0);
+  });
+
+  it('should not collect the `CustomGC` open handle', async () => {
+    const handleCollector = collectHandles();
+
+    // Mirrors the resource type name that N-API addons built with napi-rs
+    // (e.g. Nx, swc) register for their per-isolate garbage-collection
+    // bookkeeping threadsafe function. It is `napi_unref`'d by the addon
+    // itself immediately after creation, so it can never keep the event
+    // loop alive, but the resource has no JS-exposed `hasRef()`.
+    globalThis.__customGcHandle = new AsyncResource('CustomGC');
+
+    const openHandles = await handleCollector();
+
+    expect(openHandles).not.toContainEqual(
+      expect.objectContaining({message: 'CustomGC'}),
+    );
+
+    delete globalThis.__customGcHandle;
   });
 });
