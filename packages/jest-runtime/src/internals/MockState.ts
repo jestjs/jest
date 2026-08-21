@@ -21,6 +21,19 @@ const transitiveCacheKey = (from: string, moduleID: string) =>
 
 export type MockDecision = {shouldMock: boolean; moduleID: string};
 
+// Spellings that serialize to one data URL are one module in the loader
+// (which keys by `new URL(...).href`), so the mock decision and its ID must
+// canonicalize the same way. Unparseable URIs stay raw - the loader's own
+// Invalid URL error surfaces later.
+function canonicalizeDataUri(moduleName: string): string {
+  if (!moduleName.startsWith('data:')) return moduleName;
+  try {
+    return new URL(moduleName).href;
+  } catch {
+    return moduleName;
+  }
+}
+
 const NO_MOCK: MockDecision = Object.freeze({moduleID: '', shouldMock: false});
 
 export class MockState {
@@ -86,6 +99,7 @@ export class MockState {
       return NO_MOCK;
     }
 
+    moduleName = canonicalizeDataUri(moduleName);
     const moduleID = this.resolution.getEsmModuleId(
       this.virtualEsmMocks,
       from,
@@ -105,6 +119,7 @@ export class MockState {
       return NO_MOCK;
     }
 
+    moduleName = canonicalizeDataUri(moduleName);
     const moduleID = await this.resolution.getEsmModuleIdAsync(
       this.virtualEsmMocks,
       from,

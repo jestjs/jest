@@ -1920,7 +1920,22 @@ describe('Runtime sync ESM graph - automock', () => {
     },
   );
 
-
+  testWithSyncEsm(
+    'data: spellings that serialize to one URL share a mock instance',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const loadVariants = runtime.requireModule(
+        FROM,
+        './dynamic-imports-data-uri-variants.cjs',
+      );
+      const [first, second] = await loadVariants();
+      expect(first.mocked._isMockFunction).toBe(true);
+      expect(first.mocked).toBe(second.mocked);
+    },
+  );
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,
