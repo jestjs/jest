@@ -16,7 +16,11 @@ import type {TestState} from './TestState';
 import type {TransformCache, TransformOptions} from './TransformCache';
 import type {CoreModuleProvider} from './cjsRequire';
 import {hasEsmSyntax} from './esmLexer';
-import type {InitialModule, ModuleRegistry} from './moduleTypes';
+import {
+  type InitialModule,
+  type ModuleRegistry,
+  createInitialModule,
+} from './moduleTypes';
 import {
   runtimeSupportsVmModules,
   supportsSyncEvaluate,
@@ -125,15 +129,7 @@ export class CjsLoader {
     // We must register the pre-allocated module object first so that any
     // circular dependencies that may arise while evaluating the module can
     // be satisfied.
-    const localModule: InitialModule = {
-      children: [],
-      exports: {},
-      filename: modulePath,
-      id: modulePath,
-      isPreloading: false,
-      loaded: false,
-      path: path.dirname(modulePath),
-    };
+    const localModule = createInitialModule(modulePath);
     moduleRegistry.set(modulePath, localModule);
     if (!isInternal) {
       this.recordChildModule(from, localModule as Module, moduleRegistry);
