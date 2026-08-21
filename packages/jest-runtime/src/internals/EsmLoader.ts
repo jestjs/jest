@@ -78,14 +78,27 @@ type WorklistEntry = {
   modulePath: string;
 };
 
-// A CJS dep discovered during resolution. Building its synthetic executes the
-// CJS body (the export-name merge needs the runtime exports object), so builds
-// wait until the whole graph has resolved - Node reports resolution and
-// import-attribute errors before executing anything.
+// Work discovered during resolution whose build executes user code, deferred
+// until the whole graph has resolved - Node reports resolution and
+// import-attribute errors before executing anything. A CJS dep executes its
+// body when built (the export-name merge needs the runtime exports object);
+// a factory-less mock decision (automock or manual __mocks__) executes the
+// real module to collect metadata.
 type PendingCjsBuild = {
   cacheKey: string;
   modulePath: string;
   referencingIdentifier: string;
+};
+
+type PendingGeneratedMock = {
+  from: string;
+  moduleID: string;
+  specifierPath: string;
+};
+
+type PendingBuilds = {
+  cjs: Array<PendingCjsBuild>;
+  generatedMocks: Array<PendingGeneratedMock>;
 };
 
 type ResolvedSyncSpecifier = {
@@ -652,21 +665,22 @@ export class EsmLoader {
     // Node evaluates these bodies interleaved with the ESM bodies in
     // post-order; here they run in discovery order before the ESM bodies -
     // see the divergences list in docs/ECMAScriptModules.md.
-    const pendingCjsBuilds: Array<PendingCjsBuild> = [];
+    const pendingBuilds: PendingBuilds = {cjs: [], generatedMocks: []};
     const confirmedCjsBuilds: Array<PendingCjsBuild> = [];
     while (
       worklist.length > 0 ||
-      pendingCjsBuilds.length > 0 ||
+      pendingBuilds.cjs.length > 0 ||
+      pendingBuilds.generatedMocks.length > 0 ||
       confirmedCjsBuilds.length > 0
     ) {
-      if (worklist.length === 0 && pendingCjsBuilds.length > 0) {
+      if (worklist.length === 0 && pendingBuilds.cjs.length > 0) {
         // Classify without executing: a pending file that turns out to hold
         // unmarked ESM syntax re-enters the worklist, and its subgraph can
         // still fail to resolve - so no CJS body may run until every pending
         // is confirmed. The probe lexes the same transformed source the
         // build would; explicitly-CJS parse failures defer to the build so
         // the canonical compile error surfaces.
-        const pending = pendingCjsBuilds.shift()!;
+        const pending = pendingBuilds.cjs.shift()!;
         if (this.pendingCjsBuildIsUnmarkedEsm(pending)) {
           worklist.push({
             cacheKey: pending.cacheKey,
@@ -675,6 +689,19 @@ export class EsmLoader {
         } else {
           confirmedCjsBuilds.push(pending);
         }
+        continue;
+      }
+      if (worklist.length === 0 && pendingBuilds.generatedMocks.length > 0) {
+        const pending = pendingBuilds.generatedMocks.shift()!;
+        const mocked = this.importMockSync(
+          pending.from,
+          pending.specifierPath,
+          pending.moduleID,
+          context,
+          scratch,
+          mode,
+        );
+        if (mocked === LOAD_ASYNC) return LOAD_ASYNC;
         continue;
       }
       if (worklist.length === 0) {
@@ -752,7 +779,7 @@ export class EsmLoader {
           cacheKey,
           context,
           mode,
-          pendingCjsBuilds,
+          pendingBuilds,
           registry,
           scratch,
           specifier: modulePath,
@@ -770,7 +797,7 @@ export class EsmLoader {
           context,
           identifier: modulePath,
           mode,
-          pendingCjsBuilds,
+          pendingBuilds,
           registry,
           scratch,
           worklist,
@@ -833,7 +860,7 @@ export class EsmLoader {
             this.jestGlobals.jestObjectFor(modulePath);
         },
         mode,
-        pendingCjsBuilds,
+        pendingBuilds,
         registry,
         scratch,
         worklist,
@@ -1059,7 +1086,7 @@ export class EsmLoader {
     scratch: Map<string, ScratchEntry>,
     registry: ModuleRegistry | Map<string, JestModule>,
     mode: SyncEsmMode,
-    pendingCjsBuilds: Array<PendingCjsBuild>,
+    pendingBuilds: PendingBuilds,
   ): ResolvedSyncSpecifier | LoadAsync {
     if (specifier === '@jest/globals') {
       const cacheKey = `@jest/globals/${referencingIdentifier}`;
@@ -1079,20 +1106,34 @@ export class EsmLoader {
       specifierPath,
     );
     if (shouldMock) {
-      const mocked = this.importMockSync(
-        referencingIdentifier,
-        specifierPath,
+      if (
+        this.registries.getModuleMock(moduleID) !== undefined ||
+        this.mockState.getEsmFactory(moduleID) !== undefined
+      ) {
+        const mocked = this.importMockSync(
+          referencingIdentifier,
+          specifierPath,
+          moduleID,
+          context,
+          scratch,
+          mode,
+        );
+        if (mocked === LOAD_ASYNC) return LOAD_ASYNC;
+        return {
+          cacheKey: mocked.cacheKey,
+          enqueue: null,
+          modulePath: specifierPath,
+        };
+      }
+      // Factory-less decision: generation executes the real module for its
+      // metadata, so it waits with the pending CJS builds until the graph
+      // has fully resolved.
+      pendingBuilds.generatedMocks.push({
+        from: referencingIdentifier,
         moduleID,
-        context,
-        scratch,
-        mode,
-      );
-      if (mocked === LOAD_ASYNC) return LOAD_ASYNC;
-      return {
-        cacheKey: mocked.cacheKey,
-        enqueue: null,
-        modulePath: specifierPath,
-      };
+        specifierPath,
+      });
+      return {cacheKey: moduleID, enqueue: null, modulePath: specifierPath};
     }
 
     if (specifierPath.startsWith('data:')) {
@@ -1146,7 +1187,7 @@ export class EsmLoader {
       const adoption = this.adoptRegistryEntry(cacheKey, registry, scratch);
       if (adoption === 'bail') return LOAD_ASYNC;
       if (adoption === 'absent') {
-        pendingCjsBuilds.push({
+        pendingBuilds.cjs.push({
           cacheKey,
           modulePath: resolved,
           referencingIdentifier,
@@ -1376,7 +1417,7 @@ export class EsmLoader {
     context,
     identifier,
     mode,
-    pendingCjsBuilds,
+    pendingBuilds,
     registry,
     scratch,
     worklist,
@@ -1386,7 +1427,7 @@ export class EsmLoader {
     context: VMContext;
     identifier: string;
     mode: SyncEsmMode;
-    pendingCjsBuilds: Array<PendingCjsBuild>;
+    pendingBuilds: PendingBuilds;
     registry: ModuleRegistry | Map<string, JestModule>;
     scratch: Map<string, ScratchEntry>;
     worklist: Array<WorklistEntry>;
@@ -1403,7 +1444,7 @@ export class EsmLoader {
         scratch,
         registry,
         mode,
-        pendingCjsBuilds,
+        pendingBuilds,
       );
       if (resolved === LOAD_ASYNC) return LOAD_ASYNC;
       moduleSpecToCacheKey.set(depSpec, resolved.cacheKey);
@@ -1451,7 +1492,7 @@ export class EsmLoader {
     cacheKey,
     context,
     mode,
-    pendingCjsBuilds,
+    pendingBuilds,
     registry,
     scratch,
     specifier,
@@ -1460,7 +1501,7 @@ export class EsmLoader {
     cacheKey: string;
     context: VMContext;
     mode: SyncEsmMode;
-    pendingCjsBuilds: Array<PendingCjsBuild>;
+    pendingBuilds: PendingBuilds;
     registry: ModuleRegistry | Map<string, JestModule>;
     scratch: Map<string, ScratchEntry>;
     specifier: string;
@@ -1475,7 +1516,7 @@ export class EsmLoader {
         context,
         identifier: specifier,
         mode,
-        pendingCjsBuilds,
+        pendingBuilds,
         registry,
         scratch,
         worklist,
@@ -1504,7 +1545,7 @@ export class EsmLoader {
           this.jestGlobals.jestObjectFor(specifier);
       },
       mode,
-      pendingCjsBuilds,
+      pendingBuilds,
       registry,
       scratch,
       worklist,
@@ -1521,7 +1562,7 @@ export class EsmLoader {
     identifier,
     initializeImportMeta,
     mode,
-    pendingCjsBuilds,
+    pendingBuilds,
     registry,
     scratch,
     worklist,
@@ -1532,7 +1573,7 @@ export class EsmLoader {
     identifier: string;
     initializeImportMeta: (meta: ImportMeta) => void;
     mode: SyncEsmMode;
-    pendingCjsBuilds: Array<PendingCjsBuild>;
+    pendingBuilds: PendingBuilds;
     registry: ModuleRegistry | Map<string, JestModule>;
     scratch: Map<string, ScratchEntry>;
     worklist: Array<WorklistEntry>;
@@ -1571,7 +1612,7 @@ export class EsmLoader {
         scratch,
         registry,
         mode,
-        pendingCjsBuilds,
+        pendingBuilds,
       );
       if (resolved === LOAD_ASYNC) return LOAD_ASYNC;
       this.importAttributeValidator.validate(

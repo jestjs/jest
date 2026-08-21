@@ -1728,6 +1728,25 @@ describe('Runtime sync ESM graph - link-time errors before CJS execution', () =>
   );
 
   testWithSyncEsm(
+    'automock generation waits for the graph to resolve',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      await expect(
+        runtime.unstable_importModule(
+          FROM,
+          './import-automock-then-missing.mjs',
+        ),
+      ).rejects.toThrow("Cannot find module './does-not-exist.js'");
+      expect(
+        runtime._environment.global.__automockSideEffectRan,
+      ).toBeUndefined();
+    },
+  );
+
+  testWithSyncEsm(
     'a pending build that turns out to be unmarked ESM defers CJS siblings',
     async () => {
       // With no transform the .js file keeps its ESM syntax, so it can only
