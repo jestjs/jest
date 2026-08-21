@@ -188,6 +188,20 @@ describe('getWatchmanAvailability', () => {
     });
   });
 
+  it('reports watchman as installed but without a sockname when the spawn fails for a reason other than a missing binary', async () => {
+    mockGetSocknameFailure(
+      Object.assign(new Error('stdout maxBuffer length exceeded'), {
+        code: 'ERR_CHILD_PROCESS_STDIO_MAXBUFFER',
+      }),
+    );
+    const {getWatchmanAvailability} = loadModule();
+
+    expect(await getWatchmanAvailability('/cache')).toEqual({
+      installed: true,
+      sockname: undefined,
+    });
+  });
+
   it('removes a stale cache entry when get-sockname fails', async () => {
     mockReadFileSync.mockReturnValue('/stale/sock');
     mockSocketConnection(false);
@@ -199,6 +213,36 @@ describe('getWatchmanAvailability', () => {
       expect.stringContaining('haste-map-watchman-sockname-'),
       {force: true},
     );
+  });
+
+  it('resolves availability when a stale cache entry cannot be removed', async () => {
+    mockReadFileSync.mockReturnValue('/stale/sock');
+    mockSocketConnection(false);
+    mockRmSync.mockImplementation(() => {
+      throw Object.assign(new Error('EACCES'), {code: 'EACCES'});
+    });
+    mockGetSocknameResult(JSON.stringify({sockname: '/fresh/sock'}));
+    const {getWatchmanAvailability} = loadModule();
+
+    expect(await getWatchmanAvailability('/cache')).toEqual({
+      installed: true,
+      sockname: '/fresh/sock',
+    });
+  });
+
+  it('reports availability when a stale cache entry cannot be removed and get-sockname fails', async () => {
+    mockReadFileSync.mockReturnValue('/stale/sock');
+    mockSocketConnection(false);
+    mockRmSync.mockImplementation(() => {
+      throw Object.assign(new Error('EACCES'), {code: 'EACCES'});
+    });
+    mockGetSocknameFailure(Object.assign(new Error('exit 1'), {code: 1}));
+    const {getWatchmanAvailability} = loadModule();
+
+    expect(await getWatchmanAvailability('/cache')).toEqual({
+      installed: true,
+      sockname: undefined,
+    });
   });
 
   it('reports watchman as installed but without a sockname on unparseable output', async () => {

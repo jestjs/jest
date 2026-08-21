@@ -27,6 +27,11 @@ const NOT_INSTALLED: WatchmanAvailability = {
 // surface the failure through the existing warn-and-fall-back path.
 const BROKEN: WatchmanAvailability = {installed: true, sockname: undefined};
 
+// Codes `child_process` reports when the binary itself could not be started.
+// Anything else, including a non-zero exit, means watchman is there but not
+// answering, which is the `BROKEN` case.
+const SPAWN_FAILURE_CODES = new Set(['EACCES', 'ENOENT', 'ENOTDIR', 'EPERM']);
+
 let availabilityPromise: Promise<WatchmanAvailability> | undefined;
 
 export function getWatchmanAvailability(
@@ -53,7 +58,7 @@ async function resolveAvailability(
   const availability = await runGetSockname();
   if (availability.sockname === undefined) {
     if (cachedSockname !== undefined) {
-      fs.rmSync(cacheFilePath, {force: true});
+      removeCachedSockname(cacheFilePath);
     }
   } else {
     writeCachedSockname(cacheFilePath, availability.sockname);
@@ -69,12 +74,7 @@ async function runGetSockname(): Promise<WatchmanAvailability> {
       'get-sockname',
     ]));
   } catch (error) {
-    // A string code means the binary could not be spawned at all (ENOENT,
-    // EACCES); a numeric code is a spawned process exiting non-zero.
-    if (
-      isError(error) &&
-      typeof (error as NodeJS.ErrnoException).code === 'string'
-    ) {
+    if (isError(error) && isSpawnFailure(error)) {
       return NOT_INSTALLED;
     }
     return BROKEN;
@@ -112,8 +112,18 @@ export function connectClientToSockname(
   }
 }
 
+function isSpawnFailure(error: Error): boolean {
+  const {code} = error as NodeJS.ErrnoException;
+  return code !== undefined && SPAWN_FAILURE_CODES.has(code);
+}
+
 function socknameCacheFilePath(cacheDirectory: string): string {
-  // The socket is per-user, and the cache directory may be a shared /tmp.
+  // The socket path is per-user, so two users sharing a cache directory need
+  // separate entries. The name stays predictable, which means a local user can
+  // pre-create it as a symlink and redirect the read and the write - the same
+  // exposure every other file in this directory already has, since the cache
+  // is written with plain `readFileSync`/`writeFileSync` too. Hardening one
+  // file in isolation would not buy anything; it needs `CacheManager` as well.
   const userSuffix = process.getuid?.() ?? 'default';
   return path.join(cacheDirectory, `haste-map-watchman-sockname-${userSuffix}`);
 }
@@ -134,6 +144,17 @@ function writeCachedSockname(cacheFilePath: string, sockname: string): void {
   } catch {
     // The cache is best-effort; a failed write only costs the next run a
     // `get-sockname` spawn.
+  }
+}
+
+function removeCachedSockname(cacheFilePath: string): void {
+  try {
+    fs.rmSync(cacheFilePath, {force: true});
+  } catch {
+    // `force` only ignores a missing file, so a read-only cache directory
+    // still throws. Availability is resolved before the crawl starts, outside
+    // the node-crawler fallback, so letting this escape would fail the run
+    // over a cache entry.
   }
 }
 
