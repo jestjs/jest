@@ -866,6 +866,17 @@ describe('core module specifiers', () => {
         mappingResolver.resolveModuleAsync(src, 'node:test'),
       ).resolves.toBe('node:test');
     });
+
+    it('does not map a double prefixed specifier from a pattern targeting `node:fs`', async () => {
+      const mappingResolver = createMappingResolver(/^node:fs$/);
+
+      expect(
+        mappingResolver.resolveStubModuleName(src, 'node:node:fs'),
+      ).toBeNull();
+      await expect(
+        mappingResolver.resolveStubModuleNameAsync(src, 'node:node:fs'),
+      ).resolves.toBeNull();
+    });
   });
 });
 

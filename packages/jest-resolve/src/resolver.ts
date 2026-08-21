@@ -530,6 +530,10 @@ export default class Resolver {
   // (`node:test`, `node:sqlite`) have no bare spelling to test, and a bare
   // pattern like `^test$` must keep matching the userland package instead.
   private _specifierSpellings(specifier: string): Array<string> {
+    if (!isBuiltin(specifier)) {
+      return [specifier];
+    }
+
     if (specifier.startsWith('node:')) {
       const bareSpecifier = specifier.slice(5);
       return isBuiltin(bareSpecifier)
@@ -537,9 +541,7 @@ export default class Resolver {
         : [specifier];
     }
 
-    return isBuiltin(specifier)
-      ? [specifier, `node:${specifier}`]
-      : [specifier];
+    return [specifier, `node:${specifier}`];
   }
 
   private _matchModuleNameMapper(
