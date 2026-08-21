@@ -851,31 +851,31 @@ export class EsmLoader {
       }
 
       if (modulePath.startsWith('data:')) {
-        const built = this.buildSyncDataUriEntry(
-          modulePath,
+        const built = this.buildSyncDataUriEntry({
           cacheKey,
           context,
-          scratch,
-          registry,
-          worklist,
           mode,
-        );
+          registry,
+          scratch,
+          specifier: modulePath,
+          worklist,
+        });
         if (built === LOAD_ASYNC) return LOAD_ASYNC;
         scratch.set(cacheKey, built);
         continue;
       }
 
       if (isWasm(modulePath)) {
-        const wasmEntry = this.buildSyncWasmEntry(
-          this.fileCache.readFileBuffer(modulePath),
-          modulePath,
+        const wasmEntry = this.buildSyncWasmEntry({
+          bytes: this.fileCache.readFileBuffer(modulePath),
           cacheKey,
           context,
-          scratch,
-          registry,
-          worklist,
+          identifier: modulePath,
           mode,
-        );
+          registry,
+          scratch,
+          worklist,
+        });
         if (wasmEntry === LOAD_ASYNC) return LOAD_ASYNC;
         scratch.set(cacheKey, wasmEntry);
         continue;
@@ -1299,16 +1299,25 @@ export class EsmLoader {
   // is fully evaluated so `module.namespace` is safe to read.
   //
   // Uses `new WebAssembly.Module(bytes)` (sync, blocks on large modules).
-  private buildSyncWasmEntry(
-    bytes: BufferSource,
-    identifier: string,
-    cacheKey: string,
-    context: VMContext,
-    scratch: Map<string, ScratchEntry>,
-    registry: ModuleRegistry | Map<string, JestModule>,
-    worklist: Array<WorklistEntry>,
-    mode: SyncEsmMode,
-  ): ScratchEntry | LoadAsync {
+  private buildSyncWasmEntry({
+    bytes,
+    cacheKey,
+    context,
+    identifier,
+    mode,
+    registry,
+    scratch,
+    worklist,
+  }: {
+    bytes: BufferSource;
+    cacheKey: string;
+    context: VMContext;
+    identifier: string;
+    mode: SyncEsmMode;
+    registry: ModuleRegistry | Map<string, JestModule>;
+    scratch: Map<string, ScratchEntry>;
+    worklist: Array<WorklistEntry>;
+  }): ScratchEntry | LoadAsync {
     const wasmModule = new WebAssembly.Module(bytes);
 
     const moduleSpecToCacheKey = new Map<string, string>();
@@ -1364,28 +1373,36 @@ export class EsmLoader {
     };
   }
 
-  private buildSyncDataUriEntry(
-    specifier: string,
-    cacheKey: string,
-    context: VMContext,
-    scratch: Map<string, ScratchEntry>,
-    registry: ModuleRegistry | Map<string, JestModule>,
-    worklist: Array<WorklistEntry>,
-    mode: SyncEsmMode,
-  ): ScratchEntry | LoadAsync {
+  private buildSyncDataUriEntry({
+    cacheKey,
+    context,
+    mode,
+    registry,
+    scratch,
+    specifier,
+    worklist,
+  }: {
+    cacheKey: string;
+    context: VMContext;
+    mode: SyncEsmMode;
+    registry: ModuleRegistry | Map<string, JestModule>;
+    scratch: Map<string, ScratchEntry>;
+    specifier: string;
+    worklist: Array<WorklistEntry>;
+  }): ScratchEntry | LoadAsync {
     const {mime, code} = parseDataUri(specifier);
 
     if (mime === 'application/wasm') {
-      return this.buildSyncWasmEntry(
-        new Uint8Array(code as Buffer),
-        specifier,
+      return this.buildSyncWasmEntry({
+        bytes: new Uint8Array(code as Buffer),
         cacheKey,
         context,
-        scratch,
-        registry,
-        worklist,
+        identifier: specifier,
         mode,
-      );
+        registry,
+        scratch,
+        worklist,
+      });
     }
 
     if (mime === 'application/json') {
