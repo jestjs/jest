@@ -1708,8 +1708,9 @@ describe('Runtime sync ESM graph - automock', () => {
         './dynamic-imports-dual-alias.cjs',
       );
       const namespace = await loadDualAlias();
-      expect(namespace.valueA).toBe('a');
-      expect(namespace.fromA).toEqual({valueA: 'a', valueB: 'b', valueC: 'c'});
+      expect(namespace.greet._isMockFunction).toBe(true);
+      expect(namespace.greet()).toBeUndefined();
+      expect(namespace.value).toBe(42);
     },
   );
   testWithSyncEsm(
@@ -1744,6 +1745,8 @@ describe('Runtime sync ESM graph - automock', () => {
       ).toThrow(expect.objectContaining({code: 'ERR_REQUIRE_ASYNC_MODULE'}));
     },
   );
+
+
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,

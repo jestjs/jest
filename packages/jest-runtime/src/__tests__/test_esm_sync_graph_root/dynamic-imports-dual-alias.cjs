@@ -6,5 +6,5 @@
  */
 
 module.exports = function loadDualAlias() {
-  return import('dual-alias-esm');
+  return import('dual-alias-mockable');
 };

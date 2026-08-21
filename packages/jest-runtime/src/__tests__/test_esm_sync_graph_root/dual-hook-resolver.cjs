@@ -12,6 +12,9 @@ module.exports = {
     if (specifier === 'dual-alias-esm') {
       return path.join(__dirname, 'a.mjs');
     }
+    if (specifier === 'dual-alias-mockable') {
+      return path.join(__dirname, 'automock-dep.mjs');
+    }
     return options.defaultResolver(specifier, options);
   },
   sync: (specifier, options) => options.defaultResolver(specifier, options),
