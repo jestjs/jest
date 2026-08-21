@@ -9,6 +9,7 @@ import * as fs from 'graceful-fs';
 import {
   type SnapshotData,
   getSnapshotData,
+  keyToNameOccurrence,
   keyToTestName,
   saveSnapshotFile,
   testNameToKey,
@@ -33,13 +34,23 @@ export type SnapshotStateOptions = {
 
 export type SnapshotMatchOptions = {
   readonly testName: string;
+  readonly hint?: string;
   readonly testIdentity?: object;
+  readonly nameOccurrence?: number;
   readonly received: unknown;
   readonly key?: string;
   readonly inlineSnapshot?: string;
   readonly isInline: boolean;
   readonly error?: Error;
   readonly testFailing?: boolean;
+};
+
+export type SnapshotFailOptions = {
+  readonly testName: string;
+  readonly hint?: string;
+  readonly testIdentity?: object;
+  readonly nameOccurrence?: number;
+  readonly key?: string;
 };
 
 type SnapshotReturnOptions = {
@@ -127,15 +138,25 @@ export default class SnapshotState {
     this._rootDir = options.rootDir;
   }
 
-  markSnapshotsAsCheckedForTest(testName: string): void {
+  markSnapshotsAsCheckedForTest(
+    testName: string,
+    nameOccurrence?: number,
+  ): void {
     for (const uncheckedKey of this._uncheckedKeys) {
-      const keyTestName = keyToTestName(uncheckedKey);
-      // A hint is joined onto the test name with ': ' before the key is built,
-      // so the recovered name of a hinted snapshot is longer than the name the
-      // runner reports for the test that took it.
-      if (keyTestName === testName || keyTestName.startsWith(`${testName}: `)) {
-        this._uncheckedKeys.delete(uncheckedKey);
+      // The hint lives past the separator, so what comes back is the plain
+      // test name whether or not the snapshot was hinted.
+      if (keyToTestName(uncheckedKey) !== testName) {
+        continue;
       }
+      // Without a position there is nothing to tell namesakes apart with, so
+      // the name claims every key under it.
+      if (
+        nameOccurrence !== undefined &&
+        keyToNameOccurrence(uncheckedKey) !== nameOccurrence
+      ) {
+        continue;
+      }
+      this._uncheckedKeys.delete(uncheckedKey);
     }
   }
 
@@ -214,16 +235,36 @@ export default class SnapshotState {
     }
   }
 
-  // Counters number keys per full test name, and full names can collide
-  // across tests. Undoing an increment could double-undo a collision, so the
-  // record keeps each counter's value from before the test first touched it.
-  private _bumpCounter(testName: string, testIdentity?: object): number {
+  // A test's counter has to be its own, or namesakes take each other's keys in
+  // whatever order they happen to run. The occurrence is what separates them,
+  // and leads so the pair is recoverable from the string.
+  private static _counterKey(
+    testName: string,
+    hint: string | undefined,
+    nameOccurrence = 1,
+  ): string {
+    return testNameToKey({count: 0, hint, nameOccurrence, testName});
+  }
+
+  // Undoing an increment could undo more than this test's own, so the record
+  // keeps each counter's value from before the test first touched it.
+  private _bumpCounter(
+    testName: string,
+    hint: string | undefined,
+    nameOccurrence: number | undefined,
+    testIdentity?: object,
+  ): number {
+    const counterKey = SnapshotState._counterKey(
+      testName,
+      hint,
+      nameOccurrence,
+    );
     const record = this._recordFor(testIdentity);
-    if (record !== undefined && !record.counters.has(testName)) {
-      record.counters.set(testName, this._counters.get(testName));
+    if (record !== undefined && !record.counters.has(counterKey)) {
+      record.counters.set(counterKey, this._counters.get(counterKey));
     }
-    const count = (this._counters.get(testName) ?? 0) + 1;
-    this._counters.set(testName, count);
+    const count = (this._counters.get(counterKey) ?? 0) + 1;
+    this._counters.set(counterKey, count);
     return count;
   }
 
@@ -266,11 +307,11 @@ export default class SnapshotState {
     for (const key of record.checkedKeys) {
       this._uncheckedKeys.add(key);
     }
-    for (const [testName, previous] of record.counters) {
+    for (const [counterKey, previous] of record.counters) {
       if (previous === undefined) {
-        this._counters.delete(testName);
+        this._counters.delete(counterKey);
       } else {
-        this._counters.set(testName, previous);
+        this._counters.set(counterKey, previous);
       }
     }
     // The dirty flag can only be undone when every write since this test's
@@ -346,7 +387,9 @@ export default class SnapshotState {
 
   match({
     testName,
+    hint,
     testIdentity,
+    nameOccurrence,
     received,
     key,
     inlineSnapshot,
@@ -354,10 +397,15 @@ export default class SnapshotState {
     error,
     testFailing = false,
   }: SnapshotMatchOptions): SnapshotReturnOptions {
-    const count = this._bumpCounter(testName, testIdentity);
+    const count = this._bumpCounter(
+      testName,
+      hint,
+      nameOccurrence,
+      testIdentity,
+    );
 
     if (!key) {
-      key = testNameToKey(testName, count);
+      key = testNameToKey({count, hint, nameOccurrence, testName});
     }
 
     // Do not mark the snapshot as "checked" if the snapshot is inline and
@@ -471,16 +519,22 @@ export default class SnapshotState {
     }
   }
 
-  fail(
-    testName: string,
-    _received: unknown,
-    key?: string,
-    testIdentity?: object,
-  ): string {
-    const count = this._bumpCounter(testName, testIdentity);
+  fail({
+    testName,
+    hint,
+    testIdentity,
+    nameOccurrence,
+    key,
+  }: SnapshotFailOptions): string {
+    const count = this._bumpCounter(
+      testName,
+      hint,
+      nameOccurrence,
+      testIdentity,
+    );
 
     if (!key) {
-      key = testNameToKey(testName, count);
+      key = testNameToKey({count, hint, nameOccurrence, testName});
     }
 
     this._markKeyChecked(key, testIdentity);

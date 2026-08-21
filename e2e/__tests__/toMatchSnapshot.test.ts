@@ -174,7 +174,7 @@ test('does not mark hinted snapshots as obsolete in skipped tests', () => {
       path.join(TESTS_DIR, '__snapshots__', `${filename}.snap`),
       'utf8',
     );
-    expect(snapshot).toContain('exports[`will be skipped: hint 1`]');
+    expect(snapshot).toContain('exports[`will be skipped › hint 1`]');
   }
 });
 
@@ -212,8 +212,8 @@ test('does not mark hinted snapshots as obsolete in deselected tests', () => {
     path.join(TESTS_DIR, '__snapshots__', `${filename}.snap`),
     'utf8',
   );
-  expect(snapshot).toContain('exports[`renders the header: markup 1`]');
-  expect(snapshot).toContain('exports[`renders the header: props 1`]');
+  expect(snapshot).toContain('exports[`renders the header › markup 1`]');
+  expect(snapshot).toContain('exports[`renders the header › props 1`]');
 });
 
 test('does not mark hinted snapshots as obsolete in failing tests', () => {
@@ -248,7 +248,7 @@ test('does not mark hinted snapshots as obsolete in failing tests', () => {
     path.join(TESTS_DIR, '__snapshots__', `${filename}.snap`),
     'utf8',
   );
-  expect(snapshot).toContain('exports[`breaks early: hint 1`]');
+  expect(snapshot).toContain('exports[`breaks early › hint 1`]');
 });
 
 // jasmine2 has no `test.failing` clause in its obsolete guard at all.
@@ -289,7 +289,7 @@ testOnCircus(
       path.join(TESTS_DIR, '__snapshots__', `${filename}.snap`),
       'utf8',
     );
-    expect(snapshot).toContain('exports[`throws as expected: hint 1`]');
+    expect(snapshot).toContain('exports[`throws as expected › hint 1`]');
   },
 );
 
@@ -405,7 +405,7 @@ test('handles property matchers with hint', () => {
     writeFiles(TESTS_DIR, {[filename]: template(['"string"'])});
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch(
-      'Snapshot name: `handles property matchers with hint: descriptive hint 1`',
+      'Snapshot name: `handles property matchers with hint › descriptive hint 1`',
     );
     expect(stderr).toMatch('Expected properties');
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');

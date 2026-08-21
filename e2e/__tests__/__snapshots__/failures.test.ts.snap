@@ -1135,7 +1135,7 @@ exports[`works with snapshot failures with hint 1`] = `
 
     expect(received).toMatchSnapshot(hint)
 
-    Snapshot name: \`failing snapshot with hint: descriptive hint 1\`
+    Snapshot name: \`failing snapshot with hint › descriptive hint 1\`
 
     Snapshot: "bar"
     Received: "foo"

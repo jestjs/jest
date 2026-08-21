@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`can press "f" to run only failed tests: test results 1`] = `
+exports[`can press "f" to run only failed tests › test results 1`] = `
 "FAIL __tests__/bar.spec.js
   ● bar 1
 
@@ -17,7 +17,7 @@ exports[`can press "f" to run only failed tests: test results 1`] = `
 PASS __tests__/foo.spec.js"
 `;
 
-exports[`can press "f" to run only failed tests: test results 2`] = `
+exports[`can press "f" to run only failed tests › test results 2`] = `
 "FAIL __tests__/bar.spec.js
   ✕ bar 1
 
@@ -34,7 +34,7 @@ exports[`can press "f" to run only failed tests: test results 2`] = `
       at Object.toBe (__tests__/bar.spec.js:1:37)"
 `;
 
-exports[`can press "f" to run only failed tests: test summary 1`] = `
+exports[`can press "f" to run only failed tests › test summary 1`] = `
 "Test Suites: 1 failed, 1 passed, 2 total
 Tests:       1 failed, 1 passed, 2 total
 Snapshots:   0 total
@@ -42,7 +42,7 @@ Time:        <<REPLACED>>
 Ran all test suites."
 `;
 
-exports[`can press "f" to run only failed tests: test summary 2`] = `
+exports[`can press "f" to run only failed tests › test summary 2`] = `
 "Test Suites: 1 failed, 1 total
 Tests:       1 failed, 1 total
 Snapshots:   0 total

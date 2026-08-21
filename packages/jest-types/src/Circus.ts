@@ -228,6 +228,12 @@ export type TestResult = {
    */
   failing?: boolean;
   invocations: number;
+  /**
+   * Position of this test among the tests in its file that share its full
+   * name, counting from 1 in definition order. Absent when no other test
+   * shares the name.
+   */
+  nameOccurrence?: number;
   startedAt?: number | null;
   status: TestStatus;
   location?: {column: number; line: number} | null;
@@ -262,6 +268,10 @@ export type State = {
   // handlers (so we could fail tests on unhandled errors) and later restore
   // the original ones.
   originalGlobalErrorHandlers?: GlobalErrorHandlers;
+  // Position of each test among the tests sharing its full name, counting from
+  // 1 in definition order. Tests with a unique name are left out. Captured
+  // before the run so `--randomize` cannot move the positions.
+  nameOccurrences: Map<TestEntry, number>;
   parentProcess: Process | null; // process object from the outer scope
   processErrorGeneration: number;
   randomize?: boolean;

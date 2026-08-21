@@ -94,8 +94,11 @@ expect(1).toMatchInlineSnapshot();
     testIdentity: retriedTest,
     testName: 'retried match',
   });
-  snapshotState.fail('retained failure', undefined, undefined, retainedTest);
-  snapshotState.fail('retried failure', undefined, undefined, retriedTest);
+  snapshotState.fail({
+    testIdentity: retainedTest,
+    testName: 'retained failure',
+  });
+  snapshotState.fail({testIdentity: retriedTest, testName: 'retried failure'});
 
   expect(snapshotState.added).toBe(2);
   expect(snapshotState.matched).toBe(2);
@@ -187,6 +190,86 @@ test('still saves when another test wrote between the rolled-back writes', () =>
   expect(snapshotFile).not.toContain('written on retry');
 });
 
+describe('tests sharing a full name', () => {
+  const readKeys = (snapshotPath: string) =>
+    [...fs.readFileSync(snapshotPath, 'utf8').matchAll(/^exports\[`(.+)`\]/gm)]
+      .map(match => match[1])
+      .sort();
+
+  test('count their snapshots independently of run order', () => {
+    const snapshotPath = path.join(rootDir, 'example.test.js.snap');
+    const snapshotState = new SnapshotState(snapshotPath, {
+      rootDir,
+      snapshotFormat: {},
+      updateSnapshot: 'new',
+    });
+
+    // The second test runs first, as `--randomize` or concurrency may order it.
+    snapshotState.match({
+      isInline: false,
+      nameOccurrence: 2,
+      received: 'from the second test',
+      testIdentity: {},
+      testName: 'suite same name',
+    });
+    snapshotState.match({
+      isInline: false,
+      nameOccurrence: 1,
+      received: 'from the first test',
+      testIdentity: {},
+      testName: 'suite same name',
+    });
+
+    expect(snapshotState.added).toBe(2);
+    expect(snapshotState.save()).toEqual({deleted: false, saved: true});
+    expect(readKeys(snapshotPath)).toEqual([
+      'suite same name 1',
+      'suite same name 2.1',
+    ]);
+  });
+
+  test('keep their own counters when one of them retries', () => {
+    const snapshotPath = path.join(rootDir, 'example.test.js.snap');
+    const snapshotState = new SnapshotState(snapshotPath, {
+      rootDir,
+      snapshotFormat: {},
+      updateSnapshot: 'new',
+    });
+    const retriedTest = {};
+
+    snapshotState.match({
+      isInline: false,
+      nameOccurrence: 2,
+      received: 'discarded',
+      testIdentity: retriedTest,
+      testName: 'suite same name',
+    });
+    snapshotState.match({
+      isInline: false,
+      nameOccurrence: 1,
+      received: 'from the first test',
+      testIdentity: {},
+      testName: 'suite same name',
+    });
+    snapshotState.clear(retriedTest);
+    snapshotState.match({
+      isInline: false,
+      nameOccurrence: 2,
+      received: 'from the second test',
+      testIdentity: {},
+      testName: 'suite same name',
+    });
+
+    expect(snapshotState.added).toBe(2);
+    expect(snapshotState.save()).toEqual({deleted: false, saved: true});
+    const snapshotFile = fs.readFileSync(snapshotPath, 'utf8');
+    expect(snapshotFile).toContain(
+      'exports[`suite same name 2.1`] = `"from the second test"`;',
+    );
+    expect(snapshotFile).not.toContain('discarded');
+  });
+});
+
 test('clear without a test identity removes all pending inline snapshots', () => {
   const filename = path.join(rootDir, 'example.test.js');
   fs.writeFileSync(filename, 'expect(1).toMatchInlineSnapshot();\n');
@@ -238,7 +321,10 @@ describe('markSnapshotsAsCheckedForTest', () => {
   });
 
   test('claims the keys the test took under a hint', () => {
-    const snapshotState = stateWithKeys(['a test: hint 1', 'a test: other 1']);
+    const snapshotState = stateWithKeys([
+      'a test \u203A hint 1',
+      'a test \u203A other 1',
+    ]);
 
     snapshotState.markSnapshotsAsCheckedForTest('a test');
 
@@ -248,7 +334,7 @@ describe('markSnapshotsAsCheckedForTest', () => {
   test('leaves the keys of every other test alone', () => {
     const snapshotState = stateWithKeys([
       'a test 1',
-      'a test: hint 1',
+      'a test \u203A hint 1',
       'a test extra 1',
       'another test 1',
       'a tes 1',
@@ -256,8 +342,6 @@ describe('markSnapshotsAsCheckedForTest', () => {
 
     snapshotState.markSnapshotsAsCheckedForTest('a test');
 
-    // `a test extra` is a separate test whose name merely starts the same way:
-    // only a ': ' after the full name marks a hint.
     expect(snapshotState.getUncheckedKeys()).toEqual([
       'a test extra 1',
       'another test 1',
@@ -265,14 +349,13 @@ describe('markSnapshotsAsCheckedForTest', () => {
     ]);
   });
 
-  test('cannot tell a hint from a test whose name contains the separator', () => {
-    const snapshotState = stateWithKeys(['a: b 1']);
+  test('tells a hint from a test whose name contains a colon', () => {
+    const snapshotState = stateWithKeys(['a: b 1', 'a \u203A b 1']);
 
     snapshotState.markSnapshotsAsCheckedForTest('a');
 
-    // A key left by a removed `test('a: b')` is indistinguishable from a hinted
-    // snapshot of `test('a')`, so it is claimed and never reported obsolete.
-    // Telling them apart needs ownership the key format does not record.
-    expect(snapshotState.getUncheckedKeys()).toEqual([]);
+    // `a: b 1` was left by a removed `test('a: b')`, so it stays obsolete;
+    // only the hinted key belongs to `test('a')`.
+    expect(snapshotState.getUncheckedKeys()).toEqual(['a: b 1']);
   });
 });

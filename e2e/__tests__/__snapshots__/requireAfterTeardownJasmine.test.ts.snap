@@ -26,7 +26,7 @@ TypeError: double is not a function
 Node.js <<REPLACED>>"
 `;
 
-exports[`prints useful error for requires after test is done 2`] = `
+exports[`prints useful error for requires after test is done 2.1`] = `
 "PASS __tests__/lateRequire.test.js
   ✓ require after done
 

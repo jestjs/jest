@@ -33,17 +33,11 @@ test('returns matcher name, expected and actual values', () => {
 
 test('passes the test identity to failed property snapshots', () => {
   const testIdentity = {};
-  const fail = jest.fn(
-    (
-      _testName: string,
-      _received: unknown,
-      _key?: string,
-      _testIdentity?: object,
-    ) => 'test name 1',
-  );
+  const fail = jest.fn((_options: unknown) => 'test name 2.1');
   const mockedContext = {
     currentTestIdentity: () => testIdentity,
     currentTestName: 'test name',
+    currentTestNameOccurrence: () => 2,
     equals: () => false,
     snapshotState: {expand: false, fail},
     utils: {iterableEquality: jest.fn(), subsetEquality: jest.fn()},
@@ -52,10 +46,9 @@ test('passes the test identity to failed property snapshots', () => {
 
   toMatchSnapshot.call(mockedContext, received, {value: 2});
 
-  expect(fail).toHaveBeenCalledWith(
-    'test name',
-    received,
-    undefined,
+  expect(fail).toHaveBeenCalledWith({
+    nameOccurrence: 2,
     testIdentity,
-  );
+    testName: 'test name',
+  });
 });

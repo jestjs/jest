@@ -91,42 +91,92 @@ const validateSnapshotHeader = (snapshotContents: string) => {
   return null;
 };
 
+// A hint is joined onto the test name with this, so a name allowed to contain
+// it would make the join unreadable — which test a key belongs to could not be
+// recovered. Escaped rather than rejected, since a title is the author's.
+export const HINT_SEPARATOR = ' \u203A ';
+const ESCAPED_HINT_SEPARATOR = ' \\u203A ';
+
 const normalizeTestNameForKey = (testName: string): string =>
-  testName.replaceAll(/\r\n|\r|\n/g, match => {
-    switch (match) {
-      case '\r\n':
-        return '\\r\\n';
-      case '\r':
-        return '\\r';
-      case '\n':
-        return '\\n';
-      default:
-        return match;
-    }
-  });
+  testName
+    .replaceAll(HINT_SEPARATOR, ESCAPED_HINT_SEPARATOR)
+    .replaceAll(/\r\n|\r|\n/g, match => {
+      switch (match) {
+        case '\r\n':
+          return '\\r\\n';
+        case '\r':
+          return '\\r';
+        case '\n':
+          return '\\n';
+        default:
+          return match;
+      }
+    });
 
 const denormalizeTestNameFromKey = (key: string): string =>
-  key.replaceAll(/\\r\\n|\\r|\\n/g, match => {
-    switch (match) {
-      case '\\r\\n':
-        return '\r\n';
-      case '\\r':
-        return '\r';
-      case '\\n':
-        return '\n';
-      default:
-        return match;
-    }
-  });
+  key
+    .replaceAll(/\\r\\n|\\r|\\n/g, match => {
+      switch (match) {
+        case '\\r\\n':
+          return '\r\n';
+        case '\\r':
+          return '\r';
+        case '\\n':
+          return '\n';
+        default:
+          return match;
+      }
+    })
+    .replaceAll(ESCAPED_HINT_SEPARATOR, HINT_SEPARATOR);
 
-export const testNameToKey = (testName: string, count: number): string =>
-  `${normalizeTestNameForKey(testName)} ${count}`;
+export type SnapshotKeyParts = {
+  readonly testName: string;
+  readonly hint?: string;
+  readonly count: number;
+  readonly nameOccurrence?: number;
+};
 
+// Tests sharing a full name would otherwise share one key space and take each
+// other's keys, so every namesake after the first counts within its own. The
+// separator is a dot because a name can end in anything a test author types,
+// including something that looks like the occurrence.
+export const testNameToKey = ({
+  testName,
+  hint,
+  count,
+  nameOccurrence,
+}: SnapshotKeyParts): string => {
+  const name = normalizeTestNameForKey(testName);
+  const hinted =
+    hint === undefined || hint.length === 0
+      ? name
+      : `${name}${HINT_SEPARATOR}${normalizeTestNameForKey(hint)}`;
+
+  return nameOccurrence !== undefined && nameOccurrence > 1
+    ? `${hinted} ${nameOccurrence}.${count}`
+    : `${hinted} ${count}`;
+};
+
+const KEY_COUNT_SUFFIX = / \d+(\.\d+)?$/;
+const KEY_OCCURRENCE_SUFFIX = / (\d+)\.\d+$/;
+
+// Which of the tests sharing a name a key belongs to. A bare count means the
+// first, which is the only one whose keys carry no position.
+export const keyToNameOccurrence = (key: string): number => {
+  const match = KEY_OCCURRENCE_SUFFIX.exec(key);
+  return match === null ? 1 : Number(match[1]);
+};
+
+// The name a key belongs to, without the hint. The separator appears once
+// unescaped, so a colon or a digit in either half cannot be mistaken for it.
 export const keyToTestName = (key: string): string => {
-  if (!/ \d+$/.test(key)) {
+  if (!KEY_COUNT_SUFFIX.test(key)) {
     throw new Error('Snapshot keys must end with a number.');
   }
-  const testNameWithoutCount = key.replace(/ \d+$/, '');
+  const withoutCount = key.replace(KEY_COUNT_SUFFIX, '');
+  const separatorAt = withoutCount.indexOf(HINT_SEPARATOR);
+  const testNameWithoutCount =
+    separatorAt === -1 ? withoutCount : withoutCount.slice(0, separatorAt);
   return denormalizeTestNameFromKey(testNameWithoutCount);
 };
 

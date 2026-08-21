@@ -6,7 +6,7 @@
  */
 
 import * as fs from 'graceful-fs';
-import {escapeBacktickString} from '@jest/snapshot-utils';
+import {HINT_SEPARATOR, escapeBacktickString} from '@jest/snapshot-utils';
 import type {Config} from '@jest/types';
 import type {MatcherFunctionWithContext} from 'expect';
 import {
@@ -58,15 +58,20 @@ const printSnapshotName = (
   concatenatedBlockNames = '',
   hint = '',
   count: number,
+  nameOccurrence?: number,
 ): string => {
   const hasNames = concatenatedBlockNames.length > 0;
   const hasHint = hint.length > 0;
+  const countSuffix =
+    nameOccurrence !== undefined && nameOccurrence > 1
+      ? `${nameOccurrence}.${count}`
+      : count;
 
   return `Snapshot name: \`${
     hasNames ? escapeBacktickString(concatenatedBlockNames) : ''
-  }${hasNames && hasHint ? ': ' : ''}${
+  }${hasNames && hasHint ? HINT_SEPARATOR : ''}${
     hasHint ? BOLD_WEIGHT(escapeBacktickString(hint)) : ''
-  } ${count}\``;
+  } ${countSuffix}\``;
 };
 
 function stripAddedIndentation(inlineSnapshot: string) {
@@ -287,11 +292,17 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     context.dontThrow();
   }
 
-  const {currentConcurrentTestName, currentTestIdentity, isNot, snapshotState} =
-    context;
+  const {
+    currentConcurrentTestName,
+    currentTestIdentity,
+    currentTestNameOccurrence,
+    isNot,
+    snapshotState,
+  } = context;
   const currentTestName =
     currentConcurrentTestName?.() ?? context.currentTestName;
   const testIdentity = currentTestIdentity?.();
+  const nameOccurrence = currentTestNameOccurrence?.();
 
   if (isNot) {
     throw new Error(
@@ -313,10 +324,9 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     );
   }
 
-  const fullTestName =
-    currentTestName && hint
-      ? `${currentTestName}: ${hint}`
-      : currentTestName || ''; // future BREAKING change: || hint
+  // The hint is kept apart from the name; the key format joins them, so that
+  // a colon in either one cannot be read as the boundary between them.
+  const fullTestName = currentTestName || ''; // future BREAKING change: || hint
 
   if (typeof properties === 'object') {
     if (typeof received !== 'object' || received === null) {
@@ -341,12 +351,12 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     if (propertyPass) {
       received = deepMerge(received, properties);
     } else {
-      const key = snapshotState.fail(
-        fullTestName,
-        received,
-        undefined,
+      const key = snapshotState.fail({
+        hint,
+        nameOccurrence,
         testIdentity,
-      );
+        testName: fullTestName,
+      });
       const matched = /(\d+)$/.exec(key);
       const count = matched === null ? 1 : Number(matched[1]);
 
@@ -355,6 +365,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
           currentTestName,
           hint,
           count,
+          nameOccurrence,
         )}\n\n${printPropertiesAndReceived(
           properties,
           received,
@@ -371,8 +382,10 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
 
   const result = snapshotState.match({
     error: context.error,
+    hint,
     inlineSnapshot,
     isInline,
+    nameOccurrence,
     received,
     testFailing,
     testIdentity,
@@ -391,6 +404,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
             currentTestName,
             hint,
             count,
+            nameOccurrence,
           )}\n\n` +
           `New snapshot was ${BOLD_WEIGHT('not written')}. The update flag ` +
           'must be explicitly passed to write a new snapshot.\n\n' +
@@ -404,6 +418,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
             currentTestName,
             hint,
             count,
+            nameOccurrence,
           )}\n\n${printSnapshotAndReceived(
             expected,
             actual,

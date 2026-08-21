@@ -342,7 +342,7 @@ const getTestNamesPath = (test: Circus.TestEntry): Circus.TestNamesPath => {
 export const makeSingleTestResult = (
   test: Circus.TestEntry,
 ): Circus.TestResult => {
-  const {includeTestLocationInResult} = getState();
+  const {includeTestLocationInResult, nameOccurrences} = getState();
 
   const {status} = test;
   invariant(status, 'Status should be present after tests are run.');
@@ -380,6 +380,7 @@ export const makeSingleTestResult = (
     failing: test.failing,
     invocations: test.invocations,
     location,
+    nameOccurrence: nameOccurrences.get(test),
     numPassingAsserts: test.numPassingAsserts,
     retryReasons: retryReasonsDetailed.map(flattenErrorStack),
     retryReasonsDetailed,
@@ -429,6 +430,43 @@ export const getTestID = (test: Circus.TestEntry): string => {
   const testId = testNamesPath.join(' ');
   testIds.set(test, testId);
   return testId;
+};
+
+// Position of each test among the tests sharing its ID, counting from 1 in
+// definition order. Tests with a unique ID are left out, so the common case
+// stays empty. Skipped and todo tests count too, or the positions would move
+// with `--testNamePattern` and `.only`.
+export const getTestNameOccurrences = (
+  rootDescribeBlock: Circus.DescribeBlock,
+): Map<Circus.TestEntry, number> => {
+  const testsByID = new Map<string, Array<Circus.TestEntry>>();
+
+  const collect = (describeBlock: Circus.DescribeBlock) => {
+    for (const child of describeBlock.children) {
+      if (child.type === 'describeBlock') {
+        collect(child);
+      } else {
+        const id = getTestID(child);
+        const namesakes = testsByID.get(id);
+        if (namesakes === undefined) {
+          testsByID.set(id, [child]);
+        } else {
+          namesakes.push(child);
+        }
+      }
+    }
+  };
+  collect(rootDescribeBlock);
+
+  const occurrences = new Map<Circus.TestEntry, number>();
+  for (const namesakes of testsByID.values()) {
+    if (namesakes.length > 1) {
+      for (const [index, test] of namesakes.entries()) {
+        occurrences.set(test, index + 1);
+      }
+    }
+  }
+  return occurrences;
 };
 
 const _getError = (
@@ -526,6 +564,7 @@ export const parseSingleTestResult = (
     fullName,
     invocations: testResult.invocations,
     location: testResult.location,
+    nameOccurrence: testResult.nameOccurrence,
     numPassingAsserts: testResult.numPassingAsserts,
     retryMessages: formatRetryError
       ? testResult.retryReasonsDetailed.map(formatRetryError)
