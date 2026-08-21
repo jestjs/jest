@@ -776,6 +776,47 @@ describe('resolveModuleAsync', () => {
   });
 });
 
+describe('core module specifiers', () => {
+  let resolver: Resolver;
+  const src = require.resolve('../');
+
+  beforeEach(() => {
+    resolver = new Resolver(ModuleMap.create('/'), {
+      extensions: ['.js'],
+      hasCoreModules: true,
+    } as ResolverConfig);
+  });
+
+  it.each(['fs', 'node:fs'])(
+    'resolves %s to the prefixed specifier Node itself reports',
+    async specifier => {
+      expect(resolver.resolveModule(src, specifier)).toBe(specifier);
+      await expect(resolver.resolveModuleAsync(src, specifier)).resolves.toBe(
+        specifier,
+      );
+    },
+  );
+
+  // `node:test` has no bare counterpart, so stripping the prefix leaves a bare
+  // specifier that resolves to nothing - or to a userland package by that name.
+  it('keeps the prefix on a builtin that only exists prefixed', async () => {
+    expect(resolver.resolveModule(src, 'node:test')).toBe('node:test');
+    await expect(resolver.resolveModuleAsync(src, 'node:test')).resolves.toBe(
+      'node:test',
+    );
+  });
+
+  it.each(['fs', 'node:fs'])(
+    'reports no stub module for %s without a moduleNameMapper entry',
+    async specifier => {
+      expect(resolver.resolveStubModuleName(src, specifier)).toBeNull();
+      await expect(
+        resolver.resolveStubModuleNameAsync(src, specifier),
+      ).resolves.toBeNull();
+    },
+  );
+});
+
 describe('getMockModule', () => {
   it('is possible to use custom resolver to resolve deps inside mock modules with moduleNameMapper', () => {
     mockUserResolver.mockImplementation(() => 'module');
@@ -801,6 +842,25 @@ describe('getMockModule', () => {
       path.dirname(src),
     );
   });
+
+  it.each(['fs', 'node:fs'])(
+    'finds the manual mock stored under the unprefixed name for %s',
+    specifier => {
+      const mockPath = path.join('/root', '__mocks__', 'fs.js');
+      const moduleMap = ModuleMap.create('/');
+      jest
+        .spyOn(moduleMap, 'getMockModule')
+        .mockImplementation(name => (name === 'fs' ? mockPath : undefined));
+      const resolver = new Resolver(moduleMap, {
+        extensions: ['.js'],
+        hasCoreModules: true,
+      } as ResolverConfig);
+
+      expect(resolver.getMockModule(require.resolve('../'), specifier)).toBe(
+        mockPath,
+      );
+    },
+  );
 });
 
 describe('getMockModuleAsync', () => {
@@ -837,6 +897,25 @@ describe('getMockModuleAsync', () => {
       ['browser'],
     );
   });
+
+  it.each(['fs', 'node:fs'])(
+    'finds the manual mock stored under the unprefixed name for %s',
+    async specifier => {
+      const mockPath = path.join('/root', '__mocks__', 'fs.js');
+      const moduleMap = ModuleMap.create('/');
+      jest
+        .spyOn(moduleMap, 'getMockModule')
+        .mockImplementation(name => (name === 'fs' ? mockPath : undefined));
+      const resolver = new Resolver(moduleMap, {
+        extensions: ['.js'],
+        hasCoreModules: true,
+      } as ResolverConfig);
+
+      await expect(
+        resolver.getMockModuleAsync(require.resolve('../'), specifier, {}),
+      ).resolves.toBe(mockPath);
+    },
+  );
 });
 
 describe('getModuleID', () => {
