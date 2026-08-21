@@ -1696,8 +1696,11 @@ describe('Runtime sync ESM graph - automock', () => {
   );
 
   testWithSyncEsm(
-    'automocks the async-resolved target for a dynamic import',
+    'a dual-hook resolver keeps the factory error for a dynamic import',
     async () => {
+      // Generation is sync-only and would resolve the real graph's deps with
+      // the sync hook - the wrong graph when the hooks disagree - so
+      // factory-less mocks under a dual-hook resolver stay unsupported.
       const runtime = await createRuntime(__filename, {
         automock: true,
         resolver: path.join(ROOT_DIR, 'dual-hook-resolver.cjs'),
@@ -1707,10 +1710,9 @@ describe('Runtime sync ESM graph - automock', () => {
         FROM,
         './dynamic-imports-dual-alias.cjs',
       );
-      const namespace = await loadDualAlias();
-      expect(namespace.greet._isMockFunction).toBe(true);
-      expect(namespace.greet()).toBeUndefined();
-      expect(namespace.value).toBe(42);
+      await expect(loadDualAlias()).rejects.toThrow(
+        'Attempting to import a mock without a factory',
+      );
     },
   );
   testWithSyncEsm(
@@ -1824,18 +1826,16 @@ describe('Runtime sync ESM graph - automock', () => {
   );
 
   testWithSyncEsm(
-    'a static import of an async-only alias retries through the legacy loader',
+    'a dual-hook resolver keeps the factory error for a static import',
     async () => {
       const runtime = await createRuntime(__filename, {
         automock: true,
         resolver: path.join(ROOT_DIR, 'dual-hook-resolver.cjs'),
         rootDir: ROOT_DIR,
       });
-      const m = (await runtime.unstable_importModule(
-        FROM,
-        './import-dual-alias-static.mjs',
-      )) as any;
-      expect(m.namespace.greet._isMockFunction).toBe(true);
+      await expect(
+        runtime.unstable_importModule(FROM, './import-dual-alias-static.mjs'),
+      ).rejects.toThrow('Attempting to import a mock without a factory');
     },
   );
   testWithSyncEsm(

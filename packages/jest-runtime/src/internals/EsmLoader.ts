@@ -2228,10 +2228,17 @@ export class EsmLoader {
     // Factory-less decision (automock or manual mock). The generated-mock
     // builder is sync-core only; on capable Nodes reuse it here so dynamic
     // `import()` gets the same mocks as static imports and require(esm).
-    if (supportsSyncEvaluate && this.resolution.canResolveSync()) {
-      // Resolve through the async API first: the decision to mock may have
-      // come from a distinct async resolver hook, and the sync-only
-      // generation below would re-resolve the name differently or throw.
+    // Generation is sync-only: it loads the real module's graph through the
+    // sync walker, so every nested dependency resolves with the sync hook.
+    // A resolver with a distinct async hook is therefore excluded - the
+    // wrong graph would feed the metadata whenever the hooks disagree - and
+    // keeps the factory error below. An async generation path does not
+    // exist yet; the sync route is the default and covers the rest.
+    if (
+      supportsSyncEvaluate &&
+      this.resolution.canResolveSync() &&
+      !this.resolution.hasDistinctAsyncResolver()
+    ) {
       let resolvedPath: string | undefined;
       try {
         resolvedPath = moduleName.startsWith('data:')
@@ -2263,12 +2270,13 @@ export class EsmLoader {
       }
     }
 
-    // Known hole: with an async-only resolver or transformer, on Node
-    // without sync evaluation (< 24.9), or when the real module's graph
-    // needs async evaluation (top-level await), automock and manual
-    // __mocks__ decisions still end here. Serving them needs an async twin
-    // of importGeneratedMockSync - including a scratch-registry swap that
-    // survives awaits, which withScratchRegistries does not offer.
+    // Known hole: with an async-only resolver or transformer, a resolver
+    // with distinct sync/async hooks, on Node without sync evaluation
+    // (< 24.9), or when the real module's graph needs async evaluation
+    // (top-level await), automock and manual __mocks__ decisions still end
+    // here. Serving them needs an async twin of importGeneratedMockSync -
+    // including generation isolation that survives awaits, which neither
+    // the depth counter nor withScratchRegistries offers.
     throw new Error('Attempting to import a mock without a factory');
   }
 
