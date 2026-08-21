@@ -87,6 +87,29 @@ test('supports top-level await', () => {
   expect(exitCode).toBe(0);
 });
 
+// v24.9 is where `SourceTextModule.prototype.hasAsyncGraph` lands, and with it
+// the sync walk this fix is in. Older versions take the legacy async path,
+// where each concurrent `import()` drives `link()` over the shared dependency
+// itself and the second one still fails to instantiate. A version range rather
+// than the `hasSyncEsm` probe: `--experimental-vm-modules` is passed to the
+// child, so `SourceTextModule` is undefined out here and the probe would read
+// false on every version.
+onNodeVersions('>=24.9.0', () => {
+  test('supports concurrent imports sharing a top-level await dependency', () => {
+    const {exitCode, stderr, stdout} = runJest(
+      DIR,
+      ['native-esm-tla-concurrent.test.js'],
+      {nodeOptions: '--experimental-vm-modules --no-warnings'},
+    );
+
+    const {summary} = extractSummary(stderr);
+
+    expect(summary).toMatchSnapshot();
+    expect(stdout).toBe('');
+    expect(exitCode).toBe(0);
+  });
+});
+
 // minimum version supported by discord.js is 16.9, but they use syntax from 16.11
 onNodeVersions('>=16.11.0', () => {
   test('support re-exports from CJS of dual packages', () => {
