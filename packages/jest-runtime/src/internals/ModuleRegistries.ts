@@ -12,13 +12,14 @@ import type {Module as VMModule} from 'node:vm';
 import type {JestModule, ModuleRegistry} from './moduleTypes';
 
 // Only expose ESM entries whose `namespace` is readable without throwing or
-// exposing TDZ values: `unlinked`/`linking` throw `ERR_VM_MODULE_STATUS`, and
-// a `linked` SourceTextModule's namespace properties are in TDZ until
-// evaluate runs (reading them throws `ReferenceError`).
+// exposing TDZ values: `unlinked`/`linking` throw `ERR_VM_MODULE_STATUS`,
+// and anything short of `evaluated` keeps uninitialized (TDZ) bindings that
+// throw `ReferenceError` on read - including `errored`, whose evaluation
+// stopped partway. Node likewise drops a failed `require(esm)` entry from
+// `require.cache`.
 const isLiveEsm = (entry: JestModule | undefined): entry is VMModule => {
   if (!entry || entry instanceof Promise) return false;
-  const status = (entry as VMModule).status;
-  return status === 'evaluated' || status === 'errored';
+  return (entry as VMModule).status === 'evaluated';
 };
 
 const notPermittedMethod = () => true;

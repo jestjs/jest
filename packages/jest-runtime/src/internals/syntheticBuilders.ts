@@ -32,18 +32,21 @@ export function syntheticFromExports(
   );
 }
 
+// `parseJson` is the importing realm's `JSON.parse` - a host-realm parse
+// would hand the test objects whose prototype fails `instanceof Object`
+// inside the VM context.
 export function buildJsonSyntheticModule(
   jsonText: string,
   identifier: string,
   context: VMContext,
+  parseJson: (text: string) => unknown,
 ): SyntheticModule {
-  // JSON.parse runs in the body so a parse error surfaces during evaluate(),
+  // The parse runs in the body so a parse error surfaces during evaluate(),
   // matching Node's native JSON-module semantics.
   return new SyntheticModule(
     ['default'],
     function () {
-      const obj = JSON.parse(jsonText);
-      this.setExport('default', obj);
+      this.setExport('default', parseJson(jsonText));
     },
     {context, identifier},
   );
