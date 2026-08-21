@@ -198,13 +198,22 @@ Expected has type:  number
 Expected has value: <g>111</>
 `;
 
-exports[`toThrow promise/async throws if Error-like object is returned did not throw at all 1`] = `
+exports[`toThrow promise/async throws if rejects did not throw at all 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>toThrow<d>()</>
 
-Received function did not throw
+Received promise resolved instead of rejected
+Resolved to value: <r>"apple"</>
 `;
 
-exports[`toThrow promise/async throws if Error-like object is returned threw, but class did not match 1`] = `
+exports[`toThrow promise/async throws if rejects rejects with non-Error value, expected substring does not match 1`] = `
+<d>expect(</><r>received</><d>).</>rejects<d>.</>toThrow<d>(</><g>expected</><d>)</>
+
+Expected substring: <g>"banana"</>
+Received value:     <r>"apple"</>
+
+`;
+
+exports[`toThrow promise/async throws if rejects threw, but class did not match 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>toThrow<d>(</><g>expected</><d>)</>
 
 Expected constructor: <g>Err2</>
@@ -215,7 +224,7 @@ Received message: <r>"async apple"</>
       <d>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<d>:24:74)</>
 `;
 
-exports[`toThrow promise/async throws if Error-like object is returned threw, but should not have 1`] = `
+exports[`toThrow promise/async throws if rejects threw, but should not have 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>not<d>.</>toThrow<d>()</>
 
 Error name:    <r>"Error"</>
