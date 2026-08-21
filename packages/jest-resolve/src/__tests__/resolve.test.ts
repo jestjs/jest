@@ -1317,6 +1317,10 @@ describe('canResolveSync', () => {
     expect(syncOnly.hasDistinctAsyncResolver()).toBe(false);
     const none = new Resolver(moduleMap, {} as ResolverConfig);
     expect(none.hasDistinctAsyncResolver()).toBe(false);
+    const asyncOnly = new Resolver(moduleMap, {
+      resolver: require.resolve('../__mocks__/userResolverAsync'),
+    } as ResolverConfig);
+    expect(asyncOnly.hasDistinctAsyncResolver()).toBe(false);
   });
 
   it('returns false when the user resolver only exports `async`', () => {

@@ -429,7 +429,8 @@ export default class Resolver {
       const resolverModule = loadResolver(this._options.resolver);
       result =
         typeof resolverModule !== 'function' &&
-        typeof resolverModule.async === 'function';
+        typeof resolverModule.async === 'function' &&
+        typeof resolverModule.sync === 'function';
     } catch {
       result = false;
     }
