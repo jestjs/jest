@@ -431,6 +431,70 @@ describe('findNodeModule', () => {
   });
 });
 
+describe('swallowed misses', () => {
+  // Counting constructions rather than timing: building the Error is what
+  // costs, since it captures a stack the caller throws away.
+  async function countErrorsConstructed(
+    run: () => unknown | Promise<unknown>,
+  ): Promise<number> {
+    const OriginalError = globalThis.Error;
+    let constructed = 0;
+    class CountingError extends OriginalError {
+      constructor(...args: ConstructorParameters<ErrorConstructor>) {
+        super(...args);
+        constructed++;
+      }
+    }
+    globalThis.Error = CountingError as unknown as ErrorConstructor;
+    try {
+      await run();
+    } finally {
+      globalThis.Error = OriginalError;
+    }
+    return constructed;
+  }
+
+  const missOptions = {
+    basedir: __dirname,
+    conditions: ['require', 'node', 'default'],
+    extensions: ['.js'],
+    moduleDirectory: ['node_modules'],
+  };
+
+  it('findNodeModule reports a miss without building an Error', async () => {
+    expect(
+      Resolver.findNodeModule('not-a-real-package', missOptions),
+    ).toBeNull();
+
+    const constructed = await countErrorsConstructed(() =>
+      Resolver.findNodeModule('not-a-real-package', missOptions),
+    );
+
+    expect(constructed).toBe(0);
+  });
+
+  it('findNodeModuleAsync reports a miss without building an Error', async () => {
+    await expect(
+      Resolver.findNodeModuleAsync('not-a-real-package', missOptions),
+    ).resolves.toBeNull();
+
+    const constructed = await countErrorsConstructed(() =>
+      Resolver.findNodeModuleAsync('not-a-real-package', missOptions),
+    );
+
+    expect(constructed).toBe(0);
+  });
+
+  it('still throws for an unresolved internal import', async () => {
+    expect(() => Resolver.findNodeModule('#nope', missOptions)).toThrow(
+      /#nope/,
+    );
+    await expect(
+      Resolver.findNodeModuleAsync('#nope', missOptions),
+    ).rejects.toThrow(/#nope/);
+  });
+});
+
 describe('findNodeModuleAsync', () => {
   it('is possible to override the default resolver with an ES module', async () => {
     const resolver = require.resolve('../__mocks__/userResolverEsmAsync');
@@ -869,6 +933,42 @@ describe('getModuleID', () => {
 
     expect(secondID).toBe(firstID);
     expect(getAbsolutePath).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('default resolver factory reuse', () => {
+  const {ResolverFactory} = require('unrs-resolver') as {
+    ResolverFactory: typeof import('unrs-resolver').ResolverFactory;
+  };
+
+  test('reuses one factory per options shape instead of cloning per call', () => {
+    const cloneWithOptions = jest.spyOn(
+      ResolverFactory.prototype,
+      'cloneWithOptions',
+    );
+
+    const findOptions = {
+      basedir: __dirname,
+      conditions: ['require', 'node', 'default'],
+      extensions: ['.js'],
+      moduleDirectory: ['node_modules'],
+    };
+    Resolver.findNodeModule('jest-util', findOptions);
+    Resolver.findNodeModule('jest-util', findOptions);
+    Resolver.findNodeModule('jest-haste-map', findOptions);
+
+    expect(cloneWithOptions).not.toHaveBeenCalled();
+
+    Resolver.findNodeModule('jest-util', {
+      ...findOptions,
+      conditions: ['import', 'default'],
+    });
+    Resolver.findNodeModule('jest-util', {
+      ...findOptions,
+      conditions: ['import', 'default'],
+    });
+
+    expect(cloneWithOptions).toHaveBeenCalledTimes(1);
   });
 });
 

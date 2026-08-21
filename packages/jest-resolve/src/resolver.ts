@@ -16,6 +16,7 @@ import defaultResolver, {
   type AsyncResolver,
   type Resolver as ResolverInterface,
   type SyncResolver,
+  baseResolver,
   defaultAsyncResolver,
 } from './defaultResolver';
 import {clearFsCache} from './fileWalkers';
@@ -140,21 +141,29 @@ export default class Resolver {
     }
 
     const paths = options.paths;
+    // we always wanna throw if it's an internal import
+    const throwOnMiss = options.throwIfNotFound || path.startsWith('#');
+
+    const resolverOptions = {
+      basedir: options.basedir,
+      conditions: options.conditions,
+      defaultAsyncResolver,
+      defaultResolver,
+      extensions: options.extensions,
+      moduleDirectory: options.moduleDirectory,
+      paths: paths ? [...(nodePaths || []), ...paths] : nodePaths,
+      rootDir: options.rootDir,
+    };
 
     try {
-      return resolver(path, {
-        basedir: options.basedir,
-        conditions: options.conditions,
-        defaultAsyncResolver,
-        defaultResolver,
-        extensions: options.extensions,
-        moduleDirectory: options.moduleDirectory,
-        paths: paths ? [...(nodePaths || []), ...paths] : nodePaths,
-        rootDir: options.rootDir,
-      });
+      // A swallowed miss doesn't need the Error the throwing contract builds.
+      if (resolver === defaultResolver && !throwOnMiss) {
+        return baseResolver(path, resolverOptions).path ?? null;
+      }
+
+      return resolver(path, resolverOptions);
     } catch (error) {
-      // we always wanna throw if it's an internal import
-      if (options.throwIfNotFound || path.startsWith('#')) {
+      if (throwOnMiss) {
         throw error;
       }
     }
@@ -166,6 +175,12 @@ export default class Resolver {
     options: FindNodeModuleConfig,
   ): Promise<string | null> {
     const resolverModule = loadResolver(options.resolver);
+    // Without a custom resolver this is the sync `defaultResolver`, and
+    // resolution stays sync from here: awaiting one resolution per module
+    // costs about 6x more per specifier, and the sync entry points
+    // (`require`, `require(esm)`, the sync ESM graph walker) cannot await at
+    // all. Node made `import.meta.resolve` sync for the same reasons.
+    const isDefaultResolver = resolverModule === defaultResolver;
     let resolver: ResolverInterface = defaultAsyncResolver;
 
     if (typeof resolverModule === 'function') {
@@ -184,22 +199,29 @@ export default class Resolver {
     }
 
     const paths = options.paths;
+    // we always wanna throw if it's an internal import
+    const throwOnMiss = options.throwIfNotFound || path.startsWith('#');
+
+    const resolverOptions = {
+      basedir: options.basedir,
+      conditions: options.conditions,
+      defaultAsyncResolver,
+      defaultResolver,
+      extensions: options.extensions,
+      moduleDirectory: options.moduleDirectory,
+      paths: paths ? [...(nodePaths || []), ...paths] : nodePaths,
+      rootDir: options.rootDir,
+    };
 
     try {
-      const result = await resolver(path, {
-        basedir: options.basedir,
-        conditions: options.conditions,
-        defaultAsyncResolver,
-        defaultResolver,
-        extensions: options.extensions,
-        moduleDirectory: options.moduleDirectory,
-        paths: paths ? [...(nodePaths || []), ...paths] : nodePaths,
-        rootDir: options.rootDir,
-      });
-      return result;
+      // A swallowed miss doesn't need the Error the throwing contract builds.
+      if (isDefaultResolver && !throwOnMiss) {
+        return baseResolver(path, resolverOptions).path ?? null;
+      }
+
+      return await resolver(path, resolverOptions);
     } catch (error: unknown) {
-      // we always wanna throw if it's an internal import
-      if (options.throwIfNotFound || path.startsWith('#')) {
+      if (throwOnMiss) {
         throw error;
       }
     }
