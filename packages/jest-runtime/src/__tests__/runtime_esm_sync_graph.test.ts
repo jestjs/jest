@@ -1900,6 +1900,27 @@ describe('Runtime sync ESM graph - automock', () => {
     },
   );
 
+  testWithSyncEsm(
+    'require-shaped metadata does not poison a later import of the same file',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const required = runtime.requireModuleOrMock(
+        FROM,
+        './automock-cjs-dep.cjs',
+      );
+      expect(required.run._isMockFunction).toBe(true);
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-automock-cjs-dep.mjs',
+      )) as any;
+      expect(m.namespace.runIsMock).toBe(true);
+    },
+  );
+
+
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,

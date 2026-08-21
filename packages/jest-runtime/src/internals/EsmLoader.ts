@@ -1465,11 +1465,15 @@ export class EsmLoader {
       (moduleName.startsWith('data:')
         ? moduleName
         : this.resolution.resolveEsm(from, moduleName));
-    if (!this.mockState.hasMockMetadata(modulePath)) {
+    // The CJS automock caches metadata for the raw module.exports under the
+    // bare path; the namespace shape (default/'module.exports' and per-name
+    // bindings) differs, so the two must not share an entry.
+    const metadataKey = `esm:${modulePath}`;
+    if (!this.mockState.hasMockMetadata(metadataKey)) {
       // Seeded before the load so a mock cycle resolves against the
       // placeholder instead of recursing - same trick as `generateMock`.
       this.mockState.setMockMetadata(
-        modulePath,
+        metadataKey,
         moduleMocker.getMetadata({}) ?? {},
       );
       let realModule: ESModule | LoadAsync;
@@ -1479,7 +1483,7 @@ export class EsmLoader {
           this.loadModuleForMockSync(from, modulePath, context, mode),
         );
       } catch (error) {
-        this.mockState.deleteMockMetadata(modulePath);
+        this.mockState.deleteMockMetadata(metadataKey);
         throw error;
       } finally {
         this.generatingMockDepth--;
@@ -1487,21 +1491,21 @@ export class EsmLoader {
       if (realModule === LOAD_ASYNC) {
         // The placeholder must not survive a bail: the legacy retry would
         // read it back as finished metadata and produce an empty mock.
-        this.mockState.deleteMockMetadata(modulePath);
+        this.mockState.deleteMockMetadata(metadataKey);
         return LOAD_ASYNC;
       }
       const metadata = moduleMocker.getMetadata(realModule.namespace);
       if (metadata == null) {
-        this.mockState.deleteMockMetadata(modulePath);
+        this.mockState.deleteMockMetadata(metadataKey);
         throw new Error(
           `Failed to get mock metadata: ${modulePath}\n\n` +
             'See: https://jestjs.io/docs/manual-mocks#content',
         );
       }
-      this.mockState.setMockMetadata(modulePath, metadata);
+      this.mockState.setMockMetadata(metadataKey, metadata);
     }
     const generated = moduleMocker.generateFromMetadata(
-      this.mockState.getMockMetadata(modulePath)!,
+      this.mockState.getMockMetadata(metadataKey)!,
     );
     const mockRecord = this.mockState.notifyMockGenerated(
       modulePath,
