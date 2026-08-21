@@ -402,6 +402,17 @@ export class EsmLoader {
   // evaluated module outside any walk. `importMockSync` handles instance
   // reuse and factory invocation; a fresh synthetic arrives `'linked'`
   // (evaluation normally belongs to the walk's cascade), so evaluate it here.
+  // Entry for Runtime's CJS mock machinery when the decision to mock was
+  // already made on the CJS side (explicit `jest.mock` or automock): serve
+  // the mock without re-consulting the ESM decision maps, which know nothing
+  // about CJS registrations.
+  requireEsmMock<T>(from: string, moduleName: string): T {
+    const moduleID = this.mockState.getEsmModuleId(from, moduleName);
+    return this.requireResultFromModule(
+      this.requireMockedEsmModule(from, moduleName, moduleID),
+    ) as T;
+  }
+
   private requireMockedEsmModule(
     from: string,
     modulePath: string,

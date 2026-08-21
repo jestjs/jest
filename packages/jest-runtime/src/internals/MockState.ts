@@ -391,6 +391,14 @@ export class MockState {
     );
   }
 
+  getEsmModuleId(from: string, moduleName?: string): string {
+    return this.resolution.getEsmModuleId(
+      this.virtualEsmMocks,
+      from,
+      moduleName,
+    );
+  }
+
   isExplicitlyUnmocked(moduleID: string): boolean {
     return this.explicitCjsMock.get(moduleID) === false;
   }

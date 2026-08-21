@@ -460,6 +460,19 @@ export default class Runtime {
       return module as T;
     }
 
+    // ESM targets serve through the ESM loader, which loads a manual mock in
+    // its own format and generates automocks from the real namespace. The
+    // CJS branches below would execute an ESM mock file as CommonJS, and the
+    // CJS generateMock would recurse into the ESM mock consult and automock
+    // the freshly generated mock a second time.
+    if (this._servesMockThroughEsm(from, moduleName)) {
+      mockRegistry.set(
+        moduleID,
+        this.esmLoader.requireEsmMock(from, moduleName),
+      );
+      return mockRegistry.get(moduleID) as T;
+    }
+
     const manualMockPath = this._resolution.findManualMock(from, moduleName);
 
     if (manualMockPath) {
@@ -477,7 +490,7 @@ export default class Runtime {
       mockRegistry.set(moduleID, localModule.exports);
     } else {
       // Look for a real module to generate an automock from
-      mockRegistry.set(moduleID, this._generateMockForTarget(from, moduleName));
+      mockRegistry.set(moduleID, this._generateMock(from, moduleName));
     }
 
     return mockRegistry.get(moduleID) as T;
@@ -504,20 +517,18 @@ export default class Runtime {
       nativeModule.isBuiltin(id) ? this.coreModule.require(id) : undefined;
   }
 
-  // require(esm) targets generate through the ESM loader's automock, which
-  // loads the real namespace for metadata. Running the CJS `generateMock`
-  // against them would recurse into the ESM mock consult and automock the
-  // freshly generated mock a second time.
-  private _generateMockForTarget(from: string, moduleName: string): unknown {
-    if (supportsSyncEvaluate) {
-      const modulePath =
+  private _servesMockThroughEsm(from: string, moduleName: string): boolean {
+    if (!supportsSyncEvaluate) return false;
+    let modulePath: string;
+    try {
+      modulePath =
         this._resolution.resolveCjsStub(from, moduleName) ||
         this._resolution.resolveCjs(from, moduleName);
-      if (this._resolution.shouldLoadAsEsm(modulePath)) {
-        return this.requireModule(from, moduleName);
-      }
+    } catch {
+      // A name that only resolves to a manual mock has no ESM target.
+      return false;
     }
-    return this._generateMock(from, moduleName);
+    return this._resolution.shouldLoadAsEsm(modulePath);
   }
 
   private _getFullTransformationOptions(

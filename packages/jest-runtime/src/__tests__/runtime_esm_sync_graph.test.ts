@@ -1604,6 +1604,38 @@ describe('Runtime sync ESM graph - automock', () => {
     },
   );
 
+  testWithSyncEsm(
+    'requireModuleOrMock serves the ESM manual mock and the automock',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const manual = runtime.requireModuleOrMock(
+        FROM,
+        './automock-manual-dep.mjs',
+      );
+      expect(manual.kind).toBe('mocked-manual');
+      const generated = runtime.requireModuleOrMock(FROM, './automock-dep.mjs');
+      expect(generated.greet._isMockFunction).toBe(true);
+      expect(generated.value).toBe(42);
+    },
+  );
+
+  testWithSyncEsm(
+    'jest.mock without a factory automocks an ESM target',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const {jest: jestObject} = runtime.requireModuleOrMock(
+        FROM,
+        '@jest/globals',
+      );
+      jestObject.mock('./automock-dep.mjs');
+      const exports = runtime.requireModuleOrMock(FROM, './automock-dep.mjs');
+      expect(exports.greet._isMockFunction).toBe(true);
+    },
+  );
+
   testWithSyncEsm('automocks a CJS dep of an ESM graph', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,
