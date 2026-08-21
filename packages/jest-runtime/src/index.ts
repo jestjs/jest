@@ -251,8 +251,16 @@ export default class Runtime {
       logFormattedReferenceError: msg => this._logFormattedReferenceError(msg),
       mockState: this.mockState,
       registries: this.registries,
-      requireEsm: <T>(modulePath: string, requiredFrom: string) =>
-        this.esmLoader.requireEsmModule<T>(modulePath, requiredFrom),
+      requireEsm: <T>(
+        modulePath: string,
+        requiredFrom: string,
+        isRequireActual: boolean,
+      ) =>
+        this.esmLoader.requireEsmModule<T>(
+          modulePath,
+          requiredFrom,
+          isRequireActual,
+        ),
       resolution: this._resolution,
       testState: this.testState,
       transformCache: this.transformCache,

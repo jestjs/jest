@@ -509,12 +509,22 @@ export class EsmLoader {
   // `'load-async'` means the sync graph could not be completed — a concurrent
   // `await import()` is mid-flight, a dependency is async-only, etc. Surface
   // as ERR_REQUIRE_ESM with actionable context.
-  //
-  // Root-level mocks (`jest.unstable_mockModule(spec)` then `require(spec)`)
-  // are not consulted - driving a SyntheticModule from `unlinked` to
-  // `evaluated` needs the async link()/evaluate() pair. Transitive-dep mocks
-  // still apply via the graph walker.
-  requireEsmModule<T>(modulePath: string, requiredFrom?: string): T {
+  requireEsmModule<T>(
+    modulePath: string,
+    requiredFrom?: string,
+    isRequireActual = false,
+  ): T {
+    if (!isRequireActual) {
+      const {shouldMock, moduleID} = this.mockState.shouldMockEsmSync(
+        requiredFrom ?? modulePath,
+        modulePath,
+      );
+      if (shouldMock) {
+        return this.requireResultFromModule(
+          this.requireMockedEsmModule(modulePath, moduleID),
+        ) as T;
+      }
+    }
     const module = this.tryLoadGraphSync(
       modulePath,
       '',
@@ -555,6 +565,38 @@ export class EsmLoader {
       return namespace;
     }
     return this.requireFacadeFor(module).namespace;
+  }
+
+  // The require(esm) counterpart of `importMockSync`: produce the mock as an
+  // evaluated module outside any walk. `importMockSync` handles instance
+  // reuse and factory invocation; a fresh synthetic arrives `'linked'`
+  // (evaluation normally belongs to the walk's cascade), so evaluate it here.
+  private requireMockedEsmModule(
+    modulePath: string,
+    moduleID: string,
+  ): ESModule {
+    const scratch = new Map<string, ScratchEntry>();
+    const mocked = this.importMockSync(
+      modulePath,
+      moduleID,
+      this.getContext(),
+      scratch,
+      'sync-required',
+    );
+    invariant(
+      mocked !== LOAD_ASYNC,
+      'importMockSync must throw rather than bail in sync-required mode. This is a bug in Jest, please report it!',
+    );
+    const module = scratch.get(mocked.cacheKey)!.module;
+    if (module.status === 'evaluated') {
+      return module;
+    }
+    const evaluated = this.evaluateLinkedModule(module, 'sync-required');
+    invariant(
+      evaluated !== LOAD_ASYNC,
+      'evaluateLinkedModule must throw rather than bail in sync-required mode. This is a bug in Jest, please report it!',
+    );
+    return evaluated;
   }
 
   // Node builds the facade as a real source-text module rather than a copy or

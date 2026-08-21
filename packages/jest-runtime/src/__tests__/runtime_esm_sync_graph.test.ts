@@ -584,6 +584,57 @@ describe('Runtime sync ESM graph - require(esm)', () => {
   );
 
   testWithSyncEsm(
+    'honors jest.unstable_mockModule for the require()d file itself',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      runtime.setModuleMock(FROM, './mock-target.mjs', () => ({
+        greeting: 'mocked-root',
+      }));
+      const ns = runtime.requireModule(FROM, './mock-target.mjs');
+      expect(ns.greeting).toBe('mocked-root');
+    },
+  );
+
+  testWithSyncEsm(
+    'repeated require() of a mocked ESM file returns the same instance',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      runtime.setModuleMock(FROM, './mock-target.mjs', () => ({
+        greeting: 'mocked-instance',
+      }));
+      const first = runtime.requireModule(FROM, './mock-target.mjs');
+      const second = runtime.requireModule(FROM, './mock-target.mjs');
+      expect(first.greeting).toBe('mocked-instance');
+      expect(second).toBe(first);
+    },
+  );
+
+  testWithSyncEsm(
+    'requireActual bypasses unstable_mockModule for an ESM target',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      runtime.setModuleMock(FROM, './mock-target.mjs', () => ({
+        greeting: 'mocked-root',
+      }));
+      const ns = runtime.requireActual(FROM, './mock-target.mjs');
+      expect(ns.greeting).toBe('real');
+    },
+  );
+
+  testWithSyncEsm(
+    'require() of a root mock with an async factory throws ERR_REQUIRE_ASYNC_MODULE',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      runtime.setModuleMock(FROM, './mock-target.mjs', async () => ({
+        greeting: 'never',
+      }));
+      expect(() => runtime.requireModule(FROM, './mock-target.mjs')).toThrow(
+        expect.objectContaining({code: 'ERR_REQUIRE_ASYNC_MODULE'}),
+      );
+    },
+  );
+
+  testWithSyncEsm(
     'jest.mock (CJS map) does not apply to an ESM target',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
