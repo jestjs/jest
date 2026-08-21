@@ -1763,6 +1763,33 @@ describe('Runtime sync ESM graph - automock', () => {
       expect(imported.namespace.marker).toBe(required.marker);
     },
   );
+  testWithSyncEsm('automocks a statically imported data: URI', async () => {
+    const runtime = await createRuntime(__filename, {
+      automock: true,
+      rootDir: ROOT_DIR,
+    });
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-automock.mjs',
+    )) as any;
+    expect(m.namespace.mocked._isMockFunction).toBe(true);
+    expect(m.namespace.mocked()).toBeUndefined();
+    expect(m.namespace.value).toBe(7);
+  });
+
+  testWithSyncEsm('automocks a dynamically imported data: URI', async () => {
+    const runtime = await createRuntime(__filename, {
+      automock: true,
+      rootDir: ROOT_DIR,
+    });
+    const loadDataUri = runtime.requireModule(
+      FROM,
+      './dynamic-imports-data-uri.cjs',
+    );
+    const namespace = await loadDataUri();
+    expect(namespace.mocked._isMockFunction).toBe(true);
+    expect(namespace.value).toBe(7);
+  });
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,

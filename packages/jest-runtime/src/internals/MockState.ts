@@ -144,6 +144,12 @@ export class MockState {
     const cached = this.shouldMockCache.get(moduleID);
     if (cached !== undefined) return cached;
 
+    // A data: URI is its own module - the filesystem resolver cannot
+    // resolve it, but the automock decision applies like any other ESM.
+    if (moduleName.startsWith('data:')) {
+      return this.applyEsmDataUriDecision(from, moduleName, moduleID);
+    }
+
     let modulePath: string;
     try {
       modulePath = await this.resolution.resolveEsmAsync(from, moduleName);
@@ -201,6 +207,10 @@ export class MockState {
     const cached = this.shouldMockCache.get(moduleID);
     if (cached !== undefined) return cached;
 
+    if (mode === 'esm' && moduleName.startsWith('data:')) {
+      return this.applyEsmDataUriDecision(from, moduleName, moduleID);
+    }
+
     let modulePath: string;
     try {
       modulePath =
@@ -236,6 +246,31 @@ export class MockState {
       from,
       key,
       explicitMap,
+    );
+  }
+
+  // The URI stands in for the module path: the unmock list can match it,
+  // and the transitive rules see a location that is never in node_modules.
+  private applyEsmDataUriDecision(
+    from: string,
+    dataUri: string,
+    moduleID: string,
+  ): boolean {
+    if (this.unmockList?.test(dataUri)) {
+      this.shouldMockCache.set(moduleID, false);
+      return false;
+    }
+    const currentModuleID = this.resolution.getEsmModuleId(
+      this.virtualEsmMocks,
+      from,
+    );
+    return this.applyTransitive(
+      moduleID,
+      currentModuleID,
+      dataUri,
+      from,
+      transitiveCacheKey(from, moduleID),
+      this.explicitEsmMock,
     );
   }
 

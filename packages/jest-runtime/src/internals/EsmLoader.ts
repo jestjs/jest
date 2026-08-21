@@ -1347,11 +1347,11 @@ export class EsmLoader {
     mode: SyncEsmMode,
     resolvedPath?: string,
   ): {cacheKey: string} | LoadAsync {
-    const manualMockPath = this.resolution.findEsmManualMock(
-      from,
-      moduleName,
-      resolvedPath,
-    );
+    // A data: URI is its own module - there is no file to have a sibling or
+    // root manual mock.
+    const manualMockPath = moduleName.startsWith('data:')
+      ? null
+      : this.resolution.findEsmManualMock(from, moduleName, resolvedPath);
     // The load runs against scratch registries so the module executed here
     // (the mock file, or the real module inspected for automock metadata)
     // doesn't pollute the live caches - mirroring `withScratchRegistries` in
@@ -1382,6 +1382,9 @@ export class EsmLoader {
     context: VMContext,
     mode: SyncEsmMode,
   ): ESModule | LoadAsync {
+    if (modulePath.startsWith('data:')) {
+      return this.tryLoadGraphSync(modulePath, '', mode);
+    }
     if (
       !modulePath.endsWith('.json') &&
       !isWasm(modulePath) &&
@@ -1420,7 +1423,10 @@ export class EsmLoader {
       '`moduleMocker` must be set on an environment when created',
     );
     const modulePath =
-      resolvedPath ?? this.resolution.resolveEsm(from, moduleName);
+      resolvedPath ??
+      (moduleName.startsWith('data:')
+        ? moduleName
+        : this.resolution.resolveEsm(from, moduleName));
     if (!this.mockState.hasMockMetadata(modulePath)) {
       // Seeded before the load so a mock cycle resolves against the
       // placeholder instead of recursing - same trick as `generateMock`.
@@ -2176,7 +2182,9 @@ export class EsmLoader {
       // generation below would re-resolve the name differently or throw.
       let resolvedPath: string | undefined;
       try {
-        resolvedPath = await this.resolution.resolveEsmAsync(from, moduleName);
+        resolvedPath = moduleName.startsWith('data:')
+          ? moduleName
+          : await this.resolution.resolveEsmAsync(from, moduleName);
       } catch (error) {
         // The decision can rest on a root manual __mocks__ entry for a name
         // that does not resolve - generation then loads that mock without a
