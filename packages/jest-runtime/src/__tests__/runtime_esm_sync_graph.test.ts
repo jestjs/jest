@@ -2108,6 +2108,25 @@ describe('Runtime sync ESM graph - link-time errors before CJS execution', () =>
   );
 
   testWithSyncEsm(
+    'a sync mock factory does not run when a sibling fails to resolve',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      let factoryRan = false;
+      runtime.setModuleMock(FROM, './mock-target.mjs', () => {
+        factoryRan = true;
+        return {greeting: 'mocked'};
+      });
+      await expect(
+        runtime.unstable_importModule(
+          FROM,
+          './import-factory-then-missing.mjs',
+        ),
+      ).rejects.toThrow("Cannot find module './does-not-exist.js'");
+      expect(factoryRan).toBe(false);
+    },
+  );
+
+  testWithSyncEsm(
     'a pending build that turns out to be unmarked ESM defers CJS siblings',
     async () => {
       // With no transform the .js file keeps its ESM syntax, so it can only

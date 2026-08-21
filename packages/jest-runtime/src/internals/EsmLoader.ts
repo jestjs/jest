@@ -90,7 +90,7 @@ type PendingCjsBuild = {
   referencingIdentifier: string;
 };
 
-type PendingGeneratedMock = {
+type PendingMockBuild = {
   from: string;
   moduleID: string;
   specifierPath: string;
@@ -98,7 +98,7 @@ type PendingGeneratedMock = {
 
 type PendingBuilds = {
   cjs: Array<PendingCjsBuild>;
-  generatedMocks: Array<PendingGeneratedMock>;
+  mocks: Array<PendingMockBuild>;
 };
 
 type ResolvedSyncSpecifier = {
@@ -698,12 +698,12 @@ export class EsmLoader {
     // Node evaluates these bodies interleaved with the ESM bodies in
     // post-order; here they run in discovery order before the ESM bodies -
     // see the divergences list in docs/ECMAScriptModules.md.
-    const pendingBuilds: PendingBuilds = {cjs: [], generatedMocks: []};
+    const pendingBuilds: PendingBuilds = {cjs: [], mocks: []};
     const confirmedCjsBuilds: Array<PendingCjsBuild> = [];
     while (
       worklist.length > 0 ||
       pendingBuilds.cjs.length > 0 ||
-      pendingBuilds.generatedMocks.length > 0 ||
+      pendingBuilds.mocks.length > 0 ||
       confirmedCjsBuilds.length > 0
     ) {
       if (worklist.length === 0 && pendingBuilds.cjs.length > 0) {
@@ -724,14 +724,14 @@ export class EsmLoader {
         }
         continue;
       }
-      if (worklist.length === 0 && pendingBuilds.generatedMocks.length > 0) {
+      if (worklist.length === 0 && pendingBuilds.mocks.length > 0) {
         // Generation runs after this graph resolves, but each mock's
         // metadata load evaluates its own real-module graph as it goes - a
         // later pending mock whose real graph fails to load does not undo an
         // earlier one's execution. Preflighting every mock target's graph
         // would need a resolve-only walker mode; documented as a divergence
         // instead.
-        const pending = pendingBuilds.generatedMocks.shift()!;
+        const pending = pendingBuilds.mocks.shift()!;
         const mocked = this.importMockSync(
           pending.from,
           pending.specifierPath,
@@ -1153,10 +1153,9 @@ export class EsmLoader {
         referencingIdentifier,
         specifierPath,
       );
-      if (
-        this.registries.getModuleMock(moduleID) !== undefined ||
-        this.mockState.getEsmFactory(moduleID) !== undefined
-      ) {
+      if (this.registries.getModuleMock(moduleID) !== undefined) {
+        // Adopting an already-built instance runs no user code, so it can
+        // happen mid-resolution.
         const mocked = this.importMockSync(
           referencingIdentifier,
           specifierPath,
@@ -1172,10 +1171,10 @@ export class EsmLoader {
           modulePath: validationPath,
         };
       }
-      // Factory-less decision: generation executes the real module for its
-      // metadata, so it waits with the pending CJS builds until the graph
-      // has fully resolved.
-      pendingBuilds.generatedMocks.push({
+      // Anything that executes user code waits until the graph has fully
+      // resolved, with the pending CJS builds: a factory's side effects, and
+      // the real-module load generation performs for its metadata.
+      pendingBuilds.mocks.push({
         from: referencingIdentifier,
         moduleID,
         specifierPath,
