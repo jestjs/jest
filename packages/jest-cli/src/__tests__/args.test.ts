@@ -75,6 +75,13 @@ describe('check', () => {
     },
   );
 
+  test.each(['.jestrc', '.config/jestrc'])(
+    'allows using extensionless "%s" file for --config option',
+    config => {
+      expect(() => check(argv({config}))).not.toThrow();
+    },
+  );
+
   it('raises an exception if selectProjects is not provided any project names', () => {
     expect(() => check(argv({selectProjects: []}))).toThrow(
       'The --selectProjects option requires the name of at least one project to be specified.\n',
@@ -89,13 +96,13 @@ describe('check', () => {
 
   it('raises an exception if config is not a valid JSON string', () => {
     expect(() => check(argv({config: 'x:1'}))).toThrow(
-      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .ts, .mjs, .mts, .cjs, .cts, .json',
+      'The --config option requires a JSON string literal, an rc file, or a file path with one of these extensions: .js, .ts, .mjs, .mts, .cjs, .cts, .json, .yaml, .yml',
     );
   });
 
   it('raises an exception if config is not a supported file type', () => {
     const message =
-      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .ts, .mjs, .mts, .cjs, .cts, .json';
+      'The --config option requires a JSON string literal, an rc file, or a file path with one of these extensions: .js, .ts, .mjs, .mts, .cjs, .cts, .json, .yaml, .yml';
 
     expect(() => check(argv({config: 'jest.configjs'}))).toThrow(message);
     expect(() => check(argv({config: 'jest.config.exe'}))).toThrow(message);

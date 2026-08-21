@@ -7,26 +7,59 @@
 
 import * as path from 'node:path';
 import chalk from 'chalk';
+import type {CosmiconfigResult, Loader, PublicExplorer} from 'cosmiconfig';
 import * as fs from 'graceful-fs';
 import slash from 'slash';
 import {ValidationError} from 'jest-validate';
-import {
-  JEST_CONFIG_BASE_NAME,
-  JEST_CONFIG_EXT_ORDER,
-  PACKAGE_JSON,
-} from './constants';
+import {JEST_CONFIG_SEARCH_PLACES, PACKAGE_JSON} from './constants';
+import createConfigExplorer from './createConfigExplorer';
 import {BULLET, DOCUMENTATION_NOTE} from './utils';
+
+const CONFIG_FOUND = Symbol('CONFIG_FOUND');
+const PACKAGE_JSON_BOUNDARY = Symbol('PACKAGE_JSON_BOUNDARY');
 
 const isFile = (filePath: string) =>
   fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
 
-const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
+const discoveryLoader: Loader = () => CONFIG_FOUND;
+const packageJsonDiscoveryLoader: Loader = (filepath, content) => {
+  if (path.basename(filepath) !== PACKAGE_JSON) {
+    return CONFIG_FOUND;
+  }
 
-export default function resolveConfigPath(
+  try {
+    const packageJson = JSON.parse(content);
+    return {
+      jest:
+        typeof packageJson.jest === 'string' && packageJson.jest
+          ? packageJson.jest
+          : packageJson.jest
+            ? CONFIG_FOUND
+            : PACKAGE_JSON_BOUNDARY,
+    };
+  } catch {
+    return {jest: PACKAGE_JSON_BOUNDARY};
+  }
+};
+
+const discoveryLoaders = {
+  '.cjs': discoveryLoader,
+  '.cts': discoveryLoader,
+  '.js': discoveryLoader,
+  '.json': packageJsonDiscoveryLoader,
+  '.mjs': discoveryLoader,
+  '.mts': discoveryLoader,
+  '.ts': discoveryLoader,
+  '.yaml': discoveryLoader,
+  '.yml': discoveryLoader,
+  noExt: discoveryLoader,
+};
+
+export default async function resolveConfigPath(
   pathToResolve: string,
   cwd: string,
   skipMultipleConfigError = false,
-): string {
+): Promise<string> {
   if (!path.isAbsolute(cwd)) {
     throw new Error(`"cwd" must be an absolute path. cwd: ${cwd}`);
   }
@@ -35,19 +68,22 @@ export default function resolveConfigPath(
     : path.resolve(cwd, pathToResolve);
 
   if (isFile(absolutePath)) {
+    if (path.basename(absolutePath).toLowerCase() === PACKAGE_JSON) {
+      const jestKey = getPackageJsonJestKey(absolutePath);
+      if (typeof jestKey === 'string' && jestKey) {
+        const packageConfigPath = path.isAbsolute(jestKey)
+          ? jestKey
+          : path.resolve(path.dirname(absolutePath), jestKey);
+
+        if (!isFile(packageConfigPath)) {
+          throwInvalidPackageConfig(absolutePath, packageConfigPath);
+        }
+        return packageConfigPath;
+      }
+    }
     return absolutePath;
   }
 
-  // This is a guard against passing non existing path as a project/config,
-  // that will otherwise result in a very confusing situation.
-  // e.g.
-  // With a directory structure like this:
-  //   my_project/
-  //     package.json
-  //
-  // Passing a `my_project/some_directory_that_doesnt_exist` as a project
-  // name will resolve into a (possibly empty) `my_project/package.json` and
-  // try to run all tests it finds under `my_project` directory.
   if (!fs.existsSync(absolutePath)) {
     throw new Error(
       "Can't find a root directory while resolving a config file path.\n" +
@@ -56,51 +92,38 @@ export default function resolveConfigPath(
     );
   }
 
-  return resolveConfigPathByTraversing(
-    absolutePath,
-    pathToResolve,
-    cwd,
-    skipMultipleConfigError,
+  const explorer = createConfigExplorer(
+    [...JEST_CONFIG_SEARCH_PLACES],
+    discoveryLoaders,
+    false,
   );
-}
+  const result = await searchForConfig(explorer, absolutePath);
 
-const resolveConfigPathByTraversing = (
-  pathToResolve: string,
-  initialPath: string,
-  cwd: string,
-  skipMultipleConfigError: boolean,
-): string => {
-  const configFiles = JEST_CONFIG_EXT_ORDER.map(ext =>
-    path.resolve(pathToResolve, getConfigFilename(ext)),
-  ).filter(isFile);
+  if (!result) {
+    throw new Error(makeResolutionErrorMessage(pathToResolve, cwd));
+  }
 
-  const packageJson = findPackageJson(pathToResolve);
+  const configDirectory = findConfigDirectory(absolutePath, result.filepath);
+  const configFiles = getConfigFiles(configDirectory);
+  const packageJson = path.resolve(configDirectory, PACKAGE_JSON);
+  const jestKey = isFile(packageJson)
+    ? getPackageJsonJestKey(packageJson)
+    : undefined;
 
-  if (packageJson) {
-    const jestKey = getPackageJsonJestKey(packageJson);
+  if (jestKey) {
+    if (typeof jestKey === 'string') {
+      const packageConfigPath = path.isAbsolute(jestKey)
+        ? jestKey
+        : path.resolve(configDirectory, jestKey);
 
-    if (jestKey) {
-      if (typeof jestKey === 'string') {
-        const absolutePath = path.isAbsolute(jestKey)
-          ? jestKey
-          : path.resolve(pathToResolve, jestKey);
-
-        if (!isFile(absolutePath)) {
-          throw new ValidationError(
-            `${BULLET}Validation Error`,
-            `  Configuration in ${chalk.bold(packageJson)} is not valid. ` +
-              `Jest expects the string configuration to point to a file, but ${absolutePath} is not. ` +
-              `Please check your Jest configuration in ${chalk.bold(
-                packageJson,
-              )}.`,
-            DOCUMENTATION_NOTE,
-          );
-        }
-
-        configFiles.push(absolutePath);
-      } else {
-        configFiles.push(packageJson);
+      if (!isFile(packageConfigPath)) {
+        throwInvalidPackageConfig(packageJson, packageConfigPath);
       }
+      if (!configFiles.includes(packageConfigPath)) {
+        configFiles.push(packageConfigPath);
+      }
+    } else {
+      configFiles.push(packageJson);
     }
   }
 
@@ -108,33 +131,77 @@ const resolveConfigPathByTraversing = (
     throw new ValidationError(...makeMultipleConfigsErrorMessage(configFiles));
   }
 
-  if (configFiles.length > 0 || packageJson) {
-    return configFiles[0] ?? packageJson;
+  if (configFiles.length > 0) {
+    return configFiles[0];
   }
 
-  // This is the system root.
-  // We tried everything, config is nowhere to be found ¯\_(ツ)_/¯
-  if (pathToResolve === path.dirname(pathToResolve)) {
-    throw new Error(makeResolutionErrorMessage(initialPath, cwd));
+  if (typeof result.config === 'string') {
+    return path.isAbsolute(result.config)
+      ? result.config
+      : path.resolve(configDirectory, result.config);
   }
 
-  // go up a level and try it again
-  return resolveConfigPathByTraversing(
-    path.dirname(pathToResolve),
-    initialPath,
-    cwd,
-    skipMultipleConfigError,
-  );
+  if (result.config === PACKAGE_JSON_BOUNDARY) {
+    return packageJson;
+  }
+
+  return result.filepath;
+}
+
+const searchForConfig = async (
+  explorer: Pick<PublicExplorer, 'search'>,
+  startDirectory: string,
+): Promise<CosmiconfigResult> => {
+  let currentDirectory = startDirectory;
+
+  while (true) {
+    const result = await explorer.search(currentDirectory);
+    if (result) {
+      return result;
+    }
+
+    const unreadableConfig = getConfigFiles(currentDirectory)[0];
+    if (unreadableConfig) {
+      return {config: CONFIG_FOUND, filepath: unreadableConfig};
+    }
+
+    const packageJson = path.resolve(currentDirectory, PACKAGE_JSON);
+    if (isFile(packageJson)) {
+      return {config: PACKAGE_JSON_BOUNDARY, filepath: packageJson};
+    }
+
+    const parentDirectory = path.dirname(currentDirectory);
+    if (parentDirectory === currentDirectory) {
+      return null;
+    }
+    currentDirectory = parentDirectory;
+  }
 };
 
-const findPackageJson = (pathToResolve: string) => {
-  const packagePath = path.resolve(pathToResolve, PACKAGE_JSON);
-  if (isFile(packagePath)) {
-    return packagePath;
-  }
+const findConfigDirectory = (startDirectory: string, configPath: string) => {
+  let currentDirectory = startDirectory;
 
-  return undefined;
+  while (true) {
+    if (
+      JEST_CONFIG_SEARCH_PLACES.some(
+        place => path.resolve(currentDirectory, place) === configPath,
+      )
+    ) {
+      return currentDirectory;
+    }
+
+    const parentDirectory = path.dirname(currentDirectory);
+    if (parentDirectory === currentDirectory) {
+      return path.dirname(configPath);
+    }
+    currentDirectory = parentDirectory;
+  }
 };
+
+const getConfigFiles = (directory: string) =>
+  JEST_CONFIG_SEARCH_PLACES.filter(place => place !== PACKAGE_JSON)
+    .map(place => path.resolve(directory, place))
+    .filter(isFile);
 
 const getPackageJsonJestKey = (
   packagePath: string,
@@ -150,14 +217,27 @@ const getPackageJsonJestKey = (
   return undefined;
 };
 
+const throwInvalidPackageConfig = (
+  packageJson: string,
+  packageConfigPath: string,
+): never => {
+  throw new ValidationError(
+    `${BULLET}Validation Error`,
+    `  Configuration in ${chalk.bold(packageJson)} is not valid. ` +
+      `Jest expects the string configuration to point to a file, but ${packageConfigPath} is not. ` +
+      `Please check your Jest configuration in ${chalk.bold(packageJson)}.`,
+    DOCUMENTATION_NOTE,
+  );
+};
+
 const makeResolutionErrorMessage = (initialPath: string, cwd: string) =>
   'Could not find a config file based on provided values:\n' +
   `path: "${initialPath}"\n` +
   `cwd: "${cwd}"\n` +
   'Config paths must be specified by either a direct path to a config\n' +
   'file, or a path to a directory. If directory is given, Jest will try to\n' +
-  `traverse directory tree up, until it finds one of those files in exact order: ${JEST_CONFIG_EXT_ORDER.map(
-    ext => `"${getConfigFilename(ext)}"`,
+  `traverse directory tree up, until it finds one of those files in exact order: ${JEST_CONFIG_SEARCH_PLACES.map(
+    place => `"${place}"`,
   ).join(' or ')}.`;
 
 function extraIfPackageJson(configPath: string) {

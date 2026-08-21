@@ -10142,6 +10142,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cosmiconfig@npm:^9.0.2":
+  version: 9.0.2
+  resolution: "cosmiconfig@npm:9.0.2"
+  dependencies:
+    env-paths: "npm:^2.2.1"
+    import-fresh: "npm:^3.3.0"
+    js-yaml: "npm:^4.1.0"
+    parse-json: "npm:^5.2.0"
+  peerDependencies:
+    typescript: ">=4.9.5"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10/e7b08c9c6ed862852bf0ed88c8fa49c57276d976901c9332c87d831926f332c32df3f5ff6a87f3823c3b7c5d6f857a7fd34336e0c2c596fa2d73e6cccbb7bf58
+  languageName: node
+  linkType: hard
+
 "create-jest@workspace:packages/create-jest":
   version: 0.0.0-use.local
   resolution: "create-jest@workspace:packages/create-jest"
@@ -11082,7 +11099,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"env-paths@npm:^2.2.0":
+"env-paths@npm:^2.2.0, env-paths@npm:^2.2.1":
   version: 2.2.1
   resolution: "env-paths@npm:2.2.1"
   checksum: 10/65b5df55a8bab92229ab2b40dad3b387fad24613263d103a97f91c9fe43ceb21965cd3392b1ccb5d77088021e525c4e0481adb309625d0cb94ade1d1fb8dc17e
@@ -14682,6 +14699,7 @@ __metadata:
     babel-jest: "workspace:*"
     chalk: "npm:^4.1.2"
     ci-info: "npm:^4.2.0"
+    cosmiconfig: "npm:^9.0.2"
     deepmerge: "npm:^4.3.1"
     esbuild: "npm:^0.28.0"
     esbuild-register: "npm:^3.6.0"
