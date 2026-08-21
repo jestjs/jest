@@ -1675,6 +1675,27 @@ describe('Runtime sync ESM graph - automock', () => {
     },
   );
 
+  testWithSyncEsm(
+    'picks the sibling mock of the file each condition set resolves',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-dual-manual-pkg.mjs',
+      )) as any;
+      expect(m.namespace.mockKind).toBe('mocked-import-target');
+      const required = runtime.requireModuleOrMock(
+        FROM,
+        'dual-conditions-manual-pkg',
+      );
+      expect(required.mockKind).toBe('mocked-sync-target');
+    },
+  );
+
+
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,

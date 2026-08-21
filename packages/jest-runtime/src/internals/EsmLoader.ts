@@ -1332,7 +1332,11 @@ export class EsmLoader {
     mode: SyncEsmMode,
     resolvedPath?: string,
   ): {cacheKey: string} | LoadAsync {
-    const manualMockPath = this.resolution.findManualMock(from, moduleName);
+    const manualMockPath = this.resolution.findEsmManualMock(
+      from,
+      moduleName,
+      resolvedPath,
+    );
     // The load runs against scratch registries so the module executed here
     // (the mock file, or the real module inspected for automock metadata)
     // doesn't pollute the live caches - mirroring `withScratchRegistries` in
