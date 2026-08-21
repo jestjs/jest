@@ -2165,10 +2165,19 @@ export class EsmLoader {
       // Resolve through the async API first: the decision to mock may have
       // come from a distinct async resolver hook, and the sync-only
       // generation below would re-resolve the name differently or throw.
-      const resolvedPath = await this.resolution.resolveEsmAsync(
-        from,
-        moduleName,
-      );
+      let resolvedPath: string | undefined;
+      try {
+        resolvedPath = await this.resolution.resolveEsmAsync(from, moduleName);
+      } catch (error) {
+        // The decision can rest on a root manual __mocks__ entry for a name
+        // that does not resolve - generation then loads that mock without a
+        // target path.
+        const manualMock = await this.resolution.getEsmMockModuleAsync(
+          from,
+          moduleName,
+        );
+        if (manualMock === null) throw error;
+      }
       const scratch = new Map<string, ScratchEntry>();
       const generated = this.importGeneratedMockSync(
         from,

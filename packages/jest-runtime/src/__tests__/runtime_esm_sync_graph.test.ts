@@ -1712,6 +1712,26 @@ describe('Runtime sync ESM graph - automock', () => {
       expect(namespace.fromA).toEqual({valueA: 'a', valueB: 'b', valueC: 'c'});
     },
   );
+  testWithSyncEsm(
+    'a root __mocks__ entry for an unresolvable name serves dynamic imports',
+    async () => {
+      // The default test config only crawls .js, and root __mocks__ entries
+      // resolve through the haste map - the .mjs mock must be indexed.
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        moduleFileExtensions: ['js', 'mjs', 'cjs', 'json'],
+        rootDir: ROOT_DIR,
+      });
+      const loadGhost = runtime.requireModule(
+        FROM,
+        './dynamic-imports-ghost.cjs',
+      );
+      const namespace = await loadGhost();
+      expect(namespace.kind).toBe('mocked-ghost');
+    },
+  );
+
+
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,
