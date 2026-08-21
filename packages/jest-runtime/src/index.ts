@@ -46,6 +46,7 @@ import {
 } from './internals/TransformCache';
 import {V8CoverageCollector} from './internals/V8CoverageCollector';
 import {CoreModuleProvider, RequireBuilder} from './internals/cjsRequire';
+import {hasEsmSyntax} from './internals/esmLexer';
 import {
   type ModuleRegistry,
   createInitialModule,
@@ -534,6 +535,9 @@ export default class Runtime {
     if (!supportsSyncEvaluate || !this._resolution.canResolveSync()) {
       return null;
     }
+    if (this._resolution.isCoreModule(moduleName)) {
+      return null;
+    }
     let modulePath: string;
     try {
       modulePath =
@@ -543,7 +547,24 @@ export default class Runtime {
       // A name that only resolves to a manual mock has no ESM target.
       return null;
     }
-    return this._resolution.shouldLoadAsEsm(modulePath) ? modulePath : null;
+    if (this._resolution.shouldLoadAsEsm(modulePath)) {
+      return modulePath;
+    }
+    // Unmarked ESM - a .js file in a CommonJS scope whose transformed source
+    // carries ESM syntax - loads through requireEsmModule's parse-error
+    // fallback, so the same discriminator classifies it here. Left to the
+    // CJS generateMock, its real-module load would generate the ESM mock and
+    // the outer path would automock that mock a second time.
+    if (
+      path.extname(modulePath) !== '.node' &&
+      !modulePath.endsWith('.json') &&
+      !this._resolution.isExplicitlyCommonjs(modulePath) &&
+      this.transformCache.canTransformSync(modulePath) &&
+      hasEsmSyntax(this.transformCache.transform(modulePath, undefined))
+    ) {
+      return modulePath;
+    }
+    return null;
   }
 
   private _getFullTransformationOptions(

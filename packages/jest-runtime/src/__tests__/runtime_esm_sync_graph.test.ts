@@ -1973,6 +1973,31 @@ describe('Runtime sync ESM graph - automock', () => {
       expect(exports.marker).toEqual({kind: 'real'});
     },
   );
+  testWithSyncEsm(
+    'require() and import share one automock of an unmarked ESM file',
+    async () => {
+      // With no transform the .js file keeps its ESM syntax and loads
+      // through the parse-error fallback - the mock probe must classify it
+      // the same way, or the CJS generateMock would automock the
+      // ESM-generated mock a second time.
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+        transform: {},
+      });
+      const required = runtime.requireModuleOrMock(
+        FROM,
+        './unmarked-esm-mock-dep.js',
+      );
+      expect(required.tag._isMockFunction).toBe(true);
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-unmarked-esm-mock.mjs',
+      )) as any;
+      expect(m.namespace.tag).toBe(required.tag);
+    },
+  );
+
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,
