@@ -128,7 +128,15 @@ type ScratchEntry =
       module: VMModuleWithAsyncGraph;
       deps: Array<string>;
     }
-  | {kind: 'prelinked'; cacheKey: string; module: VMModuleWithAsyncGraph};
+  // Mock entries set `excludeFromRegistry`: they are served from the
+  // module-mock registry, and committing them to the ESM registry would leak
+  // their module IDs into surfaces keyed by it, like `require.cache`.
+  | {
+      kind: 'prelinked';
+      cacheKey: string;
+      module: VMModuleWithAsyncGraph;
+      excludeFromRegistry?: true;
+    };
 
 // `SourceTextModule#hasAsyncGraph()` lets us prove a graph is sync-evaluable.
 // `SyntheticModule` does not expose it but is by definition sync (the user
@@ -950,6 +958,7 @@ export class EsmLoader {
     }
 
     for (const entry of scratch.values()) {
+      if (entry.kind === 'prelinked' && entry.excludeFromRegistry) continue;
       if (!registry.has(entry.cacheKey)) {
         registry.set(entry.cacheKey, entry.module);
       }
@@ -1284,6 +1293,7 @@ export class EsmLoader {
       if (!scratch.has(moduleID)) {
         scratch.set(moduleID, {
           cacheKey: moduleID,
+          excludeFromRegistry: true,
           kind: 'prelinked',
           module: existing,
         });
@@ -1338,6 +1348,7 @@ export class EsmLoader {
     this.registries.setModuleMock(moduleID, synth);
     scratch.set(moduleID, {
       cacheKey: moduleID,
+      excludeFromRegistry: true,
       kind: 'prelinked',
       module: synth,
     });
@@ -1400,6 +1411,7 @@ export class EsmLoader {
     this.registries.setModuleMock(moduleID, mockModule);
     scratch.set(moduleID, {
       cacheKey: moduleID,
+      excludeFromRegistry: true,
       kind: 'prelinked',
       module: mockModule,
     });

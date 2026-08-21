@@ -2032,3 +2032,37 @@ describe('Runtime sync ESM graph - source phase imports', () => {
     },
   );
 });
+
+describe('Runtime sync ESM graph - require.cache key hygiene', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithSyncEsm(
+    'exposes only path keys, never mock or synthetic registry keys',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const probe = runtime.requireModule(FROM, './reads-cache-keys.cjs');
+      expect(probe.depIsMocked).toBe(true);
+      expect(probe.keys.every((key: string) => path.isAbsolute(key))).toBe(
+        true,
+      );
+    },
+  );
+
+  testWithSyncEsm(
+    'keeps @jest/globals and core entries out of require.cache',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await runtime.unstable_importModule(FROM, './import-jest-globals.mjs');
+      await runtime.unstable_importModule(FROM, './import-core.mjs');
+      const probe = runtime.requireModule(FROM, './reads-cache-keys.cjs');
+      expect(probe.keys.every((key: string) => path.isAbsolute(key))).toBe(
+        true,
+      );
+    },
+  );
+});

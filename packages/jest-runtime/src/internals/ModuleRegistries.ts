@@ -202,17 +202,15 @@ export class ModuleRegistries {
   // modules by path (Node keys its `require(esm)` entries the same way).
   // `pathToFileURL` percent-encodes `?`/`#`, so a path lookup can never reach
   // an entry that carries a query or fragment - those instances exist only
-  // for `import`, exactly as in Node. URL-string keys are rejected so file
-  // entries stay path-addressed only.
+  // for `import`, exactly as in Node. Every non-path key is invisible: URL
+  // strings, core specifiers, `data:` URIs and the registry's synthetic
+  // entries never appear in Node's `require.cache` either.
   private getEsmEntryForRequireCache(key: string): JestModule | undefined {
-    const registry = this.isolation?.esm ?? this.esModuleRegistry;
-    if (path.isAbsolute(key)) {
-      return registry.get(pathToFileURL(key).href);
-    }
-    if (key.startsWith('file:')) {
+    if (!path.isAbsolute(key)) {
       return undefined;
     }
-    return registry.get(key);
+    const registry = this.isolation?.esm ?? this.esModuleRegistry;
+    return registry.get(pathToFileURL(key).href);
   }
 
   getEsmRequireCacheEntry(key: string): NodeModule | undefined {
@@ -251,15 +249,14 @@ export class ModuleRegistries {
           for (const [key, entry] of this.isolation?.esm ??
             this.esModuleRegistry) {
             if (!isLiveEsm(entry)) continue;
-            if (key.startsWith('file://')) {
-              // `pathToFileURL` percent-encodes literal `?`/`#`, so their
-              // presence always means a query or fragment - an instance a
-              // path key cannot address.
-              if (key.includes('?') || key.includes('#')) continue;
-              keys.add(fileURLToPath(key));
-            } else {
-              keys.add(key);
-            }
+            // Only file URLs become paths; core, data: and synthetic keys
+            // are not path-addressable and stay invisible, as in Node.
+            // `pathToFileURL` percent-encodes literal `?`/`#`, so their
+            // presence always means a query or fragment - an instance a
+            // path key cannot address.
+            if (!key.startsWith('file://')) continue;
+            if (key.includes('?') || key.includes('#')) continue;
+            keys.add(fileURLToPath(key));
           }
           return [...keys];
         },
