@@ -7,7 +7,7 @@
 
 import type {Options} from 'yargs';
 import type {Config} from '@jest/types';
-import {constants, isJSONString} from 'jest-config';
+import {constants, isJSONString, isSupportedConfigFilePath} from 'jest-config';
 
 export function check(argv: Config.Argv): true {
   if (
@@ -77,13 +77,10 @@ export function check(argv: Config.Argv): true {
   if (
     argv.config &&
     !isJSONString(argv.config) &&
-    !new RegExp(
-      `\\.(${constants.JEST_CONFIG_EXT_ORDER.map(e => e.slice(1)).join('|')})$`,
-      'i',
-    ).test(argv.config)
+    !isSupportedConfigFilePath(argv.config.toLowerCase())
   ) {
     throw new Error(
-      `The --config option requires a JSON string literal, or a file path with one of these extensions: ${constants.JEST_CONFIG_EXT_ORDER.join(
+      `The --config option requires a JSON string literal, an rc file, or a file path with one of these extensions: ${constants.JEST_CONFIG_EXT_ORDER.join(
         ', ',
       )}.\nExample usage: jest --config ./jest.config.js`,
     );
