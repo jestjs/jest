@@ -2019,7 +2019,25 @@ describe('Runtime sync ESM graph - automock', () => {
     },
   );
 
-
+  testWithSyncEsm(
+    'a require-generated mock is not reused by import under a dual-hook resolver',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        resolver: path.join(ROOT_DIR, 'dual-hook-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      const required = runtime.requireModuleOrMock(FROM, './automock-dep.mjs');
+      expect(required.greet._isMockFunction).toBe(true);
+      const loadDualAlias = runtime.requireModule(
+        FROM,
+        './dynamic-imports-dual-alias.cjs',
+      );
+      await expect(loadDualAlias()).rejects.toThrow(
+        'Attempting to import a mock without a factory',
+      );
+    },
+  );
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,

@@ -2233,7 +2233,16 @@ export class EsmLoader {
     context: VMContext,
   ): Promise<T> {
     if (this.registries.hasModuleMock(moduleID)) {
-      return this.registries.getModuleMock(moduleID) as T;
+      // A generated instance was built with the sync resolver hook - under a
+      // distinct-hook resolver the import path excludes those, so fall
+      // through to the factory error instead of reusing it. Factory
+      // instances reuse regardless: no resolution shaped them.
+      const generatedUnderSyncHook =
+        this.mockState.getEsmFactory(moduleID) === undefined &&
+        this.resolution.hasDistinctAsyncResolver();
+      if (!generatedUnderSyncHook) {
+        return this.registries.getModuleMock(moduleID) as T;
+      }
     }
 
     const factory = this.mockState.getEsmFactory(moduleID);
