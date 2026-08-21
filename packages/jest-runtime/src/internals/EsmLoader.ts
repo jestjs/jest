@@ -960,16 +960,17 @@ export class EsmLoader {
               : `a dependency uses top-level await (${culprit})`,
           );
         }
+        // Only `evaluate()` is async here - the graph is already built, linked
+        // and instantiated. Commit it before handing the caller back to the
+        // async path so that path evaluates these modules, rather than
+        // rebuilding an unlinked copy of the graph that a concurrent
+        // `import()` sharing a dependency would race to `link()`.
+        this.commitScratchEntries(scratch, registry);
         return LOAD_ASYNC;
       }
     }
 
-    for (const entry of scratch.values()) {
-      if (entry.kind === 'prelinked' && entry.excludeFromRegistry) continue;
-      if (!registry.has(entry.cacheKey)) {
-        registry.set(entry.cacheKey, entry.module);
-      }
-    }
+    this.commitScratchEntries(scratch, registry);
 
     rootModule.evaluate().catch(noop);
 
@@ -995,6 +996,18 @@ export class EsmLoader {
     return hasEsmSyntax(
       this.transformCache.transform(pending.modulePath, undefined),
     );
+  }
+
+  private commitScratchEntries(
+    scratch: Map<string, ScratchEntry>,
+    registry: Map<string, JestModule>,
+  ): void {
+    for (const entry of scratch.values()) {
+      if (entry.kind === 'prelinked' && entry.excludeFromRegistry) continue;
+      if (!registry.has(entry.cacheKey)) {
+        registry.set(entry.cacheKey, entry.module);
+      }
+    }
   }
 
   // A module sits in the registry linked-but-unevaluated when an earlier walk
@@ -1720,14 +1733,21 @@ export class EsmLoader {
       initializeImportMeta,
     }) as VMModuleWithAsyncGraph;
 
+    // Only `require()` has to stop for top-level await. A `sync-preferred`
+    // walk keeps going: building, linking and instantiating a top-level-await
+    // graph are all synchronous, and only `evaluate()` has to be awaited - the
+    // `moduleHasAsyncGraph` check after `instantiate()` is where that walk
+    // hands the caller a `'linked'` module. Bailing here instead would send
+    // the graph down the legacy async path, where two concurrent `import()`s
+    // of modules that share a dependency both drive `link()` over it and the
+    // second one throws `can not be resolved on module ... that is not
+    // linked`.
     if (
+      mode === 'sync-required' &&
       typeof module.hasTopLevelAwait === 'function' &&
       module.hasTopLevelAwait()
     ) {
-      if (mode === 'sync-required') {
-        throw makeRequireAsyncError(identifier, 'top-level await');
-      }
-      return LOAD_ASYNC;
+      throw makeRequireAsyncError(identifier, 'top-level await');
     }
 
     // If we got here without `moduleRequests`, the capability gate is lying.
