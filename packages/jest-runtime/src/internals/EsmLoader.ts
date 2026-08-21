@@ -368,17 +368,18 @@ export class EsmLoader {
       );
     }
     if (!isRequireActual) {
+      const from = requiredFrom ?? modulePath;
       const {shouldMock, moduleID} = this.mockState.shouldMockEsmSync(
-        requiredFrom ?? modulePath,
+        from,
         modulePath,
       );
-      if (shouldMock && this.mockDecisionServable(moduleID)) {
+      if (
+        shouldMock &&
+        this.mockDecisionServable(moduleID) &&
+        !this.cjsUnmockBlocksGeneratedMock(from, modulePath, moduleID)
+      ) {
         return this.requireResultFromModule(
-          this.requireMockedEsmModule(
-            requiredFrom ?? modulePath,
-            modulePath,
-            moduleID,
-          ),
+          this.requireMockedEsmModule(from, modulePath, moduleID),
         ) as T;
       }
     }
@@ -1347,6 +1348,23 @@ export class EsmLoader {
     } catch {
       return specifierPath;
     }
+  }
+
+  // `jest.unmock`/`jest.deepUnmock` record their decision in the CJS map,
+  // and this require() entry consults the independent ESM map afterwards -
+  // without this check an automock decision would override unmock's
+  // documented guarantee that require() returns the real module. Registered
+  // `unstable_mockModule` factories still serve: unmocking those is
+  // `unstable_unmockModule`'s job.
+  private cjsUnmockBlocksGeneratedMock(
+    from: string,
+    modulePath: string,
+    moduleID: string,
+  ): boolean {
+    if (this.mockState.getEsmFactory(moduleID) !== undefined) return false;
+    return this.mockState.isExplicitlyUnmocked(
+      this.mockState.getCjsModuleId(from, modulePath),
+    );
   }
 
   private mockDecisionServable(moduleID: string): boolean {

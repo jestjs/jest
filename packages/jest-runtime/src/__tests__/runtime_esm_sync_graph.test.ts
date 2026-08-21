@@ -1866,6 +1866,40 @@ describe('Runtime sync ESM graph - automock', () => {
     },
   );
 
+  testWithSyncEsm(
+    'jest.unmock makes require() return the real module',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const {jest: jestObject} = runtime.requireModuleOrMock(
+        FROM,
+        '@jest/globals',
+      );
+      jestObject.unmock('./automock-dep.mjs');
+      const exports = runtime.requireModuleOrMock(FROM, './automock-dep.mjs');
+      expect(exports.greet()).toBe('real');
+    },
+  );
+
+  testWithSyncEsm(
+    'an unstable_mockModule factory survives a CJS jest.unmock',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const {jest: jestObject} = runtime.requireModuleOrMock(
+        FROM,
+        '@jest/globals',
+      );
+      jestObject.unstable_mockModule('./automock-dep.mjs', () => ({
+        greet: () => 'factory',
+      }));
+      jestObject.unmock('./automock-dep.mjs');
+      const exports = runtime.requireModuleOrMock(FROM, './automock-dep.mjs');
+      expect(exports.greet()).toBe('factory');
+    },
+  );
+
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,
