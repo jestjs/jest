@@ -513,8 +513,12 @@ export default class Runtime {
     ) {
       return;
     }
+    // Dispatch through the public seam so subclasses that override
+    // `requireModule` see builtin loads from `getBuiltinModule` too.
     sandboxProcess.getBuiltinModule = (id: string) =>
-      nativeModule.isBuiltin(id) ? this.coreModule.require(id) : undefined;
+      nativeModule.isBuiltin(id)
+        ? this.requireModule(this._testPath, id)
+        : undefined;
   }
 
   private _servesMockThroughEsm(from: string, moduleName: string): boolean {
