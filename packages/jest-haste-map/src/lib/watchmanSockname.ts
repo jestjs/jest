@@ -7,6 +7,7 @@
 
 import {execFile} from 'node:child_process';
 import * as net from 'node:net';
+import * as os from 'node:os';
 import * as path from 'node:path';
 import {promisify} from 'node:util';
 import type * as watchman from 'fb-watchman';
@@ -32,8 +33,20 @@ const BROKEN: WatchmanAvailability = {installed: true, sockname: undefined};
 // answering, which is the `BROKEN` case.
 const SPAWN_FAILURE_CODES = new Set(['EACCES', 'ENOENT', 'ENOTDIR', 'EPERM']);
 
+// Connecting to a live local socket takes well under a millisecond, but a
+// socket whose listener is stopped or whose backlog is full accepts neither
+// outcome, and there is no default timeout. Without a bound the probe would
+// hang startup before a single test runs.
+const CONNECT_PROBE_TIMEOUT = 1000;
+
 let availabilityPromise: Promise<WatchmanAvailability> | undefined;
 
+/**
+ * Resolved once per process, not once per `cacheDirectory`: the socket path is
+ * a property of the machine and the user, not of any one project. With
+ * per-project cache directories the first caller therefore decides where the
+ * entry is written, and later callers reuse the resolved value.
+ */
 export function getWatchmanAvailability(
   cacheDirectory: string,
 ): Promise<WatchmanAvailability> {
@@ -117,6 +130,20 @@ function isSpawnFailure(error: Error): boolean {
   return code !== undefined && SPAWN_FAILURE_CODES.has(code);
 }
 
+function currentUserKey(): string {
+  const uid = process.getuid?.();
+  if (uid !== undefined) {
+    return String(uid);
+  }
+  try {
+    // Windows has no uid. `userInfo` throws when the account has no entry to
+    // look up, which a container running as an unmapped user can produce.
+    return os.userInfo().username.replaceAll(/\W/g, '-');
+  } catch {
+    return 'default';
+  }
+}
+
 function socknameCacheFilePath(cacheDirectory: string): string {
   // The socket path is per-user, so two users sharing a cache directory need
   // separate entries. The name stays predictable, which means a local user can
@@ -124,8 +151,10 @@ function socknameCacheFilePath(cacheDirectory: string): string {
   // exposure every other file in this directory already has, since the cache
   // is written with plain `readFileSync`/`writeFileSync` too. Hardening one
   // file in isolation would not buy anything; it needs `CacheManager` as well.
-  const userSuffix = process.getuid?.() ?? 'default';
-  return path.join(cacheDirectory, `haste-map-watchman-sockname-${userSuffix}`);
+  return path.join(
+    cacheDirectory,
+    `haste-map-watchman-sockname-${currentUserKey()}`,
+  );
 }
 
 function readCachedSockname(cacheFilePath: string): string | undefined {
@@ -163,6 +192,10 @@ function canConnect(sockname: string): Promise<boolean> {
     const socket = net.createConnection(sockname, () => {
       socket.destroy();
       resolve(true);
+    });
+    socket.setTimeout(CONNECT_PROBE_TIMEOUT, () => {
+      socket.destroy();
+      resolve(false);
     });
     socket.once('error', () => {
       socket.destroy();

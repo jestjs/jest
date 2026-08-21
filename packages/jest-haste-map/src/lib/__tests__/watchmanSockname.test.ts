@@ -8,10 +8,22 @@
 import {execFile} from 'node:child_process';
 import {EventEmitter} from 'node:events';
 import * as net from 'node:net';
+import * as path from 'node:path';
 import * as fs from 'graceful-fs';
 
 jest.mock('node:child_process');
 jest.mock('node:net');
+// The factory reruns per isolated registry, so the override has to live in
+// this module's scope rather than in a spy on the imported binding.
+let mockUsername: string | undefined;
+jest.mock('node:os', () => {
+  const actual = jest.requireActual<typeof import('node:os')>('node:os');
+  return {
+    ...actual,
+    userInfo: () =>
+      mockUsername === undefined ? actual.userInfo() : {username: mockUsername},
+  };
+});
 jest.mock('graceful-fs', () => ({
   readFileSync: jest.fn(),
   rmSync: jest.fn(),
@@ -36,18 +48,33 @@ function loadModule(): WatchmanSocknameModule {
   return module;
 }
 
-type FakeSocket = EventEmitter & {destroy: jest.Mock};
+type FakeSocket = EventEmitter & {
+  destroy: jest.Mock;
+  setTimeout: jest.Mock<(delay: number, listener: () => void) => void>;
+  fireTimeout(): void;
+};
 
-function mockSocketConnection(connects: boolean): FakeSocket {
-  const socket = Object.assign(new EventEmitter(), {destroy: jest.fn()});
+type ConnectOutcome = 'connects' | 'errors' | 'hangs';
+
+function mockSocketConnection(outcome: ConnectOutcome): FakeSocket {
+  let onTimeout: (() => void) | undefined;
+  const socket: FakeSocket = Object.assign(new EventEmitter(), {
+    destroy: jest.fn(),
+    fireTimeout() {
+      onTimeout?.();
+    },
+    setTimeout: jest.fn((_delay: number, listener: () => void) => {
+      onTimeout = listener;
+    }),
+  });
   mockCreateConnection.mockImplementation(((
     _sockname: string,
     onConnect?: () => void,
   ) => {
     process.nextTick(() => {
-      if (connects) {
+      if (outcome === 'connects') {
         onConnect?.();
-      } else {
+      } else if (outcome === 'errors') {
         socket.emit('error', new Error('ECONNREFUSED'));
       }
     });
@@ -116,7 +143,7 @@ describe('getWatchmanAvailability', () => {
 
   it('uses a cached sockname that accepts connections, without spawning', async () => {
     mockReadFileSync.mockReturnValue('/cached/sock\n');
-    const socket = mockSocketConnection(true);
+    const socket = mockSocketConnection('connects');
     const {getWatchmanAvailability} = loadModule();
 
     expect(await getWatchmanAvailability('/cache')).toEqual({
@@ -134,7 +161,7 @@ describe('getWatchmanAvailability', () => {
 
   it('replaces a stale cached sockname by running get-sockname once', async () => {
     mockReadFileSync.mockReturnValue('/stale/sock');
-    mockSocketConnection(false);
+    mockSocketConnection('errors');
     mockGetSocknameResult(JSON.stringify({sockname: '/fresh/sock'}));
     const {getWatchmanAvailability} = loadModule();
 
@@ -202,9 +229,48 @@ describe('getWatchmanAvailability', () => {
     });
   });
 
+  it('gives up on a cached sockname whose connection never settles', async () => {
+    mockReadFileSync.mockReturnValue('/hanging/sock');
+    const socket = mockSocketConnection('hangs');
+    mockGetSocknameResult(JSON.stringify({sockname: '/fresh/sock'}));
+    const {getWatchmanAvailability} = loadModule();
+
+    const availability = getWatchmanAvailability('/cache');
+    await Promise.resolve();
+    expect(socket.setTimeout).toHaveBeenCalledWith(1000, expect.any(Function));
+    socket.fireTimeout();
+
+    expect(await availability).toEqual({
+      installed: true,
+      sockname: '/fresh/sock',
+    });
+    expect(socket.destroy).toHaveBeenCalled();
+  });
+
+  it('separates cache entries per user when the platform has no uid', async () => {
+    const getuid = process.getuid;
+    // Windows has no `process.getuid`; the username stands in for it.
+    delete (process as {getuid?: unknown}).getuid;
+    mockUsername = 'some user';
+    mockGetSocknameResult(JSON.stringify({sockname: '/fresh/sock'}));
+
+    try {
+      const {getWatchmanAvailability} = loadModule();
+      await getWatchmanAvailability('/cache');
+    } finally {
+      mockUsername = undefined;
+      (process as {getuid?: unknown}).getuid = getuid;
+    }
+
+    expect(mockWriteFileSync).toHaveBeenCalledWith(
+      path.join('/cache', 'haste-map-watchman-sockname-some-user'),
+      '/fresh/sock',
+    );
+  });
+
   it('removes a stale cache entry when get-sockname fails', async () => {
     mockReadFileSync.mockReturnValue('/stale/sock');
-    mockSocketConnection(false);
+    mockSocketConnection('errors');
     mockGetSocknameFailure(Object.assign(new Error('exit 1'), {code: 1}));
     const {getWatchmanAvailability} = loadModule();
 
@@ -217,7 +283,7 @@ describe('getWatchmanAvailability', () => {
 
   it('resolves availability when a stale cache entry cannot be removed', async () => {
     mockReadFileSync.mockReturnValue('/stale/sock');
-    mockSocketConnection(false);
+    mockSocketConnection('errors');
     mockRmSync.mockImplementation(() => {
       throw Object.assign(new Error('EACCES'), {code: 'EACCES'});
     });
@@ -232,7 +298,7 @@ describe('getWatchmanAvailability', () => {
 
   it('reports availability when a stale cache entry cannot be removed and get-sockname fails', async () => {
     mockReadFileSync.mockReturnValue('/stale/sock');
-    mockSocketConnection(false);
+    mockSocketConnection('errors');
     mockRmSync.mockImplementation(() => {
       throw Object.assign(new Error('EACCES'), {code: 'EACCES'});
     });
