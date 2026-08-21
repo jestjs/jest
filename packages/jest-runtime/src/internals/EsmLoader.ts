@@ -75,6 +75,16 @@ type WorklistEntry = {
   modulePath: string;
 };
 
+// A CJS dep discovered during resolution. Building its synthetic executes the
+// CJS body (the export-name merge needs the runtime exports object), so builds
+// wait until the whole graph has resolved - Node reports resolution and
+// import-attribute errors before executing anything.
+type PendingCjsBuild = {
+  cacheKey: string;
+  modulePath: string;
+  referencingIdentifier: string;
+};
+
 type ResolvedSyncSpecifier = {
   cacheKey: string;
   enqueue: WorklistEntry | null;
@@ -826,7 +836,44 @@ export class EsmLoader {
     context: VMContext;
     mode: SyncEsmMode;
   }): ESModule | LoadAsync {
-    while (worklist.length > 0) {
+    // CJS deps build only once the worklist has drained, so every resolution
+    // and import-attribute error in the graph surfaces before any CJS body
+    // executes - as in Node, where a graph that fails to resolve runs
+    // nothing. A build whose file turns out to hold unmarked ESM syntax
+    // re-enters the worklist, which can in turn discover more CJS deps.
+    // Node evaluates these bodies interleaved with the ESM bodies in
+    // post-order; here they run in discovery order before the ESM bodies -
+    // see the divergences list in docs/ECMAScriptModules.md.
+    const pendingCjsBuilds: Array<PendingCjsBuild> = [];
+    while (worklist.length > 0 || pendingCjsBuilds.length > 0) {
+      if (worklist.length === 0) {
+        const pending = pendingCjsBuilds.shift()!;
+        try {
+          const committed = this.tryCommitSynthetic(
+            pending.cacheKey,
+            registry,
+            scratch,
+            () =>
+              this.buildCjsAsEsmSyntheticModule(
+                pending.referencingIdentifier,
+                pending.modulePath,
+                context,
+              ),
+          );
+          if (!committed) return LOAD_ASYNC;
+        } catch (error) {
+          if (!(error instanceof CjsParseError)) throw error;
+          if (this.resolution.isExplicitlyCommonjs(pending.modulePath)) {
+            throw error.cause;
+          }
+          // ESM syntax without an ESM marker - load as a source module.
+          worklist.push({
+            cacheKey: pending.cacheKey,
+            modulePath: pending.modulePath,
+          });
+        }
+        continue;
+      }
       const {cacheKey, modulePath} = worklist.pop()!;
       activeWalk.add(cacheKey);
       if (scratch.has(cacheKey)) continue;
@@ -871,6 +918,7 @@ export class EsmLoader {
           cacheKey,
           context,
           mode,
+          pendingCjsBuilds,
           registry,
           scratch,
           specifier: modulePath,
@@ -888,6 +936,7 @@ export class EsmLoader {
           context,
           identifier: modulePath,
           mode,
+          pendingCjsBuilds,
           registry,
           scratch,
           worklist,
@@ -950,6 +999,7 @@ export class EsmLoader {
             this.jestGlobals.jestObjectFor(modulePath);
         },
         mode,
+        pendingCjsBuilds,
         registry,
         scratch,
         worklist,
@@ -1075,30 +1125,42 @@ export class EsmLoader {
     return context;
   }
 
+  // Adopts a live entry under `cacheKey` into the local scratch. `'bail'`
+  // means the registry holds something the caller can't use synchronously: a
+  // mid-flight Promise from the legacy async path, or a module still being
+  // linked (legacy can stash an `'unlinked'` SourceTextModule here while
+  // link/evaluate runs).
+  private adoptRegistryEntry(
+    cacheKey: string,
+    registry: ModuleRegistry | Map<string, JestModule>,
+    scratch: Map<string, ScratchEntry>,
+  ): 'adopted' | 'bail' | 'absent' {
+    if (scratch.has(cacheKey)) return 'adopted';
+    const fromRegistry = registry.get(cacheKey);
+    if (fromRegistry === undefined) return 'absent';
+    if (fromRegistry instanceof Promise) return 'bail';
+    const cached = fromRegistry as VMModuleWithAsyncGraph;
+    if (cached.status === 'errored') throw cached.error;
+    if (cached.status !== 'evaluated' && cached.status !== 'linked') {
+      return 'bail';
+    }
+    scratch.set(cacheKey, {cacheKey, kind: 'prelinked', module: cached});
+    return 'adopted';
+  }
+
   // Commits (or reuses) a synthetic-module entry under `cacheKey` in both the
-  // local scratch and the long-lived registry. Returns `false` when the
-  // registry holds something the caller must bail on: a mid-flight Promise
-  // from the legacy async path, or a module still being linked (legacy can
-  // stash an `'unlinked'` SourceTextModule here while link/evaluate runs).
+  // local scratch and the long-lived registry.
   private tryCommitSynthetic(
     cacheKey: string,
     registry: ModuleRegistry | Map<string, JestModule>,
     scratch: Map<string, ScratchEntry>,
     build: () => VMModuleWithAsyncGraph,
   ): boolean {
-    if (scratch.has(cacheKey)) return true;
-    const fromRegistry = registry.get(cacheKey);
-    if (fromRegistry instanceof Promise) return false;
-    if (fromRegistry) {
-      const cached = fromRegistry as VMModule;
-      if (cached.status === 'errored') throw cached.error;
-      if (cached.status !== 'evaluated' && cached.status !== 'linked') {
-        return false;
-      }
-    }
-    const module =
-      (fromRegistry as VMModuleWithAsyncGraph | undefined) ?? build();
-    if (!fromRegistry) registry.set(cacheKey, module);
+    const adoption = this.adoptRegistryEntry(cacheKey, registry, scratch);
+    if (adoption === 'bail') return false;
+    if (adoption === 'adopted') return true;
+    const module = build();
+    registry.set(cacheKey, module);
     scratch.set(cacheKey, {cacheKey, kind: 'prelinked', module});
     return true;
   }
@@ -1129,6 +1191,7 @@ export class EsmLoader {
     scratch: Map<string, ScratchEntry>,
     registry: ModuleRegistry | Map<string, JestModule>,
     mode: SyncEsmMode,
+    pendingCjsBuilds: Array<PendingCjsBuild>,
   ): ResolvedSyncSpecifier | LoadAsync {
     if (specifier === '@jest/globals') {
       const cacheKey = `@jest/globals/${referencingIdentifier}`;
@@ -1190,16 +1253,15 @@ export class EsmLoader {
       };
     }
 
-    let resolved: string;
-    try {
-      resolved = this.resolution.resolveEsm(
-        referencingIdentifier,
-        specifierPath,
-      );
-    } catch (error) {
-      if (mode === 'sync-required') throw error;
-      return LOAD_ASYNC;
-    }
+    // Both walker entries gate on `canResolveSync()`, so the sync resolver's
+    // failure is authoritative in either mode - the async resolver runs the
+    // same algorithm. Bailing to the legacy path instead would execute
+    // already-resolved CJS deps before rediscovering the same error, where
+    // Node runs nothing when the graph fails to resolve.
+    const resolved = this.resolution.resolveEsm(
+      referencingIdentifier,
+      specifierPath,
+    );
 
     const cacheKey = fileCacheKey(resolved, suffix);
     if (
@@ -1213,22 +1275,16 @@ export class EsmLoader {
       !isWasm(resolved) &&
       !this.shouldLoadAsEsm(resolved)
     ) {
-      try {
-        const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () =>
-          this.buildCjsAsEsmSyntheticModule(
-            referencingIdentifier,
-            resolved,
-            context,
-          ),
-        );
-        return ok
-          ? {cacheKey, enqueue: null, modulePath: resolved}
-          : LOAD_ASYNC;
-      } catch (error) {
-        if (!(error instanceof CjsParseError)) throw error;
-        if (this.resolution.isExplicitlyCommonjs(resolved)) throw error.cause;
-        // File has ESM syntax but no ESM marker — fall through to the enqueue path.
+      const adoption = this.adoptRegistryEntry(cacheKey, registry, scratch);
+      if (adoption === 'bail') return LOAD_ASYNC;
+      if (adoption === 'absent') {
+        pendingCjsBuilds.push({
+          cacheKey,
+          modulePath: resolved,
+          referencingIdentifier,
+        });
       }
+      return {cacheKey, enqueue: null, modulePath: resolved};
     }
 
     return {
@@ -1452,6 +1508,7 @@ export class EsmLoader {
     context,
     identifier,
     mode,
+    pendingCjsBuilds,
     registry,
     scratch,
     worklist,
@@ -1461,6 +1518,7 @@ export class EsmLoader {
     context: VMContext;
     identifier: string;
     mode: SyncEsmMode;
+    pendingCjsBuilds: Array<PendingCjsBuild>;
     registry: ModuleRegistry | Map<string, JestModule>;
     scratch: Map<string, ScratchEntry>;
     worklist: Array<WorklistEntry>;
@@ -1477,6 +1535,7 @@ export class EsmLoader {
         scratch,
         registry,
         mode,
+        pendingCjsBuilds,
       );
       if (resolved === LOAD_ASYNC) return LOAD_ASYNC;
       moduleSpecToCacheKey.set(depSpec, resolved.cacheKey);
@@ -1524,6 +1583,7 @@ export class EsmLoader {
     cacheKey,
     context,
     mode,
+    pendingCjsBuilds,
     registry,
     scratch,
     specifier,
@@ -1532,6 +1592,7 @@ export class EsmLoader {
     cacheKey: string;
     context: VMContext;
     mode: SyncEsmMode;
+    pendingCjsBuilds: Array<PendingCjsBuild>;
     registry: ModuleRegistry | Map<string, JestModule>;
     scratch: Map<string, ScratchEntry>;
     specifier: string;
@@ -1546,6 +1607,7 @@ export class EsmLoader {
         context,
         identifier: specifier,
         mode,
+        pendingCjsBuilds,
         registry,
         scratch,
         worklist,
@@ -1574,6 +1636,7 @@ export class EsmLoader {
           this.jestGlobals.jestObjectFor(specifier);
       },
       mode,
+      pendingCjsBuilds,
       registry,
       scratch,
       worklist,
@@ -1590,6 +1653,7 @@ export class EsmLoader {
     identifier,
     initializeImportMeta,
     mode,
+    pendingCjsBuilds,
     registry,
     scratch,
     worklist,
@@ -1600,6 +1664,7 @@ export class EsmLoader {
     identifier: string;
     initializeImportMeta: (meta: ImportMeta) => void;
     mode: SyncEsmMode;
+    pendingCjsBuilds: Array<PendingCjsBuild>;
     registry: ModuleRegistry | Map<string, JestModule>;
     scratch: Map<string, ScratchEntry>;
     worklist: Array<WorklistEntry>;
@@ -1635,6 +1700,7 @@ export class EsmLoader {
         scratch,
         registry,
         mode,
+        pendingCjsBuilds,
       );
       if (resolved === LOAD_ASYNC) return LOAD_ASYNC;
       validateImportAttributes(resolved.modulePath, attributes, identifier);

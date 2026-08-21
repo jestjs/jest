@@ -1653,3 +1653,45 @@ describe('Runtime sync ESM graph - automock', () => {
     },
   );
 });
+
+describe('Runtime sync ESM graph - link-time errors before CJS execution', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithSyncEsm(
+    'a sibling resolution error surfaces before any CJS dep executes',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-cjs-then-missing.mjs'),
+      ).rejects.toThrow("Cannot find module './does-not-exist.js'");
+      expect(runtime._environment.global.__cjsSideEffectRan).toBeUndefined();
+    },
+  );
+
+  testWithSyncEsm(
+    'an invalid import attribute surfaces before the CJS dep executes',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-cjs-bad-attribute.mjs'),
+      ).rejects.toThrow('is not of type "json"');
+      expect(runtime._environment.global.__cjsSideEffectRan).toBeUndefined();
+    },
+  );
+
+  testWithSyncEsm(
+    'require() of the same graphs fails without executing the CJS dep',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      expect(() =>
+        runtime.requireModule(FROM, './import-cjs-then-missing.mjs'),
+      ).toThrow("Cannot find module './does-not-exist.js'");
+      expect(() =>
+        runtime.requireModule(FROM, './import-cjs-bad-attribute.mjs'),
+      ).toThrow('is not of type "json"');
+      expect(runtime._environment.global.__cjsSideEffectRan).toBeUndefined();
+    },
+  );
+});
