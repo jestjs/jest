@@ -339,6 +339,7 @@ export class MockState {
     factory: () => Promise<unknown> | unknown,
     options?: {virtual?: boolean},
   ): void {
+    moduleName = canonicalizeDataUri(moduleName);
     if (options?.virtual) {
       const mockPath = this.resolution.getModulePath(from, moduleName);
       this.virtualEsmMocks.set(mockPath, true);
@@ -398,6 +399,7 @@ export class MockState {
   }
 
   unmockEsm(from: string, moduleName: string): void {
+    moduleName = canonicalizeDataUri(moduleName);
     const moduleID = this.resolution.getEsmModuleId(
       this.virtualEsmMocks,
       from,

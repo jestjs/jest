@@ -1936,6 +1936,27 @@ describe('Runtime sync ESM graph - automock', () => {
       expect(first.mocked).toBe(second.mocked);
     },
   );
+  testWithSyncEsm(
+    'a factory registered under a non-canonical data: spelling serves',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const {jest: jestObject} = runtime.requireModuleOrMock(
+        FROM,
+        '@jest/globals',
+      );
+      const fixture = runtime.requireModule(
+        FROM,
+        './dynamic-imports-data-uri-tab.cjs',
+      );
+      jestObject.unstable_mockModule(fixture.uri, () => ({
+        mocked: () => 'factory',
+      }));
+      const namespace = await fixture.load();
+      expect(namespace.mocked()).toBe('factory');
+    },
+  );
+
+
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,
