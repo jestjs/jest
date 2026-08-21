@@ -169,27 +169,48 @@ const indent = (
     .join('\n');
 };
 
-const generate = (
-  require(
-    require.resolve('@babel/generator', {
+// Loading babel costs well over a hundred modules, and only writing inline
+// snapshots needs it, so defer it until the first snapshot is processed.
+function loadBabel() {
+  const generate = (
+    require(
+      require.resolve('@babel/generator', {
+        [Symbol.for('jest-resolve-outside-vm-option')]: true,
+      }),
+    ) as typeof import('@babel/generator')
+  ).default;
+
+  const {parseSync, types} = require(
+    require.resolve('@babel/core', {
       [Symbol.for('jest-resolve-outside-vm-option')]: true,
     }),
-  ) as typeof import('@babel/generator')
-).default;
+  ) as typeof import('@babel/core');
 
-const {parseSync, types} = require(
-  require.resolve('@babel/core', {
-    [Symbol.for('jest-resolve-outside-vm-option')]: true,
-  }),
-) as typeof import('@babel/core');
+  const {
+    isAwaitExpression,
+    templateElement,
+    templateLiteral,
+    traverseFast,
+    traverse,
+  } = types;
 
-const {
-  isAwaitExpression,
-  templateElement,
-  templateLiteral,
-  traverseFast,
-  traverse,
-} = types;
+  return {
+    generate,
+    isAwaitExpression,
+    parseSync,
+    templateElement,
+    templateLiteral,
+    traverse,
+    traverseFast,
+  };
+}
+
+let babel: ReturnType<typeof loadBabel> | undefined;
+
+function getBabel() {
+  babel ??= loadBabel();
+  return babel;
+}
 
 export const processInlineSnapshotsWithBabel = (
   snapshots: Array<InlineSnapshot>,
@@ -200,6 +221,7 @@ export const processInlineSnapshotsWithBabel = (
   sourceFile: string;
   sourceFileWithSnapshots: string;
 } => {
+  const {generate, parseSync} = getBabel();
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
   // TypeScript projects may not have a babel config; make sure they can be parsed anyway.
@@ -291,6 +313,8 @@ export const processPrettierAst = (
   snapshotMatcherNames: Array<string>,
   keepNode?: boolean,
 ): void => {
+  const {isAwaitExpression, templateElement, templateLiteral, traverse} =
+    getBabel();
   traverse(ast, (node: Node, ancestors: TraversalAncestors) => {
     if (node.type !== 'CallExpression') return;
 
@@ -377,6 +401,7 @@ const traverseAst = (
   ast: File | Program,
   snapshotMatcherNames: Array<string>,
 ) => {
+  const {templateElement, templateLiteral, traverseFast} = getBabel();
   const groupedSnapshots = groupSnapshotsByFrame(snapshots);
   const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
 
