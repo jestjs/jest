@@ -1131,6 +1131,13 @@ export class EsmLoader {
       specifierPath,
     );
     if (shouldMock && this.mockDecisionServable(moduleID)) {
+      // Import-attribute validation runs against the returned module path -
+      // an extensionless or bare specifier of a JSON module must still
+      // validate as JSON, so hand back the resolved target where one exists.
+      const validationPath = this.resolveMockTargetForValidation(
+        referencingIdentifier,
+        specifierPath,
+      );
       if (
         this.registries.getModuleMock(moduleID) !== undefined ||
         this.mockState.getEsmFactory(moduleID) !== undefined
@@ -1147,7 +1154,7 @@ export class EsmLoader {
         return {
           cacheKey: mocked.cacheKey,
           enqueue: null,
-          modulePath: specifierPath,
+          modulePath: validationPath,
         };
       }
       // Factory-less decision: generation executes the real module for its
@@ -1158,7 +1165,7 @@ export class EsmLoader {
         moduleID,
         specifierPath,
       });
-      return {cacheKey: moduleID, enqueue: null, modulePath: specifierPath};
+      return {cacheKey: moduleID, enqueue: null, modulePath: validationPath};
     }
 
     if (specifierPath.startsWith('data:')) {
@@ -1330,6 +1337,20 @@ export class EsmLoader {
   // and fails with "does not provide an export". Loading the real module
   // instead keeps the metadata faithful; the dep's own mock generates at its
   // own import edges.
+  // Mock decisions can rest on names that never resolve (root manual mocks,
+  // virtual modules), so a failed resolution keeps the raw specifier.
+  private resolveMockTargetForValidation(
+    from: string,
+    specifierPath: string,
+  ): string {
+    if (specifierPath.startsWith('data:')) return specifierPath;
+    try {
+      return this.resolution.resolveEsm(from, specifierPath);
+    } catch {
+      return specifierPath;
+    }
+  }
+
   private mockDecisionServable(moduleID: string): boolean {
     return (
       this.generatingMockDepth === 0 ||
@@ -1469,8 +1490,11 @@ export class EsmLoader {
       modulePath,
       generated,
     );
+    // The resolved path is the identifier: the legacy dynamic-import path
+    // validates import attributes against it, so a JSON target reached
+    // through an extensionless specifier must read as a .json module.
     return syntheticFromExports(
-      moduleName,
+      modulePath,
       context,
       mockRecord as Record<string, unknown>,
     );

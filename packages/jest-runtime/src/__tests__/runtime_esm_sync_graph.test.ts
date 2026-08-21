@@ -1790,6 +1790,39 @@ describe('Runtime sync ESM graph - automock', () => {
     expect(namespace.mocked._isMockFunction).toBe(true);
     expect(namespace.value).toBe(7);
   });
+  testWithSyncEsm(
+    'validates JSON attributes against the resolved automock target',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        moduleFileExtensions: ['js', 'mjs', 'cjs', 'json'],
+        rootDir: ROOT_DIR,
+      });
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-automock-json-extensionless.mjs',
+      )) as any;
+      expect(m.namespace.data.answer).toBe(42);
+    },
+  );
+
+  testWithSyncEsm(
+    'validates JSON attributes for a dynamically imported automock target',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        moduleFileExtensions: ['js', 'mjs', 'cjs', 'json'],
+        rootDir: ROOT_DIR,
+      });
+      const loadJson = runtime.requireModule(
+        FROM,
+        './dynamic-imports-automock-json.cjs',
+      );
+      const namespace = await loadJson();
+      expect(namespace.default.answer).toBe(42);
+    },
+  );
+
   testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,
