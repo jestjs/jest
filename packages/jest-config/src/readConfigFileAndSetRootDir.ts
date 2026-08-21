@@ -6,6 +6,7 @@
  */
 
 import * as path from 'node:path';
+import {type Loader, defaultLoaders} from 'cosmiconfig';
 import * as fs from 'graceful-fs';
 import parseJson from 'parse-json';
 import stripJsonComments from 'strip-json-comments';
@@ -17,28 +18,133 @@ import {
   JEST_CONFIG_EXT_JSON,
   JEST_CONFIG_EXT_MTS,
   JEST_CONFIG_EXT_TS,
+  JEST_CONFIG_SEARCH_PLACES,
   PACKAGE_JSON,
 } from './constants';
+import createConfigExplorer from './createConfigExplorer';
 
 interface TsLoader {
   enabled: (bool: boolean) => void;
 }
 type TsLoaderModule = 'ts-node' | 'esbuild-register';
-// Read the configuration and set its `rootDir`
-// 1. If it's a `package.json` file, we look into its "jest" property
-// 2. If it's a `jest.config.ts`/`jest.config.cts`/`jest.config.mts` file,
-//    we use native TypeScript support when possible, otherwise a TS loader.
-// 3. For any other file, we just require it. If we receive an 'ERR_REQUIRE_ESM'
-//    from node, perform a dynamic import instead.
-export default async function readConfigFileAndSetRootDir(
+
+const CONFIG_RESULT = Symbol('CONFIG_RESULT');
+
+const wrapConfig = (config: Config.InitialOptions) => ({
+  [CONFIG_RESULT]: config,
+});
+
+const wrapConfigForExplorer = (
+  filepath: string,
+  config: Config.InitialOptions,
+) => {
+  const wrappedConfig = wrapConfig(config);
+  return path.basename(filepath, path.extname(filepath)) === 'package'
+    ? {jest: wrappedConfig}
+    : wrappedConfig;
+};
+
+const isExtensionlessRcConfig = (configPath: string): boolean => {
+  const filename = path.basename(configPath).toLowerCase();
+  return (
+    filename === '.jestrc' ||
+    (filename === 'jestrc' &&
+      path.basename(path.dirname(configPath)).toLowerCase() === '.config')
+  );
+};
+
+const isStructuredConfig = (configPath: string): boolean => {
+  const extension = path.extname(configPath).toLowerCase();
+  return (
+    extension === '.yaml' ||
+    extension === '.yml' ||
+    isExtensionlessRcConfig(configPath)
+  );
+};
+
+const jestConfigLoader: Loader = async filepath =>
+  wrapConfigForExplorer(filepath, await readConfigFileAndSetRootDir(filepath));
+
+const createStructuredConfigLoader =
+  (loader: Loader): Loader =>
+  async (filepath, content) => {
+    const config = await loader(filepath, content);
+    return wrapConfigForExplorer(
+      filepath,
+      await setRootDir(config ?? {}, filepath),
+    );
+  };
+
+const yamlConfigLoader = createStructuredConfigLoader(defaultLoaders['.yaml']);
+const ymlConfigLoader = createStructuredConfigLoader(defaultLoaders['.yml']);
+
+const extensionlessConfigLoader: Loader = (filepath, content) =>
+  isExtensionlessRcConfig(filepath)
+    ? createStructuredConfigLoader(defaultLoaders.noExt)(filepath, content)
+    : jestConfigLoader(filepath, content);
+
+const defaultConfigLoader: Loader = (filepath, content) => {
+  const extension = path.extname(filepath).toLowerCase();
+  if (extension === '.yaml') {
+    return yamlConfigLoader(filepath, content);
+  }
+  if (extension === '.yml') {
+    return ymlConfigLoader(filepath, content);
+  }
+  return jestConfigLoader(filepath, content);
+};
+
+const configLoaders = {
+  '.cjs': jestConfigLoader,
+  '.cts': jestConfigLoader,
+  '.js': jestConfigLoader,
+  '.json': jestConfigLoader,
+  '.mjs': jestConfigLoader,
+  '.mts': jestConfigLoader,
+  '.ts': jestConfigLoader,
+  '.yaml': yamlConfigLoader,
+  '.yml': ymlConfigLoader,
+  default: defaultConfigLoader,
+  noExt: extensionlessConfigLoader,
+};
+
+export default async function loadConfigFileWithCosmiconfig(
   configPath: string,
 ): Promise<Config.InitialOptions> {
+  const explorer = createConfigExplorer(
+    [...JEST_CONFIG_SEARCH_PLACES],
+    configLoaders,
+    false,
+  );
+  const result = await explorer.load(configPath);
+
+  if (result?.isEmpty && isStructuredConfig(configPath)) {
+    return setRootDir({}, configPath);
+  }
+
+  if (result?.isEmpty) {
+    return readConfigFileAndSetRootDir(configPath);
+  }
+
+  const config = result?.config?.[CONFIG_RESULT];
+
+  if (!config) {
+    throw new Error(`Jest: Failed to load config file ${configPath}`);
+  }
+
+  return config;
+}
+
+async function readConfigFileAndSetRootDir(
+  configPath: string,
+): Promise<Config.InitialOptions> {
+  const normalizedConfigPath = configPath.toLowerCase();
   const isTS =
-    configPath.endsWith(JEST_CONFIG_EXT_TS) ||
-    configPath.endsWith(JEST_CONFIG_EXT_MTS) ||
-    configPath.endsWith(JEST_CONFIG_EXT_CTS);
-  const isMTS = configPath.endsWith(JEST_CONFIG_EXT_MTS);
-  const isJSON = configPath.endsWith(JEST_CONFIG_EXT_JSON);
+    normalizedConfigPath.endsWith(JEST_CONFIG_EXT_TS) ||
+    normalizedConfigPath.endsWith(JEST_CONFIG_EXT_MTS) ||
+    normalizedConfigPath.endsWith(JEST_CONFIG_EXT_CTS);
+  const isMTS = normalizedConfigPath.endsWith(JEST_CONFIG_EXT_MTS);
+  const isJSON = normalizedConfigPath.endsWith(JEST_CONFIG_EXT_JSON);
   let configObject;
 
   try {
@@ -53,7 +159,7 @@ export default async function readConfigFileAndSetRootDir(
           if (isMTS) {
             // .mts is always ESM and cannot be loaded via require()/ts-node.
             throw new Error(
-              'jest.config.mts requires native TypeScript support. Ensure you are using Node.js 22.18+ or 23.6+.',
+              `${path.basename(configPath)} requires native TypeScript support. Ensure you are using Node.js 22.18+ or 23.6+.`,
               {cause: requireOrImportModuleError},
             );
           }
@@ -104,15 +210,29 @@ export default async function readConfigFileAndSetRootDir(
     throw error;
   }
 
-  if (configPath.endsWith(PACKAGE_JSON)) {
+  if (normalizedConfigPath.endsWith(PACKAGE_JSON.toLowerCase())) {
     // Event if there's no "jest" property in package.json we will still use
     // an empty object.
     configObject = configObject.jest || {};
   }
 
-  if (typeof configObject === 'function') {
-    configObject = await configObject();
+  return setRootDir(configObject, configPath);
+}
+
+const setRootDir = async (config: unknown, configPath: string) => {
+  const resolvedConfig = typeof config === 'function' ? await config() : config;
+
+  if (
+    typeof resolvedConfig !== 'object' ||
+    resolvedConfig === null ||
+    Array.isArray(resolvedConfig)
+  ) {
+    throw new Error(
+      `Jest: Failed to parse the configuration file ${configPath}. Configuration must be an object.`,
+    );
   }
+
+  let configObject = resolvedConfig as Config.InitialOptions;
 
   if (configObject.rootDir) {
     // We don't touch it if it has an absolute path specified
@@ -131,8 +251,8 @@ export default async function readConfigFileAndSetRootDir(
     };
   }
 
-  return configObject;
-}
+  return configObject as Config.InitialOptions;
+};
 
 // Load the TypeScript configuration
 let extraTSLoaderOptions: Record<string, unknown>;

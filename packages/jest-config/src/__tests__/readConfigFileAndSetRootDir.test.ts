@@ -6,12 +6,18 @@
  */
 
 import path from 'path';
+import * as fsPromises from 'fs/promises';
 import * as fs from 'graceful-fs';
 import {requireOrImportModule} from 'jest-util';
 import readConfigFileAndSetRootDir from '../readConfigFileAndSetRootDir';
 import {onNodeVersions} from '@jest/test-utils';
 
-jest.mock('graceful-fs').mock('jest-util');
+jest
+  .mock('fs/promises', () => ({
+    readFile: jest.fn(async () => 'config'),
+  }))
+  .mock('graceful-fs')
+  .mock('jest-util');
 
 describe('readConfigFileAndSetRootDir', () => {
   describe('TypeScript ESM file', () => {
@@ -95,6 +101,80 @@ describe('readConfigFileAndSetRootDir', () => {
 
       expect(config).toEqual({rootDir, testTimeout: 10_000});
     });
+
+    test('loads an arbitrary extensionless config as JavaScript', async () => {
+      jest.mocked(requireOrImportModule).mockResolvedValueOnce({notify: true});
+
+      const rootDir = path.resolve('some', 'path', 'to');
+      const config = await readConfigFileAndSetRootDir(
+        path.join(rootDir, 'jest-config'),
+      );
+
+      expect(config).toEqual({notify: true, rootDir});
+    });
+
+    test('loads a mixed-case extension accepted by the CLI', async () => {
+      jest.mocked(requireOrImportModule).mockResolvedValueOnce({notify: true});
+
+      const rootDir = path.resolve('some', 'path', 'to');
+      const config = await readConfigFileAndSetRootDir(
+        path.join(rootDir, 'jest.config.JS'),
+      );
+
+      expect(config).toEqual({notify: true, rootDir});
+    });
+
+    test('loads an explicit package.js as a JavaScript config', async () => {
+      jest.mocked(requireOrImportModule).mockResolvedValueOnce({notify: true});
+
+      const rootDir = path.resolve('some', 'path', 'to');
+      const config = await readConfigFileAndSetRootDir(
+        path.join(rootDir, 'package.js'),
+      );
+
+      expect(config).toEqual({notify: true, rootDir});
+    });
+
+    test('handles an empty config file', async () => {
+      jest.mocked(fsPromises.readFile).mockResolvedValueOnce('');
+      jest.mocked(requireOrImportModule).mockResolvedValueOnce({});
+
+      const rootDir = path.resolve('some', 'path', 'to');
+      const config = await readConfigFileAndSetRootDir(
+        path.join(rootDir, 'jest.config.cjs'),
+      );
+
+      expect(config).toEqual({rootDir});
+      expect(requireOrImportModule).toHaveBeenCalledWith(
+        path.join(rootDir, 'jest.config.cjs'),
+      );
+    });
+
+    test.each(['jest.config.mjs', 'jest.config.mts'])(
+      'loads an empty %s file with the existing module loader',
+      async filename => {
+        jest.mocked(fsPromises.readFile).mockResolvedValueOnce('');
+        jest.mocked(requireOrImportModule).mockResolvedValueOnce({});
+
+        const rootDir = path.resolve('some', 'path', 'to');
+        await expect(
+          readConfigFileAndSetRootDir(path.join(rootDir, filename)),
+        ).resolves.toEqual({rootDir});
+        expect(requireOrImportModule).toHaveBeenCalledWith(
+          path.join(rootDir, filename),
+        );
+      },
+    );
+
+    test('rejects a scalar configuration', async () => {
+      jest.mocked(requireOrImportModule).mockResolvedValueOnce('verbose');
+
+      await expect(
+        readConfigFileAndSetRootDir(
+          path.join(path.resolve('some', 'path', 'to'), 'jest.config.js'),
+        ),
+      ).rejects.toThrow('Configuration must be an object');
+    });
   });
 
   describe('JSON file', () => {
@@ -121,6 +201,92 @@ describe('readConfigFileAndSetRootDir', () => {
 
       expect(config).toEqual({bail: true, rootDir});
     });
+  });
+
+  describe('YAML and extensionless rc files', () => {
+    test.each([
+      'jest.config.yaml',
+      'jest.config.yml',
+      '.jestrc',
+      '.JESTRC',
+      '.config/jestrc',
+    ])('reads %s and sets `rootDir`', async filename => {
+      jest
+        .mocked(fsPromises.readFile)
+        .mockResolvedValueOnce('verbose: true\nrootDir: ./project');
+
+      const configDirectory = path.resolve('some', 'path', 'to');
+      const configPath = path.join(configDirectory, filename);
+      const config = await readConfigFileAndSetRootDir(configPath);
+
+      expect(config).toEqual({
+        rootDir: path.join(path.dirname(configPath), 'project'),
+        verbose: true,
+      });
+    });
+
+    test('reports malformed YAML', async () => {
+      jest
+        .mocked(fsPromises.readFile)
+        .mockResolvedValueOnce('rootDir: [unterminated');
+
+      await expect(
+        readConfigFileAndSetRootDir(
+          path.join(path.resolve('some', 'path'), 'jest.config.yaml'),
+        ),
+      ).rejects.toThrow('unexpected end of the stream');
+    });
+
+    test('rejects a scalar YAML configuration', async () => {
+      jest.mocked(fsPromises.readFile).mockResolvedValueOnce('verbose');
+
+      await expect(
+        readConfigFileAndSetRootDir(
+          path.join(path.resolve('some', 'path'), 'jest.config.yaml'),
+        ),
+      ).rejects.toThrow('Configuration must be an object');
+    });
+
+    test('loads an explicit package.yaml as a YAML config', async () => {
+      jest.mocked(fsPromises.readFile).mockResolvedValueOnce('verbose: true');
+
+      const rootDir = path.resolve('some', 'path', 'to');
+      const config = await readConfigFileAndSetRootDir(
+        path.join(rootDir, 'package.yaml'),
+      );
+
+      expect(config).toEqual({rootDir, verbose: true});
+    });
+
+    test.each(['jest.config.yaml', '.jestrc'])(
+      'handles an empty %s file',
+      async filename => {
+        jest.mocked(fsPromises.readFile).mockResolvedValueOnce('');
+
+        const rootDir = path.resolve('some', 'path', 'to');
+        const config = await readConfigFileAndSetRootDir(
+          path.join(rootDir, filename),
+        );
+
+        expect(config).toEqual({rootDir});
+      },
+    );
+
+    test.each(['jest.config.yaml', '.jestrc'])(
+      'handles a comment-only %s file',
+      async filename => {
+        jest
+          .mocked(fsPromises.readFile)
+          .mockResolvedValueOnce('# no configuration');
+
+        const rootDir = path.resolve('some', 'path', 'to');
+        const config = await readConfigFileAndSetRootDir(
+          path.join(rootDir, filename),
+        );
+
+        expect(config).toEqual({rootDir});
+      },
+    );
   });
 
   describe('package.json file', () => {

@@ -5,7 +5,16 @@ title: Configuring Jest
 
 The Jest philosophy is to work great by default, but sometimes you just need more configuration power.
 
-It is recommended to define the configuration in a dedicated JavaScript, TypeScript or JSON file. The file will be discovered automatically, if it is named `jest.config.js|ts|mjs|mts|cjs|cts|json`. You can use [`--config`](CLI.md#--configpath) flag to pass an explicit path to the file.
+It is recommended to define the configuration in a dedicated JavaScript, TypeScript, JSON, or YAML file. Jest automatically discovers these names, in this order:
+
+1. `jest.config.js|ts|mjs|mts|cjs|cts|json|yaml|yml`
+2. `.jestrc[.json|.yaml|.yml|.js|.ts|.mjs|.mts|.cjs|.cts]`
+3. `.config/jestrc[.json|.yaml|.yml|.js|.ts|.mjs|.mts|.cjs|.cts]`
+4. The `"jest"` key in `package.json`
+
+If more than one configuration exists in the same directory, Jest asks you to remove unused files or select one explicitly with the [`--config`](CLI.md#--configpath) flag. A `package.json` marks the project boundary even when it does not contain a `"jest"` key, so Jest does not inherit configuration from a parent package.
+
+Extensionless `.jestrc` and `.config/jestrc` files use YAML parsing, which also accepts JSON syntax. Unless `rootDir` is explicitly configured, Jest resolves it relative to the configuration file that was loaded; for example, a `.config/jestrc` file uses its `.config` directory.
 
 :::note
 
@@ -135,6 +144,13 @@ export default defineConfig(() =>
   "bail": 1,
   "verbose": true
 }
+```
+
+- YAML and extensionless rc files are also supported:
+
+```yaml title="jest.config.yaml"
+bail: 1
+verbose: true
 ```
 
 - Alternatively Jest's configuration can be defined through the `"jest"` key in the `package.json` of your project:
