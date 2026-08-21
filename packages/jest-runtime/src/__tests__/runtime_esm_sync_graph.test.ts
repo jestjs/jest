@@ -763,6 +763,23 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     expect(m.namespace.default).toEqual({key: 'bom-value'});
   });
 
+  testWithVmEsm(
+    'imports a JSON module through an async-only transformer',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transform: {
+          '\\.json$': path.join(ROOT_DIR, 'async-json-transformer.cjs'),
+        },
+      });
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './bom.json',
+      )) as any;
+      expect(m.namespace.default).toEqual({key: 'bom-value'});
+    },
+  );
+
   testWithSyncEsm('require()s an ESM file with a data: URI dep', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const ns = runtime.requireModule(FROM, './import-data-uri.mjs');

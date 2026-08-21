@@ -13,6 +13,7 @@ import {
   type Context as VMContext,
   type Module as VMModule,
 } from 'node:vm';
+import stripBOM from 'strip-bom';
 import type {JestEnvironment, JestImportMeta} from '@jest/environment';
 import {invariant, isPromise} from 'jest-util';
 import {noop} from '../helpers';
@@ -1636,14 +1637,21 @@ export class EsmLoader {
 
         let module: VMModule;
         if (modulePath.endsWith('.json')) {
-          module = this.buildJsonModule(
-            this.transformCache.transformJson(
-              modulePath,
-              ESM_TRANSFORM_OPTIONS,
-            ),
-            modulePath,
-            context,
-          );
+          // An async-only transformer matched to JSON cannot go through the
+          // sync `transformJson` - await the full transform like the pre-BOM
+          // code did and strip the BOM off its output instead.
+          const jsonSource = this.transformCache.canTransformSync(modulePath)
+            ? this.transformCache.transformJson(
+                modulePath,
+                ESM_TRANSFORM_OPTIONS,
+              )
+            : stripBOM(
+                await this.transformCache.transformAsync(
+                  modulePath,
+                  ESM_TRANSFORM_OPTIONS,
+                ),
+              );
+          module = this.buildJsonModule(jsonSource, modulePath, context);
         } else {
           const transformedCode = this.transformCache.canTransformSync(
             modulePath,
