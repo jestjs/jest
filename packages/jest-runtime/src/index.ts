@@ -7,7 +7,6 @@
 
 import nativeModule from 'node:module';
 import * as path from 'node:path';
-import {SourceTextModule} from 'node:vm';
 import slash from 'slash';
 import type {JestEnvironment} from '@jest/environment';
 import type {SourceMapRegistry} from '@jest/source-map';
@@ -62,8 +61,6 @@ const INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES = new Set(['chalk']);
 // framework see the same class instances.
 const FRAMEWORK_SINGLETON_MODULES = new Set(['@jest/expect', 'expect']);
 
-const esmIsAvailable = typeof SourceTextModule === 'function';
-
 type HasteMapOptions = {
   console?: Console;
   maxWorkers: number;
@@ -75,7 +72,7 @@ type HasteMapOptions = {
 
 const defaultTransformOptions: TransformOptions = {
   isInternalModule: false,
-  supportsDynamicImport: esmIsAvailable,
+  supportsDynamicImport: runtimeSupportsVmModules,
   supportsExportNamespaceFrom: false,
   supportsStaticESM: false,
   supportsTopLevelAwait: false,
