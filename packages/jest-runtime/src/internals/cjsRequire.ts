@@ -230,9 +230,11 @@ export class CoreModuleProvider {
     }
 
     const createRequire = (modulePath: string | URL) => {
+      // Node treats any string starting with `file://` as a URL - the parser
+      // normalizes a `localhost` authority away, so those spellings work too.
       const filename =
         typeof modulePath === 'string'
-          ? modulePath.startsWith('file:///')
+          ? modulePath.startsWith('file://')
             ? fileURLToPath(new URL(modulePath))
             : modulePath
           : fileURLToPath(modulePath);

@@ -357,6 +357,28 @@ describe('CoreModuleProvider', () => {
     expect(forFilename).toHaveBeenCalledWith(absolutePath);
   });
 
+  test('mocked Module.createRequire accepts a file: URL with a localhost authority', () => {
+    const requireBuilder = makeBuilder();
+    const forFilename: jest.SpiedFunction<typeof requireBuilder.forFilename> =
+      jest
+        .spyOn(requireBuilder, 'forFilename')
+        .mockReturnValue({} as NodeJS.Require);
+    const {provider} = makeProvider({
+      normalizeCoreModuleSpecifier: () => 'module',
+      requireBuilder,
+    });
+    const ModuleClass = provider.require(
+      'module',
+    ) as typeof nativeModule.Module;
+    const absolutePath = path.resolve('/abs/x.js');
+    const localhostUrl = pathToFileURL(absolutePath).href.replace(
+      'file://',
+      'file://localhost',
+    );
+    ModuleClass.createRequire(localhostUrl);
+    expect(forFilename).toHaveBeenCalledWith(absolutePath);
+  });
+
   test('mocked Module.createRequire rejects relative filenames', () => {
     const {provider} = makeProvider({
       normalizeCoreModuleSpecifier: () => 'module',
