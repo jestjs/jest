@@ -157,6 +157,62 @@ describe('onRunComplete', () => {
     expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
   });
 
+  test('does not check the threshold when the run is one shard of several', async () => {
+    // The shard covers only the test files it ran, so every file it did not
+    // run reports zero and the threshold would fail for each shard (#12751).
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        coverageThreshold: {
+          global: {
+            statements: 100,
+          },
+        },
+        shard: {shardCount: 4, shardIndex: 1},
+      },
+      {
+        maxWorkers: 2,
+      },
+    );
+    testReporter.log = jest.fn();
+
+    await testReporter.onRunComplete(new Set(), {}, mockAggResults);
+
+    expect(testReporter.getLastError()).toBeUndefined();
+    expect(testReporter.log).toHaveBeenCalledWith(
+      expect.stringContaining(
+        'Coverage thresholds are not checked when running a shard',
+      ),
+    );
+    expect(testReporter.log).toHaveBeenCalledWith(
+      expect.stringContaining('shard 1/4'),
+    );
+  });
+
+  test('checks the threshold when the run is a single shard', async () => {
+    // `--shard=1/1` runs every test file, so it is a complete run and the
+    // threshold means what it usually means.
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        coverageThreshold: {
+          global: {
+            statements: 100,
+          },
+        },
+        shard: {shardCount: 1, shardIndex: 1},
+      },
+      {
+        maxWorkers: 2,
+      },
+    );
+    testReporter.log = jest.fn();
+
+    await testReporter.onRunComplete(new Set(), {}, mockAggResults);
+
+    expect(testReporter.getLastError()).toBeDefined();
+  });
+
   test('getLastError() returns an error when threshold is not met for file', async () => {
     const covThreshold = {};
     const paths = [
