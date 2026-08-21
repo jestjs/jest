@@ -2069,6 +2069,12 @@ export class EsmLoader {
       }
     }
 
+    // Known hole: with an async-only resolver or transformer, on Node
+    // without sync evaluation (< 24.9), or when the real module's graph
+    // needs async evaluation (top-level await), automock and manual
+    // __mocks__ decisions still end here. Serving them needs an async twin
+    // of importGeneratedMockSync - including a scratch-registry swap that
+    // survives awaits, which withScratchRegistries does not offer.
     throw new Error('Attempting to import a mock without a factory');
   }
 

@@ -906,7 +906,9 @@ const config = defineConfig(
     '{docs,website/versioned_docs/version-*}/JestObjectAPI.md',
     'packages/jest-runtime/src/__tests__/test_esm_sync_graph_root/syntax-error.mjs',
     // espree does not parse source phase imports yet
+    'packages/jest-runtime/src/__tests__/test_esm_sync_graph_root/dynamic-source-phase.cjs',
     'packages/jest-runtime/src/__tests__/test_esm_sync_graph_root/dynamic-source-phase.mjs',
+    'packages/jest-runtime/src/__tests__/test_esm_sync_graph_root/import-source-after-tla.mjs',
     'packages/jest-runtime/src/__tests__/test_esm_sync_graph_root/import-source-phase.mjs',
 
     // Bug? Uses TS syntax

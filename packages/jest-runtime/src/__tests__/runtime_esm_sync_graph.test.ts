@@ -1753,4 +1753,30 @@ describe('Runtime sync ESM graph - source phase imports', () => {
       );
     },
   );
+
+  testWithSyncEsm(
+    'throws through the legacy loader when top-level await forces it',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-source-after-tla.mjs'),
+      ).rejects.toThrow(
+        expect.objectContaining({code: 'ERR_SOURCE_PHASE_NOT_DEFINED'}),
+      );
+    },
+  );
+
+  testWithSyncEsm(
+    'rejects import.source() called from a CJS module',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const loadSource = runtime.requireModule(
+        FROM,
+        './dynamic-source-phase.cjs',
+      );
+      await expect(loadSource()).rejects.toThrow(
+        expect.objectContaining({code: 'ERR_SOURCE_PHASE_NOT_DEFINED'}),
+      );
+    },
+  );
 });
