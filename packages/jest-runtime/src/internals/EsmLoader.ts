@@ -514,6 +514,16 @@ export class EsmLoader {
     requiredFrom?: string,
     isRequireActual = false,
   ): T {
+    // The graph walk (and the mock decision below) resolves synchronously.
+    // With an async-only configured resolver that silently falls back to the
+    // default resolver, missing every user mapping - throw the same typed
+    // error an async-only transformer gets.
+    if (!this.resolution.canResolveSync()) {
+      throw makeRequireAsyncError(
+        modulePath,
+        'the configured resolver is async-only',
+      );
+    }
     if (!isRequireActual) {
       const {shouldMock, moduleID} = this.mockState.shouldMockEsmSync(
         requiredFrom ?? modulePath,

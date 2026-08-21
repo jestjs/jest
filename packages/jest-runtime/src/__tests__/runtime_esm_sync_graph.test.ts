@@ -584,6 +584,19 @@ describe('Runtime sync ESM graph - require(esm)', () => {
   );
 
   testWithSyncEsm(
+    'require(esm) with an async-only resolver throws ERR_REQUIRE_ASYNC_MODULE',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        resolver: path.join(ROOT_DIR, 'async-only-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      expect(() => runtime.requireModule(FROM, './a.mjs')).toThrow(
+        expect.objectContaining({code: 'ERR_REQUIRE_ASYNC_MODULE'}),
+      );
+    },
+  );
+
+  testWithSyncEsm(
     'honors jest.unstable_mockModule for the require()d file itself',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
