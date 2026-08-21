@@ -66,6 +66,7 @@ export default class Resolver {
   private readonly _extensions: Array<string>;
   private readonly _isCoreModuleCache: Map<string, boolean>;
   private _canResolveSync: boolean | undefined;
+  private _hasDistinctAsyncResolver: boolean | undefined;
 
   constructor(moduleMap: IModuleMap, options: ResolverConfig) {
     this._options = {
@@ -412,6 +413,28 @@ export default class Resolver {
       result = false;
     }
     this._canResolveSync = result;
+    return result;
+  }
+
+  // True when the configured resolver exports an `async` hook next to its
+  // sync interface. The two hooks may resolve differently, so a sync
+  // resolution failure is not authoritative for callers that can retry
+  // through the async API.
+  hasDistinctAsyncResolver(): boolean {
+    if (this._hasDistinctAsyncResolver != null) {
+      return this._hasDistinctAsyncResolver;
+    }
+    let result: boolean;
+    try {
+      const resolverModule = loadResolver(this._options.resolver);
+      result =
+        typeof resolverModule !== 'function' &&
+        typeof resolverModule.async === 'function' &&
+        typeof resolverModule.sync === 'function';
+    } catch {
+      result = false;
+    }
+    this._hasDistinctAsyncResolver = result;
     return result;
   }
 

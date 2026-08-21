@@ -27,6 +27,9 @@ import {type Resolution, isWasm} from './Resolution';
 import type {TestState} from './TestState';
 import type {TransformCache, TransformOptions} from './TransformCache';
 import type {CoreModuleProvider} from './cjsRequire';
+import {parseDataUri} from './dataUri';
+import {hasEsmSyntax} from './esmLexer';
+import {ImportAttributeValidator} from './importAttributes';
 import type {
   ESModule,
   ImportAttributes,
@@ -75,6 +78,29 @@ type WorklistEntry = {
   modulePath: string;
 };
 
+// Work discovered during resolution whose build executes user code, deferred
+// until the whole graph has resolved - Node reports resolution and
+// import-attribute errors before executing anything. A CJS dep executes its
+// body when built (the export-name merge needs the runtime exports object);
+// a factory-less mock decision (automock or manual __mocks__) executes the
+// real module to collect metadata.
+type PendingCjsBuild = {
+  cacheKey: string;
+  modulePath: string;
+  referencingIdentifier: string;
+};
+
+type PendingMockBuild = {
+  from: string;
+  moduleID: string;
+  specifierPath: string;
+};
+
+type PendingBuilds = {
+  cjs: Array<PendingCjsBuild>;
+  mocks: Array<PendingMockBuild>;
+};
+
 type ResolvedSyncSpecifier = {
   cacheKey: string;
   enqueue: WorklistEntry | null;
@@ -102,7 +128,15 @@ type ScratchEntry =
       module: VMModuleWithAsyncGraph;
       deps: Array<string>;
     }
-  | {kind: 'prelinked'; cacheKey: string; module: VMModuleWithAsyncGraph};
+  // Mock entries set `excludeFromRegistry`: they are served from the
+  // module-mock registry, and committing them to the ESM registry would leak
+  // their module IDs into surfaces keyed by it, like `require.cache`.
+  | {
+      kind: 'prelinked';
+      cacheKey: string;
+      module: VMModuleWithAsyncGraph;
+      excludeFromRegistry?: true;
+    };
 
 // `SourceTextModule#hasAsyncGraph()` lets us prove a graph is sync-evaluable.
 // `SyntheticModule` does not expose it but is by definition sync (the user
@@ -125,6 +159,24 @@ function makeRequireAsyncError(
   return error;
 }
 
+// Node satisfies a source-phase request (`import source` / `import.source()`,
+// used for WebAssembly) by attaching the compiled `WebAssembly.Module` to the
+// target module via the internal `ModuleWrap#setModuleSourceObject`. `node:vm`
+// exposes no equivalent - no option on `SyntheticModule`, no method on
+// `vm.Module` - so the phase cannot be implemented here until it does.
+// Without this check V8 fails at `instantiate()` with a bare "Source phase
+// import object is not defined" SyntaxError pointing at Jest internals.
+function makeSourcePhaseUnsupportedError(
+  specifier: string,
+  referencingIdentifier: string,
+): NodeJS.ErrnoException {
+  const error: NodeJS.ErrnoException = new SyntaxError(
+    `Jest cannot load '${specifier}' (imported from ${referencingIdentifier}): source phase imports ('import source' / 'import.source()') are not supported, because node:vm has no way to provide a module source object.`,
+  );
+  error.code = 'ERR_SOURCE_PHASE_NOT_DEFINED';
+  return error;
+}
+
 function makeRequireCycleError(
   modulePath: string,
   requiredFrom: string | undefined,
@@ -137,232 +189,7 @@ function makeRequireCycleError(
   return error;
 }
 
-// Decode a `data:` URI specifier into its mime type and decoded code/body.
-// `application/wasm` returns a Buffer; everything else returns a UTF-8 string.
-const dataURIRegex =
-  /^data:(?<mime>[^;,]*)(?<parameters>(?:;[^;,]*)*),(?<code>.*)$/;
-
-// Node's own mediatype extraction (lib/internal/modules/esm/load.js) - the
-// capture is both the format-decision input and what the rejection message
-// echoes, and a failed capture reports the literal string "null".
-const nodeMediatypeRegex = /^data:([^/]+\/[^;,]+)[^,]*,/;
-
-// Node's mimeToFormat: the JavaScript mime tolerates surrounding spaces and
-// matches case-insensitively (text/ and application/ alike), while
-// application/json and application/wasm require an exact match.
-const javaScriptMimeRegex = /^ *(?:text|application)\/javascript *$/i;
-
-function makeInvalidUrlError(): NodeJS.ErrnoException {
-  const error: NodeJS.ErrnoException = new TypeError('Invalid URL');
-  error.code = 'ERR_INVALID_URL';
-  return error;
-}
-
-// The `data-urls` package implements the full WHATWG data URL processor,
-// but it is too heavy for this limited use case - it drags in `whatwg-url`
-// and its Unicode tables. See https://github.com/jsdom/data-urls/issues/7.
-
-// The WHATWG forgiving percent-decode: valid %XX escapes decode to their
-// byte, anything else passes through as its UTF-8 bytes instead of throwing.
-// Literal spans encode in one operation each, so an escape-free payload is a
-// single allocation.
-function forgivingPercentDecode(input: string): Buffer {
-  if (!input.includes('%')) {
-    return Buffer.from(input, 'utf8');
-  }
-  const chunks: Array<Buffer> = [];
-  let literalStart = 0;
-  let index = 0;
-  while (index < input.length) {
-    if (
-      input[index] === '%' &&
-      /^[0-9A-Fa-f]{2}$/.test(input.slice(index + 1, index + 3))
-    ) {
-      if (literalStart < index) {
-        chunks.push(Buffer.from(input.slice(literalStart, index), 'utf8'));
-      }
-      chunks.push(
-        Buffer.of(Number.parseInt(input.slice(index + 1, index + 3), 16)),
-      );
-      index += 3;
-      literalStart = index;
-    } else {
-      index++;
-    }
-  }
-  if (literalStart < input.length) {
-    chunks.push(Buffer.from(input.slice(literalStart), 'utf8'));
-  }
-  return Buffer.concat(chunks);
-}
-
-// The WHATWG forgiving base64: ASCII whitespace is stripped, up to two
-// trailing `=` are allowed, and anything else outside the base64 alphabet
-// (or a leftover length of 1 mod 4) is an invalid URL.
-function forgivingBase64Decode(input: string): Buffer {
-  let data = input.replaceAll(/[\t\n\f\r ]/g, '');
-  if (data.length % 4 === 0) {
-    data = data.replace(/={1,2}$/, '');
-  }
-  if (data.length % 4 === 1 || !/^[A-Za-z0-9+/]*$/.test(data)) {
-    throw makeInvalidUrlError();
-  }
-  return Buffer.from(data, 'base64');
-}
-
-function parseDataUri(specifier: string): {
-  mime: string;
-  code: string | Buffer;
-} {
-  // The URL parser strips ASCII tab and newline from the input entirely, and
-  // the fragment starts at the first # - a fragment before the comma leaves
-  // the data: URL without a payload at all.
-  const serialized = specifier.replaceAll(/[\t\n\r]/g, '').split('#', 1)[0];
-  const match = serialized.match(dataURIRegex);
-  if (!match || !match.groups) {
-    throw makeInvalidUrlError();
-  }
-  // The payload decodes before the format check, so an invalid body wins
-  // over an unknown mime type. Mediatype parameters are case-insensitive and
-  // unknown ones are ignored; base64 applies only as the final parameter.
-  const parameters = match.groups.parameters.split(';').slice(1);
-  // Spaces are the only whitespace that can surround the token: the URL
-  // parser strips tab and newline and percent-encodes everything else.
-  const isBase64 =
-    parameters
-      .at(-1)
-      ?.replaceAll(/^ +| +$/g, '')
-      .toLowerCase() === 'base64';
-  const decodedBody = isBase64
-    ? forgivingBase64Decode(
-        forgivingPercentDecode(match.groups.code).toString(),
-      )
-    : forgivingPercentDecode(match.groups.code);
-  const mediatype = serialized.match(nodeMediatypeRegex)?.[1] ?? null;
-  let mime: string | null = null;
-  if (mediatype !== null) {
-    if (javaScriptMimeRegex.test(mediatype)) {
-      mime = 'text/javascript';
-    } else if (
-      mediatype === 'application/json' ||
-      mediatype === 'application/wasm'
-    ) {
-      mime = mediatype;
-    }
-  }
-  if (mime === null) {
-    const error: NodeJS.ErrnoException = new RangeError(
-      `Unknown module format: ${mediatype} for URL ${specifier}`,
-    );
-    error.code = 'ERR_UNKNOWN_MODULE_FORMAT';
-    throw error;
-  }
-  if (mime === 'application/wasm') {
-    if (parameters.length === 0) throw new Error('Missing data URI encoding');
-    if (!isBase64) {
-      throw new Error(`Invalid data URI encoding: ${parameters.join(';')}`);
-    }
-    return {code: decodedBody, mime};
-  }
-  return {code: decodedBody.toString(), mime};
-}
-
 const urlSchemeRegex = /^[A-Za-z][A-Za-z0-9+.-]*:/;
-
-// Mirrors Node's `validateAttributes` in lib/internal/modules/esm/assert.js.
-// The only deliberate divergence: missing `type: 'json'` warns instead of
-// throwing — see the JSON branch below.
-const warnedMissingJsonAttributePairs = new Set<string>();
-// Soft cap so a long-lived process (watch mode, --runInBand) can't grow the
-// set without bound. When we hit it we drop everything; users see at most one
-// extra repeated warning per pair, which is benign.
-const MAX_WARNED_PAIRS = 10_000;
-
-function isJsonModule(modulePath: string): boolean {
-  return (
-    modulePath.endsWith('.json') ||
-    modulePath.startsWith('data:application/json')
-  );
-}
-
-// Avoid dumping the full payload of data: URIs (or other very long specifiers)
-// into stderr.
-function describeForWarning(modulePath: string): string {
-  if (modulePath.startsWith('data:')) {
-    const comma = modulePath.indexOf(',');
-    if (comma > 0) return `${modulePath.slice(0, comma)},…`;
-  }
-  return modulePath;
-}
-
-function makeImportAttributeError(
-  code:
-    | 'ERR_IMPORT_ATTRIBUTE_UNSUPPORTED'
-    | 'ERR_IMPORT_ATTRIBUTE_MISSING'
-    | 'ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE',
-  message: string,
-): NodeJS.ErrnoException {
-  const error: NodeJS.ErrnoException = new TypeError(message);
-  error.code = code;
-  return error;
-}
-
-export function validateImportAttributes(
-  modulePath: string,
-  attributes: ImportAttributes,
-  referencingIdentifier: string,
-): void {
-  for (const key of Object.keys(attributes)) {
-    if (key !== 'type') {
-      throw makeImportAttributeError(
-        'ERR_IMPORT_ATTRIBUTE_UNSUPPORTED',
-        `Import attribute "${key}" with value "${attributes[key]}" is not supported (importing "${modulePath}" from ${referencingIdentifier})`,
-      );
-    }
-  }
-
-  const declaredType = attributes.type;
-  const isJson = isJsonModule(modulePath);
-
-  if (isJson) {
-    if (declaredType === undefined) {
-      // TODO(jest next major): match Node and throw
-      // ERR_IMPORT_ATTRIBUTE_MISSING here. Until then, warn so existing users
-      // without `with { type: 'json' }` keep working.
-      const dedupeKey = `${referencingIdentifier}::${modulePath}`;
-      if (!warnedMissingJsonAttributePairs.has(dedupeKey)) {
-        if (warnedMissingJsonAttributePairs.size >= MAX_WARNED_PAIRS) {
-          warnedMissingJsonAttributePairs.clear();
-        }
-        warnedMissingJsonAttributePairs.add(dedupeKey);
-        const moduleLabel = describeForWarning(modulePath);
-        console.warn(
-          'Jest: importing JSON without an import attribute is deprecated and will be a hard error in the next major. ' +
-            `Update the import of "${moduleLabel}" (from ${referencingIdentifier}): ` +
-            "use `with { type: 'json' }` for static imports, or pass " +
-            "`{ with: { type: 'json' } }` as the second argument to dynamic `import()`.",
-        );
-      }
-      return;
-    }
-    if (declaredType !== 'json') {
-      throw makeImportAttributeError(
-        'ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE',
-        `Module "${modulePath}" is not of type "${declaredType}"`,
-      );
-    }
-    return;
-  }
-
-  // Non-JSON (implicit-type) module. Per HTML spec, the default type cannot
-  // be re-asserted, so any explicit `type` attribute is rejected.
-  if (declaredType !== undefined) {
-    throw makeImportAttributeError(
-      'ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE',
-      `Module "${modulePath}" is not of type "${declaredType}"`,
-    );
-  }
-}
 
 const ESM_TRANSFORM_OPTIONS: TransformOptions = {
   isInternalModule: false,
@@ -451,6 +278,7 @@ export interface EsmLoaderOptions {
   coreModule: CoreModuleProvider;
   jestGlobals: JestGlobals;
   shouldLoadAsEsm: (modulePath: string) => boolean;
+  requireModule: (from: string, moduleName: string) => unknown;
   requireModuleOrMock: (from: string, moduleName: string) => unknown;
   testState: TestState;
   testPath: string;
@@ -467,6 +295,7 @@ export class EsmLoader {
   private readonly coreModule: CoreModuleProvider;
   private readonly jestGlobals: JestGlobals;
   private readonly shouldLoadAsEsm: (modulePath: string) => boolean;
+  private readonly requireModule: (from: string, moduleName: string) => unknown;
   private readonly requireModuleOrMock: (
     from: string,
     moduleName: string,
@@ -474,6 +303,12 @@ export class EsmLoader {
   private readonly testState: TestState;
   private readonly testPath: string;
   private readonly requireFacades = new WeakMap<ESModule, ESModule>();
+  private readonly importAttributeValidator = new ImportAttributeValidator();
+  // Depth of automock-metadata loads in progress. Generation loads the real
+  // module, whose graph must not recurse into generating its own deps: a
+  // cycle back into an in-progress generation would link against an empty
+  // placeholder mock. See `mockDecisionServable`.
+  private generatingMockDepth = 0;
   // Every cacheKey popped by a sync walk that is still on the stack. Walks
   // nest (a CJS body executing mid-walk can require() an unrelated ESM root),
   // so this is a stack of one entry per walk rather than a single Set. Each
@@ -502,6 +337,7 @@ export class EsmLoader {
     this.coreModule = options.coreModule;
     this.jestGlobals = options.jestGlobals;
     this.shouldLoadAsEsm = options.shouldLoadAsEsm;
+    this.requireModule = options.requireModule;
     this.requireModuleOrMock = options.requireModuleOrMock;
     this.testState = options.testState;
     this.testPath = options.testPath;
@@ -514,6 +350,7 @@ export class EsmLoader {
     modulePath: string,
     requiredFrom?: string,
     isRequireActual = false,
+    moduleName?: string,
   ): T {
     // The graph walk (and the mock decision below) resolves synchronously.
     // With an async-only configured resolver that silently falls back to the
@@ -532,13 +369,23 @@ export class EsmLoader {
       );
     }
     if (!isRequireActual) {
+      const from = requiredFrom ?? modulePath;
       const {shouldMock, moduleID} = this.mockState.shouldMockEsmSync(
-        requiredFrom ?? modulePath,
+        from,
         modulePath,
       );
-      if (shouldMock) {
+      if (
+        shouldMock &&
+        this.mockDecisionServable(moduleID) &&
+        !this.cjsUnmockBlocksGeneratedMock(
+          from,
+          moduleName ?? modulePath,
+          modulePath,
+          moduleID,
+        )
+      ) {
         return this.requireResultFromModule(
-          this.requireMockedEsmModule(modulePath, moduleID),
+          this.requireMockedEsmModule(from, modulePath, moduleID),
         ) as T;
       }
     }
@@ -588,17 +435,44 @@ export class EsmLoader {
   // evaluated module outside any walk. `importMockSync` handles instance
   // reuse and factory invocation; a fresh synthetic arrives `'linked'`
   // (evaluation normally belongs to the walk's cascade), so evaluate it here.
+  // Entry for Runtime's CJS mock machinery when the decision to mock was
+  // already made on the CJS side (explicit `jest.mock` or automock): serve
+  // the mock without re-consulting the ESM decision maps, which know nothing
+  // about CJS registrations.
+  requireEsmMock<T>(from: string, moduleName: string, modulePath: string): T {
+    // Prefer the ID an `import` of the same name produces - it also carries
+    // any root manual-mock path, so require() and import share one mock
+    // instance. The path-derived ID stays for conditional packages whose
+    // condition sets diverge: those genuinely reference different files.
+    let moduleID: string;
+    try {
+      moduleID =
+        this.resolution.resolveEsm(from, moduleName) === modulePath
+          ? this.mockState.getEsmModuleId(from, moduleName)
+          : this.mockState.getEsmModuleId(from, modulePath);
+    } catch {
+      moduleID = this.mockState.getEsmModuleId(from, modulePath);
+    }
+    return this.requireResultFromModule(
+      this.requireMockedEsmModule(from, moduleName, moduleID, modulePath),
+    ) as T;
+  }
+
   private requireMockedEsmModule(
-    modulePath: string,
+    from: string,
+    moduleName: string,
     moduleID: string,
+    resolvedPath?: string,
   ): ESModule {
     const scratch = new Map<string, ScratchEntry>();
     const mocked = this.importMockSync(
-      modulePath,
+      from,
+      moduleName,
       moduleID,
       this.getContext(),
       scratch,
       'sync-required',
+      resolvedPath,
     );
     invariant(
       mocked !== LOAD_ASYNC,
@@ -817,7 +691,90 @@ export class EsmLoader {
     context: VMContext;
     mode: SyncEsmMode;
   }): ESModule | LoadAsync {
-    while (worklist.length > 0) {
+    // CJS deps build only once the worklist has drained, so every resolution
+    // and import-attribute error in the graph surfaces before any CJS body
+    // executes - as in Node, where a graph that fails to resolve runs
+    // nothing. A build whose file turns out to hold unmarked ESM syntax
+    // re-enters the worklist, which can in turn discover more CJS deps.
+    // Node evaluates these bodies interleaved with the ESM bodies in
+    // post-order; here they run in discovery order before the ESM bodies -
+    // see the divergences list in docs/ECMAScriptModules.md.
+    const pendingBuilds: PendingBuilds = {cjs: [], mocks: []};
+    const confirmedCjsBuilds: Array<PendingCjsBuild> = [];
+    while (
+      worklist.length > 0 ||
+      pendingBuilds.cjs.length > 0 ||
+      pendingBuilds.mocks.length > 0 ||
+      confirmedCjsBuilds.length > 0
+    ) {
+      if (worklist.length === 0 && pendingBuilds.cjs.length > 0) {
+        // Classify without executing: a pending file that turns out to hold
+        // unmarked ESM syntax re-enters the worklist, and its subgraph can
+        // still fail to resolve - so no CJS body may run until every pending
+        // is confirmed. The probe lexes the same transformed source the
+        // build would; explicitly-CJS parse failures defer to the build so
+        // the canonical compile error surfaces.
+        const pending = pendingBuilds.cjs.shift()!;
+        if (this.pendingCjsBuildIsUnmarkedEsm(pending)) {
+          worklist.push({
+            cacheKey: pending.cacheKey,
+            modulePath: pending.modulePath,
+          });
+        } else {
+          confirmedCjsBuilds.push(pending);
+        }
+        continue;
+      }
+      if (worklist.length === 0 && pendingBuilds.mocks.length > 0) {
+        // Generation runs after this graph resolves, but each mock's
+        // metadata load evaluates its own real-module graph as it goes - a
+        // later pending mock whose real graph fails to load does not undo an
+        // earlier one's execution. Preflighting every mock target's graph
+        // would need a resolve-only walker mode; documented as a divergence
+        // instead.
+        const pending = pendingBuilds.mocks.shift()!;
+        const mocked = this.importMockSync(
+          pending.from,
+          pending.specifierPath,
+          pending.moduleID,
+          context,
+          scratch,
+          mode,
+        );
+        if (mocked === LOAD_ASYNC) return LOAD_ASYNC;
+        continue;
+      }
+      if (worklist.length === 0) {
+        // Resolution is complete - executing the confirmed CJS bodies is
+        // safe. A build can still surface a CjsParseError the lexer missed
+        // (V8 sees ESM syntax the lexer tolerates); that file re-enters the
+        // worklist like any other unmarked-ESM fallback.
+        const pending = confirmedCjsBuilds.shift()!;
+        try {
+          const committed = this.tryCommitSynthetic(
+            pending.cacheKey,
+            registry,
+            scratch,
+            () =>
+              this.buildCjsAsEsmSyntheticModule(
+                pending.referencingIdentifier,
+                pending.modulePath,
+                context,
+              ),
+          );
+          if (!committed) return LOAD_ASYNC;
+        } catch (error) {
+          if (!(error instanceof CjsParseError)) throw error;
+          if (this.resolution.isExplicitlyCommonjs(pending.modulePath)) {
+            throw error.cause;
+          }
+          worklist.push({
+            cacheKey: pending.cacheKey,
+            modulePath: pending.modulePath,
+          });
+        }
+        continue;
+      }
       const {cacheKey, modulePath} = worklist.pop()!;
       activeWalk.add(cacheKey);
       if (scratch.has(cacheKey)) continue;
@@ -862,6 +819,7 @@ export class EsmLoader {
           cacheKey,
           context,
           mode,
+          pendingBuilds,
           registry,
           scratch,
           specifier: modulePath,
@@ -879,6 +837,7 @@ export class EsmLoader {
           context,
           identifier: modulePath,
           mode,
+          pendingBuilds,
           registry,
           scratch,
           worklist,
@@ -941,6 +900,7 @@ export class EsmLoader {
             this.jestGlobals.jestObjectFor(modulePath);
         },
         mode,
+        pendingBuilds,
         registry,
         scratch,
         worklist,
@@ -1005,6 +965,7 @@ export class EsmLoader {
     }
 
     for (const entry of scratch.values()) {
+      if (entry.kind === 'prelinked' && entry.excludeFromRegistry) continue;
       if (!registry.has(entry.cacheKey)) {
         registry.set(entry.cacheKey, entry.module);
       }
@@ -1021,6 +982,19 @@ export class EsmLoader {
     );
 
     return rootModule;
+  }
+
+  // `hasEsmSyntax` is the discriminator every CjsParseError producer gates
+  // on, so probing it directly reproduces the build's ESM-fallback decision
+  // without running anything. Files it cannot classify (incomplete syntax
+  // both parsers reject) confirm as CJS, and the build surfaces the same
+  // canonical compile error it always has.
+  private pendingCjsBuildIsUnmarkedEsm(pending: PendingCjsBuild): boolean {
+    if (path.extname(pending.modulePath) === '.node') return false;
+    if (this.resolution.isExplicitlyCommonjs(pending.modulePath)) return false;
+    return hasEsmSyntax(
+      this.transformCache.transform(pending.modulePath, undefined),
+    );
   }
 
   // A module sits in the registry linked-but-unevaluated when an earlier walk
@@ -1056,6 +1030,20 @@ export class EsmLoader {
     return module;
   }
 
+  // Legacy-path counterpart of the walker's per-request check: scan a freshly
+  // constructed module's requests where Node exposes them.
+  private throwOnSourcePhaseRequests(
+    module: VMModuleWithAsyncGraph,
+    identifier: string,
+  ): void {
+    if (module.moduleRequests === undefined) return;
+    for (const {specifier, phase} of module.moduleRequests) {
+      if (phase === 'source') {
+        throw makeSourcePhaseUnsupportedError(specifier, identifier);
+      }
+    }
+  }
+
   private getContext(): VMContext {
     invariant(
       typeof this.environment.getVmContext === 'function',
@@ -1066,36 +1054,55 @@ export class EsmLoader {
     return context;
   }
 
+  // Adopts a live entry under `cacheKey` into the local scratch. `'bail'`
+  // means the registry holds something the caller can't use synchronously: a
+  // mid-flight Promise from the legacy async path, or a module still being
+  // linked (legacy can stash an `'unlinked'` SourceTextModule here while
+  // link/evaluate runs).
+  private adoptRegistryEntry(
+    cacheKey: string,
+    registry: ModuleRegistry | Map<string, JestModule>,
+    scratch: Map<string, ScratchEntry>,
+  ): 'adopted' | 'bail' | 'absent' {
+    if (scratch.has(cacheKey)) return 'adopted';
+    const fromRegistry = registry.get(cacheKey);
+    if (fromRegistry === undefined) return 'absent';
+    if (fromRegistry instanceof Promise) return 'bail';
+    const cached = fromRegistry as VMModuleWithAsyncGraph;
+    if (cached.status === 'errored') throw cached.error;
+    if (cached.status !== 'evaluated' && cached.status !== 'linked') {
+      return 'bail';
+    }
+    scratch.set(cacheKey, {cacheKey, kind: 'prelinked', module: cached});
+    return 'adopted';
+  }
+
   // Commits (or reuses) a synthetic-module entry under `cacheKey` in both the
-  // local scratch and the long-lived registry. Returns `false` when the
-  // registry holds something the caller must bail on: a mid-flight Promise
-  // from the legacy async path, or a module still being linked (legacy can
-  // stash an `'unlinked'` SourceTextModule here while link/evaluate runs).
+  // local scratch and the long-lived registry.
   private tryCommitSynthetic(
     cacheKey: string,
     registry: ModuleRegistry | Map<string, JestModule>,
     scratch: Map<string, ScratchEntry>,
     build: () => VMModuleWithAsyncGraph,
   ): boolean {
-    if (scratch.has(cacheKey)) return true;
-    const fromRegistry = registry.get(cacheKey);
-    if (fromRegistry instanceof Promise) return false;
-    if (fromRegistry) {
-      const cached = fromRegistry as VMModule;
-      if (cached.status === 'errored') throw cached.error;
-      if (cached.status !== 'evaluated' && cached.status !== 'linked') {
-        return false;
-      }
-    }
-    const module =
-      (fromRegistry as VMModuleWithAsyncGraph | undefined) ?? build();
-    if (!fromRegistry) registry.set(cacheKey, module);
+    const adoption = this.adoptRegistryEntry(cacheKey, registry, scratch);
+    if (adoption === 'bail') return false;
+    if (adoption === 'adopted') return true;
+    const module = build();
+    registry.set(cacheKey, module);
     scratch.set(cacheKey, {cacheKey, kind: 'prelinked', module});
     return true;
   }
 
   // Node answers `import.meta.resolve('fs')` with `'node:fs'`, not a file URL -
   // a builtin has no path to turn into one.
+  //
+  // Deliberate divergence: Node's `import.meta.resolve` is resolution-only -
+  // `resolve('./missing.js')` returns the URL without checking existence, and
+  // an unresolvable bare specifier throws ERR_MODULE_NOT_FOUND. Here the full
+  // jest-resolve pipeline answers (moduleNameMapper, extension resolution,
+  // haste), which is the point of the API inside a test - so a missing file
+  // throws jest-resolve's MODULE_NOT_FOUND instead of returning a URL.
   private resolveForImportMeta(parentPath: string, specifier: string): string {
     // Node echoes `node:` specifiers verbatim - even with a query or fragment,
     // which only fail later, at load time.
@@ -1120,6 +1127,7 @@ export class EsmLoader {
     scratch: Map<string, ScratchEntry>,
     registry: ModuleRegistry | Map<string, JestModule>,
     mode: SyncEsmMode,
+    pendingBuilds: PendingBuilds,
   ): ResolvedSyncSpecifier | LoadAsync {
     if (specifier === '@jest/globals') {
       const cacheKey = `@jest/globals/${referencingIdentifier}`;
@@ -1138,20 +1146,41 @@ export class EsmLoader {
       referencingIdentifier,
       specifierPath,
     );
-    if (shouldMock) {
-      const mocked = this.importMockSync(
+    if (shouldMock && this.mockDecisionServable(moduleID)) {
+      // Import-attribute validation runs against the returned module path -
+      // an extensionless or bare specifier of a JSON module must still
+      // validate as JSON, so hand back the resolved target where one exists.
+      const validationPath = this.resolveMockTargetForValidation(
+        referencingIdentifier,
         specifierPath,
-        moduleID,
-        context,
-        scratch,
-        mode,
       );
-      if (mocked === LOAD_ASYNC) return LOAD_ASYNC;
-      return {
-        cacheKey: mocked.cacheKey,
-        enqueue: null,
-        modulePath: specifierPath,
-      };
+      if (this.registries.getModuleMock(moduleID) !== undefined) {
+        // Adopting an already-built instance runs no user code, so it can
+        // happen mid-resolution.
+        const mocked = this.importMockSync(
+          referencingIdentifier,
+          specifierPath,
+          moduleID,
+          context,
+          scratch,
+          mode,
+        );
+        if (mocked === LOAD_ASYNC) return LOAD_ASYNC;
+        return {
+          cacheKey: mocked.cacheKey,
+          enqueue: null,
+          modulePath: validationPath,
+        };
+      }
+      // Anything that executes user code waits until the graph has fully
+      // resolved, with the pending CJS builds: a factory's side effects, and
+      // the real-module load generation performs for its metadata.
+      pendingBuilds.mocks.push({
+        from: referencingIdentifier,
+        moduleID,
+        specifierPath,
+      });
+      return {cacheKey: moduleID, enqueue: null, modulePath: validationPath};
     }
 
     if (specifierPath.startsWith('data:')) {
@@ -1180,16 +1209,15 @@ export class EsmLoader {
       };
     }
 
-    let resolved: string;
-    try {
-      resolved = this.resolution.resolveEsm(
-        referencingIdentifier,
-        specifierPath,
-      );
-    } catch (error) {
-      if (mode === 'sync-required') throw error;
-      return LOAD_ASYNC;
-    }
+    // The sync resolution is authoritative in both modes: sync-preferred
+    // walks never start under a resolver with a distinct async hook, and
+    // require() cannot await one. Bailing to the legacy path on failure
+    // would execute already-resolved CJS deps before rediscovering the same
+    // error, where Node runs nothing when the graph fails to resolve.
+    const resolved = this.resolution.resolveEsm(
+      referencingIdentifier,
+      specifierPath,
+    );
 
     const cacheKey = fileCacheKey(resolved, suffix);
     if (
@@ -1203,22 +1231,16 @@ export class EsmLoader {
       !isWasm(resolved) &&
       !this.shouldLoadAsEsm(resolved)
     ) {
-      try {
-        const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () =>
-          this.buildCjsAsEsmSyntheticModule(
-            referencingIdentifier,
-            resolved,
-            context,
-          ),
-        );
-        return ok
-          ? {cacheKey, enqueue: null, modulePath: resolved}
-          : LOAD_ASYNC;
-      } catch (error) {
-        if (!(error instanceof CjsParseError)) throw error;
-        if (this.resolution.isExplicitlyCommonjs(resolved)) throw error.cause;
-        // File has ESM syntax but no ESM marker — fall through to the enqueue path.
+      const adoption = this.adoptRegistryEntry(cacheKey, registry, scratch);
+      if (adoption === 'bail') return LOAD_ASYNC;
+      if (adoption === 'absent') {
+        pendingBuilds.cjs.push({
+          cacheKey,
+          modulePath: resolved,
+          referencingIdentifier,
+        });
       }
+      return {cacheKey, enqueue: null, modulePath: resolved};
     }
 
     return {
@@ -1229,11 +1251,13 @@ export class EsmLoader {
   }
 
   private importMockSync(
+    from: string,
     moduleName: string,
     moduleID: string,
     context: VMContext,
     scratch: Map<string, ScratchEntry>,
     mode: SyncEsmMode,
+    resolvedPath?: string,
   ): {cacheKey: string} | LoadAsync {
     const existing = this.registries.getModuleMock(moduleID);
     if (existing instanceof Promise) {
@@ -1248,6 +1272,7 @@ export class EsmLoader {
       if (!scratch.has(moduleID)) {
         scratch.set(moduleID, {
           cacheKey: moduleID,
+          excludeFromRegistry: true,
           kind: 'prelinked',
           module: existing,
         });
@@ -1256,12 +1281,20 @@ export class EsmLoader {
     }
 
     const factory = this.mockState.getEsmFactory(moduleID);
-    // `shouldMockEsmSync` said this spec is mocked but no factory was
-    // registered.
-    invariant(
-      factory !== undefined,
-      'Attempting to import a mock without a factory',
-    );
+    // No registered factory means the decision came from automocking (or a
+    // manual `__mocks__` file found for an unresolvable name) - the ESM
+    // counterpart of `Runtime._requireMockWithId`'s factory-less branches.
+    if (factory === undefined) {
+      return this.importGeneratedMockSync(
+        from,
+        moduleName,
+        moduleID,
+        context,
+        scratch,
+        mode,
+        resolvedPath,
+      );
+    }
 
     const result = factory();
     if (isPromise(result)) {
@@ -1294,10 +1327,217 @@ export class EsmLoader {
     this.registries.setModuleMock(moduleID, synth);
     scratch.set(moduleID, {
       cacheKey: moduleID,
+      excludeFromRegistry: true,
       kind: 'prelinked',
       module: synth,
     });
     return {cacheKey: moduleID};
+  }
+
+  // A mock decision is servable mid-generation only when an instance or a
+  // registered factory already exists. A factory-less decision would recurse
+  // into generation, and a synchronously evaluable cycle (a.mjs <-> b.mjs)
+  // then links the in-progress module against its empty metadata placeholder
+  // and fails with "does not provide an export". Loading the real module
+  // instead keeps the metadata faithful; the dep's own mock generates at its
+  // own import edges.
+  // Mock decisions can rest on names that never resolve (root manual mocks,
+  // virtual modules), so a failed resolution keeps the raw specifier.
+  private resolveMockTargetForValidation(
+    from: string,
+    specifierPath: string,
+  ): string {
+    if (specifierPath.startsWith('data:')) return specifierPath;
+    try {
+      return this.resolution.resolveEsm(from, specifierPath);
+    } catch {
+      return specifierPath;
+    }
+  }
+
+  // `jest.unmock`/`jest.deepUnmock` record their decision in the CJS map,
+  // and this require() entry consults the independent ESM map afterwards -
+  // without this check an automock decision would override unmock's
+  // documented guarantee that require() returns the real module. Registered
+  // `unstable_mockModule` factories still serve: unmocking those is
+  // `unstable_unmockModule`'s job.
+  // Consults the ID the CJS decision derived - jest.unmock records it from
+  // the requested name, and for a root-mocked bare package the name-derived
+  // ID embeds the mock path while a path-derived one does not.
+  private cjsUnmockBlocksGeneratedMock(
+    from: string,
+    moduleName: string,
+    modulePath: string,
+    moduleID: string,
+  ): boolean {
+    if (this.mockState.getEsmFactory(moduleID) !== undefined) return false;
+    const cjsModuleId = this.mockState.getCjsModuleId(from, moduleName);
+    if (!this.mockState.isExplicitlyUnmocked(cjsModuleId)) return false;
+    // jest.deepUnmock records its transitive scope under the CJS ID; the
+    // real graph about to be walked consults the ESM ID of this root as the
+    // importer, so mirror the mark - otherwise the root loads real while its
+    // ESM deps stay automocked.
+    if (this.mockState.isTransitivelyUnmocked(cjsModuleId)) {
+      this.mockState.markTransitive(
+        this.mockState.getEsmModuleId(from, modulePath),
+        false,
+      );
+    }
+    return true;
+  }
+
+  private mockDecisionServable(moduleID: string): boolean {
+    return (
+      this.generatingMockDepth === 0 ||
+      this.registries.getModuleMock(moduleID) !== undefined ||
+      this.mockState.getEsmFactory(moduleID) !== undefined
+    );
+  }
+
+  private importGeneratedMockSync(
+    from: string,
+    moduleName: string,
+    moduleID: string,
+    context: VMContext,
+    scratch: Map<string, ScratchEntry>,
+    mode: SyncEsmMode,
+    resolvedPath?: string,
+  ): {cacheKey: string} | LoadAsync {
+    // A data: URI is its own module - there is no file to have a sibling or
+    // root manual mock.
+    const manualMockPath = moduleName.startsWith('data:')
+      ? null
+      : this.resolution.findEsmManualMock(from, moduleName, resolvedPath);
+    // The load runs against scratch registries so the module executed here
+    // (the mock file, or the real module inspected for automock metadata)
+    // doesn't pollute the live caches - mirroring `withScratchRegistries` in
+    // the CJS automock path.
+    const mockModule = manualMockPath
+      ? this.registries.withScratchRegistries(() =>
+          this.loadModuleForMockSync(from, manualMockPath, context, mode),
+        )
+      : this.buildAutomockSync(from, moduleName, context, mode, resolvedPath);
+    if (mockModule === LOAD_ASYNC) return LOAD_ASYNC;
+    this.registries.setModuleMock(moduleID, mockModule);
+    scratch.set(moduleID, {
+      cacheKey: moduleID,
+      excludeFromRegistry: true,
+      kind: 'prelinked',
+      module: mockModule,
+    });
+    return {cacheKey: moduleID};
+  }
+
+  // Loads a module by path with mocks out of the picture: either the manual
+  // mock file itself, or the real module automocking needs metadata from.
+  // CJS files can't go through the graph walker (their transform output
+  // expects the CJS wrapper), so they load through the mock-free
+  // `Runtime.requireModule` seam and get the usual synthetic wrapper.
+  private loadModuleForMockSync(
+    from: string,
+    modulePath: string,
+    context: VMContext,
+    mode: SyncEsmMode,
+  ): ESModule | LoadAsync {
+    if (modulePath.startsWith('data:')) {
+      return this.tryLoadGraphSync(modulePath, '', mode);
+    }
+    if (
+      !modulePath.endsWith('.json') &&
+      !isWasm(modulePath) &&
+      !this.shouldLoadAsEsm(modulePath)
+    ) {
+      try {
+        const synthetic = buildCjsAsEsmSyntheticModule(
+          from,
+          modulePath,
+          context,
+          this.requireModule,
+          this.cjsExportsCache,
+        );
+        const evaluated = evaluateSyntheticModule(synthetic);
+        if (isPromise(evaluated)) return LOAD_ASYNC;
+        return evaluated;
+      } catch (error) {
+        if (!(error instanceof CjsParseError)) throw error;
+        if (this.resolution.isExplicitlyCommonjs(modulePath)) throw error.cause;
+        // ESM syntax without an ESM marker - load through the walker below.
+      }
+    }
+    return this.tryLoadGraphSync(modulePath, '', mode);
+  }
+
+  private buildAutomockSync(
+    from: string,
+    moduleName: string,
+    context: VMContext,
+    mode: SyncEsmMode,
+    resolvedPath?: string,
+  ): SyntheticModule | LoadAsync {
+    const moduleMocker = this.environment.moduleMocker;
+    invariant(
+      moduleMocker,
+      '`moduleMocker` must be set on an environment when created',
+    );
+    const modulePath =
+      resolvedPath ??
+      (moduleName.startsWith('data:')
+        ? moduleName
+        : this.resolution.resolveEsm(from, moduleName));
+    // The CJS automock caches metadata for the raw module.exports under the
+    // bare path; the namespace shape (default/'module.exports' and per-name
+    // bindings) differs, so the two must not share an entry.
+    const metadataKey = `esm:${modulePath}`;
+    if (!this.mockState.hasMockMetadata(metadataKey)) {
+      // Seeded before the load so a mock cycle resolves against the
+      // placeholder instead of recursing - same trick as `generateMock`.
+      this.mockState.setMockMetadata(
+        metadataKey,
+        moduleMocker.getMetadata({}) ?? {},
+      );
+      let realModule: ESModule | LoadAsync;
+      this.generatingMockDepth++;
+      try {
+        realModule = this.registries.withScratchRegistries(() =>
+          this.loadModuleForMockSync(from, modulePath, context, mode),
+        );
+      } catch (error) {
+        this.mockState.deleteMockMetadata(metadataKey);
+        throw error;
+      } finally {
+        this.generatingMockDepth--;
+      }
+      if (realModule === LOAD_ASYNC) {
+        // The placeholder must not survive a bail: the legacy retry would
+        // read it back as finished metadata and produce an empty mock.
+        this.mockState.deleteMockMetadata(metadataKey);
+        return LOAD_ASYNC;
+      }
+      const metadata = moduleMocker.getMetadata(realModule.namespace);
+      if (metadata == null) {
+        this.mockState.deleteMockMetadata(metadataKey);
+        throw new Error(
+          `Failed to get mock metadata: ${modulePath}\n\n` +
+            'See: https://jestjs.io/docs/manual-mocks#content',
+        );
+      }
+      this.mockState.setMockMetadata(metadataKey, metadata);
+    }
+    const generated = moduleMocker.generateFromMetadata(
+      this.mockState.getMockMetadata(metadataKey)!,
+    );
+    const mockRecord = this.mockState.notifyMockGenerated(
+      modulePath,
+      generated,
+    );
+    // The resolved path is the identifier: the legacy dynamic-import path
+    // validates import attributes against it, so a JSON target reached
+    // through an extensionless specifier must read as a .json module.
+    return syntheticFromExports(
+      modulePath,
+      context,
+      mockRecord as Record<string, unknown>,
+    );
   }
 
   // Construct a wasm SyntheticModule for the sync graph. Wasm imports are
@@ -1312,6 +1552,7 @@ export class EsmLoader {
     context,
     identifier,
     mode,
+    pendingBuilds,
     registry,
     scratch,
     worklist,
@@ -1321,6 +1562,7 @@ export class EsmLoader {
     context: VMContext;
     identifier: string;
     mode: SyncEsmMode;
+    pendingBuilds: PendingBuilds;
     registry: ModuleRegistry | Map<string, JestModule>;
     scratch: Map<string, ScratchEntry>;
     worklist: Array<WorklistEntry>;
@@ -1337,6 +1579,7 @@ export class EsmLoader {
         scratch,
         registry,
         mode,
+        pendingBuilds,
       );
       if (resolved === LOAD_ASYNC) return LOAD_ASYNC;
       moduleSpecToCacheKey.set(depSpec, resolved.cacheKey);
@@ -1384,6 +1627,7 @@ export class EsmLoader {
     cacheKey,
     context,
     mode,
+    pendingBuilds,
     registry,
     scratch,
     specifier,
@@ -1392,6 +1636,7 @@ export class EsmLoader {
     cacheKey: string;
     context: VMContext;
     mode: SyncEsmMode;
+    pendingBuilds: PendingBuilds;
     registry: ModuleRegistry | Map<string, JestModule>;
     scratch: Map<string, ScratchEntry>;
     specifier: string;
@@ -1406,6 +1651,7 @@ export class EsmLoader {
         context,
         identifier: specifier,
         mode,
+        pendingBuilds,
         registry,
         scratch,
         worklist,
@@ -1434,6 +1680,7 @@ export class EsmLoader {
           this.jestGlobals.jestObjectFor(specifier);
       },
       mode,
+      pendingBuilds,
       registry,
       scratch,
       worklist,
@@ -1450,6 +1697,7 @@ export class EsmLoader {
     identifier,
     initializeImportMeta,
     mode,
+    pendingBuilds,
     registry,
     scratch,
     worklist,
@@ -1460,6 +1708,7 @@ export class EsmLoader {
     identifier: string;
     initializeImportMeta: (meta: ImportMeta) => void;
     mode: SyncEsmMode;
+    pendingBuilds: PendingBuilds;
     registry: ModuleRegistry | Map<string, JestModule>;
     scratch: Map<string, ScratchEntry>;
     worklist: Array<WorklistEntry>;
@@ -1487,7 +1736,10 @@ export class EsmLoader {
       `moduleRequests unavailable on ${identifier}`,
     );
     const deps: Array<string> = [];
-    for (const {specifier, attributes} of module.moduleRequests) {
+    for (const {specifier, attributes, phase} of module.moduleRequests) {
+      if (phase === 'source') {
+        throw makeSourcePhaseUnsupportedError(specifier, identifier);
+      }
       const resolved = this.resolveSpecifierForSyncGraph(
         identifier,
         specifier,
@@ -1495,9 +1747,14 @@ export class EsmLoader {
         scratch,
         registry,
         mode,
+        pendingBuilds,
       );
       if (resolved === LOAD_ASYNC) return LOAD_ASYNC;
-      validateImportAttributes(resolved.modulePath, attributes, identifier);
+      this.importAttributeValidator.validate(
+        resolved.modulePath,
+        attributes,
+        identifier,
+      );
       deps.push(resolved.cacheKey);
       if (resolved.enqueue) worklist.push(resolved.enqueue);
     }
@@ -1542,10 +1799,16 @@ export class EsmLoader {
     identifier: string,
     context: VMContext,
     importAttributes?: ImportAttributes,
+    phase?: string,
   ): Promise<VMModule> {
+    if (phase === 'source') {
+      return Promise.reject(
+        makeSourcePhaseUnsupportedError(specifier, identifier),
+      );
+    }
     return this.resolveModule<VMModule>(specifier, identifier, context).then(
       m => {
-        validateImportAttributes(
+        this.importAttributeValidator.validate(
           m.identifier,
           importAttributes ?? {},
           identifier,
@@ -1575,13 +1838,20 @@ export class EsmLoader {
     modulePath: string,
     suffix = '',
   ): Promise<ESModule> {
-    // Two gates here. `supportsSyncEvaluate` is a Node-version check: the
+    // Three gates here. `supportsSyncEvaluate` is a Node-version check: the
     // sync core relies on `SyntheticModule` starting `'linked'` and on
     // `evaluate()` completing sync, both of which need v22.21+ / v24.8+.
     // `canResolveSync` is a configured-resolver check: with an async-only
     // user resolver `findNodeModule` silently falls back to the default
-    // resolver and would silently miss user mappings.
-    if (supportsSyncEvaluate && this.resolution.canResolveSync()) {
+    // resolver and would silently miss user mappings. A resolver with a
+    // distinct `async` hook next to its sync one never takes the sync walk
+    // for imports at all - even a successful sync resolution may disagree
+    // with the async hook `resolveModuleAsync` would pick.
+    if (
+      supportsSyncEvaluate &&
+      this.resolution.canResolveSync() &&
+      !this.resolution.hasDistinctAsyncResolver()
+    ) {
       const synced = this.tryLoadGraphSync(
         modulePath,
         suffix,
@@ -1690,6 +1960,11 @@ export class EsmLoader {
           });
         }
 
+        this.throwOnSourcePhaseRequests(
+          module as VMModuleWithAsyncGraph,
+          modulePath,
+        );
+
         invariant(
           !registry.has(cacheKey),
           `Module cache already has entry ${cacheKey}. This is a bug in Jest, please report it!`,
@@ -1747,7 +2022,12 @@ export class EsmLoader {
         specifier,
       );
       if (dataDecision.shouldMock) {
-        return this.importMock(specifier, dataDecision.moduleID, context);
+        return this.importMock(
+          referencingIdentifier,
+          specifier,
+          dataDecision.moduleID,
+          context,
+        );
       }
       // The canonical serialization (whitespace stripped, non-ASCII
       // percent-encoded) is the module's URL: spelling variants of one URL
@@ -1782,6 +2062,10 @@ export class EsmLoader {
           },
         });
       }
+      this.throwOnSourcePhaseRequests(
+        module as VMModuleWithAsyncGraph,
+        specifier,
+      );
       registry.set(specifier, module);
       return module as T;
     }
@@ -1794,7 +2078,12 @@ export class EsmLoader {
       specifierPath,
     );
     if (decision.shouldMock) {
-      return this.importMock(specifierPath, decision.moduleID, context);
+      return this.importMock(
+        referencingIdentifier,
+        specifierPath,
+        decision.moduleID,
+        context,
+      );
     }
 
     const resolved = await this.resolution.resolveEsmAsync(
@@ -1843,7 +2132,7 @@ export class EsmLoader {
             referencingModule.context,
           );
           const extraAttrs = extra as ModuleLinkExtra | undefined;
-          validateImportAttributes(
+          this.importAttributeValidator.validate(
             resolved.identifier,
             extraAttrs?.attributes ?? extraAttrs?.assert ?? {},
             referencingModule.identifier,
@@ -1938,12 +2227,22 @@ export class EsmLoader {
   }
 
   private async importMock<T = unknown>(
+    from: string,
     moduleName: string,
     moduleID: string,
     context: VMContext,
   ): Promise<T> {
     if (this.registries.hasModuleMock(moduleID)) {
-      return this.registries.getModuleMock(moduleID) as T;
+      // A generated instance was built with the sync resolver hook - under a
+      // distinct-hook resolver the import path excludes those, so fall
+      // through to the factory error instead of reusing it. Factory
+      // instances reuse regardless: no resolution shaped them.
+      const generatedUnderSyncHook =
+        this.mockState.getEsmFactory(moduleID) === undefined &&
+        this.resolution.hasDistinctAsyncResolver();
+      if (!generatedUnderSyncHook) {
+        return this.registries.getModuleMock(moduleID) as T;
+      }
     }
 
     const factory = this.mockState.getEsmFactory(moduleID);
@@ -1954,6 +2253,58 @@ export class EsmLoader {
       return evaluateSyntheticModule(module) as T;
     }
 
+    // Factory-less decision (automock or manual mock). The generated-mock
+    // builder is sync-core only; on capable Nodes reuse it here so dynamic
+    // `import()` gets the same mocks as static imports and require(esm).
+    // Generation is sync-only: it loads the real module's graph through the
+    // sync walker, so every nested dependency resolves with the sync hook.
+    // A resolver with a distinct async hook is therefore excluded - the
+    // wrong graph would feed the metadata whenever the hooks disagree - and
+    // keeps the factory error below. An async generation path does not
+    // exist yet; the sync route is the default and covers the rest.
+    if (
+      supportsSyncEvaluate &&
+      this.resolution.canResolveSync() &&
+      !this.resolution.hasDistinctAsyncResolver()
+    ) {
+      let resolvedPath: string | undefined;
+      try {
+        resolvedPath = moduleName.startsWith('data:')
+          ? moduleName
+          : await this.resolution.resolveEsmAsync(from, moduleName);
+      } catch (error) {
+        // The decision can rest on a root manual __mocks__ entry for a name
+        // that does not resolve - generation then loads that mock without a
+        // target path.
+        const manualMock = await this.resolution.getEsmMockModuleAsync(
+          from,
+          moduleName,
+        );
+        if (manualMock === null) throw error;
+      }
+      const scratch = new Map<string, ScratchEntry>();
+      const generated = this.importGeneratedMockSync(
+        from,
+        moduleName,
+        moduleID,
+        context,
+        scratch,
+        'sync-preferred',
+        resolvedPath,
+      );
+      if (generated !== LOAD_ASYNC) {
+        // `linkAndEvaluateModule` evaluates the module for this caller.
+        return scratch.get(generated.cacheKey)!.module as T;
+      }
+    }
+
+    // Known hole: with an async-only resolver or transformer, a resolver
+    // with distinct sync/async hooks, on Node without sync evaluation
+    // (< 24.9), or when the real module's graph needs async evaluation
+    // (top-level await), automock and manual __mocks__ decisions still end
+    // here. Serving them needs an async twin of importGeneratedMockSync -
+    // including generation isolation that survives awaits, which neither
+    // the depth counter nor withScratchRegistries offers.
     throw new Error('Attempting to import a mock without a factory');
   }
 
@@ -1998,7 +2349,14 @@ export class EsmLoader {
     specifier: string,
     referencingModule: VMModule,
     importAttributes?: ImportAttributes,
+    phase?: string,
   ): Promise<VMModule> => {
+    if (phase === 'source') {
+      throw makeSourcePhaseUnsupportedError(
+        specifier,
+        referencingModule.identifier,
+      );
+    }
     invariant(
       runtimeSupportsVmModules,
       'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
@@ -2014,7 +2372,7 @@ export class EsmLoader {
       referencingModule.identifier,
       referencingModule.context,
     );
-    validateImportAttributes(
+    this.importAttributeValidator.validate(
       dyn.identifier,
       importAttributes ?? {},
       referencingModule.identifier,

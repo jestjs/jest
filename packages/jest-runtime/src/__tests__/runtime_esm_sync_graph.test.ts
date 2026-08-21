@@ -1545,3 +1545,743 @@ describe('Runtime sync ESM graph - require.cache proxy in isolation', () => {
     },
   );
 });
+
+describe('Runtime sync ESM graph - automock', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithSyncEsm('require() automocks an ESM module', async () => {
+    const runtime = await createRuntime(__filename, {
+      automock: true,
+      rootDir: ROOT_DIR,
+    });
+    const exports = runtime.requireModule(FROM, './automock-dep.mjs');
+    expect(exports.greet._isMockFunction).toBe(true);
+    expect(exports.greet()).toBeUndefined();
+    expect(exports.value).toBe(42);
+  });
+
+  testWithSyncEsm('automocks the ESM deps of an imported module', async () => {
+    const runtime = await createRuntime(__filename, {
+      automock: true,
+      rootDir: ROOT_DIR,
+    });
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-automock-dep.mjs',
+    )) as any;
+    expect(m.namespace.greetIsMock).toBe(true);
+    expect(m.namespace.greetResult).toBeUndefined();
+    expect(m.namespace.depValue).toBe(42);
+  });
+
+  testWithSyncEsm(
+    'require() and import share one automock instance',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const required = runtime.requireModule(FROM, './automock-dep.mjs');
+      const imported = (await runtime.unstable_importModule(
+        FROM,
+        './import-automock-dep.mjs',
+      )) as any;
+      expect(imported.namespace.greet).toBe(required.greet);
+    },
+  );
+
+  testWithSyncEsm(
+    'a sibling __mocks__ file wins over the generated automock',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const exports = runtime.requireModule(FROM, './automock-manual-dep.mjs');
+      expect(exports.kind).toBe('mocked-manual');
+    },
+  );
+
+  testWithSyncEsm(
+    'requireModuleOrMock serves the ESM manual mock and the automock',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const manual = runtime.requireModuleOrMock(
+        FROM,
+        './automock-manual-dep.mjs',
+      );
+      expect(manual.kind).toBe('mocked-manual');
+      const generated = runtime.requireModuleOrMock(FROM, './automock-dep.mjs');
+      expect(generated.greet._isMockFunction).toBe(true);
+      expect(generated.value).toBe(42);
+    },
+  );
+
+  testWithSyncEsm(
+    'jest.mock without a factory automocks an ESM target',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const {jest: jestObject} = runtime.requireModuleOrMock(
+        FROM,
+        '@jest/globals',
+      );
+      jestObject.mock('./automock-dep.mjs');
+      const exports = runtime.requireModuleOrMock(FROM, './automock-dep.mjs');
+      expect(exports.greet._isMockFunction).toBe(true);
+    },
+  );
+
+  testWithSyncEsm('automocks a CJS dep of an ESM graph', async () => {
+    const runtime = await createRuntime(__filename, {
+      automock: true,
+      rootDir: ROOT_DIR,
+    });
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-automock-cjs-dep.mjs',
+    )) as any;
+    expect(m.namespace.runIsMock).toBe(true);
+    expect(m.namespace.cjsTag).toBe('real-cjs');
+  });
+
+  testWithSyncEsm('automocks a dynamically imported ESM dep', async () => {
+    const runtime = await createRuntime(__filename, {
+      automock: true,
+      rootDir: ROOT_DIR,
+    });
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './automock-dynamic.mjs',
+    )) as any;
+    expect(m.namespace.dep.greet._isMockFunction).toBe(true);
+    expect(m.namespace.dep.value).toBe(42);
+  });
+
+  testWithSyncEsm(
+    'mocks the file each condition set resolves for a conditional package',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const required = runtime.requireModuleOrMock(FROM, 'dual-conditions-pkg');
+      expect(required.syncOnly._isMockFunction).toBe(true);
+      expect(required.importOnly).toBeUndefined();
+    },
+  );
+
+  testWithSyncEsm(
+    'picks the sibling mock of the file each condition set resolves',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-dual-manual-pkg.mjs',
+      )) as any;
+      expect(m.namespace.mockKind).toBe('mocked-import-target');
+      const required = runtime.requireModuleOrMock(
+        FROM,
+        'dual-conditions-manual-pkg',
+      );
+      expect(required.mockKind).toBe('mocked-sync-target');
+    },
+  );
+
+  testWithSyncEsm(
+    'a dual-hook resolver keeps the factory error for a dynamic import',
+    async () => {
+      // Generation is sync-only and would resolve the real graph's deps with
+      // the sync hook - the wrong graph when the hooks disagree - so
+      // factory-less mocks under a dual-hook resolver stay unsupported.
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        resolver: path.join(ROOT_DIR, 'dual-hook-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      const loadDualAlias = runtime.requireModule(
+        FROM,
+        './dynamic-imports-dual-alias.cjs',
+      );
+      await expect(loadDualAlias()).rejects.toThrow(
+        'Attempting to import a mock without a factory',
+      );
+    },
+  );
+  testWithSyncEsm(
+    'a root __mocks__ entry for an unresolvable name serves dynamic imports',
+    async () => {
+      // The default test config only crawls .js, and root __mocks__ entries
+      // resolve through the haste map - the .mjs mock must be indexed.
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        moduleFileExtensions: ['js', 'mjs', 'cjs', 'json'],
+        rootDir: ROOT_DIR,
+      });
+      const loadGhost = runtime.requireModule(
+        FROM,
+        './dynamic-imports-ghost.cjs',
+      );
+      const namespace = await loadGhost();
+      expect(namespace.kind).toBe('mocked-ghost');
+    },
+  );
+
+  testWithSyncEsm(
+    'an async-only resolver still fails require() of an automocked ESM target',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        resolver: path.join(ROOT_DIR, 'async-only-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      expect(() =>
+        runtime.requireModuleOrMock(FROM, './automock-dep.mjs'),
+      ).toThrow(expect.objectContaining({code: 'ERR_REQUIRE_ASYNC_MODULE'}));
+    },
+  );
+
+  testWithSyncEsm(
+    'require() and import share one instance of a root manual mock',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        moduleFileExtensions: ['js', 'mjs', 'cjs', 'json'],
+        rootDir: ROOT_DIR,
+      });
+      const required = runtime.requireModuleOrMock(FROM, 'rooted-mock-pkg');
+      expect(required.marker).toEqual({kind: 'rooted-mock'});
+      const imported = (await runtime.unstable_importModule(
+        FROM,
+        './import-rooted-mock-pkg.mjs',
+      )) as any;
+      expect(imported.namespace.marker).toBe(required.marker);
+    },
+  );
+  testWithSyncEsm('automocks a statically imported data: URI', async () => {
+    const runtime = await createRuntime(__filename, {
+      automock: true,
+      rootDir: ROOT_DIR,
+    });
+    const m = (await runtime.unstable_importModule(
+      FROM,
+      './import-data-uri-automock.mjs',
+    )) as any;
+    expect(m.namespace.mocked._isMockFunction).toBe(true);
+    expect(m.namespace.mocked()).toBeUndefined();
+    expect(m.namespace.value).toBe(7);
+  });
+
+  testWithSyncEsm('automocks a dynamically imported data: URI', async () => {
+    const runtime = await createRuntime(__filename, {
+      automock: true,
+      rootDir: ROOT_DIR,
+    });
+    const loadDataUri = runtime.requireModule(
+      FROM,
+      './dynamic-imports-data-uri.cjs',
+    );
+    const namespace = await loadDataUri();
+    expect(namespace.mocked._isMockFunction).toBe(true);
+    expect(namespace.value).toBe(7);
+  });
+  testWithSyncEsm(
+    'validates JSON attributes against the resolved automock target',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        moduleFileExtensions: ['js', 'mjs', 'cjs', 'json'],
+        rootDir: ROOT_DIR,
+      });
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-automock-json-extensionless.mjs',
+      )) as any;
+      expect(m.namespace.data.answer).toBe(42);
+    },
+  );
+
+  testWithSyncEsm(
+    'validates JSON attributes for a dynamically imported automock target',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        moduleFileExtensions: ['js', 'mjs', 'cjs', 'json'],
+        rootDir: ROOT_DIR,
+      });
+      const loadJson = runtime.requireModule(
+        FROM,
+        './dynamic-imports-automock-json.cjs',
+      );
+      const namespace = await loadJson();
+      expect(namespace.default.answer).toBe(42);
+    },
+  );
+
+  testWithSyncEsm(
+    'a dual-hook resolver keeps the factory error for a static import',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        resolver: path.join(ROOT_DIR, 'dual-hook-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      await expect(
+        runtime.unstable_importModule(FROM, './import-dual-alias-static.mjs'),
+      ).rejects.toThrow('Attempting to import a mock without a factory');
+    },
+  );
+  testWithSyncEsm(
+    'imports honor the async hook when the two hooks disagree',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        resolver: path.join(ROOT_DIR, 'disagreeing-hook-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-disagreeing-alias.mjs',
+      )) as any;
+      expect(m.namespace.greet()).toBe('real');
+      expect(m.namespace.kind).toBeUndefined();
+      // A fresh runtime: the wrapper is one module instance per registry,
+      // and the import above already evaluated it with the async target.
+      const requireRuntime = await createRuntime(__filename, {
+        resolver: path.join(ROOT_DIR, 'disagreeing-hook-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      const required = requireRuntime.requireModule(
+        FROM,
+        './import-disagreeing-alias.mjs',
+      );
+      expect(required.kind).toBe('real-manual');
+      expect(required.greet).toBeUndefined();
+    },
+  );
+
+  testWithSyncEsm(
+    'jest.unmock makes require() return the real module',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const {jest: jestObject} = runtime.requireModuleOrMock(
+        FROM,
+        '@jest/globals',
+      );
+      jestObject.unmock('./automock-dep.mjs');
+      const exports = runtime.requireModuleOrMock(FROM, './automock-dep.mjs');
+      expect(exports.greet()).toBe('real');
+    },
+  );
+
+  testWithSyncEsm(
+    'an unstable_mockModule factory survives a CJS jest.unmock',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const {jest: jestObject} = runtime.requireModuleOrMock(
+        FROM,
+        '@jest/globals',
+      );
+      jestObject.unstable_mockModule('./automock-dep.mjs', () => ({
+        greet: () => 'factory',
+      }));
+      jestObject.unmock('./automock-dep.mjs');
+      const exports = runtime.requireModuleOrMock(FROM, './automock-dep.mjs');
+      expect(exports.greet()).toBe('factory');
+    },
+  );
+
+  testWithSyncEsm(
+    'require-shaped metadata does not poison a later import of the same file',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const required = runtime.requireModuleOrMock(
+        FROM,
+        './automock-cjs-dep.cjs',
+      );
+      expect(required.run._isMockFunction).toBe(true);
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-automock-cjs-dep.mjs',
+      )) as any;
+      expect(m.namespace.runIsMock).toBe(true);
+    },
+  );
+
+  testWithSyncEsm(
+    'data: spellings that serialize to one URL share a mock instance',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const loadVariants = runtime.requireModule(
+        FROM,
+        './dynamic-imports-data-uri-variants.cjs',
+      );
+      const [first, second] = await loadVariants();
+      expect(first.mocked._isMockFunction).toBe(true);
+      expect(first.mocked).toBe(second.mocked);
+    },
+  );
+  testWithSyncEsm(
+    'a factory registered under a non-canonical data: spelling serves',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const {jest: jestObject} = runtime.requireModuleOrMock(
+        FROM,
+        '@jest/globals',
+      );
+      const fixture = runtime.requireModule(
+        FROM,
+        './dynamic-imports-data-uri-tab.cjs',
+      );
+      jestObject.unstable_mockModule(fixture.uri, () => ({
+        mocked: () => 'factory',
+      }));
+      const namespace = await fixture.load();
+      expect(namespace.mocked()).toBe('factory');
+    },
+  );
+
+  testWithSyncEsm(
+    'jest.unmock of a root-mocked bare package returns the real module',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        moduleFileExtensions: ['js', 'mjs', 'cjs', 'json'],
+        rootDir: ROOT_DIR,
+      });
+      const {jest: jestObject} = runtime.requireModuleOrMock(
+        FROM,
+        '@jest/globals',
+      );
+      jestObject.unmock('rooted-mock-pkg');
+      const exports = runtime.requireModuleOrMock(FROM, 'rooted-mock-pkg');
+      expect(exports.marker).toEqual({kind: 'real'});
+    },
+  );
+  testWithSyncEsm(
+    'require() and import share one automock of an unmarked ESM file',
+    async () => {
+      // With no transform the .js file keeps its ESM syntax and loads
+      // through the parse-error fallback - the mock probe must classify it
+      // the same way, or the CJS generateMock would automock the
+      // ESM-generated mock a second time.
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+        transform: {},
+      });
+      const required = runtime.requireModuleOrMock(
+        FROM,
+        './unmarked-esm-mock-dep.js',
+      );
+      expect(required.tag._isMockFunction).toBe(true);
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-unmarked-esm-mock.mjs',
+      )) as any;
+      expect(m.namespace.tag).toBe(required.tag);
+    },
+  );
+
+  testWithSyncEsm(
+    'jest.deepUnmock keeps ESM dependencies real for require()',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const {jest: jestObject} = runtime.requireModuleOrMock(
+        FROM,
+        '@jest/globals',
+      );
+      jestObject.deepUnmock('./import-automock-dep.mjs');
+      const exports = runtime.requireModuleOrMock(
+        FROM,
+        './import-automock-dep.mjs',
+      );
+      expect(exports.greetIsMock).toBe(false);
+      expect(exports.greetResult).toBe('real');
+    },
+  );
+
+  testWithSyncEsm(
+    'a require-generated mock is not reused by import under a dual-hook resolver',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        resolver: path.join(ROOT_DIR, 'dual-hook-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      const required = runtime.requireModuleOrMock(FROM, './automock-dep.mjs');
+      expect(required.greet._isMockFunction).toBe(true);
+      const loadDualAlias = runtime.requireModule(
+        FROM,
+        './dynamic-imports-dual-alias.cjs',
+      );
+      await expect(loadDualAlias()).rejects.toThrow(
+        'Attempting to import a mock without a factory',
+      );
+    },
+  );
+  testWithSyncEsm('automocks a synchronously evaluable ESM cycle', async () => {
+    const runtime = await createRuntime(__filename, {
+      automock: true,
+      rootDir: ROOT_DIR,
+    });
+    const exports = runtime.requireModule(FROM, './automock-cycle-a.mjs');
+    expect(exports.fromA).toBe('a');
+    expect(exports.readB._isMockFunction).toBe(true);
+  });
+
+  testWithSyncEsm('requireActual bypasses the automock', async () => {
+    const runtime = await createRuntime(__filename, {
+      automock: true,
+      rootDir: ROOT_DIR,
+    });
+    const actual = runtime.requireActual(FROM, './automock-dep.mjs');
+    expect(actual.greet._isMockFunction).toBeUndefined();
+    expect(actual.greet()).toBe('real');
+  });
+
+  testWithSyncEsm(
+    'unmockedModulePathPatterns loads the real module',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+        unmockedModulePathPatterns: ['automock-dep'],
+      });
+      const exports = runtime.requireModule(FROM, './automock-dep.mjs');
+      expect(exports.greet()).toBe('real');
+    },
+  );
+});
+
+describe('Runtime sync ESM graph - link-time errors before CJS execution', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithSyncEsm(
+    'a sibling resolution error surfaces before any CJS dep executes',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-cjs-then-missing.mjs'),
+      ).rejects.toThrow("Cannot find module './does-not-exist.js'");
+      expect(runtime._environment.global.__cjsSideEffectRan).toBeUndefined();
+    },
+  );
+
+  testWithSyncEsm(
+    'an invalid import attribute surfaces before the CJS dep executes',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-cjs-bad-attribute.mjs'),
+      ).rejects.toThrow('is not of type "json"');
+      expect(runtime._environment.global.__cjsSideEffectRan).toBeUndefined();
+    },
+  );
+
+  testWithSyncEsm(
+    'require() of the same graphs fails without executing the CJS dep',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      expect(() =>
+        runtime.requireModule(FROM, './import-cjs-then-missing.mjs'),
+      ).toThrow("Cannot find module './does-not-exist.js'");
+      expect(() =>
+        runtime.requireModule(FROM, './import-cjs-bad-attribute.mjs'),
+      ).toThrow('is not of type "json"');
+      expect(runtime._environment.global.__cjsSideEffectRan).toBeUndefined();
+    },
+  );
+
+  testWithSyncEsm(
+    'automock generation waits for the graph to resolve',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      await expect(
+        runtime.unstable_importModule(
+          FROM,
+          './import-automock-then-missing.mjs',
+        ),
+      ).rejects.toThrow("Cannot find module './does-not-exist.js'");
+      expect(
+        runtime._environment.global.__automockSideEffectRan,
+      ).toBeUndefined();
+    },
+  );
+
+  testWithSyncEsm(
+    'a resolver with a distinct async hook gets the legacy retry',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        resolver: path.join(ROOT_DIR, 'dual-hook-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-dual-alias.mjs',
+      )) as any;
+      expect(m.namespace.valueA).toBe('a');
+    },
+  );
+
+  testWithSyncEsm(
+    'a sync mock factory does not run when a sibling fails to resolve',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      let factoryRan = false;
+      runtime.setModuleMock(FROM, './mock-target.mjs', () => {
+        factoryRan = true;
+        return {greeting: 'mocked'};
+      });
+      await expect(
+        runtime.unstable_importModule(
+          FROM,
+          './import-factory-then-missing.mjs',
+        ),
+      ).rejects.toThrow("Cannot find module './does-not-exist.js'");
+      expect(factoryRan).toBe(false);
+    },
+  );
+
+  testWithSyncEsm(
+    'a pending build that turns out to be unmarked ESM defers CJS siblings',
+    async () => {
+      // With no transform the .js file keeps its ESM syntax, so it can only
+      // be classified by the walker itself - the scenario this test pins.
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transform: {},
+      });
+      await expect(
+        runtime.unstable_importModule(
+          FROM,
+          './import-cjs-then-unmarked-esm.mjs',
+        ),
+      ).rejects.toThrow("Cannot find module './does-not-exist.js'");
+      expect(runtime._environment.global.__cjsSideEffectRan).toBeUndefined();
+    },
+  );
+});
+
+describe('Runtime sync ESM graph - source phase imports', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithSyncEsm(
+    'throws an actionable error for a static import source',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-source-phase.mjs'),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          code: 'ERR_SOURCE_PHASE_NOT_DEFINED',
+          message: expect.stringContaining('source phase imports'),
+        }),
+      );
+      expect(() =>
+        runtime.requireModule(FROM, './import-source-phase.mjs'),
+      ).toThrow(
+        expect.objectContaining({code: 'ERR_SOURCE_PHASE_NOT_DEFINED'}),
+      );
+    },
+  );
+
+  testWithSyncEsm(
+    'rejects a dynamic import.source() with the same error',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './dynamic-source-phase.mjs',
+      )) as any;
+      await expect(m.namespace.loadSource()).rejects.toThrow(
+        expect.objectContaining({code: 'ERR_SOURCE_PHASE_NOT_DEFINED'}),
+      );
+    },
+  );
+
+  testWithSyncEsm(
+    'throws through the legacy loader when top-level await forces it',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await expect(
+        runtime.unstable_importModule(FROM, './import-source-after-tla.mjs'),
+      ).rejects.toThrow(
+        expect.objectContaining({code: 'ERR_SOURCE_PHASE_NOT_DEFINED'}),
+      );
+    },
+  );
+
+  testWithSyncEsm(
+    'rejects import.source() called from a CJS module',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const loadSource = runtime.requireModule(
+        FROM,
+        './dynamic-source-phase.cjs',
+      );
+      await expect(loadSource()).rejects.toThrow(
+        expect.objectContaining({code: 'ERR_SOURCE_PHASE_NOT_DEFINED'}),
+      );
+    },
+  );
+});
+
+describe('Runtime sync ESM graph - require.cache key hygiene', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  testWithSyncEsm(
+    'exposes only path keys, never mock or synthetic registry keys',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        automock: true,
+        rootDir: ROOT_DIR,
+      });
+      const probe = runtime.requireModule(FROM, './reads-cache-keys.cjs');
+      expect(probe.depIsMocked).toBe(true);
+      expect(probe.keys.every((key: string) => path.isAbsolute(key))).toBe(
+        true,
+      );
+    },
+  );
+
+  testWithSyncEsm(
+    'keeps @jest/globals and core entries out of require.cache',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      await runtime.unstable_importModule(FROM, './import-jest-globals.mjs');
+      await runtime.unstable_importModule(FROM, './import-core.mjs');
+      const probe = runtime.requireModule(FROM, './reads-cache-keys.cjs');
+      expect(probe.keys.every((key: string) => path.isAbsolute(key))).toBe(
+        true,
+      );
+    },
+  );
+});

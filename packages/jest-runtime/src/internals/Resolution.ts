@@ -179,29 +179,63 @@ export class Resolution {
   //    respective subDir{1,2} directories and expects a manual mock
   //    corresponding to that particular my_module.js file.
   findManualMock(from: string, moduleName: string): string | null {
+    return this.findManualMockCached(from, moduleName, 'cjs', undefined);
+  }
+
+  // The ESM variant resolves the root-name mock and the sibling directory
+  // with import conditions; a caller that already resolved the target passes
+  // it so the sibling lookup matches the file the mock replaces.
+  findEsmManualMock(
+    from: string,
+    moduleName: string,
+    resolvedPath?: string,
+  ): string | null {
+    return this.findManualMockCached(from, moduleName, 'esm', resolvedPath);
+  }
+
+  private findManualMockCached(
+    from: string,
+    moduleName: string,
+    mode: 'cjs' | 'esm',
+    resolvedPath: string | undefined,
+  ): string | null {
     // Normalize core specifiers (`node:fs` → `fs`) before building the cache
     // key so the two forms share an entry instead of populating two.
     const canonicalName = this.isCoreModule(moduleName)
       ? this.normalizeCoreModuleSpecifier(moduleName)
       : moduleName;
-    const cacheKey = `${from}\0${canonicalName}`;
+    const cacheKey = `${mode}\0${from}\0${canonicalName}\0${resolvedPath ?? ''}`;
     let result = this.manualMockCache.get(cacheKey);
     if (result === undefined) {
-      result = this.computeManualMock(from, canonicalName);
+      result = this.computeManualMock(from, canonicalName, mode, resolvedPath);
       this.manualMockCache.set(cacheKey, result);
     }
     return result;
   }
 
-  private computeManualMock(from: string, moduleName: string): string | null {
+  private computeManualMock(
+    from: string,
+    moduleName: string,
+    mode: 'cjs' | 'esm',
+    resolvedPath: string | undefined,
+  ): string | null {
+    const getMockModule =
+      mode === 'cjs'
+        ? (name: string) => this.getCjsMockModule(from, name)
+        : (name: string) => this.getEsmMockModule(from, name);
+
     if (this.isCoreModule(moduleName)) {
-      return this.getCjsMockModule(from, moduleName);
+      return getMockModule(moduleName);
     }
 
-    const rootMock = this.getCjsMockModule(from, moduleName);
+    const rootMock = getMockModule(moduleName);
     if (rootMock) return rootMock;
 
-    const modulePath = this.resolveCjs(from, moduleName);
+    const modulePath =
+      resolvedPath ??
+      (mode === 'cjs'
+        ? this.resolveCjs(from, moduleName)
+        : this.resolveEsm(from, moduleName));
     const sibling = path.join(
       path.dirname(modulePath),
       '__mocks__',
@@ -244,6 +278,10 @@ export class Resolution {
 
   canResolveSync(): boolean {
     return this.resolver.canResolveSync();
+  }
+
+  hasDistinctAsyncResolver(): boolean {
+    return this.resolver.hasDistinctAsyncResolver();
   }
 
   resolveCjsFromDirIfExists(

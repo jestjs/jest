@@ -59,6 +59,7 @@ export interface ModuleExecutorOptions {
     identifier: string,
     context: VMContext,
     importAttributes?: ImportAttributes,
+    phase?: string,
   ) => Promise<VMModule>;
 }
 
@@ -208,10 +209,13 @@ export class ModuleExecutor {
         : filename;
       return compileFunction(scriptSource, this.injectedModuleParameters, {
         filename: scriptFilename,
+        // The fourth argument (the import phase) is missing from
+        // @types/node@18's callback type - hence the rest parameter.
         importModuleDynamically: async (
           specifier,
           _function,
           importAttributes,
+          ...rest: Array<unknown>
         ) => {
           invariant(
             runtimeSupportsVmModules,
@@ -222,6 +226,7 @@ export class ModuleExecutor {
             scriptFilename,
             vmContext,
             importAttributes as ImportAttributes | undefined,
+            rest[0] as string | undefined,
           );
         },
         parsingContext: vmContext,

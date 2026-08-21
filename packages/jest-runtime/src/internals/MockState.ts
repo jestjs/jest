@@ -21,6 +21,19 @@ const transitiveCacheKey = (from: string, moduleID: string) =>
 
 export type MockDecision = {shouldMock: boolean; moduleID: string};
 
+// Spellings that serialize to one data URL are one module in the loader
+// (which keys by `new URL(...).href`), so the mock decision and its ID must
+// canonicalize the same way. Unparseable URIs stay raw - the loader's own
+// Invalid URL error surfaces later.
+function canonicalizeDataUri(moduleName: string): string {
+  if (!moduleName.startsWith('data:')) return moduleName;
+  try {
+    return new URL(moduleName).href;
+  } catch {
+    return moduleName;
+  }
+}
+
 const NO_MOCK: MockDecision = Object.freeze({moduleID: '', shouldMock: false});
 
 export class MockState {
@@ -86,6 +99,7 @@ export class MockState {
       return NO_MOCK;
     }
 
+    moduleName = canonicalizeDataUri(moduleName);
     const moduleID = this.resolution.getEsmModuleId(
       this.virtualEsmMocks,
       from,
@@ -105,6 +119,7 @@ export class MockState {
       return NO_MOCK;
     }
 
+    moduleName = canonicalizeDataUri(moduleName);
     const moduleID = await this.resolution.getEsmModuleIdAsync(
       this.virtualEsmMocks,
       from,
@@ -143,6 +158,12 @@ export class MockState {
 
     const cached = this.shouldMockCache.get(moduleID);
     if (cached !== undefined) return cached;
+
+    // A data: URI is its own module - the filesystem resolver cannot
+    // resolve it, but the automock decision applies like any other ESM.
+    if (moduleName.startsWith('data:')) {
+      return this.applyEsmDataUriDecision(from, moduleName, moduleID);
+    }
 
     let modulePath: string;
     try {
@@ -201,6 +222,10 @@ export class MockState {
     const cached = this.shouldMockCache.get(moduleID);
     if (cached !== undefined) return cached;
 
+    if (mode === 'esm' && moduleName.startsWith('data:')) {
+      return this.applyEsmDataUriDecision(from, moduleName, moduleID);
+    }
+
     let modulePath: string;
     try {
       modulePath =
@@ -236,6 +261,31 @@ export class MockState {
       from,
       key,
       explicitMap,
+    );
+  }
+
+  // The URI stands in for the module path: the unmock list can match it,
+  // and the transitive rules see a location that is never in node_modules.
+  private applyEsmDataUriDecision(
+    from: string,
+    dataUri: string,
+    moduleID: string,
+  ): boolean {
+    if (this.unmockList?.test(dataUri)) {
+      this.shouldMockCache.set(moduleID, false);
+      return false;
+    }
+    const currentModuleID = this.resolution.getEsmModuleId(
+      this.virtualEsmMocks,
+      from,
+    );
+    return this.applyTransitive(
+      moduleID,
+      currentModuleID,
+      dataUri,
+      from,
+      transitiveCacheKey(from, moduleID),
+      this.explicitEsmMock,
     );
   }
 
@@ -289,6 +339,7 @@ export class MockState {
     factory: () => Promise<unknown> | unknown,
     options?: {virtual?: boolean},
   ): void {
+    moduleName = canonicalizeDataUri(moduleName);
     if (options?.virtual) {
       const mockPath = this.resolution.getModulePath(from, moduleName);
       this.virtualEsmMocks.set(mockPath, true);
@@ -348,6 +399,7 @@ export class MockState {
   }
 
   unmockEsm(from: string, moduleName: string): void {
+    moduleName = canonicalizeDataUri(moduleName);
     const moduleID = this.resolution.getEsmModuleId(
       this.virtualEsmMocks,
       from,
@@ -391,8 +443,20 @@ export class MockState {
     );
   }
 
+  getEsmModuleId(from: string, moduleName?: string): string {
+    return this.resolution.getEsmModuleId(
+      this.virtualEsmMocks,
+      from,
+      moduleName,
+    );
+  }
+
   isExplicitlyUnmocked(moduleID: string): boolean {
     return this.explicitCjsMock.get(moduleID) === false;
+  }
+
+  isTransitivelyUnmocked(moduleID: string): boolean {
+    return this.transitiveShouldMock.get(moduleID) === false;
   }
 
   getCjsFactory(moduleID: string): (() => unknown) | undefined {
@@ -417,6 +481,9 @@ export class MockState {
   }
   setMockMetadata(modulePath: string, metadata: MockMetadata<unknown>): void {
     this.mockMetaDataCache.set(modulePath, metadata);
+  }
+  deleteMockMetadata(modulePath: string): void {
+    this.mockMetaDataCache.delete(modulePath);
   }
 
   notifyMockGenerated<T>(moduleName: string, moduleMock: T): T {

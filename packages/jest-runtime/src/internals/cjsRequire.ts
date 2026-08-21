@@ -272,6 +272,20 @@ export class CoreModuleProvider {
         function syncBuiltinESMExports() {};
     }
 
+    // Customization hooks attach to the loader running Jest itself, never to
+    // the sandboxed require/import test code uses - and they stay registered
+    // for every later test file in the worker. Fail loudly instead.
+    for (const hookRegistrar of ['register', 'registerHooks']) {
+      if (hookRegistrar in nativeModule) {
+        // @ts-expect-error: no index signature
+        Module[hookRegistrar] = function throwHooksUnsupported() {
+          throw new Error(
+            `module.${hookRegistrar}() is not supported in Jest: the hooks would attach to the module loader running Jest itself, not to the sandboxed require/import used by test code, and would stay registered for every later test file in this worker. Use Jest's own customization points (transform, resolver, moduleNameMapper) instead.`,
+          );
+        };
+      }
+    }
+
     this.mockedModuleClass = Module;
     return Module;
   }

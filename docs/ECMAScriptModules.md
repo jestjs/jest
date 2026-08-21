@@ -64,7 +64,8 @@ On Node versions older than v24.9, `require()` of an ESM file still throws `ERR_
 
 Jest's module system diverges from Node's in a few places:
 
-- In a graph that mixes ESM and CJS, the CJS dependencies execute while the graph is built, so a CJS module can run earlier relative to its ESM siblings than it would in Node.
+- In a graph that mixes ESM and CJS, the CJS dependencies execute after the graph resolves but before the ESM bodies run, so a CJS module can run earlier relative to its ESM siblings than it would in Node. As in Node, a graph with a resolution or import-attribute error executes nothing on Node 24.9+; the legacy loader on older versions still executes a CJS dependency while linking, before a later graph error surfaces.
+- Automock metadata is collected after the importing graph resolves, one mocked module at a time: each decision loads its real module, so a load failure in one mocked module's own graph does not undo the metadata loads that came before it.
 - The named exports of a CJS module imported from ESM are a superset of Node's: keys present on `module.exports` after evaluation are exposed in addition to what static analysis finds.
 - Writes to and deletes from `require.cache` are silently ignored.
 - The static members of `require('module')` (such as `Module._resolveFilename`) come from the host Node, not from Jest's module system.
@@ -73,6 +74,7 @@ Jest's module system diverges from Node's in a few places:
 - Importing JSON without `with {type: 'json'}` emits a warning instead of throwing. This becomes an error in a future major version.
 - An `application/wasm` data: URI requires the `;base64` parameter and reports a descriptive error without it, where Node hands the percent-decoded text to WebAssembly and fails with `CompileError`.
 - A bare core specifier with a query or fragment (`import 'fs?q'`) throws `ERR_UNKNOWN_BUILTIN_MODULE`, where Node treats the whole string as a package name and fails with `ERR_MODULE_NOT_FOUND`. The `node:`-prefixed form throws the same error in both.
+- Source phase imports (`import source` / `import.source()`, used for WebAssembly) throw `ERR_SOURCE_PHASE_NOT_DEFINED`: Node attaches the compiled `WebAssembly.Module` to the target through an internal API that `node:vm` does not expose, so Jest cannot provide the source object.
 - Stack traces show file paths, not `file://` URLs.
 
 ## Module mocking in ESM
@@ -80,6 +82,8 @@ Jest's module system diverges from Node's in a few places:
 Since ESM evaluates static `import` statements before looking at the code, the hoisting of `jest.mock` calls that happens in CJS won't work for ESM. To mock modules in ESM, you need to use `require` or dynamic `import()` after `jest.mock` calls to load the mocked modules - the same applies to modules which load the mocked modules.
 
 ESM mocking is supported through `jest.unstable_mockModule`. As the name suggests, this API is still work in progress, please follow [this issue](https://github.com/jestjs/jest/issues/10025) for updates.
+
+On Node 24.9+, [automocking](Configuration.md#automock-boolean) and manual `__mocks__` files also apply to ESM: an automock is generated from the real module's namespace, and a sibling `__mocks__` file replaces it, for static imports, dynamic `import()` and `require()` alike. This covers synchronously evaluable graphs only - a module whose graph needs async evaluation (top-level await), or a project whose resolver or transformer is async-only or exposes distinct sync and async hooks, still requires `jest.unstable_mockModule`.
 
 The usage of `jest.unstable_mockModule` is essentially the same as `jest.mock` with two differences: the factory function is required and it can be sync or async:
 

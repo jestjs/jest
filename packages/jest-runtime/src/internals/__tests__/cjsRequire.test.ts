@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type nativeModule from 'node:module';
+import nativeModule from 'node:module';
 import * as path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import type {JestEnvironment, Module} from '@jest/environment';
@@ -318,6 +318,21 @@ describe('CoreModuleProvider', () => {
     ) as typeof nativeModule.Module;
     expect(typeof ModuleClass.createRequire).toBe('function');
     expect(provider.require('module')).toBe(ModuleClass);
+  });
+
+  test('mocked Module rejects register and registerHooks', () => {
+    const {provider} = makeProvider({
+      normalizeCoreModuleSpecifier: () => 'module',
+    });
+    const ModuleClass = provider.require(
+      'module',
+    ) as typeof nativeModule.Module;
+    for (const hookRegistrar of ['register', 'registerHooks']) {
+      if (!(hookRegistrar in nativeModule)) continue;
+      expect(() =>
+        (ModuleClass as unknown as Record<string, () => void>)[hookRegistrar](),
+      ).toThrow(`module.${hookRegistrar}() is not supported in Jest`);
+    }
   });
 
   test('mocked Module.createRequire delegates to requireBuilder.forFilename with the filename', () => {

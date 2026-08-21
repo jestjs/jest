@@ -1301,6 +1301,28 @@ describe('canResolveSync', () => {
     expect(resolver.canResolveSync()).toBe(true);
   });
 
+  it('reports a distinct async hook only when one is exported', () => {
+    const moduleMap = ModuleMap.create('/');
+    const dual = new Resolver(moduleMap, {
+      resolver: require.resolve('../__mocks__/userResolverDual'),
+    } as ResolverConfig);
+    expect(dual.hasDistinctAsyncResolver()).toBe(true);
+    const plain = new Resolver(moduleMap, {
+      resolver: require.resolve('../__mocks__/userResolver'),
+    } as ResolverConfig);
+    expect(plain.hasDistinctAsyncResolver()).toBe(false);
+    const syncOnly = new Resolver(moduleMap, {
+      resolver: require.resolve('../__mocks__/userResolverSync'),
+    } as ResolverConfig);
+    expect(syncOnly.hasDistinctAsyncResolver()).toBe(false);
+    const none = new Resolver(moduleMap, {} as ResolverConfig);
+    expect(none.hasDistinctAsyncResolver()).toBe(false);
+    const asyncOnly = new Resolver(moduleMap, {
+      resolver: require.resolve('../__mocks__/userResolverAsync'),
+    } as ResolverConfig);
+    expect(asyncOnly.hasDistinctAsyncResolver()).toBe(false);
+  });
+
   it('returns false when the user resolver only exports `async`', () => {
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {
