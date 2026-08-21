@@ -28,6 +28,7 @@ import type {TestState} from './TestState';
 import type {TransformCache, TransformOptions} from './TransformCache';
 import type {CoreModuleProvider} from './cjsRequire';
 import {parseDataUri} from './dataUri';
+import {hasEsmSyntax} from './esmLexer';
 import {ImportAttributeValidator} from './importAttributes';
 import type {
   ESModule,
@@ -641,9 +642,36 @@ export class EsmLoader {
     // post-order; here they run in discovery order before the ESM bodies -
     // see the divergences list in docs/ECMAScriptModules.md.
     const pendingCjsBuilds: Array<PendingCjsBuild> = [];
-    while (worklist.length > 0 || pendingCjsBuilds.length > 0) {
-      if (worklist.length === 0) {
+    const confirmedCjsBuilds: Array<PendingCjsBuild> = [];
+    while (
+      worklist.length > 0 ||
+      pendingCjsBuilds.length > 0 ||
+      confirmedCjsBuilds.length > 0
+    ) {
+      if (worklist.length === 0 && pendingCjsBuilds.length > 0) {
+        // Classify without executing: a pending file that turns out to hold
+        // unmarked ESM syntax re-enters the worklist, and its subgraph can
+        // still fail to resolve - so no CJS body may run until every pending
+        // is confirmed. The probe lexes the same transformed source the
+        // build would; explicitly-CJS parse failures defer to the build so
+        // the canonical compile error surfaces.
         const pending = pendingCjsBuilds.shift()!;
+        if (this.pendingCjsBuildIsUnmarkedEsm(pending)) {
+          worklist.push({
+            cacheKey: pending.cacheKey,
+            modulePath: pending.modulePath,
+          });
+        } else {
+          confirmedCjsBuilds.push(pending);
+        }
+        continue;
+      }
+      if (worklist.length === 0) {
+        // Resolution is complete - executing the confirmed CJS bodies is
+        // safe. A build can still surface a CjsParseError the lexer missed
+        // (V8 sees ESM syntax the lexer tolerates); that file re-enters the
+        // worklist like any other unmarked-ESM fallback.
+        const pending = confirmedCjsBuilds.shift()!;
         try {
           const committed = this.tryCommitSynthetic(
             pending.cacheKey,
@@ -662,7 +690,6 @@ export class EsmLoader {
           if (this.resolution.isExplicitlyCommonjs(pending.modulePath)) {
             throw error.cause;
           }
-          // ESM syntax without an ESM marker - load as a source module.
           worklist.push({
             cacheKey: pending.cacheKey,
             modulePath: pending.modulePath,
@@ -876,6 +903,19 @@ export class EsmLoader {
     );
 
     return rootModule;
+  }
+
+  // `hasEsmSyntax` is the discriminator every CjsParseError producer gates
+  // on, so probing it directly reproduces the build's ESM-fallback decision
+  // without running anything. Files it cannot classify (incomplete syntax
+  // both parsers reject) confirm as CJS, and the build surfaces the same
+  // canonical compile error it always has.
+  private pendingCjsBuildIsUnmarkedEsm(pending: PendingCjsBuild): boolean {
+    if (path.extname(pending.modulePath) === '.node') return false;
+    if (this.resolution.isExplicitlyCommonjs(pending.modulePath)) return false;
+    return hasEsmSyntax(
+      this.transformCache.transform(pending.modulePath, undefined),
+    );
   }
 
   // A module sits in the registry linked-but-unevaluated when an earlier walk

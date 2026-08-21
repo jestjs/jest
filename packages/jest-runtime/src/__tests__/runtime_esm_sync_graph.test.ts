@@ -1694,6 +1694,25 @@ describe('Runtime sync ESM graph - link-time errors before CJS execution', () =>
       expect(runtime._environment.global.__cjsSideEffectRan).toBeUndefined();
     },
   );
+
+  testWithSyncEsm(
+    'a pending build that turns out to be unmarked ESM defers CJS siblings',
+    async () => {
+      // With no transform the .js file keeps its ESM syntax, so it can only
+      // be classified by the walker itself - the scenario this test pins.
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transform: {},
+      });
+      await expect(
+        runtime.unstable_importModule(
+          FROM,
+          './import-cjs-then-unmarked-esm.mjs',
+        ),
+      ).rejects.toThrow("Cannot find module './does-not-exist.js'");
+      expect(runtime._environment.global.__cjsSideEffectRan).toBeUndefined();
+    },
+  );
 });
 
 describe('Runtime sync ESM graph - source phase imports', () => {

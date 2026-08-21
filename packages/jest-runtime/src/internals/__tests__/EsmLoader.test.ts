@@ -494,8 +494,11 @@ describe('EsmLoader bridges', () => {
       });
       stubs.requireModuleOrMock.mockReturnValue({fromCjs: 'yes'});
       stubs.cjsExportsCache.getExportsOf.mockReturnValue(new Set(['fromCjs']));
-      stubs.transformCache.transform.mockReturnValue(
-        "import {fromCjs} from './dep.cjs'; globalThis.__cjsBridgeOk = fromCjs;",
+      // The unmarked-ESM probe transforms the dep too - answer per file.
+      stubs.transformCache.transform.mockImplementation(filename =>
+        filename === '/dep.cjs'
+          ? 'module.exports = {fromCjs: undefined};'
+          : "import {fromCjs} from './dep.cjs'; globalThis.__cjsBridgeOk = fromCjs;",
       );
       stubs.resolution.resolveEsm.mockReturnValue('/dep.cjs');
 
