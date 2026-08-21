@@ -32,6 +32,7 @@ describe('syntheticBuilders', () => {
         '{"a": 1, "b": "two"}',
         '/file.json',
         context(),
+        text => JSON.parse(text),
       );
       const ns = await evaluate(m);
       expect(ns.default).toEqual({a: 1, b: 'two'});

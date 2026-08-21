@@ -895,7 +895,7 @@ export class EsmLoader {
         scratch.set(cacheKey, {
           cacheKey,
           kind: 'prelinked',
-          module: buildJsonSyntheticModule(
+          module: this.buildJsonModule(
             this.transformCache.transformJson(
               modulePath,
               ESM_TRANSFORM_OPTIONS,
@@ -1392,7 +1392,7 @@ export class EsmLoader {
       return {
         cacheKey,
         kind: 'prelinked',
-        module: buildJsonSyntheticModule(code as string, specifier, context),
+        module: this.buildJsonModule(code as string, specifier, context),
       };
     }
 
@@ -1479,6 +1479,16 @@ export class EsmLoader {
     }
 
     return {cacheKey, deps, kind: 'source', module};
+  }
+
+  private buildJsonModule(
+    jsonText: string,
+    identifier: string,
+    context: VMContext,
+  ): SyntheticModule {
+    return buildJsonSyntheticModule(jsonText, identifier, context, text =>
+      this.environment.global.JSON.parse(text),
+    );
   }
 
   // Synthetic-module wrappers that close over the primitive deps. The
@@ -1609,7 +1619,7 @@ export class EsmLoader {
 
         let module: VMModule;
         if (modulePath.endsWith('.json')) {
-          module = buildJsonSyntheticModule(
+          module = this.buildJsonModule(
             this.transformCache.transformJson(
               modulePath,
               ESM_TRANSFORM_OPTIONS,
@@ -1725,7 +1735,7 @@ export class EsmLoader {
           context,
         );
       } else if (mime === 'application/json') {
-        module = buildJsonSyntheticModule(code as string, specifier, context);
+        module = this.buildJsonModule(code as string, specifier, context);
       } else {
         module = new SourceTextModule(code as string, {
           context,

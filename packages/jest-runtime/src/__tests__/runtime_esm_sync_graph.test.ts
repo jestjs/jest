@@ -739,6 +739,18 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     expect(ns.data).toEqual({answer: 42, label: 'json'});
   });
 
+  testWithSyncEsm(
+    'imported JSON objects belong to the test realm, like require()d ones',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const imported = runtime.requireModule(FROM, './import-json.mjs');
+      const required = runtime.requireModule(FROM, './data.json');
+      expect(Object.getPrototypeOf(imported.data)).toBe(
+        Object.getPrototypeOf(required),
+      );
+    },
+  );
+
   testWithSyncEsm('imports a JSON dep that starts with a BOM', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const ns = runtime.requireModule(FROM, './import-bom-json.mjs');
