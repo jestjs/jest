@@ -266,6 +266,18 @@ describe('ModuleRegistries', () => {
       expect(keys).not.toContain(fileURLToPath(PENDING_KEY));
     });
 
+    test('hides errored ESM entries', () => {
+      const registries = new ModuleRegistries(module => module.namespace);
+      registries
+        .getActiveEsmRegistry()
+        .set(LIVE_KEY, fakeEsm('errored') as JestModule);
+
+      const cache = registries.getRequireCacheProxy();
+      expect(cache['/live.mjs']).toBeUndefined();
+      expect('/live.mjs' in cache).toBe(false);
+      expect(Object.keys(cache)).toEqual([]);
+    });
+
     test('mutators silently no-op rather than throw', () => {
       const registries = new ModuleRegistries(module => module.namespace);
       const cache = registries.getRequireCacheProxy();
