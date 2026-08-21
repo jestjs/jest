@@ -1747,6 +1747,21 @@ describe('Runtime sync ESM graph - link-time errors before CJS execution', () =>
   );
 
   testWithSyncEsm(
+    'a resolver with a distinct async hook gets the legacy retry',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        resolver: path.join(ROOT_DIR, 'dual-hook-resolver.cjs'),
+        rootDir: ROOT_DIR,
+      });
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-dual-alias.mjs',
+      )) as any;
+      expect(m.namespace.valueA).toBe('a');
+    },
+  );
+
+  testWithSyncEsm(
     'a pending build that turns out to be unmarked ESM defers CJS siblings',
     async () => {
       // With no transform the .js file keeps its ESM syntax, so it can only

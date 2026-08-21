@@ -55,7 +55,7 @@ Sync code paths must validate `vm.Module#status` before reuse:
 - Rethrow `module.error` when `status === 'errored'`.
 - `'linked'` is adoptable — not returnable as-is, but not a bail either: an earlier walk linked the module and then failed before evaluating it (a sibling threw). It is instantiated, so evaluate it — `evaluateLinkedModule` at the root, or hand it to the root's evaluate cascade as an already-linked scratch entry.
 - For `'unlinked' | 'linking' | 'evaluating'`, bail (sync-preferred) or surface a typed error (sync-required).
-- `tryLoadGraphSync` must only return `LOAD_ASYNC` when something genuinely has to finish asynchronously — `requireEsmModule` turns that sentinel into the `ERR_REQUIRE_ESM` "concurrent import()" message, so returning it for any other reason reports a concurrent import that does not exist. Resolver errors, missing factory, missing `moduleRequests` API, errored cache → throw a typed error or `invariant`.
+- `tryLoadGraphSync` must only return `LOAD_ASYNC` when something genuinely has to finish asynchronously — `requireEsmModule` turns that sentinel into the `ERR_REQUIRE_ESM` "concurrent import()" message, so returning it for any other reason reports a concurrent import that does not exist. Missing factory, missing `moduleRequests` API, errored cache → throw a typed error or `invariant`. Resolver errors throw too, unless the configured resolver exports a distinct `async` hook (`Resolution.hasDistinctAsyncResolver()`) that may resolve what the sync hook could not - only then is `LOAD_ASYNC` truthful.
 
 ### Mutex hygiene
 

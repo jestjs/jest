@@ -1162,15 +1162,28 @@ export class EsmLoader {
       };
     }
 
-    // Both walker entries gate on `canResolveSync()`, so the sync resolver's
-    // failure is authoritative in either mode - the async resolver runs the
-    // same algorithm. Bailing to the legacy path instead would execute
+    // For the default and sync-only resolvers the sync failure is
+    // authoritative - retrying through the legacy path would execute
     // already-resolved CJS deps before rediscovering the same error, where
-    // Node runs nothing when the graph fails to resolve.
-    const resolved = this.resolution.resolveEsm(
-      referencingIdentifier,
-      specifierPath,
-    );
+    // Node runs nothing when the graph fails to resolve. A configured
+    // resolver with a distinct `async` hook may resolve what its sync hook
+    // cannot, so only then does an `import()` bail to the legacy retry;
+    // `require()` cannot await and throws either way.
+    let resolved: string;
+    try {
+      resolved = this.resolution.resolveEsm(
+        referencingIdentifier,
+        specifierPath,
+      );
+    } catch (error) {
+      if (
+        mode === 'sync-required' ||
+        !this.resolution.hasDistinctAsyncResolver()
+      ) {
+        throw error;
+      }
+      return LOAD_ASYNC;
+    }
 
     const cacheKey = fileCacheKey(resolved, suffix);
     if (

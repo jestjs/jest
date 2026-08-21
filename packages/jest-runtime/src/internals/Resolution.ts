@@ -246,6 +246,10 @@ export class Resolution {
     return this.resolver.canResolveSync();
   }
 
+  hasDistinctAsyncResolver(): boolean {
+    return this.resolver.hasDistinctAsyncResolver();
+  }
+
   resolveCjsFromDirIfExists(
     dir: string,
     name: string,
