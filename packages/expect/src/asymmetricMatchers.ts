@@ -297,6 +297,25 @@ class ObjectContaining extends AsymmetricMatcher<
   }
 }
 
+class Satisfying<T> extends AsymmetricMatcher<(value: T) => boolean> {
+  constructor(sample: (value: T) => boolean, inverse = false) {
+    super(sample, inverse);
+  }
+  asymmetricMatch(other: T): boolean {
+    if (typeof this.sample !== 'function') {
+      throw new TypeError(
+        `You must provide a predicate to ${this.toString()}, not '${typeof this.sample}'.`,
+      );
+    }
+    const result = this.sample(other);
+    return this.inverse ? !result : result;
+  }
+  toString() {
+    const name = this.sample.name === '' ? '' : `[${this.sample.name}]`;
+    return `${this.inverse ? 'Not' : ''}Satisfying${name}`;
+  }
+}
+
 class StringContaining extends AsymmetricMatcher<string> {
   constructor(sample: string, inverse = false) {
     if (!isA('String', sample)) {
@@ -414,6 +433,11 @@ export const objectContaining = (
 export const objectNotContaining = (
   sample: Record<string, unknown>,
 ): ObjectContaining => new ObjectContaining(sample, true);
+export const satisfying = <T>(expected: (value: T) => boolean): Satisfying<T> =>
+  new Satisfying(expected);
+export const notSatisfying = <T>(
+  expected: (value: T) => boolean,
+): Satisfying<T> => new Satisfying(expected, true);
 export const stringContaining = (expected: string): StringContaining =>
   new StringContaining(expected);
 export const stringNotContaining = (expected: string): StringContaining =>

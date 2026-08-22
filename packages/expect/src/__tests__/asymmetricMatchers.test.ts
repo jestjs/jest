@@ -17,8 +17,10 @@ import {
   closeTo,
   notArrayOf,
   notCloseTo,
+  notSatisfying,
   objectContaining,
   objectNotContaining,
+  satisfying,
   stringContaining,
   stringMatching,
   stringNotContaining,
@@ -339,6 +341,34 @@ test('ObjectNotContaining throws for non-objects', () => {
     objectNotContaining(1337).asymmetricMatch();
   }).toThrow(
     "You must provide an object to ObjectNotContaining, not 'number'.",
+  );
+});
+
+test('Satisfying matches', () => {
+  const isLong = (s: string) => s.length > 0;
+  jestExpect(satisfying(isLong).asymmetricMatch('LongName')).toBe(true);
+});
+
+test('Satisfying does not match', () => {
+  const isLong = (s: string) => s.length > 0;
+  jestExpect(satisfying(isLong).asymmetricMatch('')).toBe(false);
+});
+
+test('NotSatisfying matches', () => {
+  const isLong = (s: string) => s.length > 0;
+  jestExpect(notSatisfying(isLong).asymmetricMatch('')).toBe(true);
+});
+
+test('NotSatisfying does not match', () => {
+  const isLong = (s: string) => s.length > 0;
+  jestExpect(notSatisfying(isLong).asymmetricMatch('LongName')).toBe(false);
+});
+
+test('Satisfying toString works', () => {
+  const isLong = (s: string) => s.length > 0;
+  jestExpect(satisfying(isLong).toString()).toBe('Satisfying[isLong]');
+  jestExpect(satisfying((s: string) => s.length > 0).toString()).toBe(
+    'Satisfying',
   );
 });
 
