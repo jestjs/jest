@@ -8,6 +8,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+  pull-requests: write # to comment with pkg.pr.new publish results
+
 jobs:
   publish:
     runs-on: ubuntu-latest
