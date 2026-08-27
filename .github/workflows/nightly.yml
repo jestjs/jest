@@ -48,6 +48,6 @@ jobs:
     if: failure()
     runs-on: ubuntu-latest
     steps:
-      - uses: jayqi/failed-build-issue-action@940568ce50eeef3f31a920614cefcc6102d2f930 # v1.3.0
+      - uses: drivendataorg/failed-build-issue-action@940568ce50eeef3f31a920614cefcc6102d2f930 # v1.3.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
