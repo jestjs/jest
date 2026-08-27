@@ -1079,8 +1079,8 @@ describe('getModuleID', () => {
 });
 
 describe('default resolver factory reuse', () => {
-  const {ResolverFactory} = require('unrs-resolver') as {
-    ResolverFactory: typeof import('unrs-resolver').ResolverFactory;
+  const {ResolverFactory} = require('oxc-resolver') as {
+    ResolverFactory: typeof import('oxc-resolver').ResolverFactory;
   };
 
   test('reuses one factory per options shape instead of cloning per call', () => {
@@ -1111,6 +1111,76 @@ describe('default resolver factory reuse', () => {
     });
 
     expect(cloneWithOptions).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('oxc-resolver fallbacks', () => {
+  const root = path.resolve(__dirname, '../../../../');
+  const basedir = path.resolve(root, 'packages/jest-resolve');
+
+  test('strips file:// from moduleName', () => {
+    const fileUri = pathToFileURL(path.resolve(basedir, 'src/index.ts')).href;
+    const result = defaultResolver(fileUri, {
+      basedir,
+      defaultAsyncResolver,
+      defaultResolver,
+    });
+    expect(result).toBe(path.resolve(basedir, 'src/index.ts'));
+  });
+
+  test('normalizes . and .. paths', () => {
+    const resultDot = defaultResolver('.', {
+      basedir,
+      defaultAsyncResolver,
+      defaultResolver,
+    });
+    const resultDotDot = defaultResolver('..', {
+      basedir: path.resolve(basedir, 'src'),
+      defaultAsyncResolver,
+      defaultResolver,
+    });
+    expect(resultDot).toBe(path.resolve(basedir, 'build/index.js'));
+    expect(resultDotDot).toBe(path.resolve(basedir, 'build/index.js'));
+  });
+
+  test('symlink fallback logic (sync and async)', async () => {
+    const tempDir = fs.realpathSync(
+      fs.mkdtempSync(path.join(tmpdir(), 'jest-resolve-symlink-fallback-')),
+    );
+    try {
+      const realModuleDir = path.join(tempDir, 'packages', 'dep');
+      const appDir = path.join(tempDir, 'app');
+
+      fs.mkdirSync(realModuleDir, {recursive: true});
+      fs.mkdirSync(path.join(appDir, 'node_modules'), {recursive: true});
+      fs.writeFileSync(
+        path.join(realModuleDir, 'package.json'),
+        JSON.stringify({main: 'index.js', name: 'dep', version: '1.0.0'}),
+      );
+      fs.writeFileSync(
+        path.join(realModuleDir, 'index.js'),
+        'module.exports = 1;\n',
+      );
+
+      const symlinkedModuleDir = path.join(appDir, 'node_modules', 'dep');
+      fs.symlinkSync(realModuleDir, symlinkedModuleDir, 'junction');
+
+      const resultSync = defaultResolver('./index.js', {
+        basedir: symlinkedModuleDir,
+        defaultAsyncResolver,
+        defaultResolver,
+      });
+      expect(resultSync).toBe(path.join(realModuleDir, 'index.js'));
+
+      const resultAsync = await defaultAsyncResolver('./index.js', {
+        basedir: symlinkedModuleDir,
+        defaultAsyncResolver,
+        defaultResolver,
+      });
+      expect(resultAsync).toBe(path.join(realModuleDir, 'index.js'));
+    } finally {
+      fs.rmSync(tempDir, {force: true, recursive: true});
+    }
   });
 });
 

@@ -90,7 +90,7 @@
     "esbuild": {
       "built": true
     },
-    "unrs-resolver": {
+    "oxc-resolver": {
       "built": true
     }
   },

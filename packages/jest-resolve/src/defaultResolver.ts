@@ -5,12 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {realpath} from 'node:fs/promises';
 import {isBuiltin} from 'node:module';
+import {fileURLToPath} from 'node:url';
 import {
   type ResolveResult,
   ResolverFactory,
   type NapiResolveOptions as UpstreamResolveOptions,
-} from 'unrs-resolver';
+} from 'oxc-resolver';
+import {tryRealpath} from 'jest-util';
 import {
   getAnyResolver,
   getResolver,
@@ -133,7 +136,15 @@ export function baseResolver(
   options: ResolverOptions,
   async?: true,
 ): ResolveResult | Promise<ResolveResult> {
-  // `builtins` in `unrs-resolver` is static which could be wrong at runtime.
+  if (path.startsWith('file://')) {
+    try {
+      path = fileURLToPath(path);
+    } catch {}
+  }
+  if (path === '.' || path === '..') {
+    path += '/';
+  }
+  // `builtins` in `oxc-resolver` is static which could be wrong at runtime.
   if (isBuiltin(path)) {
     return {path};
   }
@@ -188,7 +199,7 @@ export function baseResolver(
       extensions: extensions as Array<string> | undefined,
       modules,
       roots: roots || (rootDir ? [rootDir] : undefined),
-      // Honor Node's `--preserve-symlinks`; `unrs-resolver` realpaths by
+      // Honor Node's `--preserve-symlinks`; `oxc-resolver` realpaths by
       // default. An explicit `symlinks` option still wins via `...rest`.
       ...(shouldPreserveSymlinks() ? {symlinks: false} : {}),
       ...rest,
@@ -196,13 +207,35 @@ export function baseResolver(
     return resolveOptions;
   }
 
-  let unrsResolver = fastKey == null ? undefined : getResolver(fastKey);
-  unrsResolver ??= resolverForOptions(getResolveOptions(), fastKey);
+  let oxcResolver = fastKey == null ? undefined : getResolver(fastKey);
+  oxcResolver ??= resolverForOptions(getResolveOptions(), fastKey);
 
   function attemptResolve(): ResolveResult | Promise<ResolveResult> {
-    return async
-      ? unrsResolver!.async(basedir, path)
-      : unrsResolver!.sync(basedir, path);
+    if (async) {
+      return oxcResolver!.async(basedir, path).then(result => {
+        if (result.error) {
+          return realpath(basedir)
+            .then(
+              real => oxcResolver!.async(real, path),
+              () => result,
+            )
+            .then(realResult => (realResult.error ? result : realResult));
+        }
+        return result;
+      });
+    } else {
+      const result = oxcResolver!.sync(basedir, path);
+      if (result.error) {
+        try {
+          const real = tryRealpath(basedir);
+          if (real !== basedir) {
+            const realResult = oxcResolver!.sync(real, path);
+            if (!realResult.error) return realResult;
+          }
+        } catch {}
+      }
+      return result;
+    }
   }
 
   // `require.paths` semantics: when nothing resolves in the regular module
@@ -224,7 +257,7 @@ export function baseResolver(
       return result;
     }
 
-    unrsResolver = resolverForOptions({
+    oxcResolver = resolverForOptions({
       ...getResolveOptions(),
       modules: fallbackPaths as Array<string>,
     });
