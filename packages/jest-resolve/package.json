@@ -24,8 +24,8 @@
     "jest-haste-map": "workspace:*",
     "jest-util": "workspace:*",
     "jest-validate": "workspace:*",
-    "slash": "^3.0.0",
-    "unrs-resolver": "^1.12.1"
+    "oxc-resolver": "^11.24.2",
+    "slash": "^3.0.0"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.9",
