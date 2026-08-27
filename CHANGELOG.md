@@ -117,7 +117,7 @@
 - `[docs]` Note deprecation of `react-test-renderer` in React Native tutorial and `pretty-format` README ([#16294](https://github.com/jestjs/jest/pull/16294))
 - `[docs]` Use `@testing-library/react-native` in the React Native tutorial instead of the deprecated `react-test-renderer` ([#16318](https://github.com/jestjs/jest/pull/16318))
 - `[babel-jest, @jest/transform]` Update `babel-plugin-istanbul` to v8 ([#16049](https://github.com/jestjs/jest/pull/16049))
-- `[jest-config, @jest/reporters, jest-runtime]` Update `glob` to v13, so no published package resolves a `minimatch` that depends on a `brace-expansion` affected by [GHSA-mh99-v99m-4gvg](https://github.com/advisories/GHSA-mh99-v99m-4gvg) ([#16397](https://github.com/jestjs/jest/pull/16397))
+- `[jest-config, @jest/reporters, jest-runtime]` Update `glob` to v13 ([#16397](https://github.com/jestjs/jest/pull/16397))
 - `[jest-haste-map]` Refactor massive class into multiple files ([#16180](https://github.com/jestjs/jest/pull/16180))
 - `[jest-haste-map]` Drop `walker` dependency; replace hand-rolled directory recursion in the JS crawler and watcher startup with `fdir` ([#16187](https://github.com/jestjs/jest/pull/16187))
 - `[jest-haste-map]` Reuse cached metadata for files whose haste name is a known duplicate, instead of re-reading and re-parsing them on every startup ([#16351](https://github.com/jestjs/jest/pull/16351))
