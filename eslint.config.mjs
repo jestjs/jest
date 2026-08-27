@@ -840,6 +840,7 @@ const config = defineConfig(
       'packages/create-jest/src/__tests__/__fixtures__/**/*',
       'packages/jest-core/src/__tests__/**/*',
       'packages/jest-haste-map/src/__tests__/test_dotfiles_root/**/*',
+      'packages/jest-reporters/src/__tests__/__fixtures__/**/*',
       'packages/jest-resolve/src/__mocks__/**/*',
     ],
     rules: {

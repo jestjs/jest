@@ -23,36 +23,21 @@ let CoverageReporter;
 let istanbulReports;
 
 import * as path from 'path';
-import mock from 'mock-fs';
+
+const relativeFixtureDir = path
+  .relative(process.cwd(), path.join(__dirname, '__fixtures__'))
+  .split(path.sep)
+  .join('/');
+
+function fixturePath(relativePath) {
+  return `./${relativeFixtureDir}/${relativePath}`;
+}
 
 beforeEach(() => {
   CoverageReporter = require('../CoverageReporter').default;
   libCoverage = require('istanbul-lib-coverage');
   libSourceMaps = require('istanbul-lib-source-maps');
   istanbulReports = require('istanbul-reports');
-
-  const fileTree = {
-    [`${process.cwd()}/path-test-files`]: {
-      '000pc_coverage_file.js': '',
-      '050pc_coverage_file.js': '',
-      '100pc_coverage_file.js': '',
-      'full_path_file.js': '',
-      'glob-path': {
-        'file1.js': '',
-        'file2.js': '',
-      },
-      'non_covered_file.js': '',
-      'relative_path_file.js': '',
-    },
-    [`${process.cwd()}/path-test`]: {
-      '100pc_coverage_file.js': '',
-    },
-  };
-  mock(fileTree);
-});
-
-afterEach(() => {
-  mock.restore();
 });
 
 describe('onRunComplete', () => {
@@ -83,24 +68,24 @@ describe('onRunComplete', () => {
       };
       const fileCoverage = [
         [
-          './path-test/100pc_coverage_file.js',
+          fixturePath('path-test/100pc_coverage_file.js'),
           {statements: {covered: 10, pct: 100, total: 10}},
         ],
-        ['./path-test-files/covered_file_without_threshold.js'],
-        ['./path-test-files/full_path_file.js'],
-        ['./path-test-files/relative_path_file.js'],
-        ['./path-test-files/glob-path/file1.js'],
-        ['./path-test-files/glob-path/file2.js'],
+        [fixturePath('path-test-files/covered_file_without_threshold.js')],
+        [fixturePath('path-test-files/full_path_file.js')],
+        [fixturePath('path-test-files/relative_path_file.js')],
+        [fixturePath('path-test-files/glob-path/file1.js')],
+        [fixturePath('path-test-files/glob-path/file2.js')],
         [
-          './path-test-files/000pc_coverage_file.js',
+          fixturePath('path-test-files/000pc_coverage_file.js'),
           {statements: {covered: 0, pct: 0, total: 10}},
         ],
         [
-          './path-test-files/050pc_coverage_file.js',
+          fixturePath('path-test-files/050pc_coverage_file.js'),
           {statements: {covered: 5, pct: 50, total: 10}},
         ],
         [
-          './path-test-files/100pc_coverage_file.js',
+          fixturePath('path-test-files/100pc_coverage_file.js'),
           {statements: {covered: 10, pct: 100, total: 10}},
         ],
       ].reduce((c, f) => {
@@ -161,9 +146,9 @@ describe('onRunComplete', () => {
     const covThreshold = {};
     const paths = [
       'global',
-      path.resolve(`${process.cwd()}/path-test-files/full_path_file.js`),
-      './path-test-files/relative_path_file.js',
-      'path-test-files/glob-*/*.js',
+      path.resolve(__dirname, '__fixtures__/path-test-files/full_path_file.js'),
+      fixturePath('path-test-files/relative_path_file.js'),
+      `${relativeFixtureDir}/path-test-files/glob-*/*.js`,
     ];
     for (const path of paths) {
       covThreshold[path] = {statements: 100};
@@ -189,9 +174,9 @@ describe('onRunComplete', () => {
     const covThreshold = {};
     const paths = [
       'global',
-      path.resolve(`${process.cwd()}/path-test-files/full_path_file.js`),
-      './path-test-files/relative_path_file.js',
-      'path-test-files/glob-*/*.js',
+      path.resolve(__dirname, '__fixtures__/path-test-files/full_path_file.js'),
+      fixturePath('path-test-files/relative_path_file.js'),
+      `${relativeFixtureDir}/path-test-files/glob-*/*.js`,
     ];
     for (const path of paths) {
       covThreshold[path] = {statements: 50};
@@ -218,7 +203,7 @@ describe('onRunComplete', () => {
       {
         collectCoverage: true,
         coverageThreshold: {
-          'path-test-files/non_covered_file.js': {
+          [`${relativeFixtureDir}/path-test-files/non_covered_file.js`]: {
             statements: 100,
           },
         },
@@ -239,7 +224,7 @@ describe('onRunComplete', () => {
       {
         collectCoverage: true,
         coverageThreshold: {
-          './path-test-files/glob-path/': {
+          [fixturePath('path-test-files/glob-path/')]: {
             statements: 100,
           },
         },
@@ -260,7 +245,7 @@ describe('onRunComplete', () => {
       {
         collectCoverage: true,
         coverageThreshold: {
-          './path-test-files/glob-path/': {
+          [fixturePath('path-test-files/glob-path/')]: {
             statements: 40,
           },
         },
@@ -302,10 +287,10 @@ describe('onRunComplete', () => {
       {
         collectCoverage: true,
         coverageThreshold: {
-          './path-test-files/': {
+          [fixturePath('path-test-files/')]: {
             statements: 50,
           },
-          './path-test/': {
+          [fixturePath('path-test/')]: {
             statements: 100,
           },
           global: {
@@ -331,10 +316,10 @@ describe('onRunComplete', () => {
       {
         collectCoverage: true,
         coverageThreshold: {
-          './path-test-files/': {
+          [fixturePath('path-test-files/')]: {
             statements: 50,
           },
-          './path-test/': {
+          [fixturePath('path-test/')]: {
             statements: 100,
           },
           global: {
@@ -358,13 +343,13 @@ describe('onRunComplete', () => {
   test('getLastError() returns undefined when file and directory path threshold groups overlap', async () => {
     const covThreshold = {};
     for (const path of [
-      './path-test-files/',
-      './path-test-files/covered_file_without_threshold.js',
-      './path-test-files/full_path_file.js',
-      './path-test-files/relative_path_file.js',
-      './path-test-files/glob-path/file1.js',
-      './path-test-files/glob-path/file2.js',
-      './path-test-files/*.js',
+      fixturePath('path-test-files/'),
+      fixturePath('path-test-files/covered_file_without_threshold.js'),
+      fixturePath('path-test-files/full_path_file.js'),
+      fixturePath('path-test-files/relative_path_file.js'),
+      fixturePath('path-test-files/glob-path/file1.js'),
+      fixturePath('path-test-files/glob-path/file2.js'),
+      fixturePath('path-test-files/*.js'),
     ]) {
       covThreshold[path] = {
         statements: 0,
@@ -392,10 +377,10 @@ describe('onRunComplete', () => {
       {
         collectCoverage: true,
         coverageThreshold: {
-          './path-test-files/100pc_coverage_file.js': {
+          [fixturePath('path-test-files/100pc_coverage_file.js')]: {
             statements: 100,
           },
-          './path-test/100pc_coverage_file.js': {
+          [fixturePath('path-test/100pc_coverage_file.js')]: {
             statements: 100,
           },
           global: {
@@ -420,16 +405,16 @@ describe('onRunComplete', () => {
       {
         collectCoverage: true,
         coverageThreshold: {
-          './path-test-files/': {
+          [fixturePath('path-test-files/')]: {
             statements: 50,
           },
-          './path-test-files/050pc_coverage_file.js': {
+          [fixturePath('path-test-files/050pc_coverage_file.js')]: {
             statements: 50,
           },
-          './path-test-files/100pc_coverage_*.js': {
+          [fixturePath('path-test-files/100pc_coverage_*.js')]: {
             statements: 100,
           },
-          './path-test-files/100pc_coverage_file.js': {
+          [fixturePath('path-test-files/100pc_coverage_file.js')]: {
             statements: 100,
           },
         },

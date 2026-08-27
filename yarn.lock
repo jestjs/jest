@@ -4448,7 +4448,6 @@ __metadata:
     jest-util: "workspace:*"
     jest-watch-typeahead: "npm:^3.0.1"
     js-yaml: "npm:^5.0.0"
-    mock-fs: "npm:^5.5.0"
     netlify-plugin-cache: "npm:^1.0.3"
     node-notifier: "npm:^10.0.1"
     p-limit: "npm:^3.1.0"
@@ -4536,7 +4535,6 @@ __metadata:
     jest-resolve: "workspace:*"
     jest-util: "workspace:*"
     jest-worker: "workspace:*"
-    mock-fs: "npm:^5.5.0"
     node-notifier: "npm:^10.0.1"
     slash: "npm:^3.0.0"
     string-length: "npm:^4.0.2"
@@ -17316,13 +17314,6 @@ __metadata:
   bin:
     mkdirp: bin/cmd.js
   checksum: 10/d71b8dcd4b5af2fe13ecf3bd24070263489404fe216488c5ba7e38ece1f54daf219e72a833a3a2dc404331e870e9f44963a33399589490956bff003a3404d3b2
-  languageName: node
-  linkType: hard
-
-"mock-fs@npm:^5.5.0":
-  version: 5.5.0
-  resolution: "mock-fs@npm:5.5.0"
-  checksum: 10/f40f0ea4b0b0f79f2218a2ea64b55b756989a262ebe4aac7b4fb6d8757866c35f59a2740adb114a91854ab7a091378702facd5ba750f051cbc795622c685e415
   languageName: node
   linkType: hard
 
