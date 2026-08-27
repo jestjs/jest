@@ -24,7 +24,7 @@
 
 const path = require('node:path');
 const fs = require('graceful-fs');
-const {ResolverFactory} = require('unrs-resolver');
+const {ResolverFactory} = require('oxc-resolver');
 const Resolver = require('../build').default;
 
 const repoRoot = path.resolve(__dirname, '../../..');

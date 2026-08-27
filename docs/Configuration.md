@@ -1547,14 +1547,14 @@ export default defineConfig({
 });
 ```
 
-Jest's `jest-resolve` relies on `unrs-resolver`. We can pass additional options, for example modifying `mainFields` for resolution. For example, for React Native projects, you might want to use this config:
+Jest's `jest-resolve` relies on `oxc-resolver`. We can pass additional options, for example modifying `mainFields` for resolution. For example, for React Native projects, you might want to use this config:
 
 ```js
 module.exports = (path, options) => {
   // Call the defaultResolver, so we leverage its cache, error handling, etc.
   return options.defaultResolver(path, {
     ...options,
-    // `unrs-resolver` option: https://github.com/unrs/unrs-resolver#main-field
+    // `oxc-resolver` option: https://github.com/oxc-project/oxc-resolver#main-field
     mainFields: ['react-native', 'main'],
   });
 };
