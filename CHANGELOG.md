@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-circus, jest-jasmine2, jest-runtime, jest-snapshot]` Support ESM `snapshotResolver` and `snapshotSerializers` configuration modules ([#16402](https://github.com/jestjs/jest/pull/16402))
+
 ### Fixes
 
 ### Chore & Maintenance
