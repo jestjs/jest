@@ -26,35 +26,38 @@ export const DOT_EXTENSION = `.${EXTENSION}`;
 export const isSnapshotPath = (path: string): boolean =>
   path.endsWith(DOT_EXTENSION);
 
+// This cache outlives a test file, so projects sharing a root directory must
+// still be separated by their configured resolver.
 const cache = new Map<string, SnapshotResolver>();
 
-type LocalRequire = (module: string) => unknown;
+type LocalRequire = (
+  module: string,
+  applyInteropRequireDefault?: boolean,
+) => unknown | Promise<unknown>;
 
 export const buildSnapshotResolver = async (
   config: Config.ProjectConfig,
-  localRequire: Promise<LocalRequire> | LocalRequire = createTranspilingRequire(
-    config,
-  ),
+  localRequire?: Promise<LocalRequire> | LocalRequire,
 ): Promise<SnapshotResolver> => {
-  const key = config.rootDir;
+  const key = `${config.rootDir}\0${config.snapshotResolver ?? ''}`;
+  const cached = cache.get(key);
+
+  if (cached) {
+    return cached;
+  }
 
   const resolver =
-    cache.get(key) ??
-    (await createSnapshotResolver(await localRequire, config.snapshotResolver));
+    typeof config.snapshotResolver === 'string'
+      ? await createCustomSnapshotResolver(
+          config.snapshotResolver,
+          await (localRequire ?? createTranspilingRequire(config)),
+        )
+      : createDefaultSnapshotResolver();
 
   cache.set(key, resolver);
 
   return resolver;
 };
-
-async function createSnapshotResolver(
-  localRequire: LocalRequire,
-  snapshotResolverPath?: string | null,
-): Promise<SnapshotResolver> {
-  return typeof snapshotResolverPath === 'string'
-    ? createCustomSnapshotResolver(snapshotResolverPath, localRequire)
-    : createDefaultSnapshotResolver();
-}
 
 function createDefaultSnapshotResolver(): SnapshotResolver {
   return {
@@ -84,7 +87,7 @@ async function createCustomSnapshotResolver(
   localRequire: LocalRequire,
 ): Promise<SnapshotResolver> {
   const custom: SnapshotResolver = interopRequireDefault(
-    await localRequire(snapshotResolverPath),
+    await localRequire(snapshotResolverPath, true),
   ).default;
 
   const keys: Array<[keyof SnapshotResolver, string]> = [

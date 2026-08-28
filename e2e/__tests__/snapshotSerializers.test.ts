@@ -13,14 +13,18 @@ const testDir = path.resolve(__dirname, '../snapshot-serializers');
 const snapshotsDir = path.resolve(testDir, '__tests__/__snapshots__');
 const snapshotPath = path.resolve(snapshotsDir, 'snapshot.test.js.snap');
 
-const runAndAssert = () => {
-  const {exitCode, json} = runWithJson('snapshot-serializers', [
+const esmTestDir = path.resolve(__dirname, '../snapshot-serializers-esm');
+const esmSnapshotsDir = path.resolve(esmTestDir, '__tests__/__snapshots__');
+const esmSnapshotPath = path.resolve(esmSnapshotsDir, 'snapshot.test.js.snap');
+
+const runAndAssert = (directory: string, expectedTests: number) => {
+  const {exitCode, json} = runWithJson(directory, [
     '-w=1',
     '--ci=false',
     '--no-cache',
   ]);
-  expect(json.numTotalTests).toBe(9);
-  expect(json.numPassedTests).toBe(9);
+  expect(json.numTotalTests).toBe(expectedTests);
+  expect(json.numPassedTests).toBe(expectedTests);
   expect(json.numFailedTests).toBe(0);
   expect(json.numPendingTests).toBe(0);
   expect(exitCode).toBe(0);
@@ -31,14 +35,30 @@ describe('Snapshot serializers', () => {
   afterEach(() => cleanup(snapshotsDir));
 
   it('renders snapshot', () => {
-    runAndAssert();
+    runAndAssert('snapshot-serializers', 9);
     const snapshot = require(snapshotPath);
     expect(snapshot).toMatchSnapshot();
   });
 
   it('compares snapshots correctly', () => {
     // run twice, second run compares result with snapshot from first run
-    runAndAssert();
-    runAndAssert();
+    runAndAssert('snapshot-serializers', 9);
+    runAndAssert('snapshot-serializers', 9);
+  });
+});
+
+describe('Snapshot serializers written in ESM', () => {
+  beforeEach(() => cleanup(esmSnapshotsDir));
+  afterEach(() => cleanup(esmSnapshotsDir));
+
+  it('renders snapshot', () => {
+    runAndAssert('snapshot-serializers-esm', 2);
+    const snapshot = require(esmSnapshotPath);
+    expect(snapshot).toMatchSnapshot();
+  });
+
+  it('compares snapshots correctly', () => {
+    runAndAssert('snapshot-serializers-esm', 2);
+    runAndAssert('snapshot-serializers-esm', 2);
   });
 });

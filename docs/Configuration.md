@@ -1906,7 +1906,7 @@ Default: `undefined`
 
 The path to a module that can resolve test\<->snapshot path. This config option lets you customize where Jest stores snapshot files on disk.
 
-```js title="custom-resolver.js"
+```js tab title="custom-resolver.js"
 module.exports = {
   // resolves from test to snapshot path
   resolveSnapshotPath: (testPath, snapshotExtension) =>
@@ -1922,6 +1922,25 @@ module.exports = {
   testPathForConsistencyCheck: 'some/__tests__/example.test.js',
 };
 ```
+
+```js tab title="custom-resolver.mjs"
+export default {
+  // resolves from test to snapshot path
+  resolveSnapshotPath: (testPath, snapshotExtension) =>
+    testPath.replace('__tests__', '__snapshots__') + snapshotExtension,
+
+  // resolves from snapshot to test path
+  resolveTestPath: (snapshotFilePath, snapshotExtension) =>
+    snapshotFilePath
+      .replace('__snapshots__', '__tests__')
+      .slice(0, -snapshotExtension.length),
+
+  // Example test path, used for preflight consistency check of the implementation above
+  testPathForConsistencyCheck: 'some/__tests__/example.test.js',
+};
+```
+
+Jest loads the module outside the test sandbox, so it does not use `jest.mock()` or `moduleNameMapper`. Your `transform` still applies. Jest loads `.mjs` and `.mts` files as native ESM, so they must be valid JavaScript as written.
 
 ### `snapshotSerializers` \[array&lt;string&gt;]
 
@@ -1959,7 +1978,21 @@ const plugin: Plugin = {
 export default plugin;
 ```
 
+```js tab title="custom-serializer.mjs"
+export default {
+  serialize(val, config, indentation, depth, refs, printer) {
+    return `Pretty foo: ${printer(val.foo, config, indentation, depth, refs)}`;
+  },
+
+  test(val) {
+    return val && Object.prototype.hasOwnProperty.call(val, 'foo');
+  },
+};
+```
+
 `printer` is a function that serializes a value using existing plugins.
+
+Jest loads serializers outside the test sandbox, so they do not use `jest.mock()` or `moduleNameMapper`. Your `transform` still applies. Jest loads `.mjs` and `.mts` files as native ESM, so they must be valid JavaScript as written. An ESM serializer must use a `default` export.
 
 Add `custom-serializer` to your Jest configuration:
 

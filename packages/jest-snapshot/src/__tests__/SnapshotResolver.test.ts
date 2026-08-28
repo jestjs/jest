@@ -81,6 +81,35 @@ describe('custom resolver in project config', () => {
   });
 });
 
+it('keeps resolver caches separate for projects sharing a root directory', async () => {
+  const rootDir = 'shared-resolver-root';
+  const firstResolverPath = '/resolver-one.js';
+  const secondResolverPath = '/resolver-two.js';
+  const createResolver = (suffix: string): SnapshotResolver => ({
+    resolveSnapshotPath: testPath => `${testPath}${suffix}`,
+    resolveTestPath: snapshotPath => snapshotPath.slice(0, -suffix.length),
+    testPathForConsistencyCheck: 'example.test.js',
+  });
+  const resolvers: Record<string, SnapshotResolver> = {
+    [firstResolverPath]: createResolver('.one'),
+    [secondResolverPath]: createResolver('.two'),
+  };
+  const localRequire = (moduleName: string) => resolvers[moduleName];
+
+  const first = await buildSnapshotResolver(
+    makeProjectConfig({rootDir, snapshotResolver: firstResolverPath}),
+    localRequire,
+  );
+  const second = await buildSnapshotResolver(
+    makeProjectConfig({rootDir, snapshotResolver: secondResolverPath}),
+    localRequire,
+  );
+
+  expect(first).not.toBe(second);
+  expect(first.resolveSnapshotPath('test.js')).toBe('test.js.one');
+  expect(second.resolveSnapshotPath('test.js')).toBe('test.js.two');
+});
+
 describe('malformed custom resolver in project config', () => {
   const newProjectConfig = (filename: string) => {
     const customSnapshotResolverFile = path.join(

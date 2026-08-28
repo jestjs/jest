@@ -23,7 +23,12 @@ import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import type {ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver from 'jest-resolve';
-import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
+import {
+  EXTENSION as SnapshotExtension,
+  type SnapshotSetup,
+  buildSnapshotResolver,
+  loadSerializersFromConfig,
+} from 'jest-snapshot';
 import {createDirectory, deepCyclicCopy, invariant} from 'jest-util';
 import {
   decodePossibleOutsideJestVmPath,
@@ -776,5 +781,13 @@ export default class Runtime {
 
   setGlobalsForRuntime(globals: EnvironmentGlobals): void {
     this.jestGlobals.setEnvGlobalsOverride(globals);
+  }
+
+  /** Loads snapshot config modules outside the test sandbox. */
+  async loadSnapshotSetup(): Promise<SnapshotSetup> {
+    return {
+      resolver: await buildSnapshotResolver(this._config),
+      serializers: await loadSerializersFromConfig(this._config),
+    };
   }
 }

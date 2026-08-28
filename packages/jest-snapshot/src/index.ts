@@ -35,7 +35,11 @@ import {
 import type {Context, FileSystem, MatchSnapshotConfig} from './types';
 import {deepMerge, serialize} from './utils';
 
-export {addSerializer, getSerializers} from './plugins';
+export {
+  addSerializer,
+  getSerializers,
+  loadSerializersFromConfig,
+} from './plugins';
 export {
   EXTENSION,
   buildSnapshotResolver,
@@ -43,7 +47,7 @@ export {
 } from './SnapshotResolver';
 export type {SnapshotResolver} from './SnapshotResolver';
 export {default as SnapshotState} from './State';
-export type {Context, SnapshotMatchers} from './types';
+export type {Context, SnapshotMatchers, SnapshotSetup} from './types';
 
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
 const NOT_SNAPSHOT_MATCHERS = `Snapshot matchers cannot be used with ${BOLD_WEIGHT(

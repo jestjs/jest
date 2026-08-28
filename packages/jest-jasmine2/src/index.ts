@@ -298,7 +298,7 @@ export default async function jasmine2(
     .default({
       config,
       globalConfig,
-      localRequire: runtime.requireModule.bind(runtime),
+      snapshotSetup: await runtime.loadSnapshotSetup(),
       testPath,
     });
 

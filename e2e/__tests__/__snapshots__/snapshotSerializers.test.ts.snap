@@ -56,3 +56,10 @@ Object {
   "snapshot serializers works with second plugin 1": "bar - 2",
 }
 `;
+
+exports[`Snapshot serializers written in ESM renders snapshot 1`] = `
+Object {
+  "loads every configured serializer 1": "second: value",
+  "uses the first matching serializer 1": "first: value",
+}
+`;
