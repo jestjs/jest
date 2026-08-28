@@ -1906,7 +1906,7 @@ Default: `undefined`
 
 The path to a module that can resolve test\<->snapshot path. This config option lets you customize where Jest stores snapshot files on disk.
 
-```js tab title="custom-resolver.js"
+```js tab={"label":"CommonJS"} title="custom-resolver.js"
 module.exports = {
   // resolves from test to snapshot path
   resolveSnapshotPath: (testPath, snapshotExtension) =>
@@ -1923,7 +1923,7 @@ module.exports = {
 };
 ```
 
-```js tab title="custom-resolver.mjs"
+```js tab={"label":"ESM"} title="custom-resolver.mjs"
 export default {
   // resolves from test to snapshot path
   resolveSnapshotPath: (testPath, snapshotExtension) =>
@@ -1950,7 +1950,7 @@ A list of paths to snapshot serializer modules Jest should use for snapshot test
 
 Jest has default serializers for built-in JavaScript types, HTML elements (Jest 20.0.0+), ImmutableJS (Jest 20.0.0+) and for React elements. See [snapshot test tutorial](TutorialReactNative.md#snapshot-test) for more information.
 
-```js tab title="custom-serializer.js"
+```js tab={"label":"CommonJS"} title="custom-serializer.js"
 module.exports = {
   serialize(val, config, indentation, depth, refs, printer) {
     return `Pretty foo: ${printer(val.foo, config, indentation, depth, refs)}`;
@@ -1978,7 +1978,7 @@ const plugin: Plugin = {
 export default plugin;
 ```
 
-```js tab title="custom-serializer.mjs"
+```js tab={"label":"ESM"} title="custom-serializer.mjs"
 export default {
   serialize(val, config, indentation, depth, refs, printer) {
     return `Pretty foo: ${printer(val.foo, config, indentation, depth, refs)}`;
