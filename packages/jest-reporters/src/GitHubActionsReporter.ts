@@ -128,7 +128,9 @@ export default class GitHubActionsReporter extends BaseReporter {
   #getMessageDetails(failureMessage: string, config: Config.ProjectConfig) {
     const {message, stack} = separateMessageFromStack(failureMessage);
 
-    const stackLines = getStackTraceLines(stack);
+    const stackLines = getStackTraceLines(stack, {
+      stackTraceIgnorePatterns: config.stackTraceIgnorePatterns,
+    });
     const topFrame = getTopFrame(stackLines);
 
     const normalizedStackLines = stackLines.map(line =>

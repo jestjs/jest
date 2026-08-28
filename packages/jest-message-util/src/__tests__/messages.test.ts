@@ -201,6 +201,7 @@ it('should exclude jasmine from stack trace for Unix paths.', () => {
     ],
     {
       rootDir: '',
+      stackTraceIgnorePatterns: [],
       testMatch: [],
     },
     {
@@ -219,6 +220,7 @@ it('.formatExecError()', () => {
     },
     {
       rootDir: '',
+      stackTraceIgnorePatterns: [],
       testMatch: [],
     },
     {
@@ -249,6 +251,7 @@ it('formatStackTrace should strip node internals', () => {
     ],
     {
       rootDir: '',
+      stackTraceIgnorePatterns: [],
       testMatch: [],
     },
     {
@@ -278,6 +281,7 @@ it('should not exclude vendor from stack trace', () => {
     ],
     {
       rootDir: '',
+      stackTraceIgnorePatterns: [],
       testMatch: [],
     },
     {
@@ -307,6 +311,7 @@ it('retains message in babel code frame error', () => {
     ],
     {
       rootDir: '',
+      stackTraceIgnorePatterns: [],
       testMatch: [],
     },
     {
@@ -336,6 +341,7 @@ it('formatStackTrace should properly handle deeply nested causes', () => {
     ],
     {
       rootDir: '',
+      stackTraceIgnorePatterns: [],
       testMatch: [],
     },
     {
@@ -365,6 +371,7 @@ it('formatStackTrace should properly handle string causes', () => {
     ],
     {
       rootDir: '',
+      stackTraceIgnorePatterns: [],
       testMatch: [],
     },
     {
@@ -394,6 +401,7 @@ it('codeframe', () => {
     },
     {
       rootDir,
+      stackTraceIgnorePatterns: [],
       testMatch: [],
     },
     {
@@ -425,6 +433,7 @@ it('no codeframe', () => {
     },
     {
       rootDir,
+      stackTraceIgnorePatterns: [],
       testMatch: [],
     },
     {
@@ -456,6 +465,7 @@ it('no stack', () => {
     },
     {
       rootDir,
+      stackTraceIgnorePatterns: [],
       testMatch: [],
     },
     {
@@ -485,6 +495,7 @@ describe('formatStackTrace', () => {
   `,
       {
         rootDir,
+        stackTraceIgnorePatterns: [],
         testMatch: [],
       },
       {
@@ -495,6 +506,53 @@ describe('formatStackTrace', () => {
     );
 
     expect(message).toMatchSnapshot();
+  });
+
+  it('omits frames matching stackTraceIgnorePatterns', () => {
+    const message = stripVTControlCharacters(
+      formatStackTrace(
+        [
+          'Error: An update to ProfileForm inside a test was not wrapped in act(...).',
+          '    at warnIfUpdatesNotWrappedWithActDEV (/app/node_modules/react-dom/cjs/react-dom-client.development.js:18757:9)',
+          '    at scheduleUpdateOnFiber (/app/node_modules/react-dom/cjs/react-dom-client.development.js:16409:11)',
+          '    at dispatchSetState (/app/node_modules/react-dom/cjs/react-dom-client.development.js:9127:7)',
+          '    at ProfileForm (/app/src/ProfileForm.js:42:5)',
+        ].join('\n'),
+        {
+          rootDir: '/app',
+          stackTraceIgnorePatterns: ['/node_modules/react-dom/'],
+          testMatch: [],
+        },
+        {
+          noCodeFrame: true,
+          noStackTrace: false,
+        },
+      ),
+    );
+
+    expect(message).toBe(`
+      Error: An update to ProfileForm inside a test was not wrapped in act(...).
+      at ProfileForm (src/ProfileForm.js:42:5)`);
+  });
+
+  it('omits frames matching stackTraceIgnorePatterns with Windows separators', () => {
+    const lines = getStackTraceLines(
+      [
+        'Error: An update to ProfileForm inside a test was not wrapped in act(...).',
+        '    at warnIfUpdatesNotWrappedWithActDEV (C:\\app\\node_modules\\react-dom\\cjs\\react-dom-client.development.js:18757:9)',
+        '    at scheduleUpdateOnFiber (C:\\app\\node_modules\\react-dom\\cjs\\react-dom-client.development.js:16409:11)',
+        '    at ProfileForm (C:\\app\\src\\ProfileForm.js:42:5)',
+      ].join('\n'),
+      {
+        noStackTrace: false,
+        stackTraceIgnorePatterns: ['/node_modules/react-dom/'],
+      },
+    );
+
+    expect(lines).toEqual([
+      'Error: An update to ProfileForm inside a test was not wrapped in act(...).',
+      '    at ProfileForm (C:\\app\\src\\ProfileForm.js:42:5)',
+    ]);
   });
 
   it('does not print code frame when noCodeFrame = true', () => {
@@ -512,6 +570,7 @@ describe('formatStackTrace', () => {
   `,
       {
         rootDir,
+        stackTraceIgnorePatterns: [],
         testMatch: [],
       },
       {
@@ -539,6 +598,7 @@ describe('formatStackTrace', () => {
   `,
       {
         rootDir,
+        stackTraceIgnorePatterns: [],
         testMatch: [],
       },
       {
@@ -574,6 +634,7 @@ it('should return the error cause if there is one', () => {
     error,
     {
       rootDir: '',
+      stackTraceIgnorePatterns: [],
       testMatch: [],
     },
     {
@@ -590,6 +651,7 @@ it('should return the inner errors of an AggregateError', () => {
     aggError,
     {
       rootDir: '',
+      stackTraceIgnorePatterns: [],
       testMatch: [],
     },
     {
@@ -621,6 +683,7 @@ const formatAggregateErrorFailure = (
     ],
     {
       rootDir: '',
+      stackTraceIgnorePatterns: [],
       testMatch: [],
     },
     {
@@ -681,7 +744,11 @@ it('should preserve blank lines inside the error message itself', () => {
   error.stack = '';
 
   expect(
-    formatExecError(error, {rootDir: '', testMatch: []}, {noStackTrace: true}),
+    formatExecError(
+      error,
+      {rootDir: '', stackTraceIgnorePatterns: [], testMatch: []},
+      {noStackTrace: true},
+    ),
   ).toContain('first part\n\n\n    second part');
 });
 
@@ -907,7 +974,7 @@ describe('formatErrorStack', () => {
     expect(
       formatErrorStack(
         error,
-        {rootDir: '', testMatch: []},
+        {rootDir: '', stackTraceIgnorePatterns: [], testMatch: []},
         {
           noStackTrace: true,
         },
@@ -949,7 +1016,7 @@ describe('cyclic errors in the styled renderers', () => {
     expect(() =>
       formatExecError(
         build(),
-        {rootDir: '', testMatch: []},
+        {rootDir: '', stackTraceIgnorePatterns: [], testMatch: []},
         {
           noStackTrace: true,
         },
@@ -1005,7 +1072,7 @@ describe('frame classification', () => {
     stripVTControlCharacters(
       formatStackTrace(
         ['Error: boom', ...files.map(frameFor)].join('\n'),
-        {rootDir, testMatch: []},
+        {rootDir, stackTraceIgnorePatterns: [], testMatch: []},
         {noStackTrace: false},
       ),
     );

@@ -613,6 +613,14 @@ export const options: {[key: string]: Options} = {
     string: true,
     type: 'array',
   },
+  stackTraceIgnorePatterns: {
+    description:
+      'An array of regexp pattern strings that are matched against stack ' +
+      'trace lines. Matched lines are omitted from printed stack traces.',
+    requiresArg: true,
+    string: true,
+    type: 'array',
+  },
   testEnvironment: {
     alias: 'env',
     description:

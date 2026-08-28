@@ -248,6 +248,7 @@ const groupOptions = (
     snapshotFormat: options.snapshotFormat,
     snapshotResolver: options.snapshotResolver,
     snapshotSerializers: options.snapshotSerializers,
+    stackTraceIgnorePatterns: options.stackTraceIgnorePatterns,
     testEnvironment: options.testEnvironment,
     testEnvironmentOptions: options.testEnvironmentOptions,
     testLocationInResults: options.testLocationInResults,

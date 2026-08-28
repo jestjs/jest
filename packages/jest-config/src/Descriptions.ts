@@ -74,6 +74,8 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
     'The number of seconds after which a test is considered as slow and reported as such in the results.',
   snapshotSerializers:
     'A list of paths to snapshot serializer modules Jest should use for snapshot testing',
+  stackTraceIgnorePatterns:
+    'An array of regexp pattern strings that are matched against stack trace lines, matched lines are omitted from stack traces',
   testEnvironment: 'The test environment that will be used for testing',
   testEnvironmentOptions: 'Options that will be passed to the testEnvironment',
   testLocationInResults: 'Adds a location field to test results',

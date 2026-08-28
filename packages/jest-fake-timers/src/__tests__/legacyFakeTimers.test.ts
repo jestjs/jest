@@ -19,6 +19,7 @@ const timerConfig = {
 
 const config = {
   rootDir: '/',
+  stackTraceIgnorePatterns: [],
   testMatch: [],
 };
 
@@ -512,6 +513,7 @@ describe('FakeTimers', () => {
       const timers = new FakeTimers({
         config: {
           rootDir: __dirname,
+          stackTraceIgnorePatterns: [],
           testMatch: [],
         },
         global: {console: mockConsole} as unknown as typeof globalThis,

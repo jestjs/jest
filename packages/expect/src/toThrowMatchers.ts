@@ -461,6 +461,7 @@ const formatStack = (thrown: Thrown | null) => {
   } else {
     const config = {
       rootDir: process.cwd(),
+      stackTraceIgnorePatterns: [],
       testMatch: [],
     };
     const options = {

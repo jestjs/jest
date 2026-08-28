@@ -38,6 +38,7 @@ describe('getConsoleOutput', () => {
       BufferedConsole.write([], logType, 'message', 4),
       {
         rootDir: 'root',
+        stackTraceIgnorePatterns: [],
         testMatch: [],
       },
       globalConfig,

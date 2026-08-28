@@ -478,6 +478,12 @@ Can also be set in configuration. See [`showSeed`](Configuration.md#showseed-boo
 
 Prevent tests from printing messages through the console.
 
+### `--stackTraceIgnorePatterns=<regex>|[array]`
+
+An array of regexp pattern strings that are matched against stack trace lines. Matched lines are omitted from printed stack traces. Please refer to the [`stackTraceIgnorePatterns` configuration](Configuration.md#stacktraceignorepatterns-arraystring) for details.
+
+To pass as an array use escaped parentheses and space delimited regexps such as `\(/node_modules/react-dom/ /node_modules/react/\)`.
+
 ### `--testEnvironmentOptions=<json string>`
 
 A JSON string with options that will be passed to the `testEnvironment`. The relevant options depend on the environment.

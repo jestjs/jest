@@ -768,6 +768,26 @@ describe('testPathIgnorePatterns', () => {
   });
 });
 
+describe('stackTraceIgnorePatterns', () => {
+  it('passes patterns through without path normalization', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root/path/foo',
+        stackTraceIgnorePatterns: [
+          '/node_modules/react-dom/',
+          'node_modules[\\\\/]@scope[\\\\/]',
+        ],
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.stackTraceIgnorePatterns).toEqual([
+      '/node_modules/react-dom/',
+      'node_modules[\\\\/]@scope[\\\\/]',
+    ]);
+  });
+});
+
 describe('modulePathIgnorePatterns', () => {
   it('does not normalize paths relative to rootDir', async () => {
     // This is a list of patterns, so we can't assume any of them are
