@@ -2029,7 +2029,6 @@ Test environment options that will be passed to the `testEnvironment`. The relev
 
 When using the `node` environment, you can configure various options that are passed to `runInContext`. These options include:
 
-- **`globalsCleanupMode`** (**'on'** | **'soft'** | **'off'**): Controls cleanup of global variables between tests. Default: `'soft'`.
 - All the options listed in the [vm.runInContext](https://nodejs.org/api/vm.html#scriptrunincontextcontextifiedobject-options) documentation
 
 #### JSDOM Environment Options

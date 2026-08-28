@@ -19,7 +19,7 @@ Key members every environment must provide:
 
 **`GlobalProxy`**: The `global` object is a `Proxy`. Before `envSetupCompleted()` (end of constructor), property writes are not tracked. After it, newly assigned globals are tracked and deleted at teardown. This is how `jest-runtime`'s own globals survive while user-created globals are cleaned up.
 
-**`globalsCleanup`**: `testEnvironmentOptions.globalsCleanup: 'soft' | 'aggressive'`. `'soft'` (default) deletes only post-setup properties. `'aggressive'` also clears pre-setup properties.
+**`globalsCleanup`**: `testEnvironmentOptions.globalsCleanup: 'on' | 'soft' | 'off'`. `'on'` deletes the properties of tracked globals at teardown, `'soft'` (default) instead wraps them in accessors that emit a `JEST-01` deprecation warning, `'off'` disables cleanup. The mode lives on the worker's `globalThis` under `Symbol.for('$$jest-deletion-mode')` and is initialized once — the first environment created in a worker wins, and a conflicting later value only logs a warning.
 
 **Storage globals** (`localStorage`/`sessionStorage`): Installed as passthrough getters on Node 25+ to avoid warnings and prevent tracking by `GlobalProxy`.
 

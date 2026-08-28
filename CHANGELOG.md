@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-util]` Name the `testEnvironmentOptions.globalsCleanup` option and link the docs from the `JEST-01` deprecation warning, and document the option's modes ([#16404](https://github.com/jestjs/jest/pull/16404))
+
 ## 30.5.0
 
 ### Features
