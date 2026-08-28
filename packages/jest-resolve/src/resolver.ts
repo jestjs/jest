@@ -16,6 +16,7 @@ import defaultResolver, {
   type AsyncResolver,
   type Resolver as ResolverInterface,
   type SyncResolver,
+  baseResolver,
   defaultAsyncResolver,
 } from './defaultResolver';
 import {clearFsCache} from './fileWalkers';
@@ -65,6 +66,7 @@ export default class Resolver {
   private readonly _extensions: Array<string>;
   private readonly _isCoreModuleCache: Map<string, boolean>;
   private _canResolveSync: boolean | undefined;
+  private _hasDistinctAsyncResolver: boolean | undefined;
 
   constructor(moduleMap: IModuleMap, options: ResolverConfig) {
     this._options = {
@@ -140,21 +142,29 @@ export default class Resolver {
     }
 
     const paths = options.paths;
+    // we always wanna throw if it's an internal import
+    const throwOnMiss = options.throwIfNotFound || path.startsWith('#');
+
+    const resolverOptions = {
+      basedir: options.basedir,
+      conditions: options.conditions,
+      defaultAsyncResolver,
+      defaultResolver,
+      extensions: options.extensions,
+      moduleDirectory: options.moduleDirectory,
+      paths: paths ? [...(nodePaths || []), ...paths] : nodePaths,
+      rootDir: options.rootDir,
+    };
 
     try {
-      return resolver(path, {
-        basedir: options.basedir,
-        conditions: options.conditions,
-        defaultAsyncResolver,
-        defaultResolver,
-        extensions: options.extensions,
-        moduleDirectory: options.moduleDirectory,
-        paths: paths ? [...(nodePaths || []), ...paths] : nodePaths,
-        rootDir: options.rootDir,
-      });
+      // A swallowed miss doesn't need the Error the throwing contract builds.
+      if (resolver === defaultResolver && !throwOnMiss) {
+        return baseResolver(path, resolverOptions).path ?? null;
+      }
+
+      return resolver(path, resolverOptions);
     } catch (error) {
-      // we always wanna throw if it's an internal import
-      if (options.throwIfNotFound || path.startsWith('#')) {
+      if (throwOnMiss) {
         throw error;
       }
     }
@@ -166,6 +176,12 @@ export default class Resolver {
     options: FindNodeModuleConfig,
   ): Promise<string | null> {
     const resolverModule = loadResolver(options.resolver);
+    // Without a custom resolver this is the sync `defaultResolver`, and
+    // resolution stays sync from here: awaiting one resolution per module
+    // costs about 6x more per specifier, and the sync entry points
+    // (`require`, `require(esm)`, the sync ESM graph walker) cannot await at
+    // all. Node made `import.meta.resolve` sync for the same reasons.
+    const isDefaultResolver = resolverModule === defaultResolver;
     let resolver: ResolverInterface = defaultAsyncResolver;
 
     if (typeof resolverModule === 'function') {
@@ -184,22 +200,29 @@ export default class Resolver {
     }
 
     const paths = options.paths;
+    // we always wanna throw if it's an internal import
+    const throwOnMiss = options.throwIfNotFound || path.startsWith('#');
+
+    const resolverOptions = {
+      basedir: options.basedir,
+      conditions: options.conditions,
+      defaultAsyncResolver,
+      defaultResolver,
+      extensions: options.extensions,
+      moduleDirectory: options.moduleDirectory,
+      paths: paths ? [...(nodePaths || []), ...paths] : nodePaths,
+      rootDir: options.rootDir,
+    };
 
     try {
-      const result = await resolver(path, {
-        basedir: options.basedir,
-        conditions: options.conditions,
-        defaultAsyncResolver,
-        defaultResolver,
-        extensions: options.extensions,
-        moduleDirectory: options.moduleDirectory,
-        paths: paths ? [...(nodePaths || []), ...paths] : nodePaths,
-        rootDir: options.rootDir,
-      });
-      return result;
+      // A swallowed miss doesn't need the Error the throwing contract builds.
+      if (isDefaultResolver && !throwOnMiss) {
+        return baseResolver(path, resolverOptions).path ?? null;
+      }
+
+      return await resolver(path, resolverOptions);
     } catch (error: unknown) {
-      // we always wanna throw if it's an internal import
-      if (options.throwIfNotFound || path.startsWith('#')) {
+      if (throwOnMiss) {
         throw error;
       }
     }
@@ -393,6 +416,28 @@ export default class Resolver {
     return result;
   }
 
+  // True when the configured resolver exports an `async` hook next to its
+  // sync interface. The two hooks may resolve differently, so a sync
+  // resolution failure is not authoritative for callers that can retry
+  // through the async API.
+  hasDistinctAsyncResolver(): boolean {
+    if (this._hasDistinctAsyncResolver != null) {
+      return this._hasDistinctAsyncResolver;
+    }
+    let result: boolean;
+    try {
+      const resolverModule = loadResolver(this._options.resolver);
+      result =
+        typeof resolverModule !== 'function' &&
+        typeof resolverModule.async === 'function' &&
+        typeof resolverModule.sync === 'function';
+    } catch {
+      result = false;
+    }
+    this._hasDistinctAsyncResolver = result;
+    return result;
+  }
+
   resolveModule(
     from: string,
     moduleName: string,
@@ -496,7 +541,44 @@ export default class Resolver {
       return false;
     }
 
-    return moduleNameMapper.some(({regex}) => regex.test(moduleName));
+    const spellings = this._specifierSpellings(moduleName);
+
+    return moduleNameMapper.some(({regex}) =>
+      spellings.some(specifier => regex.test(specifier)),
+    );
+  }
+
+  // Node treats `fs` and `node:fs` as the same module, so a pattern written
+  // for either spelling has to catch both. Builtins that only exist prefixed
+  // (`node:test`, `node:sqlite`) have no bare spelling to test, and a bare
+  // pattern like `^test$` must keep matching the userland package instead.
+  private _specifierSpellings(specifier: string): Array<string> {
+    if (!isBuiltin(specifier)) {
+      return [specifier];
+    }
+
+    if (specifier.startsWith('node:')) {
+      const bareSpecifier = specifier.slice(5);
+      return isBuiltin(bareSpecifier)
+        ? [specifier, bareSpecifier]
+        : [specifier];
+    }
+
+    return [specifier, `node:${specifier}`];
+  }
+
+  private _matchModuleNameMapper(
+    regex: RegExp,
+    moduleName: string,
+  ): RegExpMatchArray | null {
+    for (const specifier of this._specifierSpellings(moduleName)) {
+      const matches = specifier.match(regex);
+      if (matches) {
+        return matches;
+      }
+    }
+
+    return null;
   }
 
   isCoreModule(moduleName: string): boolean {
@@ -543,16 +625,36 @@ export default class Resolver {
     name: string,
     options?: Pick<ResolveModuleConfig, 'conditions'>,
   ): string | null {
+    const mock = this._lookupManualMock(name);
+    if (mock) {
+      return mock;
+    }
+
+    const resolvedName = this.resolveStubModuleName(from, name, options);
+    if (resolvedName) {
+      return this._lookupManualMock(resolvedName);
+    }
+    return null;
+  }
+
+  // A colon is not a legal filename character on Windows, so a manual mock for
+  // `node:fs` lives at `__mocks__/fs`. Both specifier forms have to find it.
+  private _lookupManualMock(name: string): string | null {
     const mock = this._moduleMap.getMockModule(name);
     if (mock) {
       return mock;
-    } else {
-      const resolvedName = this.resolveStubModuleName(from, name, options);
-      if (resolvedName) {
-        return this._moduleMap.getMockModule(resolvedName) ?? null;
-      }
     }
-    return null;
+
+    if (!this.isCoreModule(name)) {
+      return null;
+    }
+
+    const normalized = this.normalizeCoreModuleSpecifier(name);
+    if (normalized === name) {
+      return null;
+    }
+
+    return this._moduleMap.getMockModule(normalized) ?? null;
   }
 
   async getMockModuleAsync(
@@ -560,18 +662,18 @@ export default class Resolver {
     name: string,
     options: Pick<ResolveModuleConfig, 'conditions'>,
   ): Promise<string | null> {
-    const mock = this._moduleMap.getMockModule(name);
+    const mock = this._lookupManualMock(name);
     if (mock) {
       return mock;
-    } else {
-      const resolvedName = await this.resolveStubModuleNameAsync(
-        from,
-        name,
-        options,
-      );
-      if (resolvedName) {
-        return this._moduleMap.getMockModule(resolvedName) ?? null;
-      }
+    }
+
+    const resolvedName = await this.resolveStubModuleNameAsync(
+      from,
+      name,
+      options,
+    );
+    if (resolvedName) {
+      return this._lookupManualMock(resolvedName);
     }
     return null;
   }
@@ -830,7 +932,7 @@ export default class Resolver {
     const resolver = this._options.resolver;
 
     for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
-      const matches = moduleName.match(regex);
+      const matches = this._matchModuleNameMapper(regex, moduleName);
       if (matches) {
         // Note: once a moduleNameMapper matches the name, it must result
         // in a module, or else an error is thrown.
@@ -878,11 +980,6 @@ export default class Resolver {
     moduleName: string,
     options?: Pick<ResolveModuleConfig, 'conditions'>,
   ): Promise<string | null> {
-    // Strip node URL scheme from core modules imported using it
-    if (this.isCoreModule(moduleName)) {
-      return this.normalizeCoreModuleSpecifier(moduleName);
-    }
-
     const moduleNameMapper = this._options.moduleNameMapper;
     if (moduleNameMapper == null || moduleNameMapper.length === 0) {
       return null;
@@ -897,7 +994,7 @@ export default class Resolver {
     const resolver = this._options.resolver;
 
     for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
-      const matches = moduleName.match(regex);
+      const matches = this._matchModuleNameMapper(regex, moduleName);
       if (matches) {
         // Note: once a moduleNameMapper matches the name, it must result
         // in a module, or else an error is thrown.

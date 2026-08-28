@@ -16,7 +16,12 @@ import type {ModuleRegistries} from './ModuleRegistries';
 import type {Resolution} from './Resolution';
 import type {TestMainModule} from './TestMainModule';
 import type {TransformOptions} from './TransformCache';
-import type {InitialModule} from './moduleTypes';
+import {type InitialModule, createInitialModule} from './moduleTypes';
+
+// Node hands every string with a `file:` scheme to the URL parser, which
+// matches the scheme case-insensitively and normalizes missing slashes and a
+// `localhost` authority away.
+const fileUrlSchemeRegex = /^file:/i;
 
 export const JEST_RESOLVE_OUTSIDE_VM_OPTION = Symbol.for(
   'jest-resolve-outside-vm-option',
@@ -84,7 +89,7 @@ export class RequireBuilder {
     ) as NodeJS.Require;
     moduleRequire.extensions = Object.create(null);
     moduleRequire.resolve = resolveImpl;
-    moduleRequire.cache = this.registries.createRequireCacheProxy();
+    moduleRequire.cache = this.registries.getRequireCacheProxy();
 
     // A getter, not a snapshot: the test file's own require object is built
     // before the executor assigns the main module, so a captured value would
@@ -98,18 +103,7 @@ export class RequireBuilder {
   }
 
   forFilename(filename: string): NodeJS.Require {
-    return this.for(
-      {
-        children: [],
-        exports: {},
-        filename,
-        id: filename,
-        isPreloading: false,
-        loaded: false,
-        path: path.dirname(filename),
-      },
-      undefined,
-    );
+    return this.for(createInitialModule(filename), undefined);
   }
 
   private resolve(
@@ -243,7 +237,7 @@ export class CoreModuleProvider {
     const createRequire = (modulePath: string | URL) => {
       const filename =
         typeof modulePath === 'string'
-          ? modulePath.startsWith('file:///')
+          ? fileUrlSchemeRegex.test(modulePath)
             ? fileURLToPath(new URL(modulePath))
             : modulePath
           : fileURLToPath(modulePath);
@@ -276,6 +270,20 @@ export class CoreModuleProvider {
       (Module as any).syncBuiltinESMExports =
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         function syncBuiltinESMExports() {};
+    }
+
+    // Customization hooks attach to the loader running Jest itself, never to
+    // the sandboxed require/import test code uses - and they stay registered
+    // for every later test file in the worker. Fail loudly instead.
+    for (const hookRegistrar of ['register', 'registerHooks']) {
+      if (hookRegistrar in nativeModule) {
+        // @ts-expect-error: no index signature
+        Module[hookRegistrar] = function throwHooksUnsupported() {
+          throw new Error(
+            `module.${hookRegistrar}() is not supported in Jest: the hooks would attach to the module loader running Jest itself, not to the sandboxed require/import used by test code, and would stay registered for every later test file in this worker. Use Jest's own customization points (transform, resolver, moduleNameMapper) instead.`,
+          );
+        };
+      }
     }
 
     this.mockedModuleClass = Module;

@@ -9,17 +9,17 @@ import nativeModule from 'node:module';
 import * as path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 import type {Module as VMModule} from 'node:vm';
-import type {Module} from '@jest/environment';
-import type {InitialModule, JestModule, ModuleRegistry} from './moduleTypes';
+import type {JestModule, ModuleRegistry} from './moduleTypes';
 
 // Only expose ESM entries whose `namespace` is readable without throwing or
-// exposing TDZ values: `unlinked`/`linking` throw `ERR_VM_MODULE_STATUS`, and
-// a `linked` SourceTextModule's namespace properties are in TDZ until
-// evaluate runs (reading them throws `ReferenceError`).
+// exposing TDZ values: `unlinked`/`linking` throw `ERR_VM_MODULE_STATUS`,
+// and anything short of `evaluated` keeps uninitialized (TDZ) bindings that
+// throw `ReferenceError` on read - including `errored`, whose evaluation
+// stopped partway. Node likewise drops a failed `require(esm)` entry from
+// `require.cache`.
 const isLiveEsm = (entry: JestModule | undefined): entry is VMModule => {
   if (!entry || entry instanceof Promise) return false;
-  const status = (entry as VMModule).status;
-  return status === 'evaluated' || status === 'errored';
+  return (entry as VMModule).status === 'evaluated';
 };
 
 const notPermittedMethod = () => true;
@@ -54,49 +54,10 @@ export class ModuleRegistries {
     NodeModule
   >();
 
+  private requireCacheProxy: NodeJS.Require['cache'] | undefined;
+
   constructor(requireEsmResult: (module: VMModule) => unknown) {
     this.requireEsmResult = requireEsmResult;
-  }
-
-  getCjs(modulePath: string): InitialModule | Module | JestModule | undefined {
-    return (this.isolation?.cjs ?? this.moduleRegistry).get(modulePath);
-  }
-  setCjs(
-    modulePath: string,
-    module: InitialModule | Module | JestModule,
-  ): void {
-    (this.isolation?.cjs ?? this.moduleRegistry).set(modulePath, module);
-  }
-  hasCjs(modulePath: string): boolean {
-    return (this.isolation?.cjs ?? this.moduleRegistry).has(modulePath);
-  }
-  deleteCjs(modulePath: string): void {
-    (this.isolation?.cjs ?? this.moduleRegistry).delete(modulePath);
-  }
-
-  getInternalCjs(
-    modulePath: string,
-  ): InitialModule | Module | JestModule | undefined {
-    return this.internalModuleRegistry.get(modulePath);
-  }
-  setInternalCjs(
-    modulePath: string,
-    module: InitialModule | Module | JestModule,
-  ): void {
-    this.internalModuleRegistry.set(modulePath, module);
-  }
-  hasInternalCjs(modulePath: string): boolean {
-    return this.internalModuleRegistry.has(modulePath);
-  }
-
-  getEsm(key: string): JestModule | undefined {
-    return (this.isolation?.esm ?? this.esModuleRegistry).get(key);
-  }
-  setEsm(key: string, module: JestModule): void {
-    (this.isolation?.esm ?? this.esModuleRegistry).set(key, module);
-  }
-  hasEsm(key: string): boolean {
-    return (this.isolation?.esm ?? this.esModuleRegistry).has(key);
   }
 
   // Reads cascade: isolated overlay first, fall back to main. Writes go to
@@ -157,7 +118,7 @@ export class ModuleRegistries {
     return this.isolation?.mock ?? this.mockRegistry;
   }
 
-  isIsolated(): boolean {
+  private isIsolated(): boolean {
     return this.isolation !== null;
   }
 
@@ -241,17 +202,15 @@ export class ModuleRegistries {
   // modules by path (Node keys its `require(esm)` entries the same way).
   // `pathToFileURL` percent-encodes `?`/`#`, so a path lookup can never reach
   // an entry that carries a query or fragment - those instances exist only
-  // for `import`, exactly as in Node. URL-string keys are rejected so file
-  // entries stay path-addressed only.
+  // for `import`, exactly as in Node. Every non-path key is invisible: URL
+  // strings, core specifiers, `data:` URIs and the registry's synthetic
+  // entries never appear in Node's `require.cache` either.
   private getEsmEntryForRequireCache(key: string): JestModule | undefined {
-    const registry = this.isolation?.esm ?? this.esModuleRegistry;
-    if (path.isAbsolute(key)) {
-      return registry.get(pathToFileURL(key).href);
-    }
-    if (key.startsWith('file:')) {
+    if (!path.isAbsolute(key)) {
       return undefined;
     }
-    return registry.get(key);
+    const registry = this.isolation?.esm ?? this.esModuleRegistry;
+    return registry.get(pathToFileURL(key).href);
   }
 
   getEsmRequireCacheEntry(key: string): NodeModule | undefined {
@@ -260,48 +219,51 @@ export class ModuleRegistries {
     return this.wrapEsmForRequireCache(key, entry);
   }
 
-  createRequireCacheProxy(): NodeJS.Require['cache'] {
-    return new Proxy<NodeJS.Require['cache']>(Object.create(null), {
-      defineProperty: notPermittedMethod,
-      deleteProperty: notPermittedMethod,
-      get: (_target, key) => {
-        if (typeof key !== 'string') return undefined;
-        return (
-          ((this.isolation?.cjs ?? this.moduleRegistry).get(key) as
-            NodeModule | undefined) ?? this.getEsmRequireCacheEntry(key)
-        );
-      },
-      getOwnPropertyDescriptor() {
-        return {configurable: true, enumerable: true};
-      },
-      has: (_target, key) => {
-        if (typeof key !== 'string') return false;
-        return (
-          (this.isolation?.cjs ?? this.moduleRegistry).has(key) ||
-          isLiveEsm(this.getEsmEntryForRequireCache(key))
-        );
-      },
-      ownKeys: () => {
-        const keys = new Set<string>(
-          (this.isolation?.cjs ?? this.moduleRegistry).keys(),
-        );
-        for (const [key, entry] of this.isolation?.esm ??
-          this.esModuleRegistry) {
-          if (!isLiveEsm(entry)) continue;
-          if (key.startsWith('file://')) {
+  getRequireCacheProxy(): NodeJS.Require['cache'] {
+    this.requireCacheProxy ??= new Proxy<NodeJS.Require['cache']>(
+      Object.create(null),
+      {
+        defineProperty: notPermittedMethod,
+        deleteProperty: notPermittedMethod,
+        get: (_target, key) => {
+          if (typeof key !== 'string') return undefined;
+          return (
+            ((this.isolation?.cjs ?? this.moduleRegistry).get(key) as
+              NodeModule | undefined) ?? this.getEsmRequireCacheEntry(key)
+          );
+        },
+        getOwnPropertyDescriptor() {
+          return {configurable: true, enumerable: true};
+        },
+        has: (_target, key) => {
+          if (typeof key !== 'string') return false;
+          return (
+            (this.isolation?.cjs ?? this.moduleRegistry).has(key) ||
+            isLiveEsm(this.getEsmEntryForRequireCache(key))
+          );
+        },
+        ownKeys: () => {
+          const keys = new Set<string>(
+            (this.isolation?.cjs ?? this.moduleRegistry).keys(),
+          );
+          for (const [key, entry] of this.isolation?.esm ??
+            this.esModuleRegistry) {
+            if (!isLiveEsm(entry)) continue;
+            // Only file URLs become paths; core, data: and synthetic keys
+            // are not path-addressable and stay invisible, as in Node.
             // `pathToFileURL` percent-encodes literal `?`/`#`, so their
             // presence always means a query or fragment - an instance a
             // path key cannot address.
+            if (!key.startsWith('file://')) continue;
             if (key.includes('?') || key.includes('#')) continue;
             keys.add(fileURLToPath(key));
-          } else {
-            keys.add(key);
           }
-        }
-        return [...keys];
+          return [...keys];
+        },
+        set: notPermittedMethod,
       },
-      set: notPermittedMethod,
-    });
+    );
+    return this.requireCacheProxy;
   }
 
   clearForReset(): void {

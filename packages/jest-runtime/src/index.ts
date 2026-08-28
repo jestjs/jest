@@ -7,7 +7,6 @@
 
 import nativeModule from 'node:module';
 import * as path from 'node:path';
-import {SourceTextModule} from 'node:vm';
 import slash from 'slash';
 import type {JestEnvironment} from '@jest/environment';
 import type {SourceMapRegistry} from '@jest/source-map';
@@ -47,8 +46,15 @@ import {
 } from './internals/TransformCache';
 import {V8CoverageCollector} from './internals/V8CoverageCollector';
 import {CoreModuleProvider, RequireBuilder} from './internals/cjsRequire';
-import type {InitialModule, ModuleRegistry} from './internals/moduleTypes';
-import {runtimeSupportsVmModules} from './internals/nodeCapabilities';
+import {hasEsmSyntax} from './internals/esmLexer';
+import {
+  type ModuleRegistry,
+  createInitialModule,
+} from './internals/moduleTypes';
+import {
+  runtimeSupportsVmModules,
+  supportsSyncEvaluate,
+} from './internals/nodeCapabilities';
 import type {EnvironmentGlobals} from './internals/types';
 
 // Modules safe to require from the outside (not stateful, not prone to
@@ -62,8 +68,6 @@ const INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES = new Set(['chalk']);
 // framework see the same class instances.
 const FRAMEWORK_SINGLETON_MODULES = new Set(['@jest/expect', 'expect']);
 
-const esmIsAvailable = typeof SourceTextModule === 'function';
-
 type HasteMapOptions = {
   console?: Console;
   maxWorkers: number;
@@ -75,7 +79,7 @@ type HasteMapOptions = {
 
 const defaultTransformOptions: TransformOptions = {
   isInternalModule: false,
-  supportsDynamicImport: esmIsAvailable,
+  supportsDynamicImport: runtimeSupportsVmModules,
   supportsExportNamespaceFrom: false,
   supportsStaticESM: false,
   supportsTopLevelAwait: false,
@@ -219,6 +223,7 @@ export default class Runtime {
       jestGlobals: this.jestGlobals,
       mockState: this.mockState,
       registries: this.registries,
+      requireModule: (from, moduleName) => this.requireModule(from, moduleName),
       requireModuleOrMock: (from, moduleName) =>
         this.requireModuleOrMock(from, moduleName),
       resolution: this._resolution,
@@ -229,12 +234,19 @@ export default class Runtime {
     });
     this.executor = new ModuleExecutor({
       config,
-      dynamicImport: (specifier, identifier, context, importAttributes) =>
+      dynamicImport: (
+        specifier,
+        identifier,
+        context,
+        importAttributes,
+        phase,
+      ) =>
         this.esmLoader.dynamicImportFromCjs(
           specifier,
           identifier,
           context,
           importAttributes,
+          phase,
         ),
       environment: this._environment,
       jestGlobals: this.jestGlobals,
@@ -251,12 +263,24 @@ export default class Runtime {
       logFormattedReferenceError: msg => this._logFormattedReferenceError(msg),
       mockState: this.mockState,
       registries: this.registries,
-      requireEsm: <T>(modulePath: string, requiredFrom: string) =>
-        this.esmLoader.requireEsmModule<T>(modulePath, requiredFrom),
+      requireEsm: <T>(
+        modulePath: string,
+        requiredFrom: string,
+        isRequireActual: boolean,
+        moduleName: string | undefined,
+      ) =>
+        this.esmLoader.requireEsmModule<T>(
+          modulePath,
+          requiredFrom,
+          isRequireActual,
+          moduleName,
+        ),
       resolution: this._resolution,
       testState: this.testState,
       transformCache: this.transformCache,
     });
+
+    this.installGetBuiltinModule();
 
     if (config.automock) {
       for (const filePath of config.setupFiles) {
@@ -388,13 +412,12 @@ export default class Runtime {
 
   requireInternalModule<T = unknown>(from: string, to?: string): T {
     if (to) {
-      const require = nativeModule.createRequire(from);
       if (INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES.has(to)) {
-        return require(to);
+        return nativeModule.createRequire(from)(to);
       }
       const outsideJestVmPath = decodePossibleOutsideJestVmPath(to);
       if (outsideJestVmPath) {
-        return require(outsideJestVmPath);
+        return nativeModule.createRequire(from)(outsideJestVmPath);
       }
     }
 
@@ -440,18 +463,24 @@ export default class Runtime {
       return module as T;
     }
 
+    // ESM targets serve through the ESM loader, which loads a manual mock in
+    // its own format and generates automocks from the real namespace. The
+    // CJS branches below would execute an ESM mock file as CommonJS, and the
+    // CJS generateMock would recurse into the ESM mock consult and automock
+    // the freshly generated mock a second time.
+    const esmMockTarget = this._esmMockTarget(from, moduleName);
+    if (esmMockTarget !== null) {
+      mockRegistry.set(
+        moduleID,
+        this.esmLoader.requireEsmMock(from, moduleName, esmMockTarget),
+      );
+      return mockRegistry.get(moduleID) as T;
+    }
+
     const manualMockPath = this._resolution.findManualMock(from, moduleName);
 
     if (manualMockPath) {
-      const localModule: InitialModule = {
-        children: [],
-        exports: {},
-        filename: manualMockPath,
-        id: manualMockPath,
-        isPreloading: false,
-        loaded: false,
-        path: path.dirname(manualMockPath),
-      };
+      const localModule = createInitialModule(manualMockPath);
 
       this.cjsLoader.loadModule(
         localModule,
@@ -469,6 +498,73 @@ export default class Runtime {
     }
 
     return mockRegistry.get(moduleID) as T;
+  }
+
+  // The sandbox `process` is a copy, so its `getBuiltinModule` is the host
+  // function by reference: it handed back the host `process` (Node guarantees
+  // `process.getBuiltinModule('process') === process`) and the host
+  // `node:module`, whose `createRequire` loads files outside Jest's registry,
+  // mocks and transforms. Route it through the same provider a `require()` of
+  // a core module uses.
+  private installGetBuiltinModule(): void {
+    // `getBuiltinModule` is Node 22.3+ and not in @types/node@18.
+    const sandboxProcess = this._environment.global?.process as
+      | (NodeJS.Process & {getBuiltinModule?: (id: string) => unknown})
+      | undefined;
+    if (
+      sandboxProcess === undefined ||
+      typeof sandboxProcess.getBuiltinModule !== 'function'
+    ) {
+      return;
+    }
+    // Dispatch through the public seam so subclasses that override
+    // `requireModule` see builtin loads from `getBuiltinModule` too.
+    sandboxProcess.getBuiltinModule = (id: string) =>
+      nativeModule.isBuiltin(id)
+        ? this.requireModule(this._testPath, id)
+        : undefined;
+  }
+
+  // The CJS-resolved path travels with the mock request: a conditional
+  // package can resolve `require` and `import` to different ESM files, and a
+  // mock served to require() must describe the file require() would load.
+  private _esmMockTarget(from: string, moduleName: string): string | null {
+    // With an async-only resolver the sync resolution below silently falls
+    // back to the default resolver; declining the shortcut lets the fallback
+    // load reach requireEsmModule's ERR_REQUIRE_ASYNC_MODULE guard.
+    if (!supportsSyncEvaluate || !this._resolution.canResolveSync()) {
+      return null;
+    }
+    if (this._resolution.isCoreModule(moduleName)) {
+      return null;
+    }
+    let modulePath: string;
+    try {
+      modulePath =
+        this._resolution.resolveCjsStub(from, moduleName) ||
+        this._resolution.resolveCjs(from, moduleName);
+    } catch {
+      // A name that only resolves to a manual mock has no ESM target.
+      return null;
+    }
+    if (this._resolution.shouldLoadAsEsm(modulePath)) {
+      return modulePath;
+    }
+    // Unmarked ESM - a .js file in a CommonJS scope whose transformed source
+    // carries ESM syntax - loads through requireEsmModule's parse-error
+    // fallback, so the same discriminator classifies it here. Left to the
+    // CJS generateMock, its real-module load would generate the ESM mock and
+    // the outer path would automock that mock a second time.
+    if (
+      path.extname(modulePath) !== '.node' &&
+      !modulePath.endsWith('.json') &&
+      !this._resolution.isExplicitlyCommonjs(modulePath) &&
+      this.transformCache.canTransformSync(modulePath) &&
+      hasEsmSyntax(this.transformCache.transform(modulePath, undefined))
+    ) {
+      return modulePath;
+    }
+    return null;
   }
 
   private _getFullTransformationOptions(

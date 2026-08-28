@@ -36,35 +36,35 @@ describe('ModuleRegistries', () => {
     test('reads/writes go to the main map outside isolation', () => {
       const registries = new ModuleRegistries(module => module.namespace);
       const cjsModule = fakeCjs('/a.js');
-      registries.setCjs('/a.js', cjsModule);
-      expect(registries.hasCjs('/a.js')).toBe(true);
-      expect(registries.getCjs('/a.js')).toBe(cjsModule);
+      registries.getActiveCjsRegistry().set('/a.js', cjsModule);
+      expect(registries.getActiveCjsRegistry().has('/a.js')).toBe(true);
+      expect(registries.getActiveCjsRegistry().get('/a.js')).toBe(cjsModule);
     });
 
     test('reads/writes go to the isolated overlay during isolation', () => {
       const registries = new ModuleRegistries(module => module.namespace);
       const main = fakeCjs('/a.js');
-      registries.setCjs('/a.js', main);
+      registries.getActiveCjsRegistry().set('/a.js', main);
 
       registries.enterIsolated('isolateModules');
-      expect(registries.hasCjs('/a.js')).toBe(false);
+      expect(registries.getActiveCjsRegistry().has('/a.js')).toBe(false);
 
       const isolated = fakeCjs('/a.js');
-      registries.setCjs('/a.js', isolated);
-      expect(registries.getCjs('/a.js')).toBe(isolated);
+      registries.getActiveCjsRegistry().set('/a.js', isolated);
+      expect(registries.getActiveCjsRegistry().get('/a.js')).toBe(isolated);
 
       registries.exitIsolated();
-      expect(registries.getCjs('/a.js')).toBe(main);
+      expect(registries.getActiveCjsRegistry().get('/a.js')).toBe(main);
     });
 
     test('internal CJS bypasses isolation', () => {
       const registries = new ModuleRegistries(module => module.namespace);
       const cjsModule = fakeCjs('/a.js');
-      registries.setInternalCjs('/a.js', cjsModule);
+      registries.getInternalCjsRegistry().set('/a.js', cjsModule);
 
       registries.enterIsolated('isolateModules');
-      expect(registries.hasInternalCjs('/a.js')).toBe(true);
-      expect(registries.getInternalCjs('/a.js')).toBe(cjsModule);
+      expect(registries.getInternalCjsRegistry().has('/a.js')).toBe(true);
+      expect(registries.getInternalCjsRegistry().get('/a.js')).toBe(cjsModule);
     });
   });
 
@@ -80,8 +80,8 @@ describe('ModuleRegistries', () => {
     test('exitIsolated empties the overlay maps before dropping the reference', () => {
       const registries = new ModuleRegistries(module => module.namespace);
       registries.enterIsolated('isolateModules');
-      registries.setCjs('/a.js', fakeCjs('/a.js'));
-      registries.setEsm('/b.mjs', fakeEsm() as JestModule);
+      registries.getActiveCjsRegistry().set('/a.js', fakeCjs('/a.js'));
+      registries.getActiveEsmRegistry().set('/b.mjs', fakeEsm() as JestModule);
       registries.setMock('id', 'mock');
 
       // Capture the live overlay maps so we can prove they are cleared, not
@@ -95,12 +95,12 @@ describe('ModuleRegistries', () => {
 
       registries.exitIsolated();
 
-      expect(registries.isIsolated()).toBe(false);
+      expect(registries.getActiveCjsRegistry()).not.toBe(cjsOverlay);
       expect(cjsOverlay.size).toBe(0);
       expect(esmOverlay.size).toBe(0);
       expect(mockOverlay.size).toBe(0);
 
-      expect(registries.hasCjs('/a.js')).toBe(false);
+      expect(registries.getActiveCjsRegistry().has('/a.js')).toBe(false);
       expect(registries.hasMock('id')).toBe(false);
     });
   });
@@ -148,38 +148,45 @@ describe('ModuleRegistries', () => {
     test('suspends the isolation overlay so the scratch load cannot leak', () => {
       const registries = new ModuleRegistries(module => module.namespace);
       registries.enterIsolated('isolateModules');
-      registries.setCjs('/isolated.js', fakeCjs('/isolated.js'));
+      const isolatedCjs = registries.getActiveCjsRegistry();
+      isolatedCjs.set('/isolated.js', fakeCjs('/isolated.js'));
 
       registries.withScratchRegistries(() => {
-        expect(registries.isIsolated()).toBe(false);
-        expect(registries.hasCjs('/isolated.js')).toBe(false);
-        registries.setCjs('/scratch.js', fakeCjs('/scratch.js'));
+        expect(registries.getActiveCjsRegistry()).not.toBe(isolatedCjs);
+        expect(registries.getActiveCjsRegistry().has('/isolated.js')).toBe(
+          false,
+        );
+        registries
+          .getActiveCjsRegistry()
+          .set('/scratch.js', fakeCjs('/scratch.js'));
       });
 
-      expect(registries.isIsolated()).toBe(true);
-      expect(registries.hasCjs('/isolated.js')).toBe(true);
-      expect(registries.hasCjs('/scratch.js')).toBe(false);
+      expect(registries.getActiveCjsRegistry()).toBe(isolatedCjs);
+      expect(registries.getActiveCjsRegistry().has('/isolated.js')).toBe(true);
+      expect(registries.getActiveCjsRegistry().has('/scratch.js')).toBe(false);
       registries.exitIsolated();
     });
 
     test('runs fn against fresh CJS + mock maps and restores originals', () => {
       const registries = new ModuleRegistries(module => module.namespace);
       const orig = fakeCjs('/a.js');
-      registries.setCjs('/a.js', orig);
+      registries.getActiveCjsRegistry().set('/a.js', orig);
       registries.setMock('id', 'orig-mock');
 
       const result = registries.withScratchRegistries(() => {
-        expect(registries.hasCjs('/a.js')).toBe(false);
+        expect(registries.getActiveCjsRegistry().has('/a.js')).toBe(false);
         expect(registries.hasMock('id')).toBe(false);
-        registries.setCjs('/scratch.js', fakeCjs('/scratch.js'));
+        registries
+          .getActiveCjsRegistry()
+          .set('/scratch.js', fakeCjs('/scratch.js'));
         registries.setMock('scratch-id', 'scratch-mock');
         return 'done';
       });
 
       expect(result).toBe('done');
-      expect(registries.getCjs('/a.js')).toBe(orig);
+      expect(registries.getActiveCjsRegistry().get('/a.js')).toBe(orig);
       expect(registries.getMock('id')).toBe('orig-mock');
-      expect(registries.hasCjs('/scratch.js')).toBe(false);
+      expect(registries.getActiveCjsRegistry().has('/scratch.js')).toBe(false);
       expect(registries.hasMock('scratch-id')).toBe(false);
     });
 
@@ -194,40 +201,49 @@ describe('ModuleRegistries', () => {
 
       registries.exitIsolated();
 
-      expect(registries.hasEsm('/scratch.mjs')).toBe(false);
+      expect(registries.getActiveEsmRegistry().has('/scratch.mjs')).toBe(false);
       expect(registries.hasModuleMock('scratch-id')).toBe(false);
     });
 
     test('restores originals even when fn throws', () => {
       const registries = new ModuleRegistries(module => module.namespace);
       const orig = fakeCjs('/a.js');
-      registries.setCjs('/a.js', orig);
+      registries.getActiveCjsRegistry().set('/a.js', orig);
 
       expect(() =>
         registries.withScratchRegistries(() => {
           throw new Error('boom');
         }),
       ).toThrow('boom');
-      expect(registries.getCjs('/a.js')).toBe(orig);
+      expect(registries.getActiveCjsRegistry().get('/a.js')).toBe(orig);
     });
   });
 
   describe('require.cache Proxy', () => {
+    test('hands out one proxy for every module', () => {
+      const registries = new ModuleRegistries(module => module.namespace);
+      expect(registries.getRequireCacheProxy()).toBe(
+        registries.getRequireCacheProxy(),
+      );
+    });
+
     test('exposes CJS modules and live ESM entries; hides Promise / unlinked', () => {
       const registries = new ModuleRegistries(module => module.namespace);
       const cjs = fakeCjs('/cjs.js');
-      registries.setCjs('/cjs.js', cjs);
+      registries.getActiveCjsRegistry().set('/cjs.js', cjs);
 
       const liveEsm = fakeEsm('evaluated');
-      registries.setEsm(LIVE_KEY, liveEsm as JestModule);
+      registries.getActiveEsmRegistry().set(LIVE_KEY, liveEsm as JestModule);
 
       const unlinkedEsm = fakeEsm('unlinked');
-      registries.setEsm(UNLINKED_KEY, unlinkedEsm as JestModule);
+      registries
+        .getActiveEsmRegistry()
+        .set(UNLINKED_KEY, unlinkedEsm as JestModule);
 
       const pending = Promise.resolve(fakeEsm()) as unknown as JestModule;
-      registries.setEsm(PENDING_KEY, pending);
+      registries.getActiveEsmRegistry().set(PENDING_KEY, pending);
 
-      const cache = registries.createRequireCacheProxy();
+      const cache = registries.getRequireCacheProxy();
 
       expect(cache['/cjs.js']).toBe(cjs);
       expect('/cjs.js' in cache).toBe(true);
@@ -250,9 +266,21 @@ describe('ModuleRegistries', () => {
       expect(keys).not.toContain(fileURLToPath(PENDING_KEY));
     });
 
+    test('hides errored ESM entries', () => {
+      const registries = new ModuleRegistries(module => module.namespace);
+      registries
+        .getActiveEsmRegistry()
+        .set(LIVE_KEY, fakeEsm('errored') as JestModule);
+
+      const cache = registries.getRequireCacheProxy();
+      expect(cache['/live.mjs']).toBeUndefined();
+      expect('/live.mjs' in cache).toBe(false);
+      expect(Object.keys(cache)).toEqual([]);
+    });
+
     test('mutators silently no-op rather than throw', () => {
       const registries = new ModuleRegistries(module => module.namespace);
-      const cache = registries.createRequireCacheProxy();
+      const cache = registries.getRequireCacheProxy();
       // @ts-expect-error: write-through is intentionally not supported
       cache['/x.js'] = fakeCjs('/x.js');
       expect(cache['/x.js']).toBeUndefined();
@@ -261,10 +289,14 @@ describe('ModuleRegistries', () => {
 
     test('hides ESM instances that carry a query or fragment', () => {
       const registries = new ModuleRegistries(module => module.namespace);
-      registries.setEsm(`${LIVE_KEY}?q=1`, fakeEsm('evaluated') as JestModule);
-      registries.setEsm(`${LIVE_KEY}#frag`, fakeEsm('evaluated') as JestModule);
+      registries
+        .getActiveEsmRegistry()
+        .set(`${LIVE_KEY}?q=1`, fakeEsm('evaluated') as JestModule);
+      registries
+        .getActiveEsmRegistry()
+        .set(`${LIVE_KEY}#frag`, fakeEsm('evaluated') as JestModule);
 
-      const cache = registries.createRequireCacheProxy();
+      const cache = registries.getRequireCacheProxy();
       expect(Object.keys(cache)).toEqual([]);
       expect(cache['/live.mjs']).toBeUndefined();
       expect('/live.mjs' in cache).toBe(false);
@@ -273,9 +305,11 @@ describe('ModuleRegistries', () => {
 
     test('does not address file entries by URL string', () => {
       const registries = new ModuleRegistries(module => module.namespace);
-      registries.setEsm(LIVE_KEY, fakeEsm('evaluated') as JestModule);
+      registries
+        .getActiveEsmRegistry()
+        .set(LIVE_KEY, fakeEsm('evaluated') as JestModule);
 
-      const cache = registries.createRequireCacheProxy();
+      const cache = registries.getRequireCacheProxy();
       expect(cache['/live.mjs']).toBeDefined();
       expect(cache[LIVE_KEY]).toBeUndefined();
       expect(LIVE_KEY in cache).toBe(false);
@@ -293,25 +327,25 @@ describe('ModuleRegistries', () => {
   describe('clear semantics', () => {
     test('clearForReset drops everything except internal CJS', () => {
       const registries = new ModuleRegistries(module => module.namespace);
-      registries.setCjs('/a.js', fakeCjs('/a.js'));
-      registries.setEsm('/b.mjs', fakeEsm() as JestModule);
+      registries.getActiveCjsRegistry().set('/a.js', fakeCjs('/a.js'));
+      registries.getActiveEsmRegistry().set('/b.mjs', fakeEsm() as JestModule);
       registries.setMock('id', 'mock');
       registries.setModuleMock('mid', fakeEsm() as JestModule);
-      registries.setInternalCjs('/i.js', fakeCjs('/i.js'));
+      registries.getInternalCjsRegistry().set('/i.js', fakeCjs('/i.js'));
 
       registries.clearForReset();
-      expect(registries.hasCjs('/a.js')).toBe(false);
-      expect(registries.hasEsm('/b.mjs')).toBe(false);
+      expect(registries.getActiveCjsRegistry().has('/a.js')).toBe(false);
+      expect(registries.getActiveEsmRegistry().has('/b.mjs')).toBe(false);
       expect(registries.hasMock('id')).toBe(false);
       expect(registries.hasModuleMock('mid')).toBe(false);
-      expect(registries.hasInternalCjs('/i.js')).toBe(true);
+      expect(registries.getInternalCjsRegistry().has('/i.js')).toBe(true);
     });
 
     test('clear drops everything including internal CJS', () => {
       const registries = new ModuleRegistries(module => module.namespace);
-      registries.setInternalCjs('/i.js', fakeCjs('/i.js'));
+      registries.getInternalCjsRegistry().set('/i.js', fakeCjs('/i.js'));
       registries.clear();
-      expect(registries.hasInternalCjs('/i.js')).toBe(false);
+      expect(registries.getInternalCjsRegistry().has('/i.js')).toBe(false);
     });
   });
 });

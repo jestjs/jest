@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type nativeModule from 'node:module';
+import nativeModule from 'node:module';
 import * as path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import type {JestEnvironment, Module} from '@jest/environment';
@@ -49,7 +49,7 @@ function makeResolution(
 
 function makeRegistries(): ModuleRegistries {
   return {
-    createRequireCacheProxy: jest.fn(() => ({})),
+    getRequireCacheProxy: jest.fn(() => ({})),
   } as unknown as ModuleRegistries;
 }
 
@@ -320,6 +320,21 @@ describe('CoreModuleProvider', () => {
     expect(provider.require('module')).toBe(ModuleClass);
   });
 
+  test('mocked Module rejects register and registerHooks', () => {
+    const {provider} = makeProvider({
+      normalizeCoreModuleSpecifier: () => 'module',
+    });
+    const ModuleClass = provider.require(
+      'module',
+    ) as typeof nativeModule.Module;
+    for (const hookRegistrar of ['register', 'registerHooks']) {
+      if (!(hookRegistrar in nativeModule)) continue;
+      expect(() =>
+        (ModuleClass as unknown as Record<string, () => void>)[hookRegistrar](),
+      ).toThrow(`module.${hookRegistrar}() is not supported in Jest`);
+    }
+  });
+
   test('mocked Module.createRequire delegates to requireBuilder.forFilename with the filename', () => {
     const fakeRequire = (() => 'r') as unknown as NodeJS.Require;
     const requireBuilder = makeBuilder();
@@ -355,6 +370,49 @@ describe('CoreModuleProvider', () => {
     const absolutePath = path.resolve('/abs/x.js');
     ModuleClass.createRequire(pathToFileURL(absolutePath).href);
     expect(forFilename).toHaveBeenCalledWith(absolutePath);
+  });
+
+  test('mocked Module.createRequire accepts a file: URL with a localhost authority', () => {
+    const requireBuilder = makeBuilder();
+    const forFilename: jest.SpiedFunction<typeof requireBuilder.forFilename> =
+      jest
+        .spyOn(requireBuilder, 'forFilename')
+        .mockReturnValue({} as NodeJS.Require);
+    const {provider} = makeProvider({
+      normalizeCoreModuleSpecifier: () => 'module',
+      requireBuilder,
+    });
+    const ModuleClass = provider.require(
+      'module',
+    ) as typeof nativeModule.Module;
+    const absolutePath = path.resolve('/abs/x.js');
+    const localhostUrl = pathToFileURL(absolutePath).href.replace(
+      'file://',
+      'file://localhost',
+    );
+    ModuleClass.createRequire(localhostUrl);
+    expect(forFilename).toHaveBeenCalledWith(absolutePath);
+  });
+
+  test('mocked Module.createRequire accepts single-slash and upper-case file: URLs', () => {
+    const requireBuilder = makeBuilder();
+    const forFilename: jest.SpiedFunction<typeof requireBuilder.forFilename> =
+      jest
+        .spyOn(requireBuilder, 'forFilename')
+        .mockReturnValue({} as NodeJS.Require);
+    const {provider} = makeProvider({
+      normalizeCoreModuleSpecifier: () => 'module',
+      requireBuilder,
+    });
+    const ModuleClass = provider.require(
+      'module',
+    ) as typeof nativeModule.Module;
+    const absolutePath = path.resolve('/abs/x.js');
+    const href = pathToFileURL(absolutePath).href;
+    ModuleClass.createRequire(href.replace('file://', 'file:'));
+    expect(forFilename).toHaveBeenLastCalledWith(absolutePath);
+    ModuleClass.createRequire(href.replace('file://', 'FILE://'));
+    expect(forFilename).toHaveBeenLastCalledWith(absolutePath);
   });
 
   test('mocked Module.createRequire rejects relative filenames', () => {
