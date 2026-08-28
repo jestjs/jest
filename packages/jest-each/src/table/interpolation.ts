@@ -20,15 +20,20 @@ export const interpolateVariables = (
   index: number,
 ): string => {
   const keys = Object.keys(template);
+  // Regex alternation is ordered, so for overlapping keys such as `a` and
+  // `a|b` (or `count` and `count(*)`), listing the shorter key first would let
+  // `$a|b` match `$a` and leave `|b`. Sort the keys longest-first so the more
+  // specific key always wins, independent of object property insertion order.
+  const alternation = [...keys]
+    .sort((a, b) => b.length - a.length)
+    .map(key => escapeStrForRegex(key))
+    .join('|');
   // An empty alternation matches a bare `$`, so a row with no keys would
   // otherwise replace every `$` in the title with the whole (empty) row.
   const interpolated =
     keys.length > 0
       ? title.replaceAll(
-          new RegExp(
-            `\\$(${keys.map(key => escapeStrForRegex(key)).join('|')})[.\\w]*`,
-            'g',
-          ),
+          new RegExp(`\\$(${alternation})[.\\w]*`, 'g'),
           match => {
             const keyPath = match.slice(1).split('.');
             const value = getPath(template, keyPath);

@@ -541,6 +541,36 @@ describe('jest-each', () => {
         );
       });
 
+      test('resolves an overlapping key like `a|b` to that entry regardless of insertion order', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          {a: 0, 'a|b': 1},
+          // key order is reversed on purpose: the result must not depend on it
+          // eslint-disable-next-line sort-keys
+          {'a|b': 1, a: 0},
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('$a|b', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        // `$a|b` must resolve to the `a|b` entry (1) in both rows, never to
+        // `$a` (0) with a trailing `|b`, regardless of which key was inserted
+        // first on the row object.
+        expect(globalMock).toHaveBeenNthCalledWith(
+          1,
+          '1',
+          expectFunction,
+          undefined,
+        );
+        expect(globalMock).toHaveBeenNthCalledWith(
+          2,
+          '1',
+          expectFunction,
+          undefined,
+        );
+      });
+
       test('leaves a `$` in the title alone when the row has no keys', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)([{}, {}]);
