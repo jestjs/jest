@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`my test an external snapshot failure 1`] = `
+{
+  "p1": "hello",
+  "p2": "sunshine",
+}
+`;

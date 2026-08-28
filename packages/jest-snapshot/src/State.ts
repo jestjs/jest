@@ -127,6 +127,11 @@ export default class SnapshotState {
     this._rootDir = options.rootDir;
   }
 
+  /** @internal */
+  get snapshotPath(): string {
+    return this._snapshotPath;
+  }
+
   markSnapshotsAsCheckedForTest(testName: string): void {
     for (const uncheckedKey of this._uncheckedKeys) {
       const keyTestName = keyToTestName(uncheckedKey);
