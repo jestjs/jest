@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {isJestJasmineRun} from '@jest/test-utils';
 import * as path from 'node:path';
+import {isJestJasmineRun} from '@jest/test-utils';
 import runJest from '../runJest';
 
 const testRootDir = path.resolve(__dirname, '..', '..');
@@ -26,20 +26,16 @@ const normalizeSnapshotPaths = (value: unknown): unknown => {
     return value;
   }
 
-  const output = Object.fromEntries(
+  return Object.fromEntries(
     Object.entries(value).map(([key, child]) => [
       key,
       key === 'snapshotPath' && typeof child === 'string'
         ? child
-            .split(testRootDir)
-            .join(`${path.sep}MOCK_ABSOLUTE_PATH`)
-            .split('\\')
-            .join('/')
+            .replaceAll(testRootDir, '/MOCK_ABSOLUTE_PATH')
+            .replaceAll('\\', '/')
         : normalizeSnapshotPaths(child),
     ]),
   );
-
-  return output;
 };
 
 test('that the failureDetails property is set', () => {

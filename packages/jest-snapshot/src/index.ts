@@ -382,7 +382,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     testIdentity,
     testName: fullTestName,
   });
-  const {actual, count, expected, pass, snapshotPath} = result;
+  const {actual, count, expected, pass} = result;
 
   if (pass) {
     return {message: () => '', pass: true};
@@ -427,9 +427,9 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     pass: false,
   };
 
-  return snapshotPath === undefined
+  return isInline
     ? matcherResult
-    : {...matcherResult, snapshotPath};
+    : {...matcherResult, snapshotPath: snapshotState.snapshotPath};
 };
 
 export const toThrowErrorMatchingSnapshot: MatcherFunctionWithContext<

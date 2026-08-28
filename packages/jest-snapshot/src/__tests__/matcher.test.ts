@@ -12,16 +12,19 @@ test('returns matcher name, expected, actual and snapshot path values', () => {
   const match = jest.fn((_options: unknown) => ({
     actual: 'a',
     expected: 'b',
-    snapshotPath: '/path/to/test.snap',
   }));
   const mockedContext = {
     currentTestIdentity: () => testIdentity,
     snapshotState: {
       match,
+      snapshotPath: '/path/to/test.snap',
     },
   } as unknown as Context;
 
   const matcherResult = toMatchSnapshot.call(mockedContext, {
+    a: 1,
+  });
+  const inlineMatcherResult = toMatchInlineSnapshot.call(mockedContext, {
     a: 1,
   });
 
@@ -33,6 +36,7 @@ test('returns matcher name, expected, actual and snapshot path values', () => {
       snapshotPath: '/path/to/test.snap',
     }),
   );
+  expect(inlineMatcherResult).not.toHaveProperty('snapshotPath');
   expect(match).toHaveBeenCalledWith(expect.objectContaining({testIdentity}));
 });
 
