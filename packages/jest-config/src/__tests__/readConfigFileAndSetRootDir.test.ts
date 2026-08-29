@@ -213,22 +213,53 @@ describe('readConfigFileAndSetRootDir', () => {
   });
 });
 
-onNodeVersions('^24', () => {
-  describe('TypeScript file', () => {
-    test('reaches into 2nd loadout by TS loader if specified in docblock', async () => {
-      jest
-        .mocked(requireOrImportModule)
-        .mockRejectedValueOnce(new Error('Module not found'));
-      jest.mocked(fs.readFileSync).mockReturnValue(`
-        /** @jest-config-loader tsx */
-        export { testTimeout: 1_000 }
-      `);
-      const rootDir = path.resolve('some', 'path', 'to');
-      await expect(
-        readConfigFileAndSetRootDir(path.join(rootDir, 'jest.config.ts')),
-      ).rejects.toThrow(
-        /Module not found\n.*'tsx' is not a valid TypeScript configuration loader./,
-      );
+  onNodeVersions('^24', () => {
+    describe('TypeScript file', () => {
+      test('reaches into 2nd loadout by TS loader if specified in docblock', async () => {
+        jest
+          .mocked(requireOrImportModule)
+          .mockRejectedValueOnce(new Error('Module not found'));
+        jest.mocked(fs.readFileSync).mockReturnValue(`
+          /** @jest-config-loader tsx */
+          export { testTimeout: 1_000 }
+        `);
+        const rootDir = path.resolve('some', 'path', 'to');
+        await expect(
+          readConfigFileAndSetRootDir(path.join(rootDir, 'jest.config.ts')),
+        ).rejects.toThrow(
+          /Module not found\n.*'tsx' is not a valid TypeScript configuration loader./,
+        );
+      });
+
+      test('loads config using tsx loader when specified in docblock', async () => {
+        jest.mocked(requireOrImportModule).mockRejectedValueOnce(new Error('Module not found'));
+        jest.mocked(fs.readFileSync).mockReturnValue(`
+          /** @jest-config-loader tsx */
+          export const testTimeout = 1_000;
+        `);
+
+        const rootDir = path.resolve('some', 'path', 'to');
+        const config = await readConfigFileAndSetRootDir(
+          path.join(rootDir, 'jest.config.ts'),
+        );
+
+        expect(config).toEqual({testTimeout: 1_000, rootDir});
+      });
+
+      test('rejects when tsx loader is specified but not installed', async () => {
+        jest.mocked(requireOrImportModule).mockRejectedValueOnce(new Error('Module not found'));
+        jest.mocked(fs.readFileSync).mockReturnValue(`
+          /** @jest-config-loader tsx */
+          export const testTimeout = 1_000;
+        `);
+
+        const rootDir = path.resolve('some', 'path', 'to');
+        await expect(
+          readConfigFileAndSetRootDir(path.join(rootDir, 'jest.config.ts')),
+        ).rejects.toThrow(
+          /'tsx' is not a valid TypeScript configuration loader./,
+        );
+      });
     });
   });
 });
