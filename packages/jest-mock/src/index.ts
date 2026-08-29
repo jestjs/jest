@@ -956,24 +956,23 @@ export class ModuleMocker {
         mockConfig.mockImpl = fn;
         mockConfig.specificMockImpls = [];
 
-        let returnedValue: ReturnType<typeof callback>;
         try {
-          returnedValue = callback();
+          const returnedValue = callback();
+
+          if (isPromise(returnedValue)) {
+            return this._environmentGlobal.Promise.resolve(returnedValue).then(
+              () => {
+                restore();
+              },
+              error => {
+                restore();
+                throw error;
+              },
+            );
+          }
         } catch (error) {
           restore();
           throw error;
-        }
-
-        if (isPromise(returnedValue)) {
-          return this._environmentGlobal.Promise.resolve(returnedValue).then(
-            () => {
-              restore();
-            },
-            error => {
-              restore();
-              throw error;
-            },
-          );
         }
 
         restore();
