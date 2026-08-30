@@ -6,6 +6,7 @@
 
 - `[jest-core, jest-haste-map, jest-transform]` Keep `require('../package.json')` external when bundling, so `jest --version` and the transform and haste-map cache keys report the released version instead of the previous one ([#16422](https://github.com/jestjs/jest/pull/16422))
 - `[jest-each]` Escape a table row's keys before building the `$variable` interpolation `RegExp`, so a column name such as `count(*)` no longer fails the whole table with `Invalid regular expression`, and a `.` or `|` in a column name is matched literally ([#16345](https://github.com/jestjs/jest/pull/16345))
+- `[pretty-format]` Print `Number`, `String`, `Boolean` and `BigInt` wrapper objects with the primitive they wrap, so a failing assertion shows `[Number: 1]` instead of `Number {}` ([#16409](https://github.com/jestjs/jest/pull/16409))
 
 ### Chore & Maintenance
 
