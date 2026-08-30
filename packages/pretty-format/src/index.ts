@@ -50,6 +50,10 @@ const toString = Object.prototype.toString;
 const toISOString = Date.prototype.toISOString;
 const errorToString = Error.prototype.toString;
 const regExpToString = RegExp.prototype.toString;
+const bigIntValueOf = BigInt.prototype.valueOf;
+const booleanValueOf = Boolean.prototype.valueOf;
+const numberValueOf = Number.prototype.valueOf;
+const stringValueOf = String.prototype.valueOf;
 
 /**
  * Explicitly comparing typeof constructor to function avoids undefined as name
@@ -100,6 +104,13 @@ function printBigInt(val: bigint): string {
   return String(`${val}n`);
 }
 
+function printString(val: string, escapeString: boolean): string {
+  if (escapeString) {
+    return `"${val.replaceAll(/"|\\/g, '\\$&')}"`;
+  }
+  return `"${val}"`;
+}
+
 function printFunction(val: Function, printFunctionName: boolean): string {
   if (!printFunctionName) {
     return '[Function]';
@@ -144,10 +155,7 @@ function printBasicValue(
     return printBigInt(val);
   }
   if (typeOf === 'string') {
-    if (escapeString) {
-      return `"${val.replaceAll(/"|\\/g, '\\$&')}"`;
-    }
-    return `"${val}"`;
+    return printString(val, escapeString);
   }
   if (typeOf === 'function') {
     return printFunction(val, printFunctionName);
@@ -175,6 +183,18 @@ function printBasicValue(
   }
   if (toStringed === '[object Symbol]') {
     return printSymbol(val);
+  }
+  if (toStringed === '[object Number]') {
+    return `[Number: ${printNumber(numberValueOf.call(val))}]`;
+  }
+  if (toStringed === '[object BigInt]') {
+    return `[BigInt: ${printBigInt(bigIntValueOf.call(val))}]`;
+  }
+  if (toStringed === '[object Boolean]') {
+    return `[Boolean: ${booleanValueOf.call(val)}]`;
+  }
+  if (toStringed === '[object String]') {
+    return `[String: ${printString(stringValueOf.call(val), escapeString)}]`;
   }
   if (toStringed === '[object Date]') {
     return Number.isNaN(+val) ? 'Date { NaN }' : toISOString.call(val);
