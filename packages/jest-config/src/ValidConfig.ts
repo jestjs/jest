@@ -13,7 +13,7 @@ import {NODE_MODULES} from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
-export const initialOptions: Config.InitialOptions = {
+export const initialOptions: Required<Config.InitialOptions> = {
   automock: false,
   bail: multipleValidOptions(false, 0),
   cache: true,
@@ -211,7 +211,7 @@ export const initialOptions: Config.InitialOptions = {
   workerThreads: true,
 };
 
-export const initialProjectOptions: Config.InitialProjectOptions = {
+export const initialProjectOptions: Required<Config.InitialProjectOptions> = {
   automock: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
@@ -221,7 +221,6 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageProvider: 'v8',
-  coverageReporters: ['json', 'text', 'lcov', 'clover'],
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   detectLeaks: false,
   detectOpenHandles: false,
@@ -294,11 +293,6 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   openHandlesTimeout: 1000,
   preset: 'react-native',
   prettierPath: '<rootDir>/node_modules/prettier',
-  reporters: [
-    'default',
-    'custom-reporter-1',
-    ['custom-reporter-2', {configValue: true}],
-  ],
   resetMocks: false,
   resetModules: false,
   resolver: '<rootDir>/resolver.js',
@@ -348,5 +342,4 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   verbose: false,
   waitForUnhandledRejections: false,
   watchPathIgnorePatterns: ['<rootDir>/e2e/'],
-  workerIdleMemoryLimit: multipleValidOptions(0.2, '50%'),
 };

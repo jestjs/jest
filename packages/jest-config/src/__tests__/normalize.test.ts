@@ -157,6 +157,35 @@ it('global-only option in project config emits targeted warning', async () => {
   );
 });
 
+it.each([
+  ['reporters', ['default']],
+  ['coverageReporters', ['text']],
+  ['workerIdleMemoryLimit', '50%'],
+  ['coverageThreshold', {global: {lines: 80}}],
+  ['maxWorkers', 2],
+] as Array<[string, unknown]>)(
+  'global-only option %s in project config emits targeted warning',
+  async (option, value) => {
+    const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+    const rootDir = '/root/path/foo';
+    await normalize(
+      {
+        [option]: value,
+        rootDir,
+      },
+      {} as Config.Argv,
+      rootDir,
+      1,
+      true, // isProjectOptions
+    );
+
+    expect(mockWarn).toHaveBeenCalledTimes(1);
+    expect(mockWarn.mock.calls[0][0]).toContain(
+      'is not supported in an individual project configuration',
+    );
+  },
+);
+
 it('no validation warning for collectCoverage in project config', async () => {
   const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
   const rootDir = '/root/path/foo';
