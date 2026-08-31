@@ -7,7 +7,7 @@
 - `[jest-config]` Don't warn about global-only options in the config that supplies the global config - the root config a project resolves to, or the first entry of `--projects` when no root config is passed ([#16411](https://github.com/jestjs/jest/pull/16411))
 - `[jest-config, jest-types]` Stop accepting `reporters`, `coverageReporters`, `workerIdleMemoryLimit`, `cwd` and `runnerOptions` in a project config - they were silently ignored, and now warn like the other global-only options ([#16411](https://github.com/jestjs/jest/pull/16411))
 - `[jest-config, jest-validate]` Warn about `maxWorkers` and `coverageThreshold` in a project config instead of dropping them without a word ([#16411](https://github.com/jestjs/jest/pull/16411))
-- `[jest-runtime]` Resolve a package `imports` specifier under ESM again: a leading `#` was read as a URL fragment delimiter, so `#dep` split into an empty specifier and never reached the `imports` map ([#16413](https://github.com/jestjs/jest/pull/16413))
+- `[jest-runtime]` Resolve package `imports` specifiers like `#dep` under ESM again ([#16413](https://github.com/jestjs/jest/pull/16413))
 
 ### Chore & Maintenance
 

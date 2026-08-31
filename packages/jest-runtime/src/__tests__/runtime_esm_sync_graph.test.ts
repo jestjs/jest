@@ -1180,6 +1180,28 @@ describe('Runtime sync ESM graph - URL-keyed module instances', () => {
   );
 
   testWithVmEsm(
+    'carries a query on a package-imports specifier onto the target',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const plain = (await runtime.unstable_importModule(
+        FROM,
+        '#imports-root/url-reporter.mjs',
+      )) as any;
+      const queried = (await runtime.unstable_importModule(
+        FROM,
+        '#imports-root/url-reporter.mjs?v=2',
+      )) as any;
+      const reporterUrl = pathToFileURL(
+        path.join(ROOT_DIR, 'url-reporter.mjs'),
+      ).href;
+
+      expect(plain.namespace.url).toBe(reporterUrl);
+      expect(queried.namespace.url).toBe(`${reporterUrl}?v=2`);
+      expect(queried.namespace).not.toBe(plain.namespace);
+    },
+  );
+
+  testWithVmEsm(
     'accepts file: URLs without an authority and with an upper-case scheme',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});

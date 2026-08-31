@@ -213,11 +213,12 @@ const fileSchemeRegex = /^file:/i;
 // A `?` or `#` in an import specifier is a query/fragment delimiter, never a
 // filename character: the fragment starts at the first `#`, the query at the
 // first `?` before it. `data:` URIs pass through whole - their `?`/`#` belong
-// to the URI payload. So does a specifier that *starts* with `#`: that is a
-// package-imports specifier resolved against the nearest `package.json`, and
-// the whole string including any `?` is the key looked up in `imports`.
+// to the URI payload. A leading `#` opens a package-imports specifier rather
+// than a fragment, so the scan starts past it and the rest of the string
+// splits as usual - `#lib/a.mjs?v=2` resolves `#lib/a.mjs` and carries `?v=2`
+// onto the target, the same instance Node's wildcard substitution produces.
 function splitQueryAndFragment(specifier: string): SplitSpecifier {
-  if (specifier.startsWith('data:') || specifier.startsWith('#')) {
+  if (specifier.startsWith('data:')) {
     return {pathOrSpecifier: specifier, suffix: ''};
   }
   if (fileSchemeRegex.test(specifier)) {
@@ -227,10 +228,11 @@ function splitQueryAndFragment(specifier: string): SplitSpecifier {
       suffix: url.search + url.hash,
     };
   }
-  const hashIndex = specifier.indexOf('#');
+  const scanFrom = specifier.startsWith('#') ? 1 : 0;
+  const hashIndex = specifier.indexOf('#', scanFrom);
   const beforeFragment =
     hashIndex === -1 ? specifier : specifier.slice(0, hashIndex);
-  const queryIndex = beforeFragment.indexOf('?');
+  const queryIndex = beforeFragment.indexOf('?', scanFrom);
   const splitIndex = queryIndex === -1 ? hashIndex : queryIndex;
   if (splitIndex === -1) {
     return {pathOrSpecifier: specifier, suffix: ''};
