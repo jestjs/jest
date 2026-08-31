@@ -543,6 +543,10 @@ export default async function normalize(
   hasDeprecationWarnings: boolean;
   options: AllOptions;
 }> {
+  // TODO: This runs before `setupPreset`, so options a preset contributes are
+  // never validated - a preset used from a project config can carry global-only
+  // options without a warning. Validating after the merge needs a way to not
+  // warn twice about the options the user spelled out here.
   const {hasDeprecationWarnings} = validate(initialOptions, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,

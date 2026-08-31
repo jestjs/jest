@@ -457,8 +457,6 @@ export async function readConfigs(
           const parentConfigDirname = configPath
             ? path.dirname(configPath)
             : cwd;
-          const packageRoot =
-            typeof root === 'string' ? path.resolve(root) : undefined;
           // The config that supplies the global config must not be validated
           // as a project config - its global options are in the right place.
           const suppliesGlobalConfig =
@@ -475,9 +473,7 @@ export async function readConfigs(
             projectIndex,
             // we wanna skip the warning if this is the "main" project
             projectIsCwd,
-            skipArgvConfigOption &&
-              packageRoot !== parentConfigDirname &&
-              !suppliesGlobalConfig,
+            skipArgvConfigOption && !suppliesGlobalConfig,
           );
         }),
     );

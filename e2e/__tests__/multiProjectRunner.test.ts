@@ -709,3 +709,29 @@ test('only warns about global options in projects that do not supply the global 
     stderr.match(/Option "testFailureExitCode" is not supported/g),
   ).toHaveLength(1);
 });
+
+test('warns about global options in a project that lives next to the global config', () => {
+  writeFiles(DIR, {
+    'global.config.js': 'module.exports = {};',
+    'jest.config.js': 'module.exports = {testFailureExitCode: 7};',
+    'p2/jest.config.js': "module.exports = {displayName: 'p2'};",
+    'p2/other.test.js': "test('b', () => expect(1).toBe(1));",
+    'package.json': '{}',
+    'some.test.js': "test('a', () => expect(1).toBe(2));",
+  });
+
+  const {stderr, exitCode} = runJest(DIR, [
+    '--no-watchman',
+    '--config',
+    'global.config.js',
+    '--projects',
+    '.',
+    'p2',
+  ]);
+
+  // the global config comes from `--config`, so the one in the cwd is a project
+  expect(exitCode).toBe(1);
+  expect(stderr).toContain(
+    'Option "testFailureExitCode" is not supported in an individual project configuration',
+  );
+});
