@@ -1298,7 +1298,7 @@ With the `projects` option enabled, Jest will copy the root-level configuration 
 
 :::note
 
-Some options only take effect at the **root (global) config** level and are ignored when set inside a project config. These include: `bail`, `changedSince`, `ci`, `coverageReporters`, `coverageThreshold`, `forceExit`, `maxConcurrency`, `passWithNoTests`, `reporters`, `testResultsProcessor`, `testSequencer`, `watch`, `watchAll`, and `watchPlugins`. If you need to use any of these options, define them in the root config instead of a project config.
+Some options only take effect at the **root (global) config** level and are ignored when set inside a project config: `bail`, `changedFilesWithAncestor`, `changedSince`, `ci`, `collectTests`, `coverageReporters`, `coverageThreshold`, `expand`, `findRelatedTests`, `forceExit`, `json`, `lastCommit`, `listTests`, `logHeapUsage`, `maxConcurrency`, `maxWorkers`, `noStackTrace`, `notify`, `notifyMode`, `onlyChanged`, `onlyFailures`, `outputFile`, `passWithNoTests`, `randomize`, `replname`, `reporters`, `runTestsByPath`, `showSeed`, `testFailureExitCode`, `testNamePattern`, `testResultsProcessor`, `testSequencer`, `updateSnapshot`, `useStderr`, `watch`, `watchAll`, `watchPlugins`, `watchman`, `workerGracefulExitTimeout`, `workerIdleMemoryLimit` and `workerThreads`. If you need to use any of these options, define them in the root config instead of a project config.
 
 The `jest` package exports the `ProjectConfig` and `GlobalConfig` TypeScript types if you need to distinguish between the two:
 
