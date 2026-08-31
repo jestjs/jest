@@ -1,3 +1,7 @@
 {
-  "name": "test_esm_sync_graph_root"
+  "name": "test_esm_sync_graph_root",
+  "imports": {
+    "#imports-dep": "./imports-dep.mjs",
+    "#imports-lib/*": "./imports-lib-*.mjs"
+  }
 }

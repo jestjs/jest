@@ -213,9 +213,11 @@ const fileSchemeRegex = /^file:/i;
 // A `?` or `#` in an import specifier is a query/fragment delimiter, never a
 // filename character: the fragment starts at the first `#`, the query at the
 // first `?` before it. `data:` URIs pass through whole - their `?`/`#` belong
-// to the URI payload.
+// to the URI payload. So does a specifier that *starts* with `#`: that is a
+// package-imports specifier resolved against the nearest `package.json`, and
+// the whole string including any `?` is the key looked up in `imports`.
 function splitQueryAndFragment(specifier: string): SplitSpecifier {
-  if (specifier.startsWith('data:')) {
+  if (specifier.startsWith('data:') || specifier.startsWith('#')) {
     return {pathOrSpecifier: specifier, suffix: ''};
   }
   if (fileSchemeRegex.test(specifier)) {

@@ -220,6 +220,31 @@ describe('Runtime sync ESM graph', () => {
   });
 
   testWithVmEsm(
+    'resolves a package-imports specifier through the `imports` field',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-package-imports.mjs',
+      )) as any;
+      expect(m.namespace.doubled).toBe(84);
+      expect(m.namespace.viaWildcard).toBe('matched');
+    },
+  );
+
+  testWithVmEsm(
+    'imports a package-imports specifier directly, leading `#` and all',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        '#imports-dep',
+      )) as any;
+      expect(m.namespace.value).toBe(42);
+    },
+  );
+
+  testWithVmEsm(
     'supports dynamic import() from inside an ESM module',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
