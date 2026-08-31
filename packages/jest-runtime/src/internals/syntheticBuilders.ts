@@ -32,18 +32,21 @@ export function syntheticFromExports(
   );
 }
 
+// `parseJson` is the importing realm's `JSON.parse` - a host-realm parse
+// would hand the test objects whose prototype fails `instanceof Object`
+// inside the VM context.
 export function buildJsonSyntheticModule(
   jsonText: string,
   identifier: string,
   context: VMContext,
+  parseJson: (text: string) => unknown,
 ): SyntheticModule {
-  // JSON.parse runs in the body so a parse error surfaces during evaluate(),
+  // The parse runs in the body so a parse error surfaces during evaluate(),
   // matching Node's native JSON-module semantics.
   return new SyntheticModule(
     ['default'],
     function () {
-      const obj = JSON.parse(jsonText);
-      this.setExport('default', obj);
+      this.setExport('default', parseJson(jsonText));
     },
     {context, identifier},
   );
@@ -123,15 +126,20 @@ export function buildCjsAsEsmSyntheticModule(
   ]);
 
   const cjsExports = [...allCandidates].filter(exportName => {
-    // `default` is handled separately below as the whole module.exports.
-    if (exportName === 'default' || cjsRecord == null) {
+    // `default` and `module.exports` are handled separately below as the
+    // whole module.exports.
+    if (
+      exportName === 'default' ||
+      exportName === 'module.exports' ||
+      cjsRecord == null
+    ) {
       return false;
     }
     return Object.hasOwn(cjsRecord, exportName);
   });
 
   return new SyntheticModule(
-    [...cjsExports, 'default'],
+    [...cjsExports, 'default', 'module.exports'],
     function () {
       if (cjsRecord != null) {
         for (const exportName of cjsExports) {
@@ -141,6 +149,7 @@ export function buildCjsAsEsmSyntheticModule(
       // module.exports is the ESM default, matching Node's CJS-from-ESM behavior.
       // __esModule is not honored — see Node docs on named exports from CJS.
       this.setExport('default', cjs);
+      this.setExport('module.exports', cjs);
     },
     {context, identifier: modulePath},
   );

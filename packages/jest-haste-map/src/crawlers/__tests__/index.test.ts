@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {createEmptyMap} from '../../lib/util';
 import {crawl} from '../index';
 import {nodeCrawl} from '../node';
 import {watchmanCrawl} from '../watchman';
@@ -17,21 +18,19 @@ const mockWatchmanCrawl = watchmanCrawl as jest.MockedFunction<
   typeof watchmanCrawl
 >;
 
+const mockConsole = {warn: jest.fn()} as unknown as Console;
+
 const crawlerOptions = {
   computeSha1: false,
-  data: {
-    clocks: new Map(),
-    duplicates: new Map(),
-    files: new Map(),
-    map: new Map(),
-    mocks: new Map(),
-  },
+  console: mockConsole,
+  data: createEmptyMap(),
   enableSymlinks: false,
   extensions: ['js'],
   forceNodeFilesystemAPI: false,
   ignore: () => false,
   rootDir: '/root',
   roots: ['/root'],
+  watchmanSockname: undefined,
 };
 
 const mockResult = {
@@ -40,8 +39,6 @@ const mockResult = {
   removedFiles: new Map(),
 };
 
-const mockConsole = {warn: jest.fn()} as unknown as Console;
-
 describe('crawl', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -49,14 +46,14 @@ describe('crawl', () => {
 
   it('uses watchman when useWatchman is true', async () => {
     mockWatchmanCrawl.mockResolvedValue(mockResult);
-    await crawl(crawlerOptions, true, mockConsole);
+    await crawl(crawlerOptions, true);
     expect(mockWatchmanCrawl).toHaveBeenCalledTimes(1);
     expect(mockNodeCrawl).not.toHaveBeenCalled();
   });
 
   it('uses node when useWatchman is false', async () => {
     mockNodeCrawl.mockResolvedValue(mockResult);
-    await crawl(crawlerOptions, false, mockConsole);
+    await crawl(crawlerOptions, false);
     expect(mockNodeCrawl).toHaveBeenCalledTimes(1);
     expect(mockWatchmanCrawl).not.toHaveBeenCalled();
   });
@@ -66,7 +63,7 @@ describe('crawl', () => {
     mockWatchmanCrawl.mockRejectedValue(watchmanError);
     mockNodeCrawl.mockResolvedValue(mockResult);
 
-    const result = await crawl(crawlerOptions, true, mockConsole);
+    const result = await crawl(crawlerOptions, true);
     expect(result).toBe(mockResult);
     expect(mockNodeCrawl).toHaveBeenCalledTimes(1);
   });
@@ -75,7 +72,7 @@ describe('crawl', () => {
     mockWatchmanCrawl.mockRejectedValue(new Error('watchman error'));
     mockNodeCrawl.mockRejectedValue(new Error('node error'));
 
-    await expect(crawl(crawlerOptions, true, mockConsole)).rejects.toThrow(
+    await expect(crawl(crawlerOptions, true)).rejects.toThrow(
       'Crawler retry failed',
     );
   });
@@ -84,7 +81,7 @@ describe('crawl', () => {
     mockWatchmanCrawl.mockRejectedValue(new Error('watchman failed'));
     mockNodeCrawl.mockRejectedValue(new Error('node failed'));
 
-    await expect(crawl(crawlerOptions, true, mockConsole)).rejects.toThrow(
+    await expect(crawl(crawlerOptions, true)).rejects.toThrow(
       /watchman failed.*node failed/s,
     );
   });
@@ -93,9 +90,7 @@ describe('crawl', () => {
     const nodeError = new Error('node error');
     mockNodeCrawl.mockRejectedValue(nodeError);
 
-    await expect(crawl(crawlerOptions, false, mockConsole)).rejects.toThrow(
-      nodeError,
-    );
+    await expect(crawl(crawlerOptions, false)).rejects.toThrow(nodeError);
     expect(mockNodeCrawl).toHaveBeenCalledTimes(1);
   });
 });

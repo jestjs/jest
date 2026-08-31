@@ -1,6 +1,6 @@
 {
   "name": "jest-config",
-  "version": "30.4.2",
+  "version": "30.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -44,7 +44,7 @@
     "chalk": "^4.1.2",
     "ci-info": "^4.2.0",
     "deepmerge": "^4.3.1",
-    "glob": "^10.5.0",
+    "glob": "^13.0.6",
     "graceful-fs": "^4.2.11",
     "jest-circus": "workspace:*",
     "jest-docblock": "workspace:*",

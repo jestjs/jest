@@ -13,11 +13,27 @@ const dir = path.resolve(__dirname, '../failures');
 
 const normalizeDots = (text: string) => text.replaceAll(/\.+$/gm, '.');
 
+// These snapshots run with both Circus and Jasmine, which format the wrapper
+// around non-Error failures differently. Keep the user-facing stack comparable.
+function normalizeCircusErrorCauses(text: string) {
+  return text.replaceAll(
+    /\n {10}at Array\.map \(<anonymous>\)\n\n {4}Cause:\n([\s\S]*?)(?=\n {2}● |$)/g,
+    (match, cause: string) => {
+      const stackStart = cause.search(/\n {10}(?:\d+ \||at )/);
+      return stackStart === -1
+        ? match
+        : `\n${cause.slice(stackStart + 1).replaceAll(/^ {4}/gm, '')}`;
+    },
+  );
+}
+
 function cleanStderr(stderr: string) {
   const {rest} = extractSummary(stderr);
-  return rest
-    .replaceAll(/.*(jest-jasmine2|jest-circus).*\n/g, '')
-    .replaceAll(new RegExp('Failed: Object {', 'g'), 'thrown: Object {');
+  return normalizeCircusErrorCauses(
+    rest
+      .replaceAll(/.*(jest-jasmine2|jest-circus).*\n/g, '')
+      .replaceAll(new RegExp('Failed: Object {', 'g'), 'thrown: Object {'),
+  );
 }
 
 beforeAll(() => {
@@ -45,6 +61,26 @@ test('works with node assert', () => {
   const summary = normalizeDots(cleanStderr(stderr));
 
   expect(summary).toMatchSnapshot();
+});
+
+test('node assert diffs honor --expand', () => {
+  // The unchanged keys are printed in full ahead of the diff either way, so
+  // only the `Difference:` section tells the two modes apart.
+  const diffSection = (stderr: string) =>
+    cleanStderr(stderr).split('Difference:').at(-1)!;
+
+  const collapsed = diffSection(
+    runJest(dir, ['assertionErrorExpand.test.js']).stderr,
+  );
+  const expanded = diffSection(
+    runJest(dir, ['assertionErrorExpand.test.js', '--expand']).stderr,
+  );
+
+  expect(collapsed).toContain('@@');
+  expect(collapsed).not.toContain('"key9": 9');
+
+  expect(expanded).not.toContain('@@');
+  expect(expanded).toContain('"key9": 9');
 });
 
 test('works with assertions in separate files', () => {

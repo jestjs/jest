@@ -840,6 +840,7 @@ const config = defineConfig(
       'packages/create-jest/src/__tests__/__fixtures__/**/*',
       'packages/jest-core/src/__tests__/**/*',
       'packages/jest-haste-map/src/__tests__/test_dotfiles_root/**/*',
+      'packages/jest-reporters/src/__tests__/__fixtures__/**/*',
       'packages/jest-resolve/src/__mocks__/**/*',
     ],
     rules: {
@@ -862,6 +863,7 @@ const config = defineConfig(
   },
   globalIgnores([
     '!.*',
+    '.claude/**',
     '**/coverage/**',
     '**/node_modules/**',
     'bin/',
@@ -904,6 +906,11 @@ const config = defineConfig(
     '{docs,website/versioned_docs/version-*}/ECMAScriptModules.md',
     '{docs,website/versioned_docs/version-*}/JestObjectAPI.md',
     'packages/jest-runtime/src/__tests__/test_esm_sync_graph_root/syntax-error.mjs',
+    // espree does not parse source phase imports yet
+    'packages/jest-runtime/src/__tests__/test_esm_sync_graph_root/dynamic-source-phase.cjs',
+    'packages/jest-runtime/src/__tests__/test_esm_sync_graph_root/dynamic-source-phase.mjs',
+    'packages/jest-runtime/src/__tests__/test_esm_sync_graph_root/import-source-after-tla.mjs',
+    'packages/jest-runtime/src/__tests__/test_esm_sync_graph_root/import-source-phase.mjs',
 
     // Bug? Uses TS syntax
     'e2e/babel-plugin-jest-hoist/__tests__/integration.test.js',

@@ -24,37 +24,54 @@ const createState = (): Circus.State => {
   return {
     currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
     currentlyRunningTest: null,
+    describeRetryOptions: new WeakMap(),
     expand: undefined,
     hasFocusedTests: false,
     hasStarted: false,
     includeTestLocationInResult: false,
     maxConcurrency: 5,
     parentProcess: null,
+    processErrorGeneration: 0,
     rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
     seed: 0,
     testNamePattern: null,
     testTimeout: 5000,
     unhandledErrors: [],
     unhandledRejectionErrorByPromise: new Map(),
+    unhandledRejectionErrorByPromiseByHook: new WeakMap(),
+    unhandledRejectionErrorByPromiseTarget: new WeakMap(),
   };
+};
+
+const initializeState = (state: Circus.State): Circus.State => {
+  state.describeRetryOptions ??= new WeakMap();
+  state.processErrorGeneration ??= 0;
+  state.unhandledRejectionErrorByPromiseByHook ??= new WeakMap();
+  state.unhandledRejectionErrorByPromiseTarget ??= new WeakMap();
+  return state;
 };
 
 export const getState = (): Circus.State =>
   (globalThis as Global.Global)[STATE_SYM] as Circus.State;
 export const setState = (state: Circus.State): Circus.State => {
-  setGlobal(globalThis, STATE_SYM, state);
-  protectProperties(state, [
+  const initializedState = initializeState(state);
+  setGlobal(globalThis, STATE_SYM, initializedState);
+  protectProperties(initializedState, [
+    'describeRetryOptions',
     'hasFocusedTests',
     'hasStarted',
     'includeTestLocationInResult',
     'maxConcurrency',
+    'processErrorGeneration',
     'seed',
     'testNamePattern',
     'testTimeout',
     'unhandledErrors',
     'unhandledRejectionErrorByPromise',
+    'unhandledRejectionErrorByPromiseByHook',
+    'unhandledRejectionErrorByPromiseTarget',
   ]);
-  return state;
+  return initializedState;
 };
 export const resetState = (): void => {
   setState(createState());

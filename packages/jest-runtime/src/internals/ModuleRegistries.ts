@@ -7,18 +7,19 @@
 
 import nativeModule from 'node:module';
 import * as path from 'node:path';
+import {fileURLToPath, pathToFileURL} from 'node:url';
 import type {Module as VMModule} from 'node:vm';
-import type {Module} from '@jest/environment';
-import type {InitialModule, JestModule, ModuleRegistry} from './moduleTypes';
+import type {JestModule, ModuleRegistry} from './moduleTypes';
 
 // Only expose ESM entries whose `namespace` is readable without throwing or
-// exposing TDZ values: `unlinked`/`linking` throw `ERR_VM_MODULE_STATUS`, and
-// a `linked` SourceTextModule's namespace properties are in TDZ until
-// evaluate runs (reading them throws `ReferenceError`).
+// exposing TDZ values: `unlinked`/`linking` throw `ERR_VM_MODULE_STATUS`,
+// and anything short of `evaluated` keeps uninitialized (TDZ) bindings that
+// throw `ReferenceError` on read - including `errored`, whose evaluation
+// stopped partway. Node likewise drops a failed `require(esm)` entry from
+// `require.cache`.
 const isLiveEsm = (entry: JestModule | undefined): entry is VMModule => {
   if (!entry || entry instanceof Promise) return false;
-  const status = (entry as VMModule).status;
-  return status === 'evaluated' || status === 'errored';
+  return (entry as VMModule).status === 'evaluated';
 };
 
 const notPermittedMethod = () => true;
@@ -27,20 +28,24 @@ class Isolation {
   readonly cjs: ModuleRegistry = new Map();
   readonly esm = new Map<string, JestModule>();
   readonly mock = new Map<string, unknown>();
+  readonly moduleMock = new Map<string, JestModule>();
 
   clear(): void {
     this.cjs.clear();
     this.esm.clear();
     this.mock.clear();
+    this.moduleMock.clear();
   }
 }
 
 export class ModuleRegistries {
+  private readonly requireEsmResult: (module: VMModule) => unknown;
+
   private moduleRegistry: ModuleRegistry = new Map();
   private readonly internalModuleRegistry: ModuleRegistry = new Map();
-  private readonly esModuleRegistry = new Map<string, JestModule>();
+  private esModuleRegistry = new Map<string, JestModule>();
   private mockRegistry = new Map<string, unknown>();
-  private readonly moduleMockRegistry = new Map<string, JestModule>();
+  private moduleMockRegistry = new Map<string, JestModule>();
 
   private isolation: Isolation | null = null;
 
@@ -49,45 +54,10 @@ export class ModuleRegistries {
     NodeModule
   >();
 
-  getCjs(modulePath: string): InitialModule | Module | JestModule | undefined {
-    return (this.isolation?.cjs ?? this.moduleRegistry).get(modulePath);
-  }
-  setCjs(
-    modulePath: string,
-    module: InitialModule | Module | JestModule,
-  ): void {
-    (this.isolation?.cjs ?? this.moduleRegistry).set(modulePath, module);
-  }
-  hasCjs(modulePath: string): boolean {
-    return (this.isolation?.cjs ?? this.moduleRegistry).has(modulePath);
-  }
-  deleteCjs(modulePath: string): void {
-    (this.isolation?.cjs ?? this.moduleRegistry).delete(modulePath);
-  }
+  private requireCacheProxy: NodeJS.Require['cache'] | undefined;
 
-  getInternalCjs(
-    modulePath: string,
-  ): InitialModule | Module | JestModule | undefined {
-    return this.internalModuleRegistry.get(modulePath);
-  }
-  setInternalCjs(
-    modulePath: string,
-    module: InitialModule | Module | JestModule,
-  ): void {
-    this.internalModuleRegistry.set(modulePath, module);
-  }
-  hasInternalCjs(modulePath: string): boolean {
-    return this.internalModuleRegistry.has(modulePath);
-  }
-
-  getEsm(key: string): JestModule | undefined {
-    return (this.isolation?.esm ?? this.esModuleRegistry).get(key);
-  }
-  setEsm(key: string, module: JestModule): void {
-    (this.isolation?.esm ?? this.esModuleRegistry).set(key, module);
-  }
-  hasEsm(key: string): boolean {
-    return (this.isolation?.esm ?? this.esModuleRegistry).has(key);
+  constructor(requireEsmResult: (module: VMModule) => unknown) {
+    this.requireEsmResult = requireEsmResult;
   }
 
   // Reads cascade: isolated overlay first, fall back to main. Writes go to
@@ -110,14 +80,26 @@ export class ModuleRegistries {
     );
   }
 
+  // Same cascade as `getMock` above: an isolation block inherits the module
+  // mocks instantiated outside it, but the instances it creates itself go to
+  // the overlay and are dropped on exit.
   getModuleMock(moduleID: string): JestModule | undefined {
-    return this.moduleMockRegistry.get(moduleID);
+    return (
+      this.isolation?.moduleMock.get(moduleID) ??
+      this.moduleMockRegistry.get(moduleID)
+    );
   }
   setModuleMock(moduleID: string, module: JestModule): void {
-    this.moduleMockRegistry.set(moduleID, module);
+    (this.isolation?.moduleMock ?? this.moduleMockRegistry).set(
+      moduleID,
+      module,
+    );
   }
   hasModuleMock(moduleID: string): boolean {
-    return this.moduleMockRegistry.has(moduleID);
+    return (
+      (this.isolation?.moduleMock.has(moduleID) ?? false) ||
+      this.moduleMockRegistry.has(moduleID)
+    );
   }
 
   getActiveEsmRegistry(): Map<string, JestModule> {
@@ -136,7 +118,7 @@ export class ModuleRegistries {
     return this.isolation?.mock ?? this.mockRegistry;
   }
 
-  isIsolated(): boolean {
+  private isIsolated(): boolean {
     return this.isolation !== null;
   }
 
@@ -164,13 +146,27 @@ export class ModuleRegistries {
   withScratchRegistries<T>(fn: () => T): T {
     const originalMock = this.mockRegistry;
     const originalModule = this.moduleRegistry;
+    const originalEsm = this.esModuleRegistry;
+    const originalModuleMock = this.moduleMockRegistry;
+    const originalIsolation = this.isolation;
     this.mockRegistry = new Map();
     this.moduleRegistry = new Map();
+    this.esModuleRegistry = new Map();
+    this.moduleMockRegistry = new Map();
+    // Every accessor prefers the isolation overlay, so leaving it in place
+    // would send the scratch load into the live isolated registry - the
+    // pollution this exists to prevent. All four base maps are swapped too,
+    // or an ESM target reached through `requireEsm` would write straight to
+    // the long-lived registry once the overlay is out of the way.
+    this.isolation = null;
     try {
       return fn();
     } finally {
       this.mockRegistry = originalMock;
       this.moduleRegistry = originalModule;
+      this.esModuleRegistry = originalEsm;
+      this.moduleMockRegistry = originalModuleMock;
+      this.isolation = originalIsolation;
     }
   }
 
@@ -180,7 +176,7 @@ export class ModuleRegistries {
     const dir = path.dirname(filename);
     const wrapper = {
       children: [],
-      exports: esm.namespace,
+      exports: this.requireEsmResult(esm),
       filename,
       id: filename,
       isPreloading: false,
@@ -202,41 +198,72 @@ export class ModuleRegistries {
     return wrapper;
   }
 
-  createRequireCacheProxy(): NodeJS.Require['cache'] {
-    const esmEntry = (key: string) => {
-      const entry = this.esModuleRegistry.get(key);
-      if (!isLiveEsm(entry)) return undefined;
-      return this.wrapEsmForRequireCache(key, entry);
-    };
-    return new Proxy<NodeJS.Require['cache']>(Object.create(null), {
-      defineProperty: notPermittedMethod,
-      deleteProperty: notPermittedMethod,
-      get: (_target, key) => {
-        if (typeof key !== 'string') return undefined;
-        return (
-          (this.moduleRegistry.get(key) as NodeModule | undefined) ??
-          esmEntry(key)
-        );
+  // The ESM registry keys by serialized URL, but `require.cache` addresses
+  // modules by path (Node keys its `require(esm)` entries the same way).
+  // `pathToFileURL` percent-encodes `?`/`#`, so a path lookup can never reach
+  // an entry that carries a query or fragment - those instances exist only
+  // for `import`, exactly as in Node. Every non-path key is invisible: URL
+  // strings, core specifiers, `data:` URIs and the registry's synthetic
+  // entries never appear in Node's `require.cache` either.
+  private getEsmEntryForRequireCache(key: string): JestModule | undefined {
+    if (!path.isAbsolute(key)) {
+      return undefined;
+    }
+    const registry = this.isolation?.esm ?? this.esModuleRegistry;
+    return registry.get(pathToFileURL(key).href);
+  }
+
+  getEsmRequireCacheEntry(key: string): NodeModule | undefined {
+    const entry = this.getEsmEntryForRequireCache(key);
+    if (!isLiveEsm(entry)) return undefined;
+    return this.wrapEsmForRequireCache(key, entry);
+  }
+
+  getRequireCacheProxy(): NodeJS.Require['cache'] {
+    this.requireCacheProxy ??= new Proxy<NodeJS.Require['cache']>(
+      Object.create(null),
+      {
+        defineProperty: notPermittedMethod,
+        deleteProperty: notPermittedMethod,
+        get: (_target, key) => {
+          if (typeof key !== 'string') return undefined;
+          return (
+            ((this.isolation?.cjs ?? this.moduleRegistry).get(key) as
+              NodeModule | undefined) ?? this.getEsmRequireCacheEntry(key)
+          );
+        },
+        getOwnPropertyDescriptor() {
+          return {configurable: true, enumerable: true};
+        },
+        has: (_target, key) => {
+          if (typeof key !== 'string') return false;
+          return (
+            (this.isolation?.cjs ?? this.moduleRegistry).has(key) ||
+            isLiveEsm(this.getEsmEntryForRequireCache(key))
+          );
+        },
+        ownKeys: () => {
+          const keys = new Set<string>(
+            (this.isolation?.cjs ?? this.moduleRegistry).keys(),
+          );
+          for (const [key, entry] of this.isolation?.esm ??
+            this.esModuleRegistry) {
+            if (!isLiveEsm(entry)) continue;
+            // Only file URLs become paths; core, data: and synthetic keys
+            // are not path-addressable and stay invisible, as in Node.
+            // `pathToFileURL` percent-encodes literal `?`/`#`, so their
+            // presence always means a query or fragment - an instance a
+            // path key cannot address.
+            if (!key.startsWith('file://')) continue;
+            if (key.includes('?') || key.includes('#')) continue;
+            keys.add(fileURLToPath(key));
+          }
+          return [...keys];
+        },
+        set: notPermittedMethod,
       },
-      getOwnPropertyDescriptor() {
-        return {configurable: true, enumerable: true};
-      },
-      has: (_target, key) => {
-        if (typeof key !== 'string') return false;
-        return (
-          this.moduleRegistry.has(key) ||
-          isLiveEsm(this.esModuleRegistry.get(key))
-        );
-      },
-      ownKeys: () => {
-        const keys = new Set<string>(this.moduleRegistry.keys());
-        for (const [key, entry] of this.esModuleRegistry) {
-          if (isLiveEsm(entry)) keys.add(key);
-        }
-        return [...keys];
-      },
-      set: notPermittedMethod,
-    });
+    );
+    return this.requireCacheProxy;
   }
 
   clearForReset(): void {

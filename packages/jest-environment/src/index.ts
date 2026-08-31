@@ -21,6 +21,15 @@ export type EnvironmentContext = {
   testPath: string;
 };
 
+// `injectGlobals: false` drops the `jest` argument, which moves every
+// `sandboxInjectedGlobals` entry up one position.
+export type InjectedModuleArguments =
+  | [
+      jest: Jest,
+      ...sandboxInjectedGlobals: Array<Global.Global[keyof Global.Global]>,
+    ]
+  | [...sandboxInjectedGlobals: Array<Global.Global[keyof Global.Global]>];
+
 // Different Order than https://nodejs.org/api/modules.html#modules_the_module_wrapper , however needs to be in the form [jest-transform]ScriptTransformer accepts
 export type ModuleWrapper = (
   this: Module['exports'],
@@ -29,8 +38,7 @@ export type ModuleWrapper = (
   require: Module['require'],
   __dirname: string,
   __filename: Module['filename'],
-  jest?: Jest,
-  ...sandboxInjectedGlobals: Array<Global.Global[keyof Global.Global]>
+  ...injectedGlobals: InjectedModuleArguments
 ) => unknown;
 
 export interface JestImportMeta extends ImportMeta {
@@ -307,7 +315,10 @@ export interface Jest {
    * `waitBeforeRetry` is the number of milliseconds to wait before retrying
    *
    * `retryImmediately` is the flag to retry the failed test immediately after
-   *  failure
+   * failure.
+   *
+   * `entireDescribe` is the flag to retry all tests and hooks in the describe
+   * block where `retryTimes` is called
    *
    * @remarks
    * Only available with `jest-circus` runner.
@@ -315,6 +326,7 @@ export interface Jest {
   retryTimes(
     numRetries: number,
     options?: {
+      entireDescribe?: boolean;
       logErrorsBeforeRetry?: boolean;
       retryImmediately?: boolean;
       waitBeforeRetry?: number;

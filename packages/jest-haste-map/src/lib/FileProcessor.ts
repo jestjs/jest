@@ -21,6 +21,7 @@ import type {
 import type {WorkerPool} from './WorkerPool';
 import * as fastPath from './fast_path';
 import getPlatformExtension from './getPlatformExtension';
+import {isIgnorableFileError} from './isIgnorableFileError';
 
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PACKAGE_JSON = `${path.sep}package.json`;
@@ -178,7 +179,9 @@ export class FileProcessor {
         error.stack = ''; // Remove stack for stack-less errors.
       }
 
-      if (!['ENOENT', 'EACCES'].includes(error.code)) {
+      // `EACCES` is not in `isIgnorableFileError`: an unreadable file is fatal
+      // to a watcher, but here it only means this one file cannot be indexed.
+      if (error.code !== 'EACCES' && !isIgnorableFileError(error)) {
         throw error;
       }
 
@@ -233,6 +236,13 @@ export class FileProcessor {
           if (this._options.throwOnModuleCollision) {
             throw new DuplicateError(existingMockPath, secondMockPath);
           }
+
+          let duplicates = hasteMap.mockDuplicates.get(mockPath);
+          if (duplicates == null) {
+            duplicates = new Set();
+            hasteMap.mockDuplicates.set(mockPath, duplicates);
+          }
+          duplicates.add(existingMockPath).add(secondMockPath);
         }
       }
 
@@ -244,18 +254,18 @@ export class FileProcessor {
         return null;
       }
 
-      if (moduleMetadata != null) {
-        const platform =
-          getPlatformExtension(filePath, this._options.platforms) ||
-          H.GENERIC_PLATFORM;
+      const moduleId = fileMetadata[H.ID];
+      const platform =
+        getPlatformExtension(filePath, this._options.platforms) ||
+        H.GENERIC_PLATFORM;
 
+      if (moduleMetadata != null) {
         const module = moduleMetadata[platform];
 
         if (module == null) {
           return null;
         }
 
-        const moduleId = fileMetadata[H.ID];
         let modulesByPlatform = map.get(moduleId);
         if (!modulesByPlatform) {
           modulesByPlatform = Object.create(null) as ModuleMapItem;
@@ -263,6 +273,16 @@ export class FileProcessor {
         }
         modulesByPlatform[platform] = module;
 
+        return null;
+      }
+
+      // A haste name involved in a collision has no `map` entry — it was
+      // deleted when the collision was recorded — but `duplicates` survives a
+      // rebuild and already lists this file, so its metadata is up to date and
+      // re-extracting it would change nothing.
+      if (
+        hasteMap.duplicates.get(moduleId)?.get(platform)?.has(relativeFilePath)
+      ) {
         return null;
       }
     }
@@ -301,6 +321,9 @@ export class FileProcessor {
     if (changedFiles === undefined || removedFiles.size > 0) {
       map = new Map();
       mocks = new Map();
+      // Re-derived along with `mocks` below; keeping the old entries would let a
+      // file deleted while Jest was not running be promoted back later.
+      hasteMap.mockDuplicates = new Map();
       filesToProcess = hasteMap.files;
     } else {
       map = hasteMap.map;
@@ -313,22 +336,30 @@ export class FileProcessor {
     }
 
     const promises: Array<Promise<void>> = [];
-    for (const relativeFilePath of filesToProcess.keys()) {
-      if (
-        this._options.skipPackageJson &&
-        relativeFilePath.endsWith(PACKAGE_JSON)
-      ) {
-        continue;
+    try {
+      for (const relativeFilePath of filesToProcess.keys()) {
+        if (
+          this._options.skipPackageJson &&
+          relativeFilePath.endsWith(PACKAGE_JSON)
+        ) {
+          continue;
+        }
+        // SHA-1, if requested, should already be present thanks to the crawler.
+        const filePath = fastPath.resolve(
+          this._options.rootDir,
+          relativeFilePath,
+        );
+        const promise = this.processFile(hasteMap, map, mocks, filePath);
+        if (promise) {
+          promises.push(promise);
+        }
       }
-      // SHA-1, if requested, should already be present thanks to the crawler.
-      const filePath = fastPath.resolve(
-        this._options.rootDir,
-        relativeFilePath,
-      );
-      const promise = this.processFile(hasteMap, map, mocks, filePath);
-      if (promise) {
-        promises.push(promise);
-      }
+    } catch (error) {
+      // `processFile` throws synchronously on a duplicate manual mock when
+      // `throwOnModuleCollision` is set, which would otherwise escape before
+      // the settlement handlers below can shut the worker farm down.
+      this._workerPool.end();
+      throw error;
     }
 
     return Promise.all(promises).then(

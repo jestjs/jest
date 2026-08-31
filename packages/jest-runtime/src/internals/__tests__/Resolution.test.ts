@@ -51,6 +51,41 @@ function makeResolver(overrides: Partial<Resolver> = {}): Resolver {
 }
 
 describe('Resolution', () => {
+  describe('isExplicitlyCommonjs', () => {
+    const commonjsPackageDir = path.join(
+      __dirname,
+      '..',
+      '..',
+      '__tests__',
+      'test_esm_interop_root',
+      'node_modules',
+      'commonjs-marked',
+    );
+
+    test('true for a .js file in a "type": "commonjs" package', () => {
+      const resolution = new Resolution(makeResolver(), [], []);
+      expect(
+        resolution.isExplicitlyCommonjs(
+          path.join(commonjsPackageDir, 'index.js'),
+        ),
+      ).toBe(true);
+    });
+
+    test('false for files whose extension already decides ESM', () => {
+      const resolution = new Resolution(makeResolver(), [], ['.mts']);
+      expect(
+        resolution.isExplicitlyCommonjs(
+          path.join(commonjsPackageDir, 'entry.mjs'),
+        ),
+      ).toBe(false);
+      expect(
+        resolution.isExplicitlyCommonjs(
+          path.join(commonjsPackageDir, 'entry.mts'),
+        ),
+      ).toBe(false);
+    });
+  });
+
   describe('conditions', () => {
     testWithSyncEsm(
       'with no env conditions, uses Node defaults including "module-sync"',
@@ -225,6 +260,17 @@ describe('Resolution', () => {
         'foo',
         {conditions: ESM},
       );
+    });
+
+    test('passes one long-lived options object across calls', () => {
+      const resolver = makeResolver();
+      const r = new Resolution(resolver, [], []);
+
+      r.getCjsModuleId(virtualMocks, '/a', 'foo');
+      r.getCjsModuleId(virtualMocks, '/b', 'bar');
+
+      const getModuleID = jest.mocked(resolver.getModuleID);
+      expect(getModuleID.mock.calls[0][3]).toBe(getModuleID.mock.calls[1][3]);
     });
   });
 

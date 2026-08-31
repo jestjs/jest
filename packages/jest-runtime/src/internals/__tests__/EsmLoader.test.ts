@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {pathToFileURL} from 'node:url';
 import {SourceTextModule, SyntheticModule, createContext} from 'node:vm';
 import {
   testWithLinkedSyntheticModule,
@@ -14,7 +15,7 @@ import {
 import type {JestEnvironment} from '@jest/environment';
 import {invariant} from 'jest-util';
 import type {CjsExportsCache} from '../CjsExportsCache';
-import {EsmLoader, LOAD_ASYNC, validateImportAttributes} from '../EsmLoader';
+import {EsmLoader, LOAD_ASYNC} from '../EsmLoader';
 import {CjsParseError} from '../ModuleExecutor';
 import type {FileCache} from '../FileCache';
 import type {JestGlobals} from '../JestGlobals';
@@ -24,6 +25,9 @@ import type {Resolution} from '../Resolution';
 import {TestState} from '../TestState';
 import type {TransformCache} from '../TransformCache';
 import type {CoreModuleProvider} from '../cjsRequire';
+
+const M_KEY = pathToFileURL('/m.mjs').href;
+const DEP_CJS_KEY = pathToFileURL('/dep.cjs').href;
 
 type Stubs = {
   resolution: jest.Mocked<Resolution>;
@@ -36,6 +40,9 @@ type Stubs = {
   coreModule: jest.Mocked<CoreModuleProvider>;
   jestGlobals: jest.Mocked<JestGlobals>;
   shouldLoadAsEsm: jest.MockedFunction<(modulePath: string) => boolean>;
+  requireModule: jest.MockedFunction<
+    (from: string, moduleName: string) => unknown
+  >;
   requireModuleOrMock: jest.MockedFunction<
     (from: string, moduleName: string) => unknown
   >;
@@ -78,9 +85,13 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
       getModuleMock: jest.fn(),
       setModuleMock: jest.fn(),
     } as unknown as jest.Mocked<ModuleRegistries>,
-    requireModuleOrMock: jest.fn() as any,
+    requireModule: jest.fn<(from: string, moduleName: string) => unknown>(),
+    requireModuleOrMock:
+      jest.fn<(from: string, moduleName: string) => unknown>(),
     resolution: {
+      canResolveSync: jest.fn(() => true),
       isCoreModule: jest.fn(() => false),
+      isExplicitlyCommonjs: jest.fn(() => false),
       resolveEsm: jest.fn((_from, name) => name),
     } as unknown as jest.Mocked<Resolution>,
     shouldLoadAsEsm: jest.fn(() => true),
@@ -100,9 +111,11 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
     jestGlobals: stubs.jestGlobals,
     mockState: stubs.mockState,
     registries: stubs.registries,
+    requireModule: stubs.requireModule,
     requireModuleOrMock: stubs.requireModuleOrMock,
     resolution: stubs.resolution,
     shouldLoadAsEsm: stubs.shouldLoadAsEsm,
+    testPath: '/test.js',
     testState: stubs.testState,
     transformCache: stubs.transformCache,
   });
@@ -110,6 +123,20 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
 }
 
 describe('EsmLoader.tryLoadGraphSync', () => {
+  test('throws ERR_UNKNOWN_BUILTIN_MODULE for a core root with a suffix', () => {
+    const {loader} = makeLoader({
+      resolution: {
+        isCoreModule: jest.fn((name: string) => name === 'fs'),
+      } as unknown as jest.Mocked<Resolution>,
+    });
+    expect(() => loader.tryLoadGraphSync('fs', '?q', 'sync-preferred')).toThrow(
+      expect.objectContaining({
+        code: 'ERR_UNKNOWN_BUILTIN_MODULE',
+        message: 'No such built-in module: node:fs?q',
+      }),
+    );
+  });
+
   test('throws when testState reports torn down', () => {
     const {loader, stubs} = makeLoader();
     stubs.testState.teardown();
@@ -134,7 +161,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
         throw new Error('no deps');
       });
       await cached.evaluate();
-      esmRegistry.set('/m.mjs', cached);
+      esmRegistry.set(M_KEY, cached);
       const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
       expect(result).toBe(cached);
     },
@@ -154,7 +181,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
         identifier: '/m.mjs',
       });
       expect(stashed.status).toBe('unlinked');
-      esmRegistry.set('/m.mjs', stashed);
+      esmRegistry.set(M_KEY, stashed);
       const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
       expect(result).toBe(LOAD_ASYNC);
     },
@@ -177,7 +204,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       // Drive to `'errored'` by forcing evaluate to fail.
       await errored.evaluate().catch(() => {});
       expect(errored.status).toBe('errored');
-      esmRegistry.set('/m.mjs', errored);
+      esmRegistry.set(M_KEY, errored);
       expect(() =>
         loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred'),
       ).toThrow('boom from module body');
@@ -207,7 +234,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       });
       await errored.evaluate().catch(() => {});
       expect(errored.status).toBe('errored');
-      esmRegistry.set('/dep.cjs', errored);
+      esmRegistry.set(DEP_CJS_KEY, errored);
 
       stubs.transformCache.transform.mockReturnValue(
         "import {x} from './dep.cjs'; globalThis.__x = x;",
@@ -291,7 +318,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
 
   test("returns 'load-async' when registry has a mid-flight Promise (legacy async load)", () => {
     const {esmRegistry, loader} = makeLoader();
-    esmRegistry.set('/m.mjs', Promise.resolve());
+    esmRegistry.set(M_KEY, Promise.resolve());
     const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
     expect(result).toBe(LOAD_ASYNC);
   });
@@ -306,7 +333,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     });
     const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
     expect(result).toBe(LOAD_ASYNC);
-    expect(stubs.transformCache.hasMutex).toHaveBeenCalledWith('/m.mjs');
+    expect(stubs.transformCache.hasMutex).toHaveBeenCalledWith(M_KEY);
   });
 
   testWithLinkedSyntheticModule(
@@ -468,8 +495,11 @@ describe('EsmLoader bridges', () => {
       });
       stubs.requireModuleOrMock.mockReturnValue({fromCjs: 'yes'});
       stubs.cjsExportsCache.getExportsOf.mockReturnValue(new Set(['fromCjs']));
-      stubs.transformCache.transform.mockReturnValue(
-        "import {fromCjs} from './dep.cjs'; globalThis.__cjsBridgeOk = fromCjs;",
+      // The unmarked-ESM probe transforms the dep too - answer per file.
+      stubs.transformCache.transform.mockImplementation(filename =>
+        filename === '/dep.cjs'
+          ? 'module.exports = {fromCjs: undefined};'
+          : "import {fromCjs} from './dep.cjs'; globalThis.__cjsBridgeOk = fromCjs;",
       );
       stubs.resolution.resolveEsm.mockReturnValue('/dep.cjs');
 
@@ -613,15 +643,26 @@ describe('EsmLoader.requireEsmModule', () => {
         throw new Error('no deps');
       });
       await synth.evaluate();
-      esmRegistry.set('/m.mjs', synth);
+      esmRegistry.set(M_KEY, synth);
       const ns = loader.requireEsmModule<{answer: number}>('/m.mjs');
       expect(ns.answer).toBe(42);
     },
   );
 
+  test('throws ERR_REQUIRE_ASYNC_MODULE when the resolver is async-only', () => {
+    const {loader, stubs} = makeLoader();
+    stubs.resolution.canResolveSync.mockReturnValue(false);
+    expect(() => loader.requireEsmModule('/m.mjs')).toThrow(
+      expect.objectContaining({
+        code: 'ERR_REQUIRE_ASYNC_MODULE',
+        message: expect.stringContaining('resolver is async-only'),
+      }),
+    );
+  });
+
   test('throws ERR_REQUIRE_ESM when the registry has a mid-flight Promise', () => {
     const {esmRegistry, loader} = makeLoader();
-    esmRegistry.set('/m.mjs', Promise.resolve());
+    esmRegistry.set(M_KEY, Promise.resolve());
     expect(() => loader.requireEsmModule('/m.mjs')).toThrow(
       expect.objectContaining({
         code: 'ERR_REQUIRE_ESM',
@@ -647,7 +688,7 @@ describe('EsmLoader.requireEsmModule', () => {
         throw new Error('no deps');
       });
       await synth.evaluate();
-      esmRegistry.set('/m.mjs', synth);
+      esmRegistry.set(M_KEY, synth);
       const result = loader.requireEsmModule<any>('/m.mjs');
       expect(result).toBe(unwrapped);
     },
@@ -689,192 +730,40 @@ describe('EsmLoader.dynamicImportFromCjs (legacy linkAndEvaluate)', () => {
   );
 });
 
-describe('validateImportAttributes', () => {
-  // Each test uses a unique modulePath/referencingIdentifier pair so the
-  // deprecation-warn dedup cache (module-scoped in EsmLoader) doesn't suppress
-  // across tests.
-  let counter = 0;
-  const uniquePaths = () => {
-    counter += 1;
-    return {
-      js: `/test-${counter}.js`,
-      json: `/test-${counter}.json`,
-      referencer: `/referencer-${counter}.mjs`,
-    };
-  };
-
-  describe('JSON modules', () => {
-    test('accepts type: json', () => {
-      const {json, referencer} = uniquePaths();
-      expect(() =>
-        validateImportAttributes(json, {type: 'json'}, referencer),
-      ).not.toThrow();
-    });
-
-    test('throws ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE when type is wrong', () => {
-      const {json, referencer} = uniquePaths();
-      let error: NodeJS.ErrnoException | null = null;
-      try {
-        validateImportAttributes(json, {type: 'css'}, referencer);
-      } catch (error_) {
-        error = error_ as NodeJS.ErrnoException;
-      }
-      expect(error).not.toBeNull();
-      expect(error).toBeInstanceOf(TypeError);
-      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE');
-      expect(error?.message).toMatch(/not of type "css"/);
-    });
-
-    test('warns once per (referencer, module) when no attribute is present', () => {
-      const {json, referencer} = uniquePaths();
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-      try {
-        validateImportAttributes(json, {}, referencer);
-        validateImportAttributes(json, {}, referencer);
-        validateImportAttributes(json, {}, referencer);
-        expect(warnSpy).toHaveBeenCalledTimes(1);
-        expect(warnSpy).toHaveBeenCalledWith(
-          expect.stringContaining(
-            'importing JSON without an import attribute is deprecated',
-          ),
-        );
-      } finally {
-        warnSpy.mockRestore();
-      }
-    });
-
-    test('warns again for a different referencer importing the same module', () => {
-      const {json, referencer} = uniquePaths();
-      const otherReferencer = `${referencer}-other`;
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-      try {
-        validateImportAttributes(json, {}, referencer);
-        validateImportAttributes(json, {}, otherReferencer);
-        expect(warnSpy).toHaveBeenCalledTimes(2);
-      } finally {
-        warnSpy.mockRestore();
-      }
-    });
-
-    test('treats data:application/json URIs as JSON modules', () => {
-      const {referencer} = uniquePaths();
-      const dataUri = 'data:application/json,{"x":1}';
-      // type: 'json' is accepted
-      expect(() =>
-        validateImportAttributes(dataUri, {type: 'json'}, referencer),
-      ).not.toThrow();
-      // Wrong type is rejected
-      let error: NodeJS.ErrnoException | null = null;
-      try {
-        validateImportAttributes(dataUri, {type: 'css'}, referencer);
-      } catch (error_) {
-        error = error_ as NodeJS.ErrnoException;
-      }
-      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE');
-    });
-
-    test('truncates data: URI payload in the deprecation warning', () => {
-      const {referencer} = uniquePaths();
-      const huge = 'a'.repeat(10_000);
-      const dataUri = `data:application/json,${encodeURIComponent(huge)}`;
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-      try {
-        validateImportAttributes(dataUri, {}, referencer);
-        expect(warnSpy).toHaveBeenCalledTimes(1);
-        const message = warnSpy.mock.calls[0][0];
-        expect(message).toContain('data:application/json,…');
-        expect(message).not.toContain(huge);
-      } finally {
-        warnSpy.mockRestore();
-      }
-    });
-
-    test('warning mentions both static and dynamic syntax', () => {
-      const {json, referencer} = uniquePaths();
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-      try {
-        validateImportAttributes(json, {}, referencer);
-        const message = warnSpy.mock.calls[0][0];
-        expect(message).toContain("with { type: 'json' }");
-        expect(message).toContain("{ with: { type: 'json' } }");
-      } finally {
-        warnSpy.mockRestore();
-      }
-    });
-  });
-
-  describe('non-JSON modules', () => {
-    test('accepts no attributes', () => {
-      const {js, referencer} = uniquePaths();
-      expect(() => validateImportAttributes(js, {}, referencer)).not.toThrow();
-    });
-
-    test('throws ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE when type is set', () => {
-      const {js, referencer} = uniquePaths();
-      let error: NodeJS.ErrnoException | null = null;
-      try {
-        validateImportAttributes(js, {type: 'javascript'}, referencer);
-      } catch (error_) {
-        error = error_ as NodeJS.ErrnoException;
-      }
-      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE');
-      expect(error?.message).toMatch(/not of type "javascript"/);
-    });
-
-    test('throws when type: json is asserted on non-JSON', () => {
-      const {js, referencer} = uniquePaths();
-      let error: NodeJS.ErrnoException | null = null;
-      try {
-        validateImportAttributes(js, {type: 'json'}, referencer);
-      } catch (error_) {
-        error = error_ as NodeJS.ErrnoException;
-      }
-      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE');
-    });
-  });
-
-  describe('unknown attribute keys', () => {
-    test('throws ERR_IMPORT_ATTRIBUTE_UNSUPPORTED on a JSON module', () => {
-      const {json, referencer} = uniquePaths();
-      let error: NodeJS.ErrnoException | null = null;
-      try {
-        validateImportAttributes(
-          json,
-          {cache: 'no-store', type: 'json'},
-          referencer,
-        );
-      } catch (error_) {
-        error = error_ as NodeJS.ErrnoException;
-      }
-      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_UNSUPPORTED');
-      expect(error?.message).toMatch(/Import attribute "cache"/);
-    });
-
-    test('throws ERR_IMPORT_ATTRIBUTE_UNSUPPORTED on a non-JSON module', () => {
-      const {js, referencer} = uniquePaths();
-      let error: NodeJS.ErrnoException | null = null;
-      try {
-        validateImportAttributes(js, {foo: 'bar'}, referencer);
-      } catch (error_) {
-        error = error_ as NodeJS.ErrnoException;
-      }
-      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_UNSUPPORTED');
-    });
-
-    test('rejects unknown key before reporting type-mismatch', () => {
-      // Unknown-key check is first per Node's `validateAttributes` order.
-      const {json, referencer} = uniquePaths();
-      let error: NodeJS.ErrnoException | null = null;
-      try {
-        validateImportAttributes(
-          json,
-          {nonsense: 'x', type: 'css'},
-          referencer,
-        );
-      } catch (error_) {
-        error = error_ as NodeJS.ErrnoException;
-      }
-      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_UNSUPPORTED');
+describe('requireResultFromModule', () => {
+  test('hands out the raw namespace when sync evaluation is unavailable', () => {
+    const {stubs} = makeLoader();
+    jest.isolateModules(() => {
+      jest.doMock('../nodeCapabilities', () => ({
+        ...jest.requireActual<typeof import('../nodeCapabilities')>(
+          '../nodeCapabilities',
+        ),
+        supportsSyncEvaluate: false,
+      }));
+      const {EsmLoader: GatedEsmLoader} = require('../EsmLoader');
+      const loader = new GatedEsmLoader({
+        cjsExportsCache: stubs.cjsExportsCache,
+        coreModule: stubs.coreModule,
+        environment: stubs.environment,
+        fileCache: stubs.fileCache,
+        jestGlobals: stubs.jestGlobals,
+        mockState: stubs.mockState,
+        registries: stubs.registries,
+        requireModule: stubs.requireModule,
+        requireModuleOrMock: stubs.requireModuleOrMock,
+        resolution: stubs.resolution,
+        shouldLoadAsEsm: stubs.shouldLoadAsEsm,
+        testPath: '/test.js',
+        testState: stubs.testState,
+        transformCache: stubs.transformCache,
+      });
+      const namespace = {default: 'D', x: 1};
+      const module = {
+        identifier: '/m.mjs',
+        namespace,
+        status: 'evaluated',
+      };
+      expect(loader.requireResultFromModule(module)).toBe(namespace);
     });
   });
 });

@@ -39,6 +39,20 @@ describe('CacheManager', () => {
       expect(result.mocks.get('Banana')).toBe('fruits/Banana.js');
     });
 
+    // Keeping such a cache would read as "no duplicate mocks anywhere", which
+    // watch mode cannot tell apart from genuinely having none.
+    it('discards a cache written before mockDuplicates existed', () => {
+      const legacy = createEmptyMap();
+      legacy.files.set('fruits/Banana.js', ['Banana', 0, 0, 1, '', null]);
+      delete (legacy as Partial<typeof legacy>).mockDuplicates;
+      mockReadFileSync.mockReturnValue(serialize(legacy) as any);
+
+      const result = new CacheManager('/cache').read();
+
+      expect(result).toEqual(createEmptyMap());
+      expect(result.files.size).toBe(0);
+    });
+
     it('returns an empty map when the cache file does not exist', () => {
       mockReadFileSync.mockImplementation(() => {
         throw Object.assign(new Error('ENOENT'), {code: 'ENOENT'});

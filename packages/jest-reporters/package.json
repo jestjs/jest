@@ -1,7 +1,7 @@
 {
   "name": "@jest/reporters",
   "description": "Jest's reporters",
-  "version": "30.4.1",
+  "version": "30.5.0",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -24,7 +24,7 @@
     "chalk": "^4.1.2",
     "collect-v8-coverage": "^1.0.2",
     "exit-x": "^0.2.2",
-    "glob": "^10.5.0",
+    "glob": "^13.0.6",
     "graceful-fs": "^4.2.11",
     "istanbul-lib-coverage": "^3.0.0",
     "istanbul-lib-instrument": "^6.0.0",
@@ -49,7 +49,6 @@
     "@types/istanbul-reports": "^3.0.4",
     "@types/node-notifier": "^8.0.5",
     "jest-resolve": "workspace:*",
-    "mock-fs": "^5.5.0",
     "node-notifier": "^10.0.1"
   },
   "peerDependencies": {

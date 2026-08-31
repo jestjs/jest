@@ -16,7 +16,11 @@ import type {TestState} from './TestState';
 import type {TransformCache, TransformOptions} from './TransformCache';
 import type {CoreModuleProvider} from './cjsRequire';
 import {hasEsmSyntax} from './esmLexer';
-import type {InitialModule, ModuleRegistry} from './moduleTypes';
+import {
+  type InitialModule,
+  type ModuleRegistry,
+  createInitialModule,
+} from './moduleTypes';
 import {
   runtimeSupportsVmModules,
   supportsSyncEvaluate,
@@ -30,7 +34,12 @@ export interface CjsLoaderOptions {
   environment: JestEnvironment;
   coreModule: CoreModuleProvider;
   executor: ModuleExecutor;
-  requireEsm: <T>(modulePath: string) => T;
+  requireEsm: <T>(
+    modulePath: string,
+    requiredFrom: string,
+    isRequireActual: boolean,
+    moduleName: string | undefined,
+  ) => T;
   testState: TestState;
   logFormattedReferenceError: (msg: string) => void;
 }
@@ -43,7 +52,12 @@ export class CjsLoader {
   private readonly environment: JestEnvironment;
   private readonly coreModule: CoreModuleProvider;
   private readonly executor: ModuleExecutor;
-  private readonly requireEsm: <T>(modulePath: string) => T;
+  private readonly requireEsm: <T>(
+    modulePath: string,
+    requiredFrom: string,
+    isRequireActual: boolean,
+    moduleName: string | undefined,
+  ) => T;
   private readonly testState: TestState;
   private readonly logFormattedReferenceError: (msg: string) => void;
 
@@ -66,28 +80,31 @@ export class CjsLoader {
     options?: TransformOptions,
     isRequireActual = false,
   ): T {
+    if (moduleName && this.resolution.isCoreModule(moduleName)) {
+      return this.coreModule.require(moduleName) as T;
+    }
+
     const isInternal = options?.isInternalModule ?? false;
-    const moduleID = this.mockState.getCjsModuleId(from, moduleName);
     let modulePath: string | undefined;
 
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
-    const moduleResource = moduleName && this.resolution.getModule(moduleName);
-    const manualMock =
-      moduleName && this.resolution.getCjsMockModule(from, moduleName);
     if (
-      !options?.isInternalModule &&
+      moduleName &&
+      !isInternal &&
       !isRequireActual &&
-      !moduleResource &&
-      manualMock &&
-      manualMock !== this.executor.getCurrentlyExecutingManualMock() &&
-      !this.mockState.isExplicitlyUnmocked(moduleID)
+      !this.resolution.getModule(moduleName)
     ) {
-      modulePath = manualMock;
-    }
-
-    if (moduleName && this.resolution.isCoreModule(moduleName)) {
-      return this.coreModule.require(moduleName) as T;
+      const manualMock = this.resolution.getCjsMockModule(from, moduleName);
+      if (
+        manualMock &&
+        manualMock !== this.executor.getCurrentlyExecutingManualMock() &&
+        !this.mockState.isExplicitlyUnmocked(
+          this.mockState.getCjsModuleId(from, moduleName),
+        )
+      ) {
+        modulePath = manualMock;
+      }
     }
 
     if (!modulePath) {
@@ -97,18 +114,16 @@ export class CjsLoader {
     // On Node 24.9+ we can require() ESM natively. On older Node, fall
     // through to the CJS path so a configured transform can convert it.
     if (supportsSyncEvaluate && this.resolution.shouldLoadAsEsm(modulePath)) {
-      // Fast path: skip the graph walker on cache hits.
-      const reg = this.registries.getActiveEsmRegistry();
-      const cached = reg.get(modulePath);
-      if (cached && !(cached instanceof Promise)) {
-        const cachedNamespace = cached.namespace as Record<string, unknown>;
-        return (
-          'module.exports' in cachedNamespace
-            ? cachedNamespace['module.exports']
-            : cachedNamespace
-        ) as T;
+      const exports = this.requireEsm<T>(
+        modulePath,
+        from,
+        isRequireActual,
+        moduleName,
+      );
+      if (!isInternal) {
+        this.recordEsmChildModule(from, modulePath);
       }
-      return this.requireEsm<T>(modulePath);
+      return exports;
     }
 
     const moduleRegistry = isInternal
@@ -117,22 +132,20 @@ export class CjsLoader {
 
     const module = moduleRegistry.get(modulePath);
     if (module) {
+      if (!isInternal) {
+        this.recordChildModule(from, module as Module, moduleRegistry);
+      }
       return (module as Module).exports;
     }
 
     // We must register the pre-allocated module object first so that any
     // circular dependencies that may arise while evaluating the module can
     // be satisfied.
-    const localModule: InitialModule = {
-      children: [],
-      exports: {},
-      filename: modulePath,
-      id: modulePath,
-      isPreloading: false,
-      loaded: false,
-      path: path.dirname(modulePath),
-    };
+    const localModule = createInitialModule(modulePath);
     moduleRegistry.set(modulePath, localModule);
+    if (!isInternal) {
+      this.recordChildModule(from, localModule as Module, moduleRegistry);
+    }
 
     try {
       this.loadModule(
@@ -145,8 +158,15 @@ export class CjsLoader {
       );
     } catch (error) {
       moduleRegistry.delete(modulePath);
+      this.removeChildModule(from, localModule as Module, moduleRegistry);
       if (error instanceof CjsParseError) {
-        return this.handleCjsParseError(modulePath, error);
+        return this.handleCjsParseError(
+          modulePath,
+          from,
+          error,
+          isRequireActual,
+          moduleName,
+        );
       }
       // Without --experimental-vm-modules, CjsParseError is never thrown.
       // Detect untransformed ESM syntax and surface an actionable error.
@@ -154,7 +174,8 @@ export class CjsLoader {
         !supportsSyncEvaluate &&
         isError(error) &&
         error.name === 'SyntaxError' &&
-        hasEsmSyntax(this.transformCache.getCachedSource(modulePath) ?? '')
+        hasEsmSyntax(this.transformCache.getCachedSource(modulePath) ?? '') &&
+        !this.resolution.isExplicitlyCommonjs(modulePath)
       ) {
         throw createRequireEsmError(modulePath);
       }
@@ -162,6 +183,57 @@ export class CjsLoader {
     }
 
     return localModule.exports;
+  }
+
+  // Runs after evaluation, unlike Node, which registers the child before the
+  // ESM body executes: the wrapper's `exports` is the require() result,
+  // which exists only once the module is `evaluated` - registering earlier
+  // would break the evaluated-only invariant the require.cache surface
+  // relies on. The end state matches Node either way (present on success,
+  // absent on failure), and a require() cycle back into the parent throws
+  // ERR_REQUIRE_CYCLE_MODULE before it could observe the difference.
+  //
+  // The parent lookup targets the active CJS registry, so an internal
+  // requiring module (registered elsewhere) never gains children.
+  private recordEsmChildModule(from: string, modulePath: string): void {
+    const wrapper = this.registries.getEsmRequireCacheEntry(modulePath);
+    if (wrapper) {
+      this.recordChildModule(
+        from,
+        wrapper as Module,
+        this.registries.getActiveCjsRegistry(),
+      );
+    }
+  }
+
+  // Node records every loaded module on its requiring parent - fresh loads
+  // before evaluation and registry hits alike, deduplicated. A load that
+  // throws is removed again.
+  private recordChildModule(
+    from: string,
+    child: Module,
+    moduleRegistry: ModuleRegistry,
+  ): void {
+    const parent = moduleRegistry.get(from);
+    if (!parent || !('children' in parent) || parent.children.includes(child)) {
+      return;
+    }
+    parent.children.push(child);
+  }
+
+  private removeChildModule(
+    from: string,
+    child: Module,
+    moduleRegistry: ModuleRegistry,
+  ): void {
+    const parent = moduleRegistry.get(from);
+    if (!parent || !('children' in parent)) {
+      return;
+    }
+    const index = parent.children.indexOf(child);
+    if (index !== -1) {
+      parent.children.splice(index, 1);
+    }
   }
 
   /**
@@ -172,11 +244,25 @@ export class CjsLoader {
    */
   private handleCjsParseError<T>(
     modulePath: string,
+    from: string,
     parseError: CjsParseError,
+    isRequireActual: boolean,
+    moduleName: string | undefined,
   ): T {
+    // A package that declares `"type": "commonjs"` opted out of ESM for its
+    // `.js` files - Node throws the parse error instead of retrying.
+    if (this.resolution.isExplicitlyCommonjs(modulePath)) {
+      throw parseError.cause;
+    }
     if (supportsSyncEvaluate) {
+      let exports: T;
       try {
-        return this.requireEsm<T>(modulePath);
+        exports = this.requireEsm<T>(
+          modulePath,
+          from,
+          isRequireActual,
+          moduleName,
+        );
       } catch (esmError) {
         // Both CJS and ESM parsers rejected it — surface the original CJS error.
         if (esmError instanceof Error && esmError.name === 'SyntaxError') {
@@ -184,6 +270,8 @@ export class CjsLoader {
         }
         throw esmError;
       }
+      this.recordEsmChildModule(from, modulePath);
+      return exports;
     }
     // Explicitly ESM-marked files (.mjs / "type":"module") can't be retried
     // by the ESM loader — give the user an actionable error.

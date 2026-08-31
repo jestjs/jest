@@ -24,7 +24,14 @@ type Stubs = {
   environment: JestEnvironment;
   coreModule: jest.Mocked<CoreModuleProvider>;
   executor: jest.Mocked<ModuleExecutor>;
-  requireEsm: jest.MockedFunction<<T>(modulePath: string) => T>;
+  requireEsm: jest.MockedFunction<
+    <T>(
+      modulePath: string,
+      requiredFrom: string,
+      isRequireActual: boolean,
+      moduleName: string | undefined,
+    ) => T
+  >;
   testState: TestState;
   logFormattedReferenceError: jest.MockedFunction<(msg: string) => void>;
 };
@@ -52,6 +59,7 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
     registries: {
       getActiveCjsRegistry: jest.fn(() => new Map()),
       getActiveEsmRegistry: jest.fn(() => new Map()),
+      getEsmRequireCacheEntry: jest.fn(() => undefined),
     } as unknown as jest.Mocked<ModuleRegistries>,
     requireEsm: jest.fn() as any,
     resolution: {
@@ -179,6 +187,7 @@ describe('CjsLoader.requireModule', () => {
       registries: {
         getActiveCjsRegistry: jest.fn(() => new Map()),
         getActiveEsmRegistry: jest.fn(() => new Map()),
+        getEsmRequireCacheEntry: jest.fn(() => undefined),
       } as unknown as jest.Mocked<ModuleRegistries>,
       resolution: {
         getCjsMockModule: jest.fn(() => null),
@@ -191,56 +200,13 @@ describe('CjsLoader.requireModule', () => {
 
     stubs.requireEsm.mockReturnValue('esm-result' as any);
     expect(loader.requireModule('/from.js', './m.mjs')).toBe('esm-result');
-    expect(stubs.requireEsm).toHaveBeenCalledWith('/m.mjs');
+    expect(stubs.requireEsm).toHaveBeenCalledWith(
+      '/m.mjs',
+      '/from.js',
+      false,
+      './m.mjs',
+    );
   });
-
-  testWithSyncEsm(
-    'unwraps a "module.exports" named export on the ESM cache-hit fast path',
-    () => {
-      const unwrapped = {fromModuleExports: true};
-      const esmRegistry = new Map<string, unknown>([
-        ['/m.mjs', {namespace: {'module.exports': unwrapped, named: 'x'}}],
-      ]);
-      const {loader, stubs} = makeLoader({
-        registries: {
-          getActiveCjsRegistry: jest.fn(() => new Map()),
-          getActiveEsmRegistry: jest.fn(() => esmRegistry),
-        } as unknown as jest.Mocked<ModuleRegistries>,
-        resolution: {
-          getCjsMockModule: jest.fn(() => null),
-          getModule: jest.fn(() => null),
-          isCoreModule: jest.fn(() => false),
-          resolveCjs: jest.fn(() => '/m.mjs'),
-          shouldLoadAsEsm: jest.fn(() => true),
-        } as unknown as jest.Mocked<Resolution>,
-      });
-      expect(loader.requireModule('/from.js', './m.mjs')).toBe(unwrapped);
-      expect(stubs.requireEsm).not.toHaveBeenCalled();
-    },
-  );
-
-  testWithSyncEsm(
-    'returns the raw namespace on the ESM cache-hit fast path when there is no "module.exports" export',
-    () => {
-      const namespace = {named: 'x'};
-      const esmRegistry = new Map<string, unknown>([['/m.mjs', {namespace}]]);
-      const {loader, stubs} = makeLoader({
-        registries: {
-          getActiveCjsRegistry: jest.fn(() => new Map()),
-          getActiveEsmRegistry: jest.fn(() => esmRegistry),
-        } as unknown as jest.Mocked<ModuleRegistries>,
-        resolution: {
-          getCjsMockModule: jest.fn(() => null),
-          getModule: jest.fn(() => null),
-          isCoreModule: jest.fn(() => false),
-          resolveCjs: jest.fn(() => '/m.mjs'),
-          shouldLoadAsEsm: jest.fn(() => true),
-        } as unknown as jest.Mocked<Resolution>,
-      });
-      expect(loader.requireModule('/from.js', './m.mjs')).toBe(namespace);
-      expect(stubs.requireEsm).not.toHaveBeenCalled();
-    },
-  );
 });
 
 describe('CjsLoader.loadModule', () => {
