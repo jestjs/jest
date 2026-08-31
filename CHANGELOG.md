@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-each]` Escape a table row's keys before building the `$variable` interpolation `RegExp`, so a column name containing a regex metacharacter (for example `count(*)`) no longer fails the whole table with `Invalid regular expression`, a row with no keys no longer replaces a bare `$` in the title, and overlapping keys such as `a` and `a|b` resolve to the more specific key regardless of property insertion order ([#16345](https://github.com/jestjs/jest/pull/16345))
+
 ### Chore & Maintenance
 
 - `[jest-util]` Name the `testEnvironmentOptions.globalsCleanup` option and link the docs from the `JEST-01` deprecation warning, and document the option's modes ([#16404](https://github.com/jestjs/jest/pull/16404))
@@ -52,7 +54,6 @@
 - `[jest-core]` Do not report a `CustomGC` async resource (used by N-API addons such as napi-rs for per-isolate GC bookkeeping) as an open handle, since it is `napi_unref`'d by the addon and can never keep the event loop alive ([#16379](https://github.com/jestjs/jest/pull/16379))
 - `[jest-each]` Keep a `$&`, `` $` ``, `$'` or `$$` inside a `%p` param value out of the replacement, so the title shows the value instead of the text around it ([#16338](https://github.com/jestjs/jest/pull/16338))
 - `[jest-each]` Interpolate a `bigint` into a `%j` title as its literal form (`"4n"`) at any depth, instead of throwing `TypeError: Do not know how to serialize a BigInt` while collecting the tests ([#16338](https://github.com/jestjs/jest/pull/16338))
-- `[jest-each]` Escape a table row's keys before building the `$variable` interpolation `RegExp`, so a column name containing a regex metacharacter (for example `count(*)`) no longer fails the whole table with `Invalid regular expression`, a row with no keys no longer replaces a bare `$` in the title, and overlapping keys such as `a` and `a|b` resolve to the more specific key regardless of property insertion order ([#16345](https://github.com/jestjs/jest/pull/16345))
 - `[jest-environment, jest-runtime]` Bind `sandboxInjectedGlobals` to the right values when `injectGlobals` is `false`, instead of shifting every one of them by a position ([#16377](https://github.com/jestjs/jest/pull/16377))
 - `[jest-environment-node, jest-util]` Only warn about a conflicting `globalsCleanup` mode when one was explicitly configured, and follow the mode that is actually in effect ([#16323](https://github.com/jestjs/jest/pull/16323))
 - `[jest-environment-node, jest-util]` Stop resolving lazy globals when setting up an environment, so Node 26's builtin module globals are no longer loaded (and no longer emit their deprecation warnings) for every test file ([#16324](https://github.com/jestjs/jest/pull/16324))
