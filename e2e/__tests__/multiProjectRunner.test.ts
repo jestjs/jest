@@ -663,3 +663,49 @@ test('errors on a missing --config when multiple projects are specified', () => 
     'Provided path to resolve: does-not-exist.config.js',
   );
 });
+
+test('does not warn about global options in the root config a project resolves to', () => {
+  writeFiles(DIR, {
+    'jest.config.js': `
+      module.exports = {
+        bail: 1,
+        passWithNoTests: true,
+        projects: ['<rootDir>/p1', '<rootDir>/p2'],
+      };
+    `,
+    'p1/some.test.js': "test('a', () => expect(1).toBe(1));",
+    'p2/jest.config.js': "module.exports = {displayName: 'p2'};",
+    'p2/other.test.js': "test('b', () => expect(1).toBe(1));",
+    'package.json': '{}',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, ['--no-watchman']);
+
+  expect(exitCode).toBe(0);
+  expect(stderr).not.toContain(
+    'is not supported in an individual project configuration',
+  );
+});
+
+test('only warns about global options in projects that do not supply the global config', () => {
+  writeFiles(DIR, {
+    'p1/jest.config.js': 'module.exports = {testFailureExitCode: 7};',
+    'p1/some.test.js': "test('a', () => expect(1).toBe(2));",
+    'p2/jest.config.js': 'module.exports = {testFailureExitCode: 7};',
+    'p2/other.test.js': "test('b', () => expect(1).toBe(1));",
+    'package.json': '{}',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, [
+    '--no-watchman',
+    '--projects',
+    'p1',
+    'p2',
+  ]);
+
+  // the first project doubles as the global config, so its options do apply
+  expect(exitCode).toBe(7);
+  expect(
+    stderr.match(/Option "testFailureExitCode" is not supported/g),
+  ).toHaveLength(1);
+});

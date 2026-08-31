@@ -88,6 +88,9 @@ export async function readConfig(
   parentConfigDirname?: string | null,
   projectIndex = Number.POSITIVE_INFINITY,
   skipMultipleConfigError = false,
+  // Whether this config is read only as a project. `readConfigs` decides it,
+  // as it is the only place that knows which config supplies the global config.
+  isProjectOptions = false,
 ): Promise<ReadConfig> {
   const {config: initialOptions, configPath} = await readInitialOptions(
     argv.config,
@@ -99,16 +102,12 @@ export async function readConfig(
     },
   );
 
-  const packageRoot =
-    typeof packageRootOrConfig === 'string'
-      ? path.resolve(packageRootOrConfig)
-      : undefined;
   const {options, hasDeprecationWarnings} = await normalize(
     initialOptions,
     argv,
     configPath,
     projectIndex,
-    skipArgvConfigOption && !(packageRoot === parentConfigDirname),
+    isProjectOptions,
   );
 
   const {globalConfig, projectConfig} = groupOptions(options);
@@ -402,7 +401,7 @@ export async function readConfigs(
   configs: Array<Config.ProjectConfig>;
   hasDeprecationWarnings: boolean;
 }> {
-  let globalConfig;
+  let globalConfig: Config.GlobalConfig | undefined;
   let hasDeprecationWarnings;
   let configs: Array<Config.ProjectConfig> = [];
   let projects = projectPaths;
@@ -457,15 +456,30 @@ export async function readConfigs(
           const skipArgvConfigOption = !(
             projectIsTheOnlyProject && projectIsCwd
           );
+          const parentConfigDirname = configPath
+            ? path.dirname(configPath)
+            : cwd;
+          const packageRoot =
+            typeof root === 'string' ? path.resolve(root) : undefined;
+          // The config that supplies the global config must not be validated
+          // as a project config - its global options are in the right place.
+          const suppliesGlobalConfig =
+            (globalConfig == null && projectIndex === 0) ||
+            (configPath != null &&
+              typeof root === 'string' &&
+              resolveConfigPath(root, cwd, projectIsCwd) === configPath);
 
           return readConfig(
             argv,
             root,
             skipArgvConfigOption,
-            configPath ? path.dirname(configPath) : cwd,
+            parentConfigDirname,
             projectIndex,
             // we wanna skip the warning if this is the "main" project
             projectIsCwd,
+            skipArgvConfigOption &&
+              packageRoot !== parentConfigDirname &&
+              !suppliesGlobalConfig,
           );
         }),
     );
@@ -478,6 +492,11 @@ export async function readConfigs(
       );
     }
     // If no config was passed initially, use the one from the first project
+    // TODO: In the next major, read the global config from `process.cwd()` when
+    // several projects are passed without `--config`, the way the `argv.config`
+    // branch above does, and drop this fallback. Today the first project
+    // doubles as the root config, so its global options apply to the whole run
+    // while the same options in the other projects are ignored.
     if (!globalConfig) {
       globalConfig = parsedConfigs[0].globalConfig;
     }

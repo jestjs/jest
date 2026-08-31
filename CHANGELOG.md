@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-config]` Don't warn about global-only options in the config that supplies the global config - the root config a project resolves to, or the first entry of `--projects` when no root config is passed ([#16405](https://github.com/jestjs/jest/pull/16405))
+
 ### Chore & Maintenance
 
 - `[jest-util]` Name the `testEnvironmentOptions.globalsCleanup` option and link the docs from the `JEST-01` deprecation warning, and document the option's modes ([#16404](https://github.com/jestjs/jest/pull/16404))
