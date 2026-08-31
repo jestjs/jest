@@ -41,6 +41,14 @@ exports[`displays warning for deprecated config options 1`] = `
 <yellow></color>"
 `;
 
+exports[`displays warning for maxWorkers when the example config does not have it 1`] = `
+"<yellow><bold><bold>●</intensity><bold> Validation Warning</intensity>:</color>
+<yellow></color>
+<yellow>  Unknown option <bold>"maxWorkers"</intensity> with value <bold>2</intensity> was found.</color>
+<yellow>  This is probably a typing mistake. Fixing it will remove this message.</color>
+<yellow></color>"
+`;
+
 exports[`displays warning for unknown config options 1`] = `
 "<yellow><bold><bold>●</intensity><bold> Validation Warning</intensity>:</color>
 <yellow></color>

@@ -161,6 +161,8 @@ it.each([
   ['reporters', ['default']],
   ['coverageReporters', ['text']],
   ['workerIdleMemoryLimit', '50%'],
+  ['coverageThreshold', {global: {lines: 80}}],
+  ['maxWorkers', 2],
 ] as Array<[string, unknown]>)(
   'global-only option %s in project config emits targeted warning',
   async (option, value) => {

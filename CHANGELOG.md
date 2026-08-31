@@ -6,6 +6,7 @@
 
 - `[jest-config]` Don't warn about global-only options in the config that supplies the global config - the root config a project resolves to, or the first entry of `--projects` when no root config is passed ([#16405](https://github.com/jestjs/jest/pull/16405))
 - `[jest-config, jest-types]` Stop accepting `reporters`, `coverageReporters`, `workerIdleMemoryLimit`, `cwd` and `runnerOptions` in a project config - they were silently ignored, and now warn like the other global-only options ([#16405](https://github.com/jestjs/jest/pull/16405))
+- `[jest-config, jest-validate]` Warn about `maxWorkers` and `coverageThreshold` in a project config instead of dropping them without a word ([#16405](https://github.com/jestjs/jest/pull/16405))
 
 ### Chore & Maintenance
 

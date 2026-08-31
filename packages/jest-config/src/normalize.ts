@@ -549,8 +549,9 @@ export default async function normalize(
     exampleConfig: isProjectOptions ? VALID_PROJECT_CONFIG : VALID_CONFIG,
     recursiveDenylist: [
       // 'coverageThreshold' allows to use 'global' and glob strings on the same
-      // level, there's currently no way we can deal with such config
-      'coverageThreshold',
+      // level, there's currently no way we can deal with such config. Denying
+      // it in a project config would swallow the global-only warning instead.
+      ...(isProjectOptions ? [] : ['coverageThreshold']),
       'globals',
       'moduleNameMapper',
       'testEnvironmentOptions',
