@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` [**BREAKING**] Read the global config from the current working directory when several projects are passed without `--config`, instead of taking it from the first project ([#16412](https://github.com/jestjs/jest/pull/16412))
+
 ### Fixes
 
 - `[jest-config]` Don't warn about global-only options in the config that supplies the global config - the root config a project resolves to, or the first entry of `--projects` when no root config is passed ([#16411](https://github.com/jestjs/jest/pull/16411))
