@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[@jest/transform]` Strip TypeScript types with Node when no transformer claims a `.ts`, `.mts` or `.cts` file ([#16420](https://github.com/jestjs/jest/pull/16420))
+
 ### Fixes
 
 - `[jest-each]` Escape a table row's keys before building the `$variable` interpolation `RegExp`, so a column name such as `count(*)` no longer fails the whole table with `Invalid regular expression`, and a `.` or `|` in a column name is matched literally ([#16345](https://github.com/jestjs/jest/pull/16345))

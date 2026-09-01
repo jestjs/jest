@@ -358,7 +358,10 @@ const config = defineConfig(
     },
   ]
     .flat()
-    .map(config => ({...config, files: ['**/*.ts', '**/*.tsx']})),
+    .map(config => ({
+      ...config,
+      files: ['**/*.ts', '**/*.tsx', '**/*.mts', '**/*.cts'],
+    })),
 
   {
     files: [
