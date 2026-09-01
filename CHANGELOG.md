@@ -7,6 +7,7 @@
 - `[jest-config]` Don't warn about global-only options in the config that supplies the global config - the root config a project resolves to, or the first entry of `--projects` when no root config is passed ([#16411](https://github.com/jestjs/jest/pull/16411))
 - `[jest-config, jest-types]` Stop accepting `reporters`, `coverageReporters`, `workerIdleMemoryLimit`, `cwd` and `runnerOptions` in a project config - they were silently ignored, and now warn like the other global-only options ([#16411](https://github.com/jestjs/jest/pull/16411))
 - `[jest-config, jest-validate]` Warn about `maxWorkers` and `coverageThreshold` in a project config instead of dropping them without a word ([#16411](https://github.com/jestjs/jest/pull/16411))
+- `[jest-resolve]` Match `moduleNameMapper` patterns against the specifier as written again (reverting [#16390](https://github.com/jestjs/jest/pull/16390)) ([#16417](https://github.com/jestjs/jest/pull/16417))
 - `[jest-runtime]` Resolve package `imports` specifiers like `#dep` under ESM again ([#16413](https://github.com/jestjs/jest/pull/16413))
 
 ### Chore & Maintenance
@@ -80,6 +81,7 @@
 - `[jest-resolve]` Make `getModuleIDAsync` build and cache `data:` URI module IDs the same way as `getModuleID` ([#16370](https://github.com/jestjs/jest/pull/16370))
 - `[jest-resolve]` Keep the `node:` prefix when resolving a core module asynchronously, so a builtin that only exists prefixed (`node:sea`, `node:sqlite`, `node:test`, `node:test/reporters`) resolves instead of failing as a missing bare package ([#16388](https://github.com/jestjs/jest/pull/16388))
 - `[jest-resolve]` Look up manual mocks for `node:` protocol specifiers under the unprefixed name they are stored as ([#16388](https://github.com/jestjs/jest/pull/16388))
+- `[jest-resolve]` Apply `moduleNameMapper` consistently to both spellings of core module specifiers (`fs` vs `node:fs`) ([#16390](https://github.com/jestjs/jest/pull/16390))
 - `[jest-resolve]` Keep virtual and ordinary mock module IDs isolated across test files ([#16296](https://github.com/jestjs/jest/pull/16296))
 - `[jest-resolve]` Guard missing `require.resolve.paths` ([#16052](https://github.com/jestjs/jest/pull/16052))
 - `[jest-resolve, jest-config, jest-runner]` Support a user resolver written as an ES module ([#16332](https://github.com/jestjs/jest/pull/16332))
