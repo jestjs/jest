@@ -126,12 +126,22 @@ function comparePrimitive(
     : diffLinesUnified(aFormat.split('\n'), bFormat.split('\n'), options);
 }
 
+// The default comparator coerces each element with implicit `ToString`, which
+// throws for a symbol. Insertion order is a better fallback than no diff.
+function sortForDiff<T>(values: Array<T>): Array<T> {
+  try {
+    return [...values].sort();
+  } catch {
+    return values;
+  }
+}
+
 function sortMap(map: Map<unknown, unknown>) {
-  return new Map([...map].sort());
+  return new Map(sortForDiff([...map]));
 }
 
 function sortSet(set: Set<unknown>) {
-  return new Set([...set].sort());
+  return new Set(sortForDiff([...set]));
 }
 
 function compareObjects(
