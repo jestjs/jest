@@ -535,50 +535,15 @@ export default class Resolver {
       : (moduleName: string) => moduleName;
   }
 
+  // Matched against the specifier as written, so `fs` and `node:fs` are
+  // separately targetable. A pattern for both is `^(node:)?fs$`.
   private _isAliasModule(moduleName: string): boolean {
     const moduleNameMapper = this._options.moduleNameMapper;
     if (!moduleNameMapper) {
       return false;
     }
 
-    const spellings = this._specifierSpellings(moduleName);
-
-    return moduleNameMapper.some(({regex}) =>
-      spellings.some(specifier => regex.test(specifier)),
-    );
-  }
-
-  // Node treats `fs` and `node:fs` as the same module, so a pattern written
-  // for either spelling has to catch both. Builtins that only exist prefixed
-  // (`node:test`, `node:sqlite`) have no bare spelling to test, and a bare
-  // pattern like `^test$` must keep matching the userland package instead.
-  private _specifierSpellings(specifier: string): Array<string> {
-    if (!isBuiltin(specifier)) {
-      return [specifier];
-    }
-
-    if (specifier.startsWith('node:')) {
-      const bareSpecifier = specifier.slice(5);
-      return isBuiltin(bareSpecifier)
-        ? [specifier, bareSpecifier]
-        : [specifier];
-    }
-
-    return [specifier, `node:${specifier}`];
-  }
-
-  private _matchModuleNameMapper(
-    regex: RegExp,
-    moduleName: string,
-  ): RegExpMatchArray | null {
-    for (const specifier of this._specifierSpellings(moduleName)) {
-      const matches = specifier.match(regex);
-      if (matches) {
-        return matches;
-      }
-    }
-
-    return null;
+    return moduleNameMapper.some(({regex}) => regex.test(moduleName));
   }
 
   isCoreModule(moduleName: string): boolean {
@@ -932,7 +897,7 @@ export default class Resolver {
     const resolver = this._options.resolver;
 
     for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
-      const matches = this._matchModuleNameMapper(regex, moduleName);
+      const matches = moduleName.match(regex);
       if (matches) {
         // Note: once a moduleNameMapper matches the name, it must result
         // in a module, or else an error is thrown.
@@ -994,7 +959,7 @@ export default class Resolver {
     const resolver = this._options.resolver;
 
     for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
-      const matches = this._matchModuleNameMapper(regex, moduleName);
+      const matches = moduleName.match(regex);
       if (matches) {
         // Note: once a moduleNameMapper matches the name, it must result
         // in a module, or else an error is thrown.
