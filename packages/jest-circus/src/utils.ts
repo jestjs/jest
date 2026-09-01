@@ -12,7 +12,7 @@ import isGeneratorFn from 'is-generator-fn';
 import slash from 'slash';
 import StackUtils from 'stack-utils';
 import type {Status, TestCaseResult} from '@jest/test-result';
-import type {Circus, Global} from '@jest/types';
+import type {Circus, Global, TestResult} from '@jest/types';
 import {flattenErrorStack} from 'jest-message-util';
 import {
   ErrorWithStack,
@@ -517,6 +517,15 @@ export const parseSingleTestResult = (
     testResult.testPath,
   );
 
+  const matcherResult = testResult.errorsDetailed.find(error => {
+    if (!error || typeof error !== 'object') {
+      return false;
+    }
+
+    const candidate = (error as {matcherResult?: unknown}).matcherResult;
+    return Boolean(candidate && typeof candidate === 'object');
+  }) as {matcherResult?: TestResult.MatcherResult} | undefined;
+
   return {
     ancestorTitles,
     duration: testResult.duration,
@@ -526,6 +535,7 @@ export const parseSingleTestResult = (
     fullName,
     invocations: testResult.invocations,
     location: testResult.location,
+    matcherResult: matcherResult?.matcherResult,
     numPassingAsserts: testResult.numPassingAsserts,
     retryMessages: formatRetryError
       ? testResult.retryReasonsDetailed.map(formatRetryError)
