@@ -9,7 +9,7 @@ import type {JestEnvironment} from '@jest/environment';
 import type {TestFileEvent, TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type Runtime from 'jest-runtime';
-import type {SnapshotState} from 'jest-snapshot';
+import {type SnapshotState, loadSnapshotSetup} from 'jest-snapshot';
 import {deepCyclicCopy} from 'jest-util';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
@@ -22,6 +22,7 @@ const jestAdapter = async (
   testPath: string,
   sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> => {
+  const snapshotSetup = await loadSnapshotSetup(config);
   const {
     collectTestsWithoutRunning,
     initialize,
@@ -38,6 +39,7 @@ const jestAdapter = async (
     runtime,
     sendMessageToJest,
     setGlobalsForRuntime: runtime.setGlobalsForRuntime.bind(runtime),
+    snapshotSetup,
     testPath,
   });
 

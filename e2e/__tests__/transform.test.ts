@@ -265,16 +265,11 @@ describe('transform-esm-snapshotResolver', () => {
     }
   };
 
-  beforeAll(() => {
-    runYarnInstall(dir);
-  });
   beforeEach(cleanupTest);
   afterAll(cleanupTest);
 
   it('should transform the snapshotResolver', () => {
-    const result = runJest(dir, ['-w=1', '--no-cache', '--ci=false'], {
-      nodeOptions: '--experimental-vm-modules --no-warnings',
-    });
+    const result = runJest(dir, ['-w=1', '--no-cache', '--ci=false']);
 
     expect(result.stderr).toMatch('1 snapshot written from 1 test suite');
 

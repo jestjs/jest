@@ -16,7 +16,7 @@ import {
 } from '@jest/test-result';
 import type {Config, Global} from '@jest/types';
 import type Runtime from 'jest-runtime';
-import type {SnapshotState} from 'jest-snapshot';
+import {type SnapshotState, loadSnapshotSetup} from 'jest-snapshot';
 import {ErrorWithStack} from 'jest-util';
 import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
@@ -298,7 +298,7 @@ export default async function jasmine2(
     .default({
       config,
       globalConfig,
-      snapshotSetup: await runtime.loadSnapshotSetup(),
+      snapshotSetup: await loadSnapshotSetup(config),
       testPath,
     });
 

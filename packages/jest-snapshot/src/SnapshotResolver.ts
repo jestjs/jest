@@ -25,8 +25,6 @@ export const DOT_EXTENSION = `.${EXTENSION}`;
 export const isSnapshotPath = (path: string): boolean =>
   path.endsWith(DOT_EXTENSION);
 
-// This cache outlives a test file, so projects sharing a root directory must
-// still be separated by their configured resolver.
 const cache = new Map<string, SnapshotResolver>();
 
 type LocalRequire = <T = unknown>(
@@ -36,9 +34,10 @@ type LocalRequire = <T = unknown>(
 
 export const buildSnapshotResolver = async (
   config: Config.ProjectConfig,
+  // TODO: Remove this test-only override in Jest 31.
   localRequire?: Promise<LocalRequire> | LocalRequire,
 ): Promise<SnapshotResolver> => {
-  const key = `${config.rootDir}\0${config.snapshotResolver ?? ''}`;
+  const key = config.id;
   const cached = cache.get(key);
 
   if (cached) {

@@ -15,6 +15,7 @@ import {
 describe('defaults', () => {
   let snapshotResolver: SnapshotResolver;
   const projectConfig = makeProjectConfig({
+    id: 'default-resolver',
     rootDir: 'default',
     // snapshotResolver: null,
   });
@@ -50,6 +51,7 @@ describe('custom resolver in project config', () => {
     'customSnapshotResolver.js',
   );
   const projectConfig = makeProjectConfig({
+    id: 'custom-resolver',
     rootDir: 'custom1',
     snapshotResolver: customSnapshotResolverFile,
   });
@@ -81,29 +83,26 @@ describe('custom resolver in project config', () => {
   });
 });
 
-it('keeps resolver caches separate for projects sharing a root directory', async () => {
+it('keeps resolver caches separate for projects sharing a root and resolver', async () => {
   const rootDir = 'shared-resolver-root';
-  const firstResolverPath = '/resolver-one.js';
-  const secondResolverPath = '/resolver-two.js';
+  const snapshotResolver = '/shared-resolver.js';
   const createResolver = (suffix: string): SnapshotResolver => ({
     resolveSnapshotPath: testPath => `${testPath}${suffix}`,
     resolveTestPath: snapshotPath => snapshotPath.slice(0, -suffix.length),
     testPathForConsistencyCheck: 'example.test.js',
   });
-  const resolvers: Record<string, SnapshotResolver> = {
-    [firstResolverPath]: createResolver('.one'),
-    [secondResolverPath]: createResolver('.two'),
-  };
-  const localRequire = async <T = unknown>(moduleName: string) =>
-    resolvers[moduleName] as T;
+  const createLocalRequire =
+    (resolver: SnapshotResolver) =>
+    async <T = unknown>(): Promise<T> =>
+      resolver as T;
 
   const first = await buildSnapshotResolver(
-    makeProjectConfig({rootDir, snapshotResolver: firstResolverPath}),
-    localRequire,
+    makeProjectConfig({id: 'shared-root-one', rootDir, snapshotResolver}),
+    createLocalRequire(createResolver('.one')),
   );
   const second = await buildSnapshotResolver(
-    makeProjectConfig({rootDir, snapshotResolver: secondResolverPath}),
-    localRequire,
+    makeProjectConfig({id: 'shared-root-two', rootDir, snapshotResolver}),
+    createLocalRequire(createResolver('.two')),
   );
 
   expect(first).not.toBe(second);

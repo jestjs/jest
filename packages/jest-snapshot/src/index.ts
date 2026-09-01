@@ -20,7 +20,12 @@ import {
   stringify,
 } from 'jest-matcher-utils';
 import {isError} from 'jest-util';
-import {EXTENSION, type SnapshotResolver} from './SnapshotResolver';
+import {
+  EXTENSION,
+  type SnapshotResolver,
+  buildSnapshotResolver,
+} from './SnapshotResolver';
+import {loadSerializersFromConfig} from './plugins';
 import {
   PROPERTIES_ARG,
   SNAPSHOT_ARG,
@@ -32,14 +37,15 @@ import {
   printReceived,
   printSnapshotAndReceived,
 } from './printSnapshot';
-import type {Context, FileSystem, MatchSnapshotConfig} from './types';
+import type {
+  Context,
+  FileSystem,
+  MatchSnapshotConfig,
+  SnapshotSetup,
+} from './types';
 import {deepMerge, serialize} from './utils';
 
-export {
-  addSerializer,
-  getSerializers,
-  loadSerializersFromConfig,
-} from './plugins';
+export {addSerializer, getSerializers} from './plugins';
 export {
   EXTENSION,
   buildSnapshotResolver,
@@ -48,6 +54,13 @@ export {
 export type {SnapshotResolver} from './SnapshotResolver';
 export {default as SnapshotState} from './State';
 export type {Context, SnapshotMatchers, SnapshotSetup} from './types';
+
+export const loadSnapshotSetup = async (
+  config: Config.ProjectConfig,
+): Promise<SnapshotSetup> => ({
+  resolver: await buildSnapshotResolver(config),
+  serializers: await loadSerializersFromConfig(config),
+});
 
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
 const NOT_SNAPSHOT_MATCHERS = `Snapshot matchers cannot be used with ${BOLD_WEIGHT(

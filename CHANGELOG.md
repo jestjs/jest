@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-circus, jest-jasmine2, jest-runtime, jest-snapshot]` Support ESM `snapshotResolver` and `snapshotSerializers` configuration modules ([#16402](https://github.com/jestjs/jest/pull/16402))
+- `[jest-runtime, jest-snapshot]` Support ESM `snapshotResolver` and `snapshotSerializers` configuration modules by loading them outside the test sandbox. Their transitive imports no longer use `jest.mock()` or `moduleNameMapper` ([#16402](https://github.com/jestjs/jest/pull/16402))
 
 ### Fixes
 

@@ -1,6 +1,6 @@
 {
   "jest": {
     "testEnvironment": "node",
-    "snapshotResolver": "<rootDir>/customSnapshotResolver.mjs"
+    "snapshotResolver": "<rootDir>/customSnapshotResolver.js"
   }
 }
