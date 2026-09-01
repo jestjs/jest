@@ -554,9 +554,6 @@ describe('jest-each', () => {
 
         const globalMock = get(globalTestMocks, keyPath);
         expect(globalMock).toHaveBeenCalledTimes(2);
-        // `$a|b` must resolve to the `a|b` entry (1) in both rows, never to
-        // `$a` (0) with a trailing `|b`, regardless of which key was inserted
-        // first on the row object.
         expect(globalMock).toHaveBeenNthCalledWith(
           1,
           '1',

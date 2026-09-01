@@ -19,33 +19,28 @@ export const interpolateVariables = (
   template: Template,
   index: number,
 ): string => {
-  const keys = Object.keys(template);
-  // Regex alternation is ordered, so for overlapping keys such as `a` and
-  // `a|b` (or `count` and `count(*)`), listing the shorter key first would let
-  // `$a|b` match `$a` and leave `|b`. Sort the keys longest-first so the more
-  // specific key always wins, independent of object property insertion order.
-  const alternation = [...keys]
-    .sort((a, b) => b.length - a.length)
-    .map(key => escapeStrForRegex(key))
-    .join('|');
-  // An empty alternation matches a bare `$`, so a row with no keys would
-  // otherwise replace every `$` in the title with the whole (empty) row.
-  const interpolated =
-    keys.length > 0
-      ? title.replaceAll(
-          new RegExp(`\\$(${alternation})[.\\w]*`, 'g'),
-          match => {
-            const keyPath = match.slice(1).split('.');
-            const value = getPath(template, keyPath);
+  // Sort keys longest-first so an overlapping key like `a|b` wins over `a`,
+  // regardless of object property insertion order.
+  const keys = Object.keys(template)
+    .filter(key => key.length > 0)
+    .sort((a, b) => b.length - a.length);
 
-            return isPrimitive(value)
-              ? String(value)
-              : pretty(value, {maxDepth: 1, min: true});
-          },
-        )
-      : title;
+  if (keys.length === 0) {
+    return title.replace('$#', `${index}`);
+  }
 
-  return interpolated.replace('$#', `${index}`);
+  const alternation = keys.map(escapeStrForRegex).join('|');
+
+  return title
+    .replaceAll(new RegExp(`\\$(${alternation})[.\\w]*`, 'g'), match => {
+      const keyPath = match.slice(1).split('.');
+      const value = getPath(template, keyPath);
+
+      return isPrimitive(value)
+        ? String(value)
+        : pretty(value, {maxDepth: 1, min: true});
+    })
+    .replace('$#', `${index}`);
 };
 
 /* eslint import-x/export: 0*/
