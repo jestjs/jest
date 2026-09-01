@@ -587,6 +587,23 @@ describe('jest-each', () => {
           undefined,
         );
       });
+
+      test('leaves a `$` in the title alone when a key is an empty string', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          {'': 'empty', total: 5},
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('costs $5, total is $total', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(1);
+        expect(globalMock).toHaveBeenCalledWith(
+          'costs $5, total is 5',
+          expectFunction,
+          undefined,
+        );
+      });
     });
   }
 
