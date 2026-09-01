@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` [**BREAKING**] Read the global config from the current working directory when several projects are passed without `--config`, instead of taking it from the first project ([#16412](https://github.com/jestjs/jest/pull/16412))
+
 ### Fixes
 
 - `[jest-each]` Escape a table row's keys before building the `$variable` interpolation `RegExp`, so a column name such as `count(*)` no longer fails the whole table with `Invalid regular expression`, and a `.` or `|` in a column name is matched literally ([#16345](https://github.com/jestjs/jest/pull/16345))

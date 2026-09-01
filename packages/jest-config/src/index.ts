@@ -14,7 +14,7 @@ import {tryRealpath} from 'jest-util';
 import * as constants from './constants';
 import normalize from './normalize';
 import readConfigFileAndSetRootDir from './readConfigFileAndSetRootDir';
-import resolveConfigPath from './resolveConfigPath';
+import resolveConfigPath, {findConfigPath} from './resolveConfigPath';
 import {isJSONString, replaceRootDirInPath} from './utils';
 
 export {isJSONString} from './utils';
@@ -419,10 +419,17 @@ export async function readConfigs(
       // and its config has `projects` settings, use that value instead.
       projects = globalConfig.projects;
     }
-  } else if (projectPaths.length > 1 && argv.config) {
+  } else if (projectPaths.length > 1) {
     // Every per-project read below sets `skipArgvConfigOption`, so this is the
-    // only place `--config` is read for the global scope.
-    const parsedConfig = await readConfig(argv, process.cwd());
+    // only place the global config is read - from `--config` when it is passed,
+    // and from `process.cwd()` otherwise. Without a config file to read it
+    // from, the global config is made of the defaults alone.
+    const cwd = process.cwd();
+    const globalConfigRoot =
+      argv.config == null && findConfigPath(cwd, cwd, true) == null
+        ? {rootDir: cwd}
+        : cwd;
+    const parsedConfig = await readConfig(argv, globalConfigRoot, false, cwd);
     configPath = parsedConfig.configPath;
     hasDeprecationWarnings = parsedConfig.hasDeprecationWarnings;
     globalConfig = parsedConfig.globalConfig;
@@ -460,10 +467,9 @@ export async function readConfigs(
           // The config that supplies the global config must not be validated
           // as a project config - its global options are in the right place.
           const suppliesGlobalConfig =
-            (globalConfig == null && projectIndex === 0) ||
-            (configPath != null &&
-              typeof root === 'string' &&
-              resolveConfigPath(root, cwd, projectIsCwd) === configPath);
+            configPath != null &&
+            typeof root === 'string' &&
+            resolveConfigPath(root, cwd, projectIsCwd) === configPath;
 
           return readConfig(
             argv,
@@ -484,15 +490,6 @@ export async function readConfigs(
       hasDeprecationWarnings = parsedConfigs.some(
         ({hasDeprecationWarnings}) => !!hasDeprecationWarnings,
       );
-    }
-    // If no config was passed initially, use the one from the first project
-    // TODO: In the next major, read the global config from `process.cwd()` when
-    // several projects are passed without `--config`, the way the `argv.config`
-    // branch above does, and drop this fallback. Today the first project
-    // doubles as the root config, so its global options apply to the whole run
-    // while the same options in the other projects are ignored.
-    if (!globalConfig) {
-      globalConfig = parsedConfigs[0].globalConfig;
     }
   }
 
