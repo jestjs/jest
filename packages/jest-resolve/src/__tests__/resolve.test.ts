@@ -827,44 +827,51 @@ describe('core module specifiers', () => {
       } as ResolverConfig);
     }
 
-    it.each(['fs', 'node:fs'])(
-      'maps %s when the pattern targets the bare specifier',
-      async specifier => {
-        const mappingResolver = createMappingResolver(/^fs$/);
+    async function expectMapped(
+      mappingResolver: Resolver,
+      specifier: string,
+    ): Promise<void> {
+      expect(mappingResolver.isCoreModule(specifier)).toBe(false);
+      expect(mappingResolver.resolveModule(src, specifier)).toBe(mappedModule);
+      await expect(
+        mappingResolver.resolveModuleAsync(src, specifier),
+      ).resolves.toBe(mappedModule);
+    }
 
-        expect(mappingResolver.isCoreModule(specifier)).toBe(false);
-        expect(mappingResolver.resolveModule(src, specifier)).toBe(
-          mappedModule,
-        );
-        await expect(
-          mappingResolver.resolveModuleAsync(src, specifier),
-        ).resolves.toBe(mappedModule);
-      },
-    );
+    async function expectCore(
+      mappingResolver: Resolver,
+      specifier: string,
+    ): Promise<void> {
+      expect(mappingResolver.isCoreModule(specifier)).toBe(true);
+      expect(mappingResolver.resolveModule(src, specifier)).toBe(specifier);
+      await expect(
+        mappingResolver.resolveModuleAsync(src, specifier),
+      ).resolves.toBe(specifier);
+    }
 
-    it.each(['fs', 'node:fs'])(
-      'maps %s when the pattern targets the prefixed specifier',
-      async specifier => {
-        const mappingResolver = createMappingResolver(/^node:fs$/);
+    it('maps only the bare specifier when the pattern targets it', async () => {
+      const mappingResolver = createMappingResolver(/^fs$/);
 
-        expect(mappingResolver.isCoreModule(specifier)).toBe(false);
-        expect(mappingResolver.resolveModule(src, specifier)).toBe(
-          mappedModule,
-        );
-        await expect(
-          mappingResolver.resolveModuleAsync(src, specifier),
-        ).resolves.toBe(mappedModule);
-      },
-    );
+      await expectMapped(mappingResolver, 'fs');
+      await expectCore(mappingResolver, 'node:fs');
+    });
+
+    it('maps only the prefixed specifier when the pattern targets it', async () => {
+      const mappingResolver = createMappingResolver(/^node:fs$/);
+
+      await expectMapped(mappingResolver, 'node:fs');
+      await expectCore(mappingResolver, 'fs');
+    });
+
+    it('maps both spellings when the pattern makes the prefix optional', async () => {
+      const mappingResolver = createMappingResolver(/^(node:)?fs$/);
+
+      await expectMapped(mappingResolver, 'fs');
+      await expectMapped(mappingResolver, 'node:fs');
+    });
 
     it('does not map `node:test` from a pattern targeting bare `test`', async () => {
-      const mappingResolver = createMappingResolver(/^test$/);
-
-      expect(mappingResolver.isCoreModule('node:test')).toBe(true);
-      expect(mappingResolver.resolveModule(src, 'node:test')).toBe('node:test');
-      await expect(
-        mappingResolver.resolveModuleAsync(src, 'node:test'),
-      ).resolves.toBe('node:test');
+      await expectCore(createMappingResolver(/^test$/), 'node:test');
     });
 
     it('does not map a double prefixed specifier from a pattern targeting `node:fs`', async () => {
@@ -1135,7 +1142,8 @@ describe('nodeModulesPaths', () => {
 
   it('does not throw when require.resolve.paths is unavailable', () => {
     const originalResolvePaths = require.resolve.paths;
-    require.resolve.paths = undefined as typeof require.resolve.paths;
+    require.resolve.paths =
+      undefined as unknown as typeof require.resolve.paths;
 
     try {
       const src = require.resolve('../');

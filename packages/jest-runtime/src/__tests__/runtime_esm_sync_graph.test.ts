@@ -220,6 +220,31 @@ describe('Runtime sync ESM graph', () => {
   });
 
   testWithVmEsm(
+    'resolves a package-imports specifier through the `imports` field',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-package-imports.mjs',
+      )) as any;
+      expect(m.namespace.doubled).toBe(84);
+      expect(m.namespace.viaWildcard).toBe('matched');
+    },
+  );
+
+  testWithVmEsm(
+    'imports a package-imports specifier directly, leading `#` and all',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        '#imports-dep',
+      )) as any;
+      expect(m.namespace.value).toBe(42);
+    },
+  );
+
+  testWithVmEsm(
     'supports dynamic import() from inside an ESM module',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -1151,6 +1176,28 @@ describe('Runtime sync ESM graph - URL-keyed module instances', () => {
       expect(emptyFragment.namespace).toBe(plain.namespace);
       expect(emptyQueryWithFragment.namespace).toBe(fragmentOnly.namespace);
       expect(fragmentOnly.namespace).not.toBe(plain.namespace);
+    },
+  );
+
+  testWithVmEsm(
+    'carries a query on a package-imports specifier onto the target',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const plain = (await runtime.unstable_importModule(
+        FROM,
+        '#imports-root/url-reporter.mjs',
+      )) as any;
+      const queried = (await runtime.unstable_importModule(
+        FROM,
+        '#imports-root/url-reporter.mjs?v=2',
+      )) as any;
+      const reporterUrl = pathToFileURL(
+        path.join(ROOT_DIR, 'url-reporter.mjs'),
+      ).href;
+
+      expect(plain.namespace.url).toBe(reporterUrl);
+      expect(queried.namespace.url).toBe(`${reporterUrl}?v=2`);
+      expect(queried.namespace).not.toBe(plain.namespace);
     },
   );
 

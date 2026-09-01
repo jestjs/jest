@@ -15,12 +15,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "/node_modules/"
       ],
       "coverageProvider": "babel",
-      "coverageReporters": [
-        "json",
-        "text",
-        "lcov",
-        "clover"
-      ],
       "cwd": "<<REPLACED_ROOT_DIR>>",
       "detectLeaks": false,
       "detectOpenHandles": false,
