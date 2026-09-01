@@ -523,6 +523,31 @@ describe('jest-each', () => {
           undefined,
         );
       });
+
+      test('interpolates a heading that contains regex metacharacters', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          count(*) | expected
+          ${1}     | ${'one'}
+          ${2}     | ${'two'}
+        `;
+
+        const testFunction = get(eachObject, keyPath);
+        testFunction('rows: $count(*) is $expected', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledWith(
+          'rows: 1 is one',
+          expectFunction,
+          undefined,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          'rows: 2 is two',
+          expectFunction,
+          undefined,
+        );
+      });
     });
   }
 

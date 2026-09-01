@@ -61,6 +61,13 @@ test('formats args with pretty format when given %p', () => {
   expect(result.exitCode).toBe(0);
 });
 
+test('runs every row when a table key contains regex metacharacters', () => {
+  const result = runJest(dir, ['specialCharacterKeys.test.js']);
+  expect(result.exitCode).toBe(0);
+  const {summary} = extractSummary(result.stderr);
+  expect(summary).toContain('Tests:       4 passed, 4 total');
+});
+
 test('allows nullable or undefined args when templating object each args', () => {
   const result = runJest(dir, ['eachTemplate.test.js']);
   const {rest} = extractSummary(result.stderr);

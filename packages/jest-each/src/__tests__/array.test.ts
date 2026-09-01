@@ -462,6 +462,148 @@ describe('jest-each', () => {
           undefined,
         );
       });
+
+      test('calls global with title containing param values when a key contains regex metacharacters', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          {'count(*)': 1, expected: 'one'},
+          {'count(*)': 2, expected: 'two'},
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('rows: $count(*) is $expected', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledWith(
+          'rows: 1 is one',
+          expectFunction,
+          undefined,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          'rows: 2 is two',
+          expectFunction,
+          undefined,
+        );
+      });
+
+      test('calls global for every row when a key contains regex metacharacters and the title has no variables', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          {'count(*)': 1},
+          {'count(*)': 2},
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('aggregate rows', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenNthCalledWith(
+          1,
+          'aggregate rows',
+          expectFunction,
+          undefined,
+        );
+        expect(globalMock).toHaveBeenNthCalledWith(
+          2,
+          'aggregate rows',
+          expectFunction,
+          undefined,
+        );
+      });
+
+      test('does not treat a `.` in a key as a wildcard matching any variable', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([{'.': 'dot'}]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('literal $x stays', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(1);
+        expect(globalMock).toHaveBeenCalledWith(
+          'literal $x stays',
+          expectFunction,
+          undefined,
+        );
+      });
+
+      test('does not treat a `|` in a key as an alternation of two variables', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([{'a|b': 1}]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('literal $a stays, $a|b is 1', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(1);
+        expect(globalMock).toHaveBeenCalledWith(
+          'literal $a stays, 1 is 1',
+          expectFunction,
+          undefined,
+        );
+      });
+
+      test('resolves an overlapping key like `a|b` to that entry regardless of insertion order', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          {a: 0, 'a|b': 1},
+          // key order is reversed on purpose: the result must not depend on it
+          // eslint-disable-next-line sort-keys
+          {'a|b': 1, a: 0},
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('$a|b', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenNthCalledWith(
+          1,
+          '1',
+          expectFunction,
+          undefined,
+        );
+        expect(globalMock).toHaveBeenNthCalledWith(
+          2,
+          '1',
+          expectFunction,
+          undefined,
+        );
+      });
+
+      test('leaves a `$` in the title alone when the row has no keys', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([{}, {}]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('costs $5 total on row $#', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledWith(
+          'costs $5 total on row 0',
+          expectFunction,
+          undefined,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          'costs $5 total on row 1',
+          expectFunction,
+          undefined,
+        );
+      });
+
+      test('leaves a `$` in the title alone when a key is an empty string', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          {'': 'empty', total: 5},
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('costs $5, total is $total', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(1);
+        expect(globalMock).toHaveBeenCalledWith(
+          'costs $5, total is 5',
+          expectFunction,
+          undefined,
+        );
+      });
     });
   }
 
