@@ -815,6 +815,76 @@ describe('core module specifiers', () => {
       ).resolves.toBeNull();
     },
   );
+
+  describe('moduleNameMapper', () => {
+    const mappedModule = require.resolve('../__mocks__/mockJsDependency.js');
+
+    function createMappingResolver(regex: RegExp) {
+      return new Resolver(ModuleMap.create('/'), {
+        extensions: ['.js'],
+        hasCoreModules: true,
+        moduleNameMapper: [{moduleName: './__mocks__/mockJsDependency', regex}],
+      } as ResolverConfig);
+    }
+
+    async function expectMapped(
+      mappingResolver: Resolver,
+      specifier: string,
+    ): Promise<void> {
+      expect(mappingResolver.isCoreModule(specifier)).toBe(false);
+      expect(mappingResolver.resolveModule(src, specifier)).toBe(mappedModule);
+      await expect(
+        mappingResolver.resolveModuleAsync(src, specifier),
+      ).resolves.toBe(mappedModule);
+    }
+
+    async function expectCore(
+      mappingResolver: Resolver,
+      specifier: string,
+    ): Promise<void> {
+      expect(mappingResolver.isCoreModule(specifier)).toBe(true);
+      expect(mappingResolver.resolveModule(src, specifier)).toBe(specifier);
+      await expect(
+        mappingResolver.resolveModuleAsync(src, specifier),
+      ).resolves.toBe(specifier);
+    }
+
+    it('maps only the bare specifier when the pattern targets it', async () => {
+      const mappingResolver = createMappingResolver(/^fs$/);
+
+      await expectMapped(mappingResolver, 'fs');
+      await expectCore(mappingResolver, 'node:fs');
+    });
+
+    it('maps only the prefixed specifier when the pattern targets it', async () => {
+      const mappingResolver = createMappingResolver(/^node:fs$/);
+
+      await expectMapped(mappingResolver, 'node:fs');
+      await expectCore(mappingResolver, 'fs');
+    });
+
+    it('maps both spellings when the pattern makes the prefix optional', async () => {
+      const mappingResolver = createMappingResolver(/^(node:)?fs$/);
+
+      await expectMapped(mappingResolver, 'fs');
+      await expectMapped(mappingResolver, 'node:fs');
+    });
+
+    it('does not map `node:test` from a pattern targeting bare `test`', async () => {
+      await expectCore(createMappingResolver(/^test$/), 'node:test');
+    });
+
+    it('does not map a double prefixed specifier from a pattern targeting `node:fs`', async () => {
+      const mappingResolver = createMappingResolver(/^node:fs$/);
+
+      expect(
+        mappingResolver.resolveStubModuleName(src, 'node:node:fs'),
+      ).toBeNull();
+      await expect(
+        mappingResolver.resolveStubModuleNameAsync(src, 'node:node:fs'),
+      ).resolves.toBeNull();
+    });
+  });
 });
 
 describe('getMockModule', () => {
@@ -1072,7 +1142,8 @@ describe('nodeModulesPaths', () => {
 
   it('does not throw when require.resolve.paths is unavailable', () => {
     const originalResolvePaths = require.resolve.paths;
-    require.resolve.paths = undefined as typeof require.resolve.paths;
+    require.resolve.paths =
+      undefined as unknown as typeof require.resolve.paths;
 
     try {
       const src = require.resolve('../');

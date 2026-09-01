@@ -535,6 +535,8 @@ export default class Resolver {
       : (moduleName: string) => moduleName;
   }
 
+  // Matched against the specifier as written, so `fs` and `node:fs` are
+  // separately targetable. A pattern for both is `^(node:)?fs$`.
   private _isAliasModule(moduleName: string): boolean {
     const moduleNameMapper = this._options.moduleNameMapper;
     if (!moduleNameMapper) {
