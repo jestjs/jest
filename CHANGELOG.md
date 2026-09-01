@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[jest-each]` Escape a table row's keys before building the `$variable` interpolation `RegExp`, so a column name containing a regex metacharacter (for example `count(*)`) no longer fails the whole table with `Invalid regular expression`, a row with no keys no longer replaces a bare `$` in the title, and overlapping keys such as `a` and `a|b` resolve to the more specific key regardless of property insertion order ([#16345](https://github.com/jestjs/jest/pull/16345))
+- `[jest-each]` Escape a table row's keys before building the `$variable` interpolation `RegExp`, so a column name such as `count(*)` no longer fails the whole table with `Invalid regular expression`, and a `.` or `|` in a column name is matched literally ([#16345](https://github.com/jestjs/jest/pull/16345))
 
 ### Chore & Maintenance
 
