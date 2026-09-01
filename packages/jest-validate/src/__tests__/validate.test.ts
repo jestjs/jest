@@ -153,6 +153,18 @@ test('displays warning for unknown config options', () => {
   expect(spyConsoleWarn.mock.calls[0][0]).toMatchSnapshot();
 });
 
+test('displays warning for maxWorkers when the example config does not have it', () => {
+  validate({maxWorkers: 2}, {exampleConfig: {test: true}});
+
+  expect(spyConsoleWarn.mock.calls[0][0]).toMatchSnapshot();
+});
+
+test('throws for maxWorkers of the wrong type', () => {
+  expect(() =>
+    validate({maxWorkers: {}}, {exampleConfig: {maxWorkers: '50%'}}),
+  ).toThrow('maxWorkers has to be of type string or number');
+});
+
 test('displays warning for deprecated config options', () => {
   const config = {scriptPreprocessor: 'test'};
 

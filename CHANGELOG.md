@@ -8,6 +8,20 @@
 
 ### Chore & Maintenance
 
+## 30.5.1
+
+### Fixes
+
+- `[jest-config]` Don't warn about global-only options in the config that supplies the global config - the root config a project resolves to, or the first entry of `--projects` when no root config is passed ([#16411](https://github.com/jestjs/jest/pull/16411))
+- `[jest-config, jest-types]` Stop accepting `reporters`, `coverageReporters`, `workerIdleMemoryLimit`, `cwd` and `runnerOptions` in a project config - they were silently ignored, and now warn like the other global-only options ([#16411](https://github.com/jestjs/jest/pull/16411))
+- `[jest-config, jest-validate]` Warn about `maxWorkers` and `coverageThreshold` in a project config instead of dropping them without a word ([#16411](https://github.com/jestjs/jest/pull/16411))
+- `[jest-resolve]` Match `moduleNameMapper` patterns against the specifier as written again (reverting [#16390](https://github.com/jestjs/jest/pull/16390)) ([#16417](https://github.com/jestjs/jest/pull/16417))
+- `[jest-runtime]` Resolve package `imports` specifiers like `#dep` under ESM again ([#16413](https://github.com/jestjs/jest/pull/16413))
+
+### Chore & Maintenance
+
+- `[jest-util]` Name the `testEnvironmentOptions.globalsCleanup` option and link the docs from the `JEST-01` deprecation warning, and document the option's modes ([#16404](https://github.com/jestjs/jest/pull/16404))
+
 ## 30.5.0
 
 ### Features

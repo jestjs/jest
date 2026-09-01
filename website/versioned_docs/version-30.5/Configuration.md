@@ -1298,7 +1298,7 @@ With the `projects` option enabled, Jest will copy the root-level configuration 
 
 :::note
 
-Some options only take effect at the **root (global) config** level and are ignored when set inside a project config. These include: `bail`, `changedSince`, `ci`, `coverageReporters`, `coverageThreshold`, `forceExit`, `maxConcurrency`, `passWithNoTests`, `reporters`, `testResultsProcessor`, `testSequencer`, `watch`, `watchAll`, and `watchPlugins`. If you need to use any of these options, define them in the root config instead of a project config.
+Some options only take effect at the **root (global) config** level and are ignored when set inside a project config: `bail`, `coverageReporters`, `coverageThreshold`, `maxConcurrency`, `maxWorkers`, `notify`, `notifyMode`, `randomize`, `reporters`, `showSeed`, `testFailureExitCode`, `testResultsProcessor`, `testSequencer`, `watchPlugins`, `watchman`, `workerGracefulExitTimeout`, `workerIdleMemoryLimit` and `workerThreads`, along with the run-wide [CLI options](CLI.md) such as `ci`, `passWithNoTests`, `updateSnapshot` and `watch`. If you need to use any of these options, define them in the root config instead of a project config.
 
 The `jest` package exports the `ProjectConfig` and `GlobalConfig` TypeScript types if you need to distinguish between the two:
 
@@ -2122,8 +2122,33 @@ Test environment options that will be passed to the `testEnvironment`. The relev
 
 When using the `node` environment, you can configure various options that are passed to `runInContext`. These options include:
 
-- **`globalsCleanup`** (**'on'** | **'soft'** | **'off'**): Controls cleanup of global variables between tests. Default: `'soft'`.
+- **`globalsCleanup`** (**'on'** | **'soft'** | **'off'**): Controls cleanup of global variables between test files. Default: `'soft'`. See [Cleaning up globals](#cleaning-up-globals) below.
 - All the options listed in the [vm.runInContext](https://nodejs.org/api/vm.html#scriptrunincontextcontextifiedobject-options) documentation
+
+##### Cleaning up globals
+
+When a test file finishes, Jest deletes the properties of the objects that the file put on the global scope. This releases memory that a worker would otherwise hold until it exits.
+
+The `globalsCleanup` option controls that deletion:
+
+- `'on'`: the properties are deleted. Code that reads such a property after its test file finished gets `undefined`.
+- `'soft'` (default): the properties are kept, but reading or writing one emits a `JEST-01` deprecation warning. Nothing breaks, so this is a migration path towards `'on'`.
+- `'off'`: no cleanup and no warning.
+
+If you see a `JEST-01` warning, some code holds on to a global past the end of the test file that created it. Either release that reference, or turn the cleanup off:
+
+```js
+const {defineConfig} = require('jest');
+
+module.exports = defineConfig({
+  testEnvironment: 'node',
+  testEnvironmentOptions: {
+    globalsCleanup: 'off',
+  },
+});
+```
+
+The mode is set once per worker process, by the first test environment that worker creates. A per-file `@jest-environment-options` docblock therefore only takes effect if that file is the first one the worker runs.
 
 #### JSDOM Environment Options
 
