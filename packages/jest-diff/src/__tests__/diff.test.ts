@@ -117,6 +117,51 @@ describe('no visual difference', () => {
   });
 });
 
+describe('values which cannot be coerced to a string', () => {
+  test('Set containing a symbol', () => {
+    const difference = stripped(
+      new Set([Symbol('a'), 1]),
+      new Set([Symbol('a'), 2]),
+    );
+
+    expect(difference).toContain('Symbol(a),');
+    expect(difference).toContain('-   1,');
+    expect(difference).toContain('+   2,');
+  });
+
+  test('Map with a symbol key', () => {
+    const difference = stripped(
+      new Map<unknown, unknown>([
+        [Symbol('a'), 1],
+        ['b', 2],
+      ]),
+      new Map<unknown, unknown>([
+        [Symbol('a'), 1],
+        ['b', 3],
+      ]),
+    );
+
+    expect(difference).toContain('Symbol(a) => 1,');
+    expect(difference).toContain('-   "b" => 2,');
+    expect(difference).toContain('+   "b" => 3,');
+  });
+
+  test('Set containing an object with a throwing toString', () => {
+    const throwing = {
+      toString() {
+        throw new Error('toString should not be called');
+      },
+    };
+    const difference = stripped(
+      new Set<unknown>([throwing, 1]),
+      new Set<unknown>([throwing, 2]),
+    );
+
+    expect(difference).toContain('-   1,');
+    expect(difference).toContain('+   2,');
+  });
+});
+
 test('oneline strings', () => {
   expect(diff('ab', 'aa', optionsCounts)).toMatchSnapshot();
   expect(diff('123456789', '234567890', optionsCounts)).toMatchSnapshot();
