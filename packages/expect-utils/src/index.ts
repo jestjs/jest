@@ -13,6 +13,7 @@ export * from './utils';
 export type {
   AsymmetricMatcher,
   FunctionParameters,
+  FunctionSignatures,
   Tester,
   TesterContext,
 } from './types';
