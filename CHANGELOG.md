@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[@jest/transform]` Strip TypeScript types with Node when no transformer claims a `.ts`, `.mts` or `.cts` file ([#16420](https://github.com/jestjs/jest/pull/16420))
+- `[@jest/transform]` Strip TypeScript types with Node when no transformer claims a `.ts`, `.mts` or `.cts` file ([#16421](https://github.com/jestjs/jest/pull/16421))
 
 ### Fixes
 
