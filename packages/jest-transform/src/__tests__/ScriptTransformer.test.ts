@@ -2282,6 +2282,42 @@ describe('ScriptTransformer', () => {
       ).toThrow('@babel/preset-typescript');
     });
 
+    it('keys the cache on the Node version, whose output is not stable', async () => {
+      const scriptTransformer = await createScriptTransformer({
+        ...config,
+        transform: [],
+      });
+      const content = mockFs['/fruits/durian.ts'];
+      const options = getTransformOptions(false);
+
+      scriptTransformer.transformSource('/fruits/durian.ts', content, options);
+
+      const realVersion = process.version;
+      // `process.version` is read-only, so `jest.replaceProperty` cannot restore it.
+      Object.defineProperty(process, 'version', {
+        configurable: true,
+        value: 'v99.0.0',
+      });
+      try {
+        scriptTransformer.transformSource(
+          '/fruits/durian.ts',
+          content,
+          options,
+        );
+      } finally {
+        Object.defineProperty(process, 'version', {
+          configurable: true,
+          value: realVersion,
+        });
+      }
+
+      const written = jest
+        .mocked(writeFileAtomic.sync)
+        .mock.calls.map(([filePath]) => filePath);
+
+      expect(new Set(written).size).toBe(2);
+    });
+
     it('keys the cache on whether types were stripped', async () => {
       const content = mockFs['/fruits/durian.ts'];
       const options = getTransformOptions(false);

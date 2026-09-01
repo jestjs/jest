@@ -143,9 +143,10 @@ class ScriptTransformer {
         .update('\0', 'utf8')
         .update(filename)
         .update('\0', 'utf8')
-        // A cache directory can be shared by Node versions that disagree
-        // about whether they can strip types at all.
-        .update(willStripTypes ? 'strip-types' : '')
+        // Node makes no stability promise about stripped output across
+        // versions, and which syntax it rejects moves too. Same reasoning as
+        // babel-jest's own cache key.
+        .update(willStripTypes ? process.version : '')
         .update('\0', 'utf8')
         .update(CACHE_VERSION)
         .digest('hex')

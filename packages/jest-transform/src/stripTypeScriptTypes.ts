@@ -34,7 +34,7 @@ function burnExperimentalWarning(
 ) {
   warningBurnt = true;
 
-  const {emitWarning} = process;
+  const emitWarning = process.emitWarning.bind(process);
   process.emitWarning = () => undefined;
   try {
     strip('', {mode: 'strip'});
