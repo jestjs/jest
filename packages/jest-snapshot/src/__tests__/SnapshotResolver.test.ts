@@ -94,7 +94,8 @@ it('keeps resolver caches separate for projects sharing a root directory', async
     [firstResolverPath]: createResolver('.one'),
     [secondResolverPath]: createResolver('.two'),
   };
-  const localRequire = (moduleName: string) => resolvers[moduleName];
+  const localRequire = async <T = unknown>(moduleName: string) =>
+    resolvers[moduleName] as T;
 
   const first = await buildSnapshotResolver(
     makeProjectConfig({rootDir, snapshotResolver: firstResolverPath}),

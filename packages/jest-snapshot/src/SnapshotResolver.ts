@@ -9,7 +9,6 @@ import * as path from 'node:path';
 import chalk from 'chalk';
 import {createTranspilingRequire} from '@jest/transform';
 import type {Config} from '@jest/types';
-import {interopRequireDefault} from 'jest-util';
 
 export type SnapshotResolver = {
   /** Resolves from `testPath` to snapshot path. */
@@ -30,10 +29,10 @@ export const isSnapshotPath = (path: string): boolean =>
 // still be separated by their configured resolver.
 const cache = new Map<string, SnapshotResolver>();
 
-type LocalRequire = (
+type LocalRequire = <T = unknown>(
   module: string,
   applyInteropRequireDefault?: boolean,
-) => unknown | Promise<unknown>;
+) => Promise<T>;
 
 export const buildSnapshotResolver = async (
   config: Config.ProjectConfig,
@@ -86,9 +85,10 @@ async function createCustomSnapshotResolver(
   snapshotResolverPath: string,
   localRequire: LocalRequire,
 ): Promise<SnapshotResolver> {
-  const custom: SnapshotResolver = interopRequireDefault(
-    await localRequire(snapshotResolverPath, true),
-  ).default;
+  const custom = await localRequire<SnapshotResolver>(
+    snapshotResolverPath,
+    true,
+  );
 
   const keys: Array<[keyof SnapshotResolver, string]> = [
     ['resolveSnapshotPath', 'function'],
