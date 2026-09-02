@@ -34,12 +34,14 @@ function burnExperimentalWarning(
 ) {
   warningBurnt = true;
 
-  const emitWarning = process.emitWarning.bind(process);
+  // Restored through its descriptor so `process` gets the same function object
+  // back, rather than a bound copy.
+  const emitWarning = Object.getOwnPropertyDescriptor(process, 'emitWarning')!;
   process.emitWarning = () => undefined;
   try {
     strip('', {mode: 'strip'});
   } finally {
-    process.emitWarning = emitWarning;
+    Object.defineProperty(process, 'emitWarning', emitWarning);
   }
 }
 
