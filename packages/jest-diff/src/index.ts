@@ -126,12 +126,24 @@ function comparePrimitive(
     : diffLinesUnified(aFormat.split('\n'), bFormat.split('\n'), options);
 }
 
+// The default comparator coerces every element with implicit `ToString`, which
+// throws a `TypeError` for symbols and for objects with a throwing `toString`.
+// Sorting only makes insertion order irrelevant, so keeping that order is a far
+// better outcome than replacing the whole diff with the coercion error.
+function sortForDiff<T>(values: Array<T>): Array<T> {
+  try {
+    return [...values].sort();
+  } catch {
+    return values;
+  }
+}
+
 function sortMap(map: Map<unknown, unknown>) {
-  return new Map([...map].sort());
+  return new Map(sortForDiff([...map]));
 }
 
 function sortSet(set: Set<unknown>) {
-  return new Set([...set].sort());
+  return new Set(sortForDiff([...set]));
 }
 
 function compareObjects(
