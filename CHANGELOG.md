@@ -3,6 +3,7 @@
 ### Features
 
 - `[@jest/transform]` Strip TypeScript types with Node when no transformer claims a `.ts`, `.mts` or `.cts` file ([#16421](https://github.com/jestjs/jest/pull/16421))
+- `[jest-runtime, jest-snapshot]` Support ESM `snapshotResolver` and `snapshotSerializers` configuration modules by loading them outside the test sandbox. Their transitive imports no longer use `jest.mock()` or `moduleNameMapper` ([#16402](https://github.com/jestjs/jest/pull/16402))
 
 ### Fixes
 
