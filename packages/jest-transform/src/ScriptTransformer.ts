@@ -33,6 +33,7 @@ import {
   makeInvalidTransformerError,
 } from './runtimeErrorsAndWarnings';
 import shouldInstrument from './shouldInstrument';
+import {canStripTypes, stripTypes} from './stripTypeScriptTypes';
 import type {
   CallerTransformOptions,
   FixedRawSourceMap,
@@ -117,6 +118,7 @@ class ScriptTransformer {
     filename: string,
     transformOptions: TransformOptions,
     transformerCacheKey: string | undefined,
+    willStripTypes: boolean,
   ): string {
     if (transformerCacheKey != null) {
       return createHash('sha1')
@@ -129,20 +131,27 @@ class ScriptTransformer {
         .slice(0, 32);
     }
 
-    return createHash('sha1')
-      .update(fileData)
-      .update('\0', 'utf8')
-      .update(transformOptions.configString)
-      .update('\0', 'utf8')
-      .update(transformOptions.instrument ? 'instrument' : '')
-      .update('\0', 'utf8')
-      .update(callerSupport(transformOptions))
-      .update('\0', 'utf8')
-      .update(filename)
-      .update('\0', 'utf8')
-      .update(CACHE_VERSION)
-      .digest('hex')
-      .slice(0, 32);
+    return (
+      createHash('sha1')
+        .update(fileData)
+        .update('\0', 'utf8')
+        .update(transformOptions.configString)
+        .update('\0', 'utf8')
+        .update(transformOptions.instrument ? 'instrument' : '')
+        .update('\0', 'utf8')
+        .update(callerSupport(transformOptions))
+        .update('\0', 'utf8')
+        .update(filename)
+        .update('\0', 'utf8')
+        // Node makes no stability promise about stripped output across
+        // versions, and which syntax it rejects moves too. Same reasoning as
+        // babel-jest's own cache key.
+        .update(willStripTypes ? process.version : '')
+        .update('\0', 'utf8')
+        .update(CACHE_VERSION)
+        .digest('hex')
+        .slice(0, 32)
+    );
   }
 
   private _buildTransformCacheKey(pattern: string, filepath: string) {
@@ -180,6 +189,7 @@ class ScriptTransformer {
       filename,
       transformOptions,
       transformerCacheKey,
+      transformer == null && this._shouldStripTypes(filename),
     );
   }
 
@@ -219,6 +229,7 @@ class ScriptTransformer {
       filename,
       transformOptions,
       transformerCacheKey,
+      transformer == null && this._shouldStripTypes(filename),
     );
   }
 
@@ -416,6 +427,10 @@ class ScriptTransformer {
         invariant(transformPath);
         throw new Error(makeInvalidReturnValueError(transformPath));
       }
+    } else if (this._shouldStripTypes(filename)) {
+      // Strip-only replaces types with whitespace, so positions are preserved
+      // and no source map is needed.
+      transformed = {code: stripTypes(content, filename), map: null};
     }
 
     if (transformed.map == null || transformed.map === '') {
@@ -628,7 +643,9 @@ class ScriptTransformer {
 
     const willTransform =
       isInternalModule !== true &&
-      (transformOptions.instrument || this.shouldTransform(filename));
+      (transformOptions.instrument ||
+        this.shouldTransform(filename) ||
+        this._shouldStripTypes(filename));
 
     try {
       if (willTransform) {
@@ -674,7 +691,9 @@ class ScriptTransformer {
 
     const willTransform =
       isInternalModule !== true &&
-      (transformOptions.instrument || this.shouldTransform(filename));
+      (transformOptions.instrument ||
+        this.shouldTransform(filename) ||
+        this._shouldStripTypes(filename));
 
     try {
       if (willTransform) {
@@ -852,6 +871,18 @@ class ScriptTransformer {
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
 
     return this._config.transform.length > 0 && !isIgnored;
+  }
+
+  // Mirrors what Node does for files no other transform claimed: erase the
+  // types so `vm` gets JavaScript. `transformIgnorePatterns` still applies,
+  // which reproduces Node's refusal to strip anything under `node_modules`.
+  private _shouldStripTypes(filename: string): boolean {
+    if (!canStripTypes(filename)) {
+      return false;
+    }
+    const ignoreRegexp = this._cache.ignorePatternsRegExp;
+
+    return ignoreRegexp ? !ignoreRegexp.test(filename) : true;
   }
 
   canTransformSync(filename: string): boolean {

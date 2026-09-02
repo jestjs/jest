@@ -30,6 +30,7 @@
     "@jest/get-type": "workspace:*",
     "@jest/types": "workspace:*",
     "chalk": "^4.1.2",
+    "jest-regex-util": "workspace:*",
     "jest-util": "workspace:*",
     "pretty-format": "workspace:*"
   },
