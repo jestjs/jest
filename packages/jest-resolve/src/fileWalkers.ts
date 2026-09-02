@@ -7,35 +7,35 @@
 
 import {dirname, resolve} from 'node:path';
 import * as fs from 'graceful-fs';
-import type {ResolverFactory} from 'unrs-resolver';
+import type {ResolverFactory} from 'oxc-resolver';
 import {tryRealpath} from 'jest-util';
 import type {PackageJSON} from './types';
 
 // One factory per resolve-options shape (~2 per run: cjs/esm conditions).
 // Creating a factory is a ~5µs NAPI construction, so reuse beats a
 // clone-per-resolution; clones share one underlying fs cache.
-const unrsResolvers = new Map<string, ResolverFactory>();
+const oxcResolvers = new Map<string, ResolverFactory>();
 
 export function getResolver(key: string): ResolverFactory | undefined {
-  return unrsResolvers.get(key);
+  return oxcResolvers.get(key);
 }
 
 export function getAnyResolver(): ResolverFactory | undefined {
-  const [firstResolver] = unrsResolvers.values();
+  const [firstResolver] = oxcResolvers.values();
   return firstResolver;
 }
 
 export function setResolver(key: string, resolver: ResolverFactory): void {
-  unrsResolvers.set(key, resolver);
+  oxcResolvers.set(key, resolver);
 }
 
 export function clearFsCache(): void {
   // The factories share one underlying cache, but clearing each keeps this
   // correct if that ever changes.
-  for (const resolver of unrsResolvers.values()) {
+  for (const resolver of oxcResolvers.values()) {
     resolver.clearCache();
   }
-  unrsResolvers.clear();
+  oxcResolvers.clear();
   preserveSymlinks = undefined;
   checkedPaths.clear();
   checkedRealpathPaths.clear();
