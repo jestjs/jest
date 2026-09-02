@@ -1,0 +1,15 @@
+{
+  "name": "native-typescript-strip",
+  "version": "1.0.0",
+  "jest": {
+    "transform": {},
+    "extensionsToTreatAsEsm": [
+      ".ts",
+      ".mts"
+    ],
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/__tests__/**/*.{ts,mts,cts}"
+    ]
+  }
+}
