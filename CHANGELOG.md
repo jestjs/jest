@@ -118,6 +118,7 @@
 - `[jest-runtime]` Key ES modules by full URL, so query and fragment suffixes create the same module instances as Node and show up in `import.meta.url` ([#16375](https://github.com/jestjs/jest/pull/16375))
 - `[jest-runtime]` Share modules between overlapping graphs when a CommonJS module `require()`s an ES module mid-load, instead of evaluating shared dependencies twice ([#16375](https://github.com/jestjs/jest/pull/16375))
 - `[jest-runtime]` Throw `ERR_REQUIRE_CYCLE_MODULE` like Node when a CommonJS module `require()`s an ES module that is still being loaded, instead of evaluating the module a second time ([#16366](https://github.com/jestjs/jest/pull/16366))
+- `[jest-runtime]` Build, link and instantiate a graph containing top-level await in the synchronous walk, deferring only its evaluation, so two concurrent `import()`s of modules that share a dependency no longer fail with `request for '<dep>' can not be resolved on module '<importer>' that is not linked` ([#16394](https://github.com/jestjs/jest/pull/16394))
 - `[jest-runtime]` Key builtin modules in the ESM registry by one canonical specifier ([#16341](https://github.com/jestjs/jest/pull/16341))
 - `[jest-runtime]` `import.meta.resolve()` for a builtin uses its `node:` specifier ([#16341](https://github.com/jestjs/jest/pull/16341))
 - `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
