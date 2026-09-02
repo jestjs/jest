@@ -136,6 +136,7 @@
 - `[jest-snapshot]` Keep a skipped or failed test's hinted snapshots, instead of reporting them obsolete ([#16348](https://github.com/jestjs/jest/pull/16348))
 - `[jest-util]` Stop `globsToMatcher` reusing a cached matcher compiled with different picomatch options, and keep its `dot: true` default when `dot` is passed as `undefined` ([#16381](https://github.com/jestjs/jest/pull/16381))
 - `[pretty-format]` Move the `react-is` aliases into the `@jest` scope, so they cannot be shadowed by unrelated packages published under the alias names ([#16333](https://github.com/jestjs/jest/pull/16333))
+- `[jest-reporters]` Collect untested files from a project's own `collectCoverageFrom` when the global config does not set one, so `--coverage` reports untested files in every project of a multi-project run ([#16359](https://github.com/jestjs/jest/pull/16359))
 
 ### Chore & Maintenance
 
