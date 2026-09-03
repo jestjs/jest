@@ -6,6 +6,7 @@
 
 ### Fixes
 
+- `[jest-reporters]` Do not check `coverageThreshold` when the run is one shard of several, since a shard only covers the test files it ran ([#16372](https://github.com/jestjs/jest/pull/16372))
 - `[jest-core, jest-haste-map, jest-transform]` Keep `require('../package.json')` external when bundling, so `jest --version` and the transform and haste-map cache keys report the released version instead of the previous one ([#16422](https://github.com/jestjs/jest/pull/16422))
 - `[jest-each]` Escape a table row's keys before building the `$variable` interpolation `RegExp`, so a column name such as `count(*)` no longer fails the whole table with `Invalid regular expression`, and a `.` or `|` in a column name is matched literally ([#16345](https://github.com/jestjs/jest/pull/16345))
 
@@ -50,7 +51,6 @@
 
 ### Fixes
 
-- `[jest-reporters]` Do not check `coverageThreshold` when the run is one shard of several, since a shard only covers the test files it ran ([#16372](https://github.com/jestjs/jest/pull/16372))
 - `[jest-console, jest-reporters]` `CustomConsole` now buffers console output so `TestResult.console` is populated for reporters when `verbose` is enabled, while `GitHubActionsReporter` avoids replaying buffered output in verbose mode ([#16155](https://github.com/jestjs/jest/pull/16155))
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 - `[expect]` Widen `toMatchObject` and `objectContaining` parameter type from `Record<string, unknown>` to `object` so class instances are accepted ([#16196](https://github.com/jestjs/jest/pull/16196))
