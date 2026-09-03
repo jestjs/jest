@@ -464,6 +464,8 @@ jest --shard=2/3
 jest --shard=3/3
 ```
 
+[`coverageThreshold`](Configuration.md#coveragethreshold-object) is not checked for a run split across several shards, because each shard covers only the test files it ran. Jest does not merge coverage across shards or check a threshold against a merged report, so a whole-project number has to be enforced outside Jest — see [`coverageThreshold`](Configuration.md#coveragethreshold-object) for the workflow and the threshold features that do not carry over.
+
 ### `--showConfig`
 
 Print your Jest config and then exits.
