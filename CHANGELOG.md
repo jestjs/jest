@@ -73,6 +73,7 @@
 - `[@jest/source-map]` Keep source map sources that name a scheme, such as `webpack:///`, instead of resolving them into a path that does not exist ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[@jest/source-map]` Look up `--testLocationInResults` positions at the right column, and keep a mapping to the first column instead of discarding it ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[@jest/source-map]` Warn when a source map cannot be parsed, instead of silently leaving its frames untranslated ([#16327](https://github.com/jestjs/jest/pull/16327))
+- `[jest-runner]` Honor the `@jest-environment` and `@jest-environment-options` pragmas when they are not in the first comment of a test file, so a pragma placed after a license header or a line comment is no longer silently ignored ([#16424](https://github.com/jestjs/jest/pull/16424))
 - `[jest-runner, @jest/source-map]` Keep a source-mapped stack for an error thrown after the test environment was torn down ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[jest-runtime, @jest/source-map]` Keep source maps past teardown and past the next test file's `install`, so a stack from a file no earlier stack mentioned still points at the original source ([#16330](https://github.com/jestjs/jest/pull/16330))
 - `[jest-runtime]` Report that no coverage was collected when `getAllV8CoverageInfoCopy` is called after `teardown`, instead of returning an empty result ([#16385](https://github.com/jestjs/jest/pull/16385))
