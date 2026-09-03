@@ -2295,18 +2295,84 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@crowdin/cli@npm:^4.7.0":
-  version: 4.15.1
-  resolution: "@crowdin/cli@npm:4.15.1"
+"@crowdin/cli-darwin-arm64@npm:5.0.1":
+  version: 5.0.1
+  resolution: "@crowdin/cli-darwin-arm64@npm:5.0.1"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@crowdin/cli-darwin-x64@npm:5.0.1":
+  version: 5.0.1
+  resolution: "@crowdin/cli-darwin-x64@npm:5.0.1"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@crowdin/cli-linux-arm64-musl@npm:5.0.1":
+  version: 5.0.1
+  resolution: "@crowdin/cli-linux-arm64-musl@npm:5.0.1"
+  conditions: os=linux & cpu=arm64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@crowdin/cli-linux-arm64@npm:5.0.1":
+  version: 5.0.1
+  resolution: "@crowdin/cli-linux-arm64@npm:5.0.1"
+  conditions: os=linux & cpu=arm64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@crowdin/cli-linux-x64-musl@npm:5.0.1":
+  version: 5.0.1
+  resolution: "@crowdin/cli-linux-x64-musl@npm:5.0.1"
+  conditions: os=linux & cpu=x64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@crowdin/cli-linux-x64@npm:5.0.1":
+  version: 5.0.1
+  resolution: "@crowdin/cli-linux-x64@npm:5.0.1"
+  conditions: os=linux & cpu=x64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@crowdin/cli-win32-x64@npm:5.0.1":
+  version: 5.0.1
+  resolution: "@crowdin/cli-win32-x64@npm:5.0.1"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@crowdin/cli@npm:^5.0.0":
+  version: 5.0.1
+  resolution: "@crowdin/cli@npm:5.0.1"
   dependencies:
-    command-exists-promise: "npm:^2.0.2"
-    node-fetch: "npm:2.7.0"
-    shelljs: "npm:^0.10.0"
-    tar: "npm:^7.5.21"
-    yauzl: "npm:^3.4.0"
+    "@crowdin/cli-darwin-arm64": "npm:5.0.1"
+    "@crowdin/cli-darwin-x64": "npm:5.0.1"
+    "@crowdin/cli-linux-arm64": "npm:5.0.1"
+    "@crowdin/cli-linux-arm64-musl": "npm:5.0.1"
+    "@crowdin/cli-linux-x64": "npm:5.0.1"
+    "@crowdin/cli-linux-x64-musl": "npm:5.0.1"
+    "@crowdin/cli-win32-x64": "npm:5.0.1"
+  dependenciesMeta:
+    "@crowdin/cli-darwin-arm64":
+      optional: true
+    "@crowdin/cli-darwin-x64":
+      optional: true
+    "@crowdin/cli-linux-arm64":
+      optional: true
+    "@crowdin/cli-linux-arm64-musl":
+      optional: true
+    "@crowdin/cli-linux-x64":
+      optional: true
+    "@crowdin/cli-linux-x64-musl":
+      optional: true
+    "@crowdin/cli-win32-x64":
+      optional: true
   bin:
-    crowdin: jdeploy-bundle/jdeploy.js
-  checksum: 10/3acde3cac1a59509fa2b9d1524e494227308985cbed822b01da8b3922cff4d35fd33d5aa13289a52c94cc10093c5120e9a8ce364d1d7090f745d71f992e60cf0
+    crowdin: bin/crowdin.js
+  checksum: 10/d1e2dc1c7691e7ed7ef58ccde8d764c29608b407cb56e556c936a2e7df1885f07ca486e205d6d0c8fd4c48df0254013cd526a7e63fef89d9e58db42c0388d1e7
   languageName: node
   linkType: hard
 
@@ -4396,7 +4462,7 @@ __metadata:
     "@babel/preset-react": "npm:^7.27.1"
     "@babel/preset-typescript": "npm:^7.27.1"
     "@babel/register": "npm:^7.27.1"
-    "@crowdin/cli": "npm:^4.7.0"
+    "@crowdin/cli": "npm:^5.0.0"
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.5.0"
     "@eslint/js": "npm:^10.0.0"
     "@eslint/markdown": "npm:^8.0.0"
@@ -9756,13 +9822,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"command-exists-promise@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "command-exists-promise@npm:2.0.2"
-  checksum: 10/cf2506f3995dc29a905f0c684934e65699955092142dc260c27138ae8b71e2b5d4bdfd8c75d4045beb9cfc6b115ba99db672c90c297d82da0b7b17fe1efabfa7
-  languageName: node
-  linkType: hard
-
 "commander@npm:^10.0.0":
   version: 10.0.1
   resolution: "commander@npm:10.0.1"
@@ -12245,7 +12304,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0, fast-glob@npm:^3.3.2":
+"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0":
   version: 3.3.3
   resolution: "fast-glob@npm:3.3.3"
   dependencies:
@@ -15210,7 +15269,7 @@ __metadata:
   resolution: "jest-website@workspace:website"
   dependencies:
     "@babel/core": "npm:^7.27.4"
-    "@crowdin/cli": "npm:^4.7.0"
+    "@crowdin/cli": "npm:^5.0.0"
     "@docusaurus/core": "npm:^3.0.0"
     "@docusaurus/module-type-aliases": "npm:^3.0.0"
     "@docusaurus/plugin-client-redirects": "npm:^3.0.0"
@@ -17460,7 +17519,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:2.7.0, node-fetch@npm:^2.7.0":
+"node-fetch@npm:^2.7.0":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:
@@ -18367,13 +18426,6 @@ __metadata:
   version: 4.0.0
   resolution: "path-type@npm:4.0.0"
   checksum: 10/5b1e2daa247062061325b8fdbfd1fb56dde0a448fb1455453276ea18c60685bdad23a445dc148cf87bc216be1573357509b7d4060494a6fd768c7efad833ee45
-  languageName: node
-  linkType: hard
-
-"pend@npm:~1.2.0":
-  version: 1.2.0
-  resolution: "pend@npm:1.2.0"
-  checksum: 10/6c72f5243303d9c60bd98e6446ba7d30ae29e3d56fdb6fae8767e8ba6386f33ee284c97efe3230a0d0217e2b1723b8ab490b1bbf34fcbb2180dbc8a9de47850d
   languageName: node
   linkType: hard
 
@@ -21055,16 +21107,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shelljs@npm:^0.10.0":
-  version: 0.10.0
-  resolution: "shelljs@npm:0.10.0"
-  dependencies:
-    execa: "npm:^5.1.1"
-    fast-glob: "npm:^3.3.2"
-  checksum: 10/5e7836699db2d06e1f28184b9c12f9b0d862e51a670929e5aadb085cfd10fb477a31716dc0147f8248c0a7490ec64e18fc9259488dc02ceac67af67a80fa552d
-  languageName: node
-  linkType: hard
-
 "shellwords@npm:^0.1.1":
   version: 0.1.1
   resolution: "shellwords@npm:0.1.1"
@@ -21854,7 +21896,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar@npm:^7.4.3, tar@npm:^7.5.11, tar@npm:^7.5.21, tar@npm:^7.5.4":
+"tar@npm:^7.4.3, tar@npm:^7.5.11, tar@npm:^7.5.4":
   version: 7.5.22
   resolution: "tar@npm:7.5.22"
   dependencies:
@@ -23893,15 +23935,6 @@ __metadata:
     y18n: "npm:^5.0.5"
     yargs-parser: "npm:^22.0.0"
   checksum: 10/b26d477c3f62b0a031d8f3fea16325e286375e6039e5fca5efb1ec1d64eab3cfe136edb2887e4f2e2c9a5e004d0eca735079ea0be4ca34273c6e949639c6177b
-  languageName: node
-  linkType: hard
-
-"yauzl@npm:^3.4.0":
-  version: 3.4.0
-  resolution: "yauzl@npm:3.4.0"
-  dependencies:
-    pend: "npm:~1.2.0"
-  checksum: 10/76c1ca208478135dcd0b9f8baaa2e40a761652e0ec793c5a6bdeb973118f9720adc487f388e8394b4cfb73ae1976083ff58be4ea0ec60e060ffc9cf232db2c0a
   languageName: node
   linkType: hard
 
