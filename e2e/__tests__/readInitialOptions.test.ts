@@ -51,10 +51,16 @@ describe('readInitialOptions', () => {
   test.each([
     ['js-config', 'jest.config.js', 'jest.config.js'],
     ['pkg-config', 'package.json', 'package.json'],
+    ['pkg-string-config', 'jest.config.js', 'package-string-config'],
     ['ts-node-config', 'jest.config.ts', 'jest.config.ts'],
     ['ts-esbuild-register-config', 'jest.config.ts', 'jest.config.ts'],
     ['mjs-config', 'jest.config.mjs', 'jest.config.mjs'],
     ['json-config', 'jest.config.json', 'jest.config.json'],
+    ['yaml-config', 'jest.config.yaml', 'jest.config.yaml'],
+    ['rc-config', '.jestrc', '.jestrc'],
+    ['rc-js-config', '.jestrc.js', '.jestrc.js'],
+    ['rc-ts-config', '.jestrc.ts', '.jestrc.ts'],
+    ['nested-rc-config', '.config/jestrc.yml', '.config/jestrc.yml'],
     ['async-config', 'jest.config.js', 'async-config'],
   ])(
     'should read %s/%s file',
@@ -64,10 +70,57 @@ describe('readInitialOptions', () => {
       const {config, configPath} = await proxyReadInitialOptions(undefined, {
         cwd: rootDir,
       });
-      expect(config).toEqual({jestConfig: configString, rootDir});
+      expect(config).toEqual({
+        jestConfig: configString,
+        rootDir: path.dirname(configFile),
+      });
       expect(configPath).toEqual(configFile);
     },
   );
+
+  test('stops searching at package.json without a jest key', async () => {
+    const cwd = resolveFixture('package-boundary', 'project', 'src');
+    const {config, configPath} = await proxyReadInitialOptions(undefined, {
+      cwd,
+    });
+
+    expect(config).toEqual({
+      rootDir: resolveFixture('package-boundary', 'project'),
+    });
+    expect(configPath).toEqual(
+      resolveFixture('package-boundary', 'project', 'package.json'),
+    );
+  });
+
+  test.each([
+    ['yaml-config', 'jest.config.yaml', 'jest.config.yaml'],
+    ['rc-config', '.jestrc', '.jestrc'],
+  ])(
+    'should read explicit %s/%s file',
+    async (directory: string, filename: string, configString: string) => {
+      const configFile = resolveFixture(directory, filename);
+      const {config, configPath} = await proxyReadInitialOptions(configFile, {
+        cwd: resolveFixture('js-config'),
+      });
+
+      expect(config).toEqual({
+        jestConfig: configString,
+        rootDir: path.dirname(configFile),
+      });
+      expect(configPath).toEqual(configFile);
+    },
+  );
+
+  test('loads the referenced package.json string configuration', async () => {
+    const rootDir = resolveFixture('pkg-string-config');
+    const configFile = resolveFixture('pkg-string-config', 'jest.config.js');
+    const {config, configPath} = await proxyReadInitialOptions(undefined, {
+      cwd: rootDir,
+    });
+
+    expect(config).toEqual({jestConfig: 'package-string-config', rootDir});
+    expect(configPath).toEqual(configFile);
+  });
 
   onNodeVersions('^22.18 || >=23.6', () => {
     test('should read mts-config/jest.config.mts file', async () => {
@@ -130,6 +183,35 @@ describe('readInitialOptions', () => {
     expect(error.message).toContain('Multiple configurations found');
     expect(error.message).toContain('multiple-config-files/jest.config.js');
     expect(error.message).toContain('multiple-config-files/jest.config.json');
+  });
+
+  test('should give an error for cross-family config files', async () => {
+    const cwd = resolveFixture('cross-family-multiple-config-files');
+    const error: Error = await proxyReadInitialOptions(undefined, {cwd}).catch(
+      error => error,
+    );
+    expect(error.message).toContain('Multiple configurations found');
+    expect(error.message).toContain(
+      'cross-family-multiple-config-files/jest.config.yaml',
+    );
+    expect(error.message).toContain(
+      'cross-family-multiple-config-files/.jestrc',
+    );
+  });
+
+  test('prefers an rc config to an empty same-directory package.json', async () => {
+    const cwd = resolveFixture('rc-package-boundary');
+    const {config, configPath} = await proxyReadInitialOptions(undefined, {
+      cwd,
+    });
+
+    expect(config).toEqual({
+      jestConfig: '.jestrc',
+      rootDir: cwd,
+    });
+    expect(configPath).toEqual(
+      resolveFixture('rc-package-boundary', '.jestrc'),
+    );
   });
 
   test('should be able to ignore multiple config files error', async () => {

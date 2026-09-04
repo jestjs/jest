@@ -15,11 +15,14 @@ import * as constants from './constants';
 import normalize from './normalize';
 import readConfigFileAndSetRootDir from './readConfigFileAndSetRootDir';
 import resolveConfigPath from './resolveConfigPath';
-import {isJSONString, replaceRootDirInPath} from './utils';
-
-export {isJSONString} from './utils';
+import {
+  isJSONString,
+  isSupportedConfigFilePath,
+  replaceRootDirInPath,
+} from './utils';
 export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './Deprecated';
+export {isJSONString, isSupportedConfigFilePath} from './utils';
 export {replaceRootDirInPath} from './utils';
 export {default as defaults} from './Defaults';
 export {default as descriptions} from './Descriptions';
@@ -366,7 +369,7 @@ export async function readInitialOptions(
   if (!readFromCwd && typeof config == 'string') {
     // A string passed to `--config`, which is either a direct path to the config
     // or a path to directory containing `package.json`, `jest.config.js` or `jest.config.ts`
-    const configPath = resolveConfigPath(
+    const configPath = await resolveConfigPath(
       config,
       process.cwd(),
       skipMultipleConfigError,
@@ -374,7 +377,7 @@ export async function readInitialOptions(
     return {config: await readConfigFileAndSetRootDir(configPath), configPath};
   }
   // Otherwise just try to find config in the current rootDir.
-  const configPath = resolveConfigPath(
+  const configPath = await resolveConfigPath(
     packageRootOrConfig,
     process.cwd(),
     skipMultipleConfigError,
@@ -441,7 +444,7 @@ export async function readConfigs(
             typeof root === 'string' &&
             fs.existsSync(root) &&
             !fs.lstatSync(root).isDirectory() &&
-            !constants.JEST_CONFIG_EXT_ORDER.some(ext => root.endsWith(ext))
+            !isSupportedConfigFilePath(root)
           ) {
             return false;
           }

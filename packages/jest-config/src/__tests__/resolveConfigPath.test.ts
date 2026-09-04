@@ -5,10 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {tmpdir} from 'os';
-import * as path from 'path';
+import {tmpdir} from 'node:os';
+import * as path from 'node:path';
+import {chmodSync} from 'graceful-fs';
 import {cleanup, writeFiles} from '../../../../e2e/Utils';
-import {JEST_CONFIG_EXT_ORDER} from '../constants';
+import {
+  JEST_CONFIG_EXT_ORDER,
+  JEST_CONFIG_SEARCH_PLACES,
+  PACKAGE_JSON,
+} from '../constants';
 import resolveConfigPath from '../resolveConfigPath';
 
 const DIR = path.resolve(tmpdir(), 'resolve_config_path_test');
@@ -22,30 +27,27 @@ afterEach(() => cleanup(DIR));
 describe.each([...JEST_CONFIG_EXT_ORDER])(
   'Resolve config path %s',
   extension => {
-    test(`file path with "${extension}"`, () => {
+    test(`file path with "${extension}"`, async () => {
       const relativeConfigPath = `a/b/c/my_config${extension}`;
       const absoluteConfigPath = path.resolve(DIR, relativeConfigPath);
 
       writeFiles(DIR, {[relativeConfigPath]: ''});
 
-      // absolute
-      expect(resolveConfigPath(absoluteConfigPath, DIR)).toBe(
+      await expect(resolveConfigPath(absoluteConfigPath, DIR)).resolves.toBe(
         absoluteConfigPath,
       );
-      expect(() => resolveConfigPath('/does_not_exist', DIR)).toThrow(
+      await expect(resolveConfigPath('/does_not_exist', DIR)).rejects.toThrow(
         NO_ROOT_DIR_ERROR_PATTERN,
       );
-
-      // relative
-      expect(resolveConfigPath(relativeConfigPath, DIR)).toBe(
+      await expect(resolveConfigPath(relativeConfigPath, DIR)).resolves.toBe(
         absoluteConfigPath,
       );
-      expect(() => resolveConfigPath('does_not_exist', DIR)).toThrow(
+      await expect(resolveConfigPath('does_not_exist', DIR)).rejects.toThrow(
         NO_ROOT_DIR_ERROR_PATTERN,
       );
     });
 
-    test(`directory path with "${extension}"`, () => {
+    test(`directory path with "${extension}"`, async () => {
       const relativePackageJsonPath = 'a/b/c/package.json';
       const absolutePackageJsonPath = path.resolve(
         DIR,
@@ -54,66 +56,50 @@ describe.each([...JEST_CONFIG_EXT_ORDER])(
       const relativeJestConfigPath = `a/b/c/jest.config${extension}`;
       const absoluteJestConfigPath = path.resolve(DIR, relativeJestConfigPath);
 
-      // no configs yet. should throw
       writeFiles(DIR, {[`a/b/c/some_random_file${extension}`]: ''});
 
-      expect(() =>
-        // absolute
+      await expect(
         resolveConfigPath(path.dirname(absoluteJestConfigPath), DIR),
-      ).toThrow(ERROR_PATTERN);
-
-      expect(() =>
-        // relative
+      ).rejects.toThrow(ERROR_PATTERN);
+      await expect(
         resolveConfigPath(path.dirname(relativeJestConfigPath), DIR),
-      ).toThrow(ERROR_PATTERN);
+      ).rejects.toThrow(ERROR_PATTERN);
 
       writeFiles(DIR, {[relativePackageJsonPath]: ''});
 
-      // absolute
-      expect(
+      await expect(
         resolveConfigPath(path.dirname(absolutePackageJsonPath), DIR),
-      ).toBe(absolutePackageJsonPath);
-
-      // relative
-      expect(
+      ).resolves.toBe(absolutePackageJsonPath);
+      await expect(
         resolveConfigPath(path.dirname(relativePackageJsonPath), DIR),
-      ).toBe(absolutePackageJsonPath);
+      ).resolves.toBe(absolutePackageJsonPath);
 
-      // jest.config.js takes precedence
       writeFiles(DIR, {[relativeJestConfigPath]: ''});
 
-      // absolute
-      expect(
+      await expect(
         resolveConfigPath(path.dirname(absolutePackageJsonPath), DIR),
-      ).toBe(absoluteJestConfigPath);
-
-      // relative
-      expect(
+      ).resolves.toBe(absoluteJestConfigPath);
+      await expect(
         resolveConfigPath(path.dirname(relativePackageJsonPath), DIR),
-      ).toBe(absoluteJestConfigPath);
+      ).resolves.toBe(absoluteJestConfigPath);
 
-      // jest.config.js and package.json with 'jest' cannot be used together
       writeFiles(DIR, {[relativePackageJsonPath]: JSON.stringify({jest: {}})});
 
-      // absolute
-      expect(() =>
+      await expect(
         resolveConfigPath(path.dirname(absolutePackageJsonPath), DIR),
-      ).toThrow(MULTIPLE_CONFIGS_ERROR_PATTERN);
-
-      // relative
-      expect(() =>
+      ).rejects.toThrow(MULTIPLE_CONFIGS_ERROR_PATTERN);
+      await expect(
         resolveConfigPath(path.dirname(relativePackageJsonPath), DIR),
-      ).toThrow(MULTIPLE_CONFIGS_ERROR_PATTERN);
-
-      expect(() => {
+      ).rejects.toThrow(MULTIPLE_CONFIGS_ERROR_PATTERN);
+      await expect(
         resolveConfigPath(
           path.join(path.dirname(relativePackageJsonPath), 'j/x/b/m/'),
           DIR,
-        );
-      }).toThrow(NO_ROOT_DIR_ERROR_PATTERN);
+        ),
+      ).rejects.toThrow(NO_ROOT_DIR_ERROR_PATTERN);
     });
 
-    test('file path from "jest" key', () => {
+    test('file path from "jest" key', async () => {
       const anyFileName = `anyJestConfigfile${extension}`;
       const relativePackageJsonPath = 'a/b/c/package.json';
       const relativeAnyFilePath = `a/b/c/conf/${anyFileName}`;
@@ -124,93 +110,213 @@ describe.each([...JEST_CONFIG_EXT_ORDER])(
       const absoluteAnyFilePath = path.resolve(DIR, relativeAnyFilePath);
 
       writeFiles(DIR, {
-        'a/b/c/package.json': `{ "jest": "conf/${anyFileName}" }`,
+        [relativeAnyFilePath]: '',
+        [relativePackageJsonPath]: `{ "jest": "conf/${anyFileName}" }`,
       });
-      writeFiles(DIR, {[relativeAnyFilePath]: ''});
 
-      const result = resolveConfigPath(
-        path.dirname(absolutePackageJsonPath),
-        DIR,
-      );
-
-      expect(result).toBe(absoluteAnyFilePath);
-    });
-
-    test('not a file path from "jest" key', () => {
-      const anyFileName = `anyJestConfigfile${extension}`;
-      const relativePackageJsonPath = 'a/b/c/package.json';
-      const relativeAnyFilePath = `a/b/c/conf/${anyFileName}`;
-      const absolutePackageJsonPath = path.resolve(
-        DIR,
-        relativePackageJsonPath,
-      );
-
-      writeFiles(DIR, {
-        'a/b/c/package.json': '{ "jest": {"verbose": true} }',
-      });
-      writeFiles(DIR, {[relativeAnyFilePath]: ''});
-
-      const result = resolveConfigPath(
-        path.dirname(absolutePackageJsonPath),
-        DIR,
-      );
-
-      expect(result).toBe(absolutePackageJsonPath);
-    });
-
-    test('not a valid file when "jest" key is a path', () => {
-      const anyFileName = `anyJestConfigfile${extension}`;
-      const relativePackageJsonPath = 'a/b/c/package.json';
-      const relativeAnyFilePath = `a/b/c/conf/${anyFileName}`;
-      const absolutePackageJsonPath = path.resolve(
-        DIR,
-        relativePackageJsonPath,
-      );
-
-      writeFiles(DIR, {
-        'a/b/c/package.json': '{ "jest": "conf/nonExistentConfigfile.json" }',
-      });
-      writeFiles(DIR, {[relativeAnyFilePath]: ''});
-
-      expect(() =>
+      await expect(
         resolveConfigPath(path.dirname(absolutePackageJsonPath), DIR),
-      ).toThrow(
+      ).resolves.toBe(absoluteAnyFilePath);
+      await expect(
+        resolveConfigPath(absolutePackageJsonPath, DIR),
+      ).resolves.toBe(absoluteAnyFilePath);
+    });
+
+    test('object config from "jest" key', async () => {
+      const relativePackageJsonPath = 'a/b/c/package.json';
+      const absolutePackageJsonPath = path.resolve(
+        DIR,
+        relativePackageJsonPath,
+      );
+
+      writeFiles(DIR, {
+        [relativePackageJsonPath]: '{ "jest": {"verbose": true} }',
+      });
+
+      await expect(
+        resolveConfigPath(path.dirname(absolutePackageJsonPath), DIR),
+      ).resolves.toBe(absolutePackageJsonPath);
+    });
+
+    test('invalid file path from "jest" key', async () => {
+      const relativePackageJsonPath = 'a/b/c/package.json';
+      const absolutePackageJsonPath = path.resolve(
+        DIR,
+        relativePackageJsonPath,
+      );
+
+      writeFiles(DIR, {
+        [relativePackageJsonPath]:
+          '{ "jest": "conf/nonExistentConfigfile.json" }',
+      });
+
+      await expect(
+        resolveConfigPath(path.dirname(absolutePackageJsonPath), DIR),
+      ).rejects.toThrow(
         /Jest expects the string configuration to point to a file, but .* not\./,
       );
     });
   },
 );
 
-const pickPairsWithSameOrder = <T>(array: ReadonlyArray<T>) =>
-  array.flatMap((value1, idx, arr) =>
-    arr.slice(idx + 1).map(value2 => [value1, value2]),
-  );
+test.each(JEST_CONFIG_SEARCH_PLACES.filter(place => place !== PACKAGE_JSON))(
+  'discovers %s',
+  async searchPlace => {
+    const relativeConfigPath = path.join('a', 'b', 'c', searchPlace);
+    const absoluteConfigPath = path.resolve(DIR, relativeConfigPath);
+    writeFiles(DIR, {[relativeConfigPath]: 'config'});
 
-test('pickPairsWithSameOrder', () => {
-  expect(pickPairsWithSameOrder([1, 2, 3])).toStrictEqual([
-    [1, 2],
-    [1, 3],
-    [2, 3],
-  ]);
-});
-
-describe.each(pickPairsWithSameOrder(JEST_CONFIG_EXT_ORDER))(
-  'Using multiple configs shows error',
-  (extension1, extension2) => {
-    test(`Using jest.config${extension1} and jest.config${extension2} shows error`, () => {
-      const relativeJestConfigPaths = [
-        `a/b/c/jest.config${extension1}`,
-        `a/b/c/jest.config${extension2}`,
-      ];
-
-      writeFiles(DIR, {
-        [relativeJestConfigPaths[0]]: '',
-        [relativeJestConfigPaths[1]]: '',
-      });
-
-      expect(() =>
-        resolveConfigPath(path.dirname(relativeJestConfigPaths[0]), DIR),
-      ).toThrow(MULTIPLE_CONFIGS_ERROR_PATTERN);
-    });
+    await expect(
+      resolveConfigPath(path.resolve(DIR, 'a/b/c'), DIR),
+    ).resolves.toBe(absoluteConfigPath);
   },
 );
+
+test('stops at the nearest package.json without a jest key', async () => {
+  writeFiles(DIR, {
+    'a/b/c/file.js': '',
+    'a/b/package.json': '{"name":"boundary"}',
+    'a/jest.config.js': 'module.exports = {};',
+  });
+
+  await expect(
+    resolveConfigPath(path.resolve(DIR, 'a/b/c'), DIR),
+  ).resolves.toBe(path.resolve(DIR, 'a/b/package.json'));
+});
+
+test('does not treat package.yaml as a project boundary', async () => {
+  writeFiles(DIR, {
+    'a/b/c/file.js': '',
+    'a/b/package.yaml': 'name: not-a-boundary',
+    'a/jest.config.js': 'module.exports = {};',
+  });
+
+  await expect(
+    resolveConfigPath(path.resolve(DIR, 'a/b/c'), DIR),
+  ).resolves.toBe(path.resolve(DIR, 'a/jest.config.js'));
+});
+
+const testIfPermissionsAreEnforced =
+  process.platform !== 'win32' && process.getuid?.() !== 0 ? test : test.skip;
+
+testIfPermissionsAreEnforced(
+  'does not inherit a parent config when a child config is unreadable',
+  async () => {
+    const childConfig = path.resolve(DIR, 'a/b/jest.config.js');
+    writeFiles(DIR, {
+      'a/b/jest.config.js': 'module.exports = {};',
+      'a/jest.config.js': 'module.exports = {};',
+    });
+    chmodSync(childConfig, 0o000);
+
+    try {
+      await expect(
+        resolveConfigPath(path.resolve(DIR, 'a/b'), DIR),
+      ).resolves.toBe(childConfig);
+    } finally {
+      chmodSync(childConfig, 0o644);
+    }
+  },
+);
+
+testIfPermissionsAreEnforced(
+  'prefers an unreadable config over a package.json boundary',
+  async () => {
+    const configPath = path.resolve(DIR, 'a/b/jest.config.js');
+    writeFiles(DIR, {
+      'a/b/jest.config.js': 'module.exports = {};',
+      'a/b/package.json': '{"name":"boundary"}',
+    });
+    chmodSync(configPath, 0o000);
+
+    try {
+      await expect(
+        resolveConfigPath(path.resolve(DIR, 'a/b'), DIR),
+      ).resolves.toBe(configPath);
+    } finally {
+      chmodSync(configPath, 0o644);
+    }
+  },
+);
+
+testIfPermissionsAreEnforced(
+  'prefers an unreadable config over a package.json string config',
+  async () => {
+    const configPath = path.resolve(DIR, 'a/b/jest.config.js');
+    writeFiles(DIR, {
+      'a/b/jest.config.js': 'module.exports = {};',
+      'a/b/package-config.js': 'module.exports = {};',
+      'a/b/package.json': JSON.stringify({jest: './package-config.js'}),
+    });
+    chmodSync(configPath, 0o000);
+
+    try {
+      await expect(
+        resolveConfigPath(path.resolve(DIR, 'a/b'), DIR, true),
+      ).resolves.toBe(configPath);
+    } finally {
+      chmodSync(configPath, 0o644);
+    }
+  },
+);
+
+test('treats an empty package.json jest string as an empty config', async () => {
+  writeFiles(DIR, {
+    'a/b/package.json': JSON.stringify({jest: ''}),
+  });
+
+  await expect(resolveConfigPath(path.resolve(DIR, 'a/b'), DIR)).resolves.toBe(
+    path.resolve(DIR, 'a/b/package.json'),
+  );
+});
+
+test('ignores cosmiconfig meta-configuration', async () => {
+  writeFiles(DIR, {
+    'a/b/jest.config.js': 'module.exports = {};',
+    'a/b/package.json': JSON.stringify({
+      cosmiconfig: {mergeSearchPlaces: false, searchPlaces: ['other.json']},
+    }),
+  });
+
+  const originalCwd = process.cwd();
+  process.chdir(path.resolve(DIR, 'a/b'));
+  try {
+    await expect(
+      resolveConfigPath(path.resolve(DIR, 'a/b'), DIR),
+    ).resolves.toBe(path.resolve(DIR, 'a/b/jest.config.js'));
+  } finally {
+    process.chdir(originalCwd);
+  }
+});
+
+test('does not interpret $import in package.json configuration', async () => {
+  writeFiles(DIR, {
+    'package.json': JSON.stringify({jest: {$import: './missing.json'}}),
+  });
+
+  await expect(resolveConfigPath(DIR, DIR)).resolves.toBe(
+    path.resolve(DIR, 'package.json'),
+  );
+});
+
+test('uses search-place order when duplicate errors are skipped', async () => {
+  writeFiles(DIR, {
+    'a/b/c/.jestrc': 'verbose: true',
+    'a/b/c/jest.config.js': 'module.exports = {};',
+  });
+
+  await expect(
+    resolveConfigPath(path.resolve(DIR, 'a/b/c'), DIR, true),
+  ).resolves.toBe(path.resolve(DIR, 'a/b/c/jest.config.js'));
+});
+
+test('reports multiple config formats in one directory', async () => {
+  writeFiles(DIR, {
+    'a/b/c/.config/jestrc.yaml': 'verbose: true',
+    'a/b/c/jest.config.yml': 'verbose: false',
+  });
+
+  await expect(
+    resolveConfigPath(path.resolve(DIR, 'a/b/c'), DIR),
+  ).rejects.toThrow(MULTIPLE_CONFIGS_ERROR_PATTERN);
+});

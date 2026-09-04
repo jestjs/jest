@@ -7,7 +7,7 @@
 
 /* eslint-disable no-eval */
 import * as path from 'path';
-import {writeFileSync} from 'graceful-fs';
+import {unlinkSync, writeFileSync} from 'graceful-fs';
 import * as prompts from 'prompts';
 import {constants} from 'jest-config';
 import {runCreate} from '../runCreate';
@@ -21,6 +21,7 @@ jest.mock('path', () => ({
 }));
 jest.mock('graceful-fs', () => ({
   ...jest.requireActual<typeof import('graceful-fs')>('graceful-fs'),
+  unlinkSync: jest.fn(),
   writeFileSync: jest.fn(),
 }));
 
@@ -225,8 +226,22 @@ describe('init', () => {
             jest.mocked(writeFileSync).mock.calls[0][0];
           const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
 
-          expect(jestConfigFileName).toBe(`jest.config.${extension}`);
+          const expectedExtension = 'js';
+          expect(path.basename(jestConfigFileName as string)).toBe(
+            `jest.config.${expectedExtension}`,
+          );
           expect(writtenJestConfig).toBeDefined();
+          expect(eval(writtenJestConfig as string)).toEqual({});
+
+          if (extension === expectedExtension) {
+            expect(unlinkSync).not.toHaveBeenCalled();
+          } else {
+            expect(unlinkSync).toHaveBeenCalledWith(
+              resolveFromFixture(
+                `has-jest-config-file-${extension}/jest.config.${extension}`,
+              ),
+            );
+          }
         });
 
         it('user answered with "No"', async () => {
@@ -241,6 +256,44 @@ describe('init', () => {
       });
     },
   );
+
+  describe.each([
+    ['top-level rc', 'has-jest-rc-file', '.jestrc'],
+    ['nested rc', 'has-nested-jest-rc-file', '.config/jestrc.yml'],
+  ])('project with %s', (_description, fixture, configPlace) => {
+    test('replaces the existing config with a generated JavaScript config', async () => {
+      jest
+        .mocked(prompts)
+        .mockResolvedValueOnce({continue: true})
+        .mockResolvedValueOnce({});
+
+      await runCreate(resolveFromFixture(fixture));
+
+      expect(prompts).toHaveBeenCalledTimes(2);
+      expect(unlinkSync).toHaveBeenCalledWith(
+        resolveFromFixture(`${fixture}/${configPlace}`),
+      );
+      expect(
+        path.basename(jest.mocked(writeFileSync).mock.calls[0][0] as string),
+      ).toBe('jest.config.js');
+    });
+  });
+
+  test('removes every existing config after generating its replacement', async () => {
+    jest
+      .mocked(prompts)
+      .mockResolvedValueOnce({continue: true})
+      .mockResolvedValueOnce({});
+
+    const fixture = resolveFromFixture('has-multiple-jest-config-files');
+    await runCreate(fixture);
+
+    expect(unlinkSync).toHaveBeenCalledTimes(2);
+    expect(unlinkSync).toHaveBeenCalledWith(
+      path.join(fixture, 'jest.config.yaml'),
+    );
+    expect(unlinkSync).toHaveBeenCalledWith(path.join(fixture, '.jestrc'));
+  });
 
   describe('project using jest.config.ts', () => {
     describe('ask the user whether he wants to use Typescript or not', () => {

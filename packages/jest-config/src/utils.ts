@@ -9,6 +9,7 @@ import * as path from 'node:path';
 import chalk from 'chalk';
 import Resolver from 'jest-resolve';
 import {ValidationError} from 'jest-validate';
+import {JEST_CONFIG_EXT_ORDER} from './constants';
 
 type ResolveOptions = {
   rootDir: string;
@@ -117,3 +118,17 @@ export const isJSONString = (text?: JSONString | string): text is JSONString =>
   typeof text === 'string' &&
   text.startsWith('{') &&
   text.endsWith('}');
+
+export const isSupportedConfigFilePath = (filePath: string): boolean => {
+  if (JEST_CONFIG_EXT_ORDER.some(ext => filePath.endsWith(ext))) {
+    return true;
+  }
+
+  const normalizedPath = filePath.replaceAll('\\', '/');
+  return (
+    normalizedPath === '.jestrc' ||
+    normalizedPath.endsWith('/.jestrc') ||
+    normalizedPath === '.config/jestrc' ||
+    normalizedPath.endsWith('/.config/jestrc')
+  );
+};
