@@ -13,6 +13,7 @@ export type Pragmas = Record<string, string | Array<string>>;
 const commentEndRe = /\*\/$/;
 const commentStartRe = /^\/\*\*?/;
 const docblockRe = /^\s*(\/\*\*?(.|\r?\n)*?\*\/)/;
+const leadingCommentRe = /^\s*(\/\/[^\n\r]*|\/\*\*?(?:.|\r?\n)*?\*\/)/;
 const lineCommentRe = /(^|\s+)\/\/([^\n\r]*)/g;
 const ltrimNewlineRe = /^(\r?\n)+/;
 const multilineRe =
@@ -24,6 +25,22 @@ const STRING_ARRAY: ReadonlyArray<string> = [];
 export function extract(contents: string): string {
   const match = contents.match(docblockRe);
   return match ? match[0].trimStart() : '';
+}
+
+export function extractAll(contents: string): Array<string> {
+  const docblocks: Array<string> = [];
+  let rest = contents;
+  let match;
+
+  while ((match = rest.match(leadingCommentRe))) {
+    const comment = match[1];
+    if (!comment.startsWith('//')) {
+      docblocks.push(comment);
+    }
+    rest = rest.slice(match[0].length);
+  }
+
+  return docblocks;
 }
 
 export function strip(contents: string): string {
