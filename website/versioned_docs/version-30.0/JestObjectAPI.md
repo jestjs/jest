@@ -263,11 +263,7 @@ test('should run example code', () => {
 
 ### `jest.mock(moduleName, factory, options)`
 
-Mocks a module with an auto-mocked version when it is being required. `factory` and `options` are optional.
-
-`moduleName` is resolved from the file that calls `jest.mock`. If a dependency is installed more than once, the mock applies to the resolved copy. See [Mocking multiple copies of a module](ManualMocks.md#mocking-multiple-copies-of-a-module).
-
-For example:
+Mocks a module with an auto-mocked version when it is being required. `factory` and `options` are optional. For example:
 
 ```js title="banana.js"
 module.exports = () => 'banana';
@@ -280,6 +276,8 @@ const banana = require('../banana'); // banana will be explicitly mocked.
 
 banana(); // will return 'undefined' because the function is auto-mocked.
 ```
+
+`moduleName` is resolved from the calling file, so separately installed copies are mocked independently. See [Mocking multiple copies of a module](ManualMocks.md#mocking-multiple-copies-of-a-module).
 
 The second argument can be used to specify an explicit module factory that is being run instead of using Jest's automocking feature:
 

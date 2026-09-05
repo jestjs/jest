@@ -35,11 +35,11 @@ If we want to mock Node's built-in modules (e.g.: `fs` or `path`), then explicit
 
 ## Mocking multiple copies of a module
 
-`jest.mock('config')` resolves `config` from the file that calls `jest.mock`. If a package is installed in more than one location, each resolved copy is a different module. Mocking one copy does not mock the others, even when they have the same package name.
+`jest.mock('config')` resolves `config` from the calling file. Each installed copy is a separate module, so mocking one copy does not mock other copies of the same package.
 
-For example, a test helper with its own `node_modules/config` can register a mock for that copy while the code under test loads the project's `node_modules/config`. This can happen with `npm link`, or with a physically installed helper that has a nested dependency.
+For example, a test helper with its own `node_modules/config` can register a mock for that copy while the code under test loads the project's `node_modules/config`. This can happen with `npm link` or with nested dependencies in a regular installation.
 
-Register the mock from a test file that resolves the same copy as the code under test. If the helper and the code under test should share one copy, use [`moduleNameMapper`](Configuration.md#modulenamemapper-objectstring-string--arraystring) to make both resolve it. For example, mapping `^config$` to `<rootDir>/node_modules/config` makes both use the project's copy. Only combine the resolutions when both should use the same dependency; different installed versions can legitimately be separate modules.
+Register the mock from a test file that resolves the same copy as the code under test. Alternatively, use [`moduleNameMapper`](Configuration.md#modulenamemapper-objectstring-string--arraystring) to map `^config$` to `<rootDir>/node_modules/config`, so both use the project's copy. Only use this mapping if both should share that dependency; the helper may need a different installed version.
 
 ## Examples
 
