@@ -6,6 +6,7 @@
 
 ### Fixes
 
+- `[expect]` Print the arguments of the received call, not its index, in the failure message of a negated `toHaveBeenCalledWith`, `toHaveBeenLastCalledWith` or `toHaveBeenNthCalledWith` on a mock that was called once ([#16426](https://github.com/jestjs/jest/pull/16426))
 - `[jest-core, jest-haste-map, jest-transform]` Keep `require('../package.json')` external when bundling, so `jest --version` and the transform and haste-map cache keys report the released version instead of the previous one ([#16422](https://github.com/jestjs/jest/pull/16422))
 - `[jest-each]` Escape a table row's keys before building the `$variable` interpolation `RegExp`, so a column name such as `count(*)` no longer fails the whole table with `Invalid regular expression`, and a `.` or `|` in a column name is matched literally ([#16345](https://github.com/jestjs/jest/pull/16345))
 
