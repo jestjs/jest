@@ -334,7 +334,7 @@ exports[`toHaveBeenCalledWith works with arguments that match with matchers 1`] 
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
 
 Expected: not <g>Any<String></>, <g>Any<String></>
-Received:     <r>0</>, <r>["foo", "bar"]</>
+Received:     <d>"foo"</>, <d>"bar"</>
 
 Number of calls: <r>1</>
 `;
@@ -414,7 +414,7 @@ exports[`toHaveBeenCalledWith works with trailing undefined arguments when expli
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
 
 Expected: not <g>"foo"</>, <g>optionalFn<></>
-Received:     <r>0</>, <r>["foo", undefined]</>
+Received:     <d>"foo"</>, <d>undefined</>
 
 Number of calls: <r>1</>
 `;
@@ -557,7 +557,7 @@ exports[`toHaveBeenLastCalledWith works with arguments that match with matchers 
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenLastCalledWith<d>(</><g>...expected</><d>)</>
 
 Expected: not <g>Any<String></>, <g>Any<String></>
-Received:     <r>0</>, <r>["foo", "bar"]</>
+Received:     <d>"foo"</>, <d>"bar"</>
 
 Number of calls: <r>1</>
 `;
@@ -627,7 +627,7 @@ exports[`toHaveBeenLastCalledWith works with trailing undefined arguments when e
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenLastCalledWith<d>(</><g>...expected</><d>)</>
 
 Expected: not <g>"foo"</>, <g>optionalFn<></>
-Received:     <r>0</>, <r>["foo", undefined]</>
+Received:     <d>"foo"</>, <d>undefined</>
 
 Number of calls: <r>1</>
 `;
@@ -811,7 +811,7 @@ exports[`toHaveBeenNthCalledWith works with arguments that match with matchers 1
 
 n: 1
 Expected: not <g>Any<String></>, <g>Any<String></>
-Received:     <r>0</>, <r>["foo", "bar"]</>
+Received:     <d>"foo"</>, <d>"bar"</>
 
 Number of calls: <r>1</>
 `;
@@ -888,7 +888,7 @@ exports[`toHaveBeenNthCalledWith works with trailing undefined arguments when ex
 
 n: 1
 Expected: not <g>"foo"</>, <g>optionalFn<></>
-Received:     <r>0</>, <r>["foo", undefined]</>
+Received:     <d>"foo"</>, <d>undefined</>
 
 Number of calls: <r>1</>
 `;
