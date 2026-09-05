@@ -314,6 +314,16 @@ describe('prettyFormat()', () => {
   });
   /* eslint-enable no-new-wrappers, unicorn/new-for-builtins */
 
+  it.each(['Number', 'String', 'Boolean', 'BigInt'])(
+    'prints a plain object tagged as %s as an object',
+    tag => {
+      const val = {[Symbol.toStringTag]: tag};
+      expect(prettyFormat(val)).toBe(
+        `Object {\n  Symbol(Symbol.toStringTag): "${tag}",\n}`,
+      );
+    },
+  );
+
   it('prints a date', () => {
     const val = new Date(10e11);
     expect(prettyFormat(val)).toBe('2001-09-09T01:46:40.000Z');
