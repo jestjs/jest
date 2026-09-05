@@ -263,7 +263,11 @@ test('should run example code', () => {
 
 ### `jest.mock(moduleName, factory, options)`
 
-Mocks a module with an auto-mocked version when it is being required. `factory` and `options` are optional. For example:
+Mocks a module with an auto-mocked version when it is being required. `factory` and `options` are optional.
+
+`moduleName` is resolved from the file that calls `jest.mock`. If a dependency is installed more than once, the mock applies to the resolved copy. See [Mocking multiple copies of a module](ManualMocks.md#mocking-multiple-copies-of-a-module).
+
+For example:
 
 ```js title="banana.js"
 module.exports = () => 'banana';
