@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-snapshot]` Print `Cause: [Circular cause]` instead of looping forever when the error passed to `toThrowErrorMatchingSnapshot` or `toThrowErrorMatchingInlineSnapshot` has a cyclic `cause` chain ([#16429](https://github.com/jestjs/jest/pull/16429))
+
 ### Chore & Maintenance
 
 ## 30.5.2
