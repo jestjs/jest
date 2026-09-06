@@ -544,9 +544,17 @@ const _toThrowErrorMatchingSnapshot = (
   }
 
   let message = error.message;
+  // A `cause` chain can loop back on itself, so track what has been walked and
+  // mark the repeat like `jest-message-util` does instead of never terminating.
+  const seen = new Set<unknown>([error]);
   while ('cause' in error) {
     error = error.cause;
     if (isError(error) || error instanceof Error) {
+      if (seen.has(error)) {
+        message += '\nCause: [Circular cause]';
+        break;
+      }
+      seen.add(error);
       message += `\nCause: ${error.message}`;
     } else {
       if (typeof error === 'string') {
