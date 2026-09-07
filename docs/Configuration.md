@@ -1430,6 +1430,8 @@ The `summaryThreshold` option behaves in the following way, if the total number 
 
 #### Custom Reporters
 
+When coverage collection is enabled, `results.coverageMap` is available to every reporter's `onRunComplete` callback, including coverage for untested files selected by `collectCoverageFrom`. Reporter callbacks and coverage report output keep their existing order; reporters no longer need to wait for the coverage reporter to populate the map.
+
 :::tip
 
 Hungry for reporters? Take a look at long list of [awesome reporters](https://github.com/jest-community/awesome-jest/blob/main/README.md#reporters) from Awesome Jest.
