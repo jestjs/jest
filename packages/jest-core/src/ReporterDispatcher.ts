@@ -105,10 +105,7 @@ export default class ReporterDispatcher {
     // Coverage is input to custom reporters, regardless of their output order.
     for (const reporter of this._reporters) {
       if (reporter instanceof CoverageReporter) {
-        results.coverageMap = await reporter.getCoverageMap(
-          testContexts,
-          results,
-        );
+        results.coverageMap = await reporter.getCoverageMap(testContexts);
       }
     }
 

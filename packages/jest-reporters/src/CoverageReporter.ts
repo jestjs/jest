@@ -67,10 +67,7 @@ export default class CoverageReporter extends BaseReporter {
   private readonly _context: ReporterContext;
   private readonly _coverageMap: istanbulCoverage.CoverageMap;
   private readonly _globalConfig: Config.GlobalConfig;
-  private readonly _preparedCoverage = new WeakMap<
-    AggregatedResult,
-    Promise<CoverageResult>
-  >();
+  private _preparedCoverage?: Promise<CoverageResult>;
   private readonly _sourceMapStore: libSourceMaps.MapStore;
   private readonly _v8CoverageResults: Array<V8CoverageResult>;
 
@@ -98,9 +95,8 @@ export default class CoverageReporter extends BaseReporter {
 
   async getCoverageMap(
     testContexts: Set<TestContext>,
-    aggregatedResults: AggregatedResult,
   ): Promise<istanbulCoverage.CoverageMap> {
-    const {map} = await this._prepareCoverage(testContexts, aggregatedResults);
+    const {map} = await this._prepareCoverage(testContexts);
     return map;
   }
 
@@ -108,11 +104,8 @@ export default class CoverageReporter extends BaseReporter {
     testContexts: Set<TestContext>,
     aggregatedResults: AggregatedResult,
   ): Promise<void> {
-    const {map, reportContext} = await this._prepareCoverage(
-      testContexts,
-      aggregatedResults,
-    );
-    this._preparedCoverage.delete(aggregatedResults);
+    const {map, reportContext} = await this._prepareCoverage(testContexts);
+    this._preparedCoverage = undefined;
 
     try {
       const coverageReporters = this._globalConfig.coverageReporters || [];
@@ -148,17 +141,10 @@ export default class CoverageReporter extends BaseReporter {
 
   private _prepareCoverage(
     testContexts: Set<TestContext>,
-    aggregatedResults: AggregatedResult,
   ): Promise<CoverageResult> {
-    let coverage = this._preparedCoverage.get(aggregatedResults);
-    if (!coverage) {
-      coverage = (async () => {
-        await this._addUntestedFiles(testContexts);
-        return this._getCoverageResult();
-      })();
-      this._preparedCoverage.set(aggregatedResults, coverage);
-    }
-    return coverage;
+    return (this._preparedCoverage ??= this._addUntestedFiles(
+      testContexts,
+    ).then(() => this._getCoverageResult()));
   }
 
   private async _addUntestedFiles(
