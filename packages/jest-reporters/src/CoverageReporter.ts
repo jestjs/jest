@@ -58,10 +58,19 @@ function getMaxCols(): number {
   return Number.POSITIVE_INFINITY;
 }
 
+type CoverageResult = {
+  map: istanbulCoverage.CoverageMap;
+  reportContext: istanbulReport.Context;
+};
+
 export default class CoverageReporter extends BaseReporter {
   private readonly _context: ReporterContext;
   private readonly _coverageMap: istanbulCoverage.CoverageMap;
   private readonly _globalConfig: Config.GlobalConfig;
+  private readonly _preparedCoverage = new WeakMap<
+    AggregatedResult,
+    Promise<CoverageResult>
+  >();
   private readonly _sourceMapStore: libSourceMaps.MapStore;
   private readonly _v8CoverageResults: Array<V8CoverageResult>;
 
@@ -87,12 +96,23 @@ export default class CoverageReporter extends BaseReporter {
     }
   }
 
+  async getCoverageMap(
+    testContexts: Set<TestContext>,
+    aggregatedResults: AggregatedResult,
+  ): Promise<istanbulCoverage.CoverageMap> {
+    const {map} = await this._prepareCoverage(testContexts, aggregatedResults);
+    return map;
+  }
+
   override async onRunComplete(
     testContexts: Set<TestContext>,
     aggregatedResults: AggregatedResult,
   ): Promise<void> {
-    await this._addUntestedFiles(testContexts);
-    const {map, reportContext} = await this._getCoverageResult();
+    const {map, reportContext} = await this._prepareCoverage(
+      testContexts,
+      aggregatedResults,
+    );
+    this._preparedCoverage.delete(aggregatedResults);
 
     try {
       const coverageReporters = this._globalConfig.coverageReporters || [];
@@ -124,6 +144,21 @@ export default class CoverageReporter extends BaseReporter {
     }
 
     this._checkThreshold(map);
+  }
+
+  private _prepareCoverage(
+    testContexts: Set<TestContext>,
+    aggregatedResults: AggregatedResult,
+  ): Promise<CoverageResult> {
+    let coverage = this._preparedCoverage.get(aggregatedResults);
+    if (!coverage) {
+      coverage = (async () => {
+        await this._addUntestedFiles(testContexts);
+        return this._getCoverageResult();
+      })();
+      this._preparedCoverage.set(aggregatedResults, coverage);
+    }
+    return coverage;
   }
 
   private async _addUntestedFiles(
@@ -465,10 +500,7 @@ export default class CoverageReporter extends BaseReporter {
     }
   }
 
-  private async _getCoverageResult(): Promise<{
-    map: istanbulCoverage.CoverageMap;
-    reportContext: istanbulReport.Context;
-  }> {
+  private async _getCoverageResult(): Promise<CoverageResult> {
     if (this._globalConfig.coverageProvider === 'v8') {
       const mergedCoverages = mergeProcessCovs(
         this._v8CoverageResults.map(cov => ({result: cov.map(r => r.result)})),
