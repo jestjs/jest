@@ -11,6 +11,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-snapshot]` Assert the obsolete-snapshot guards in the `toMatchSnapshot` e2e tests against the `Snapshots:` summary line, instead of a message Jest stopped printing in 23.0.0 ([#16432](https://github.com/jestjs/jest/pull/16432))
+
 ## 30.5.1
 
 ### Fixes
