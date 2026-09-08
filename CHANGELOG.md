@@ -11,6 +11,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-snapshot]` Assert the snapshot e2e tests' obsolete- and removed-snapshot guards against the `Snapshots:` summary line, replacing four checks that could not fail: three matched a message Jest stopped printing in 23.0.0, and one read `stdout`, where a reporter never writes ([#16432](https://github.com/jestjs/jest/pull/16432))
+
 ## 30.5.1
 
 ### Fixes
