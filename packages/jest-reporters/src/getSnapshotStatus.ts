@@ -56,7 +56,7 @@ export default function getSnapshotStatus(
     } else {
       statuses.push(
         `${SNAPSHOT_OUTDATED(
-          `${ARROW + pluralize('snapshot', snapshot.unchecked)} obsolete`,
+          ARROW + pluralize('obsolete snapshot', snapshot.unchecked),
         )}.`,
       );
     }
