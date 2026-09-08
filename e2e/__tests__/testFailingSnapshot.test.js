@@ -47,7 +47,7 @@ describe('test.failing', () => {
     const dir = path.resolve(__dirname, '../test-failing-snapshot');
     const result = runJest(dir, ['-u']);
     expect(result.exitCode).toBe(0);
-    expect(result.stdout).not.toMatch(/snapshots? (written|removed|obsolete)/);
+    expect(result.stderr).toMatch('Snapshots:   0 total');
 
     const snapshot = fs
       .readFileSync(
