@@ -3,6 +3,7 @@
 ### Features
 
 - `[@jest/transform]` Strip TypeScript types with Node when no transformer claims a `.ts`, `.mts` or `.cts` file ([#16421](https://github.com/jestjs/jest/pull/16421))
+- `[create-jest, jest-cli, jest-config]` Use `cosmiconfig` for configuration discovery and add YAML and rc configuration file support ([#16384](https://github.com/jestjs/jest/pull/16384))
 
 ### Fixes
 
