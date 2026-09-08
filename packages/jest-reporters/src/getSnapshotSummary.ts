@@ -71,9 +71,9 @@ export default function getSnapshotSummary(
       summary.push(
         `${OBSOLETE_COLOR(
           `${ARROW}${pluralize(
-            'snapshot file',
+            'obsolete snapshot file',
             snapshots.filesRemoved,
-          )} obsolete `,
+          )} `,
         )}from ${pluralize(
           'test suite',
           snapshots.filesRemoved,
@@ -107,7 +107,7 @@ export default function getSnapshotSummary(
     } else {
       summary.push(
         `${OBSOLETE_COLOR(
-          `${ARROW}${pluralize('snapshot', snapshots.unchecked)} obsolete `,
+          `${ARROW}${pluralize('obsolete snapshot', snapshots.unchecked)} `,
         )}from ${pluralize(
           'test suite',
           snapshots.uncheckedKeysByFile.length,

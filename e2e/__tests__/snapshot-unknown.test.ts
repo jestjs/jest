@@ -12,7 +12,7 @@ describe('Snapshot serializers', () => {
     const result = runJest('snapshot-unknown', ['-w=1']);
     const stderr = result.stderr;
 
-    expect(stderr).toMatch('2 snapshot files obsolete');
+    expect(stderr).toMatch('2 obsolete snapshot files');
     expect(stderr).toMatch('__tests__/__snapshots__/fails.test.js.snap');
     expect(stderr).toMatch('__tests__/__snapshots__/fails2.test.js.snap');
     expect(result.exitCode).toBe(1);

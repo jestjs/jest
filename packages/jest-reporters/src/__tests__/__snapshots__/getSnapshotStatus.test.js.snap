@@ -5,7 +5,7 @@ Array [
   "<bold><green> › 1 snapshot written.</color></intensity>",
   "<bold><green> › 1 snapshot updated.</color></intensity>",
   "<bold><red> › 1 snapshot failed.</color></intensity>",
-  "<bold><yellow> › 1 snapshot obsolete</color></intensity>.",
+  "<bold><yellow> › 1 obsolete snapshot</color></intensity>.",
   "   • test suite with unchecked snapshot",
 ]
 `;

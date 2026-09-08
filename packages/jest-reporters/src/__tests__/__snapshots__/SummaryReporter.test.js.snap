@@ -23,8 +23,8 @@ exports[`snapshots all have results (no update) 1`] = `
 <bold><green> › 1 snapshot written </color></intensity>from 1 test suite.
 <bold><red> › 1 snapshot failed</color></intensity> from 1 test suite. <dim>Inspect your code changes or run \`yarn test -u\` to update them.</intensity>
 <bold><green> › 1 snapshot updated </color></intensity>from 1 test suite.
-<bold><yellow> › 1 snapshot file obsolete </color></intensity>from 1 test suite. <dim>To remove it, run \`yarn test -u\`.</intensity>
-<bold><yellow> › 1 snapshot obsolete </color></intensity>from 1 test suite. <dim>To remove it, run \`yarn test -u\`.</intensity>
+<bold><yellow> › 1 obsolete snapshot file </color></intensity>from 1 test suite. <dim>To remove it, run \`yarn test -u\`.</intensity>
+<bold><yellow> › 1 obsolete snapshot </color></intensity>from 1 test suite. <dim>To remove it, run \`yarn test -u\`.</intensity>
    ↳ <dim>../path/to/</intensity><bold>suite_one</intensity>
        • unchecked snapshot 1
 
