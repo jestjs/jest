@@ -11220,6 +11220,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"es-module-lexer@npm:^3.0.0":
+  version: 3.0.2
+  resolution: "es-module-lexer@npm:3.0.2"
+  checksum: 10/5768f5614937f0a1f24fe985174c8202f4c1a53826249040a9c62d9473a22261cceaa3481e97d10f3854a966131b86047a163a9ac8db9a19aae2e2e96edd0fe3
+  languageName: node
+  linkType: hard
+
 "es-object-atoms@npm:^1.0.0, es-object-atoms@npm:^1.1.1, es-object-atoms@npm:^1.1.2":
   version: 1.1.2
   resolution: "es-object-atoms@npm:1.1.2"
@@ -15025,7 +15032,7 @@ __metadata:
     chalk: "npm:^4.1.2"
     cjs-module-lexer: "npm:^2.2.0"
     collect-v8-coverage: "npm:^1.0.2"
-    es-module-lexer: "npm:^2.1.0"
+    es-module-lexer: "npm:^3.0.0"
     glob: "npm:^13.0.6"
     graceful-fs: "npm:^4.2.11"
     jest-environment-node: "workspace:*"
