@@ -9,9 +9,29 @@ import chalk from 'chalk';
 import type {Config} from '@jest/types';
 import {
   type ChangedFilesPromise,
-  getChangedFilesForRoots,
+  type Repos,
+  findRepos,
+  getChangedFilesForRepos,
 } from 'jest-changed-files';
 import {formatExecError} from 'jest-message-util';
+
+// Resolving the VCS roots shells out to `git`, `hg` and `sl` once per root,
+// which dominates startup time when many projects are configured. The roots
+// do not change between watch re-runs, so resolve them once per set of roots
+// and reuse the result instead of spawning the subprocesses on every run.
+const reposCache = new Map<string, Promise<Repos>>();
+
+const findReposOnce = (roots: Array<string>): Promise<Repos> => {
+  const cacheKey = JSON.stringify([...roots].sort());
+
+  let reposPromise = reposCache.get(cacheKey);
+  if (reposPromise === undefined) {
+    reposPromise = findRepos(roots);
+    reposCache.set(cacheKey, reposPromise);
+  }
+
+  return reposPromise;
+};
 
 export default function getChangedFilesPromise(
   globalConfig: Config.GlobalConfig,
@@ -21,20 +41,26 @@ export default function getChangedFilesPromise(
     const allRootsForAllProjects = new Set(
       configs.flatMap(config => config.roots || []),
     );
-    return getChangedFilesForRoots([...allRootsForAllProjects], {
-      changedSince: globalConfig.changedSince,
-      lastCommit: globalConfig.lastCommit,
-      withAncestor: globalConfig.changedFilesWithAncestor,
-    }).catch(error => {
-      const message = formatExecError(error, configs[0], {noStackTrace: true})
-        .split('\n')
-        .filter(line => !line.includes('Command failed:'))
-        .join('\n');
+    const roots = [...allRootsForAllProjects];
 
-      console.error(chalk.red(`\n\n${message}`));
+    return findReposOnce(roots)
+      .then(repos =>
+        getChangedFilesForRepos(repos, roots, {
+          changedSince: globalConfig.changedSince,
+          lastCommit: globalConfig.lastCommit,
+          withAncestor: globalConfig.changedFilesWithAncestor,
+        }),
+      )
+      .catch(error => {
+        const message = formatExecError(error, configs[0], {noStackTrace: true})
+          .split('\n')
+          .filter(line => !line.includes('Command failed:'))
+          .join('\n');
 
-      process.exit(1);
-    });
+        console.error(chalk.red(`\n\n${message}`));
+
+        process.exit(1);
+      });
   }
 
   return undefined;
