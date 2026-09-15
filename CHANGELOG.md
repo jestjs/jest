@@ -22,7 +22,7 @@
 
 ### Fixes
 
-- [jest-resolve] Replace unrs-resolver with oxc-resolver to eliminate npm 12 postinstall warnings ([#16400](https://github.com/jestjs/jest/pull/16400/changes))
+- `[jest-resolve]` Replace unrs-resolver with oxc-resolver to eliminate npm 12 postinstall warnings ([#16400](https://github.com/jestjs/jest/pull/16400/changes))
 - `[jest-console, jest-reporters]` `CustomConsole` now buffers console output so `TestResult.console` is populated for reporters when `verbose` is enabled, while `GitHubActionsReporter` avoids replaying buffered output in verbose mode ([#16155](https://github.com/jestjs/jest/pull/16155))
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 - `[expect]` Widen `toMatchObject` and `objectContaining` parameter type from `Record<string, unknown>` to `object` so class instances are accepted ([#16196](https://github.com/jestjs/jest/pull/16196))
