@@ -7,12 +7,7 @@
 
 import {jestExpect} from '@jest/expect';
 import type {Config} from '@jest/types';
-import {
-  SnapshotState,
-  addSerializer,
-  buildSnapshotResolver,
-} from 'jest-snapshot';
-import type {Plugin} from 'pretty-format';
+import {type SnapshotSetup, SnapshotState, addSerializer} from 'jest-snapshot';
 import type {
   Attributes,
   default as JasmineSpec,
@@ -22,7 +17,7 @@ import type {
 export type SetupOptions = {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
-  localRequire: (moduleName: string) => Plugin;
+  snapshotSetup: SnapshotSetup;
   testPath: string;
 };
 
@@ -93,20 +88,17 @@ const patchJasmine = () => {
 export default async function setupJestGlobals({
   config,
   globalConfig,
-  localRequire,
+  snapshotSetup,
   testPath,
 }: SetupOptions): Promise<SnapshotState> {
-  // Jest tests snapshotSerializers in order preceding built-in serializers.
-  // Therefore, add in reverse because the last added is the first tested.
-  for (let i = config.snapshotSerializers.length - 1; i >= 0; i--) {
-    addSerializer(localRequire(config.snapshotSerializers[i]));
+  for (const serializer of snapshotSetup.serializers) {
+    addSerializer(serializer);
   }
 
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
   const {prettierPath, rootDir, snapshotFormat} = config;
-  const snapshotResolver = await buildSnapshotResolver(config, localRequire);
-  const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
+  const snapshotPath = snapshotSetup.resolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
     prettierPath,

@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {createTranspilingRequire} from '@jest/transform';
+import type {Config} from '@jest/types';
 import {
   type Plugin as PrettyFormatPlugin,
   type Plugins as PrettyFormatPlugins,
@@ -37,3 +39,25 @@ export const addSerializer = (plugin: PrettyFormatPlugin): void => {
 };
 
 export const getSerializers = (): PrettyFormatPlugins => PLUGINS;
+
+/** Loads configured serializers in the order expected by addSerializer. */
+export const loadSerializersFromConfig = async (
+  config: Config.ProjectConfig,
+): Promise<PrettyFormatPlugins> => {
+  if (config.snapshotSerializers.length === 0) {
+    return [];
+  }
+
+  const localRequire = await createTranspilingRequire(config);
+  const serializers: Array<PrettyFormatPlugin> = [];
+
+  // Configured serializers run before built-ins and keep their configured order.
+  // addSerializer prepends, so load them in reverse.
+  for (const serializerPath of [...config.snapshotSerializers].reverse()) {
+    serializers.push(
+      await localRequire<PrettyFormatPlugin>(serializerPath, true),
+    );
+  }
+
+  return serializers;
+};
