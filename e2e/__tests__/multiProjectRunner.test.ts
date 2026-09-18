@@ -687,7 +687,7 @@ test('does not warn about global options in the root config a project resolves t
   );
 });
 
-test('only warns about global options in projects that do not supply the global config', () => {
+test('warns about global options in every project when none supplies the global config', () => {
   writeFiles(DIR, {
     'p1/jest.config.js': 'module.exports = {testFailureExitCode: 7};',
     'p1/some.test.js': "test('a', () => expect(1).toBe(2));",
@@ -703,11 +703,49 @@ test('only warns about global options in projects that do not supply the global 
     'p2',
   ]);
 
-  // the first project doubles as the global config, so its options do apply
-  expect(exitCode).toBe(7);
+  // the global config comes from the cwd, so neither project's copy applies
+  expect(exitCode).toBe(1);
   expect(
     stderr.match(/Option "testFailureExitCode" is not supported/g),
-  ).toHaveLength(1);
+  ).toHaveLength(2);
+});
+
+test('reads the global config from the cwd when several projects are passed', () => {
+  writeFiles(DIR, {
+    'jest.config.js': 'module.exports = {testFailureExitCode: 7};',
+    'p1/jest.config.js': "module.exports = {displayName: 'p1'};",
+    'p1/some.test.js': "test('a', () => expect(1).toBe(2));",
+    'p2/jest.config.js': "module.exports = {displayName: 'p2'};",
+    'p2/other.test.js': "test('b', () => expect(1).toBe(1));",
+    'package.json': '{}',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, [
+    '--no-watchman',
+    '--projects',
+    'p1',
+    'p2',
+  ]);
+
+  expect(exitCode).toBe(7);
+  expect(stderr).not.toContain(
+    'is not supported in an individual project configuration',
+  );
+});
+
+test('runs several projects without any config in the cwd', () => {
+  writeFiles(DIR, {
+    'p1/jest.config.js': "module.exports = {displayName: 'p1'};",
+    'p1/some.test.js': "test('a', () => expect(1).toBe(1));",
+    'p2/jest.config.js': "module.exports = {displayName: 'p2'};",
+    'p2/other.test.js': "test('b', () => expect(1).toBe(1));",
+  });
+
+  const {exitCode} = runJest(DIR, ['--no-watchman', '--projects', 'p1', 'p2'], {
+    skipPkgJsonCheck: true,
+  });
+
+  expect(exitCode).toBe(0);
 });
 
 test('warns about global options in a project that lives next to the global config', () => {
