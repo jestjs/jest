@@ -67,5 +67,8 @@
   ],
   "publishConfig": {
     "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/jestjs/jest/issues"
   }
 }
