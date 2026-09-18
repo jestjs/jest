@@ -2,15 +2,21 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+## 30.5.2
+
+### Features
+
 - `[@jest/transform]` Strip TypeScript types with Node when no transformer claims a `.ts`, `.mts` or `.cts` file ([#16421](https://github.com/jestjs/jest/pull/16421))
 
 ### Fixes
 
-- `[@jest/source-map]` Resolve absolute Windows paths in a source map's `sources` and `sourceRoot` again, instead of appending them to the transformed file's directory ([#16439](https://github.com/jestjs/jest/pull/16439))
 - `[jest-core, jest-haste-map, jest-transform]` Keep `require('../package.json')` external when bundling, so `jest --version` and the transform and haste-map cache keys report the released version instead of the previous one ([#16422](https://github.com/jestjs/jest/pull/16422))
 - `[jest-each]` Escape a table row's keys before building the `$variable` interpolation `RegExp`, so a column name such as `count(*)` no longer fails the whole table with `Invalid regular expression`, and a `.` or `|` in a column name is matched literally ([#16345](https://github.com/jestjs/jest/pull/16345))
-
-### Chore & Maintenance
+- `[@jest/source-map]` Resolve absolute Windows paths in a source map's `sources` and `sourceRoot` again, instead of appending them to the transformed file's directory ([#16439](https://github.com/jestjs/jest/pull/16439))
 
 ## 30.5.1
 
