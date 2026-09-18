@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-diff]` Print the diff for a `Set` or `Map` that contains a symbol, instead of failing the assertion with `TypeError: Cannot convert a Symbol value to a string` ([#16418](https://github.com/jestjs/jest/pull/16418))
+
 ### Chore & Maintenance
 
 ## 30.5.2
