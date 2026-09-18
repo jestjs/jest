@@ -704,7 +704,6 @@ export class ModuleMocker {
     };
   }
 
-  /* eslint-disable @typescript-eslint/unified-signatures */
   private _makeComponent<T extends Record<string, any>>(
     metadata: MockMetadata<T, 'object'>,
     restore?: () => void,
@@ -729,7 +728,6 @@ export class ModuleMocker {
     metadata: MockMetadata<T>,
     restore?: () => void,
   ): Record<string, any>;
-  /* eslint-enable @typescript-eslint/unified-signatures */
   private _makeComponent<T extends UnknownFunction>(
     metadata: MockMetadata<T>,
     restore?: () => void,
