@@ -728,7 +728,6 @@ export class ModuleMocker {
     metadata: MockMetadata<T>,
     restore?: () => void,
   ): Record<string, any>;
-
   private _makeComponent<T extends UnknownFunction>(
     metadata: MockMetadata<T>,
     restore?: () => void,
