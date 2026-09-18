@@ -277,6 +277,8 @@ const banana = require('../banana'); // banana will be explicitly mocked.
 banana(); // will return 'undefined' because the function is auto-mocked.
 ```
 
+`moduleName` is resolved from the calling file. Each installed copy is treated as a separate module, so mocking one copy does not affect other copies of the same package. See [Mocking multiple copies of a module](ManualMocks.md#mocking-multiple-copies-of-a-module).
+
 The second argument can be used to specify an explicit module factory that is being run instead of using Jest's automocking feature:
 
 ```js tab
