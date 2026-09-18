@@ -2065,10 +2065,6 @@ describe('extensionsToTreatAsEsm', () => {
       hasDeprecationWarnings: boolean;
       options: Config.ProjectConfig & Config.GlobalConfig;
     }>;
-    (): Promise<{
-      hasDeprecationWarnings: boolean;
-      options: Config.ProjectConfig & Config.GlobalConfig;
-    }>;
     (): any;
   }) {
     await expect(callback()).rejects.toThrowErrorMatchingSnapshot();
