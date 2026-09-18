@@ -399,6 +399,51 @@ describe('mapSourcePosition', () => {
     });
   });
 
+  test.each(['C:/src/input.ts', 'C:\\src\\input.ts'])(
+    'turns the Windows drive path %s in `sources` into a URL before resolving',
+    source => {
+      const reader: SourceMapFileReader = {
+        read: () => JSON.stringify({...decodedMap, sources: [source]}),
+        toPath: url => url,
+        toUrl: pathOrUrl => `file:///${pathOrUrl.replaceAll('\\', '/')}`,
+      };
+      const cache = new SourceMapCache(
+        new Map([['C:\\build\\out.js', registeredMapPath]]),
+        reader,
+        reportUnparsableMock,
+      );
+
+      const mapped = mapSourcePosition(cache, {
+        column: 0,
+        line: 2,
+        source: 'C:\\build\\out.js',
+      });
+
+      expect(mapped.source).toBe('file:///C:/src/input.ts');
+    },
+  );
+
+  test('turns a Windows drive path in `sourceRoot` into a URL before resolving', () => {
+    const reader: SourceMapFileReader = {
+      read: () => JSON.stringify({...decodedMap, sourceRoot: 'C:/src/'}),
+      toPath: url => url,
+      toUrl: pathOrUrl => `file:///${pathOrUrl.replaceAll('\\', '/')}`,
+    };
+    const cache = new SourceMapCache(
+      new Map([['C:\\build\\out.js', registeredMapPath]]),
+      reader,
+      reportUnparsableMock,
+    );
+
+    const mapped = mapSourcePosition(cache, {
+      column: 0,
+      line: 2,
+      source: 'C:\\build\\out.js',
+    });
+
+    expect(mapped.source).toBe('file:///C:/src/input.ts');
+  });
+
   test('honours `sourceRoot`', () => {
     mockFileContents(() =>
       JSON.stringify({...decodedMap, sourceRoot: '../src'}),
