@@ -277,6 +277,53 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toBe('0n');
   });
 
+  /* eslint-disable no-new-wrappers, unicorn/new-for-builtins */
+  it('prints a Number wrapper object', () => {
+    const val = new Number(123);
+    expect(prettyFormat(val)).toBe('[Number: 123]');
+  });
+
+  it('prints a Number wrapper object of negative zero', () => {
+    const val = new Number(-0);
+    expect(prettyFormat(val)).toBe('[Number: -0]');
+  });
+
+  it('prints a String wrapper object', () => {
+    const val = new String('string');
+    expect(prettyFormat(val)).toBe('[String: "string"]');
+  });
+
+  it('prints a String wrapper object with escapes', () => {
+    const val = new String('"-"');
+    expect(prettyFormat(val)).toBe('[String: "\\"-\\""]');
+  });
+
+  it('prints a String wrapper object with {escapeString: false}', () => {
+    const val = new String('"-"');
+    expect(prettyFormat(val, {escapeString: false})).toBe('[String: ""-""]');
+  });
+
+  it('prints a Boolean wrapper object', () => {
+    const val = new Boolean(true);
+    expect(prettyFormat(val)).toBe('[Boolean: true]');
+  });
+
+  it('prints a BigInt wrapper object', () => {
+    const val = Object(BigInt(123));
+    expect(prettyFormat(val)).toBe('[BigInt: 123n]');
+  });
+  /* eslint-enable no-new-wrappers, unicorn/new-for-builtins */
+
+  it.each(['Number', 'String', 'Boolean', 'BigInt'])(
+    'prints a plain object tagged as %s as an object',
+    tag => {
+      const val = {[Symbol.toStringTag]: tag};
+      expect(prettyFormat(val)).toBe(
+        `Object {\n  Symbol(Symbol.toStringTag): "${tag}",\n}`,
+      );
+    },
+  );
+
   it('prints a date', () => {
     const val = new Date(10e11);
     expect(prettyFormat(val)).toBe('2001-09-09T01:46:40.000Z');

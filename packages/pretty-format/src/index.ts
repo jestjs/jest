@@ -50,6 +50,10 @@ const toString = Object.prototype.toString;
 const toISOString = Date.prototype.toISOString;
 const errorToString = Error.prototype.toString;
 const regExpToString = RegExp.prototype.toString;
+const bigIntValueOf = BigInt.prototype.valueOf;
+const booleanValueOf = Boolean.prototype.valueOf;
+const numberValueOf = Number.prototype.valueOf;
+const stringValueOf = String.prototype.valueOf;
 
 /**
  * Explicitly comparing typeof constructor to function avoids undefined as name
@@ -100,6 +104,31 @@ function printBigInt(val: bigint): string {
   return String(`${val}n`);
 }
 
+function printString(val: string, escapeString: boolean): string {
+  if (escapeString) {
+    return `"${val.replaceAll(/"|\\/g, '\\$&')}"`;
+  }
+  return `"${val}"`;
+}
+
+/**
+ * A plain object with a matching `Symbol.toStringTag` reaches the wrapper branches
+ * without being a wrapper, and the intrinsic `valueOf` throws on it.
+ */
+function printBoxedPrimitive<T>(
+  val: unknown,
+  valueOf: (this: unknown) => T,
+  print: (primitive: T) => string,
+): string | null {
+  let primitive: T;
+  try {
+    primitive = valueOf.call(val);
+  } catch {
+    return null;
+  }
+  return print(primitive);
+}
+
 function printFunction(val: Function, printFunctionName: boolean): string {
   if (!printFunctionName) {
     return '[Function]';
@@ -144,10 +173,7 @@ function printBasicValue(
     return printBigInt(val);
   }
   if (typeOf === 'string') {
-    if (escapeString) {
-      return `"${val.replaceAll(/"|\\/g, '\\$&')}"`;
-    }
-    return `"${val}"`;
+    return printString(val, escapeString);
   }
   if (typeOf === 'function') {
     return printFunction(val, printFunctionName);
@@ -175,6 +201,34 @@ function printBasicValue(
   }
   if (toStringed === '[object Symbol]') {
     return printSymbol(val);
+  }
+  if (toStringed === '[object Number]') {
+    return printBoxedPrimitive(
+      val,
+      numberValueOf,
+      primitive => `[Number: ${printNumber(primitive)}]`,
+    );
+  }
+  if (toStringed === '[object BigInt]') {
+    return printBoxedPrimitive(
+      val,
+      bigIntValueOf,
+      primitive => `[BigInt: ${printBigInt(primitive)}]`,
+    );
+  }
+  if (toStringed === '[object Boolean]') {
+    return printBoxedPrimitive(
+      val,
+      booleanValueOf,
+      primitive => `[Boolean: ${primitive}]`,
+    );
+  }
+  if (toStringed === '[object String]') {
+    return printBoxedPrimitive(
+      val,
+      stringValueOf,
+      primitive => `[String: ${printString(primitive, escapeString)}]`,
+    );
   }
   if (toStringed === '[object Date]') {
     return Number.isNaN(+val) ? 'Date { NaN }' : toISOString.call(val);
