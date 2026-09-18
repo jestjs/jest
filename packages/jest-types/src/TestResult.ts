@@ -13,6 +13,16 @@ type Callsite = {
   line: number;
 };
 
+/** Metadata returned by a failed custom matcher. */
+export type MatcherResult = {
+  actual?: unknown;
+  expected?: unknown;
+  message?: string;
+  name?: string;
+  pass: boolean;
+  [key: string]: unknown;
+};
+
 // this is here to make it possible to avoid huge dependency trees just for types
 export type AssertionResult = {
   ancestorTitles: Array<string>;
@@ -33,6 +43,7 @@ export type AssertionResult = {
   fullName: string;
   invocations?: number;
   location?: Callsite | null;
+  matcherResult?: MatcherResult;
   numPassingAsserts: number;
   /**
    * Human-readable render of `retryReasons`, formatted where the errors are
