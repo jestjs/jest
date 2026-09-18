@@ -9,6 +9,7 @@
 - `[@jest/source-map]` Resolve absolute Windows paths in a source map's `sources` and `sourceRoot` again, instead of appending them to the transformed file's directory ([#16439](https://github.com/jestjs/jest/pull/16439))
 - `[jest-core, jest-haste-map, jest-transform]` Keep `require('../package.json')` external when bundling, so `jest --version` and the transform and haste-map cache keys report the released version instead of the previous one ([#16422](https://github.com/jestjs/jest/pull/16422))
 - `[jest-each]` Escape a table row's keys before building the `$variable` interpolation `RegExp`, so a column name such as `count(*)` no longer fails the whole table with `Invalid regular expression`, and a `.` or `|` in a column name is matched literally ([#16345](https://github.com/jestjs/jest/pull/16345))
+- `[jest-reporters]` Word the obsolete-snapshot lines of the snapshot summary as `2 obsolete snapshots from 1 test suite` instead of `2 snapshots obsolete from 1 test suite`, restoring the noun phrase used before 23.0.0 ([#16433](https://github.com/jestjs/jest/pull/16433))
 
 ### Chore & Maintenance
 
