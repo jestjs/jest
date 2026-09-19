@@ -49,6 +49,42 @@ describe('with skip', () => {
   });
 });
 
+describe('expect.assertions', () => {
+  it('passes when each concurrent test meets its own assertion budget', () => {
+    const {json, exitCode} = runWithJson('circus-concurrent', [
+      'concurrent-assertions.test.js',
+    ]);
+
+    expect(exitCode).toBe(0);
+    expect(json.numTotalTests).toBe(4);
+    expect(json.numPassedTests).toBe(4);
+    expect(json.numFailedTests).toBe(0);
+  });
+
+  it('fails only the concurrent test that exceeded its assertion budget', () => {
+    const {json, exitCode, stderr} = runWithJson('circus-concurrent', [
+      'concurrent-assertions-fail.test.js',
+    ]);
+
+    expect(exitCode).toBe(1);
+    expect(json.numTotalTests).toBe(2);
+    expect(json.numPassedTests).toBe(1);
+    expect(json.numFailedTests).toBe(1);
+    expect(stderr).toMatch(
+      /Expected one assertion to be called but received two assertion calls/,
+    );
+    expect(json.testResults[0].assertionResults).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({status: 'passed', title: 'ok sibling'}),
+        expect.objectContaining({
+          status: 'failed',
+          title: 'too many assertions',
+        }),
+      ]),
+    );
+  });
+});
+
 describe('with only', () => {
   it('runs the correct number of tests', () => {
     const {json, exitCode} = runWithJson('circus-concurrent', [

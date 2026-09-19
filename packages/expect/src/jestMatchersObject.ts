@@ -24,6 +24,102 @@ const JEST_MATCHERS_OBJECT = Symbol.for('$$jest-matchers-object');
 // Jest may override the stack trace of Errors thrown by internal matchers.
 export const INTERNAL_MATCHER_FLAG = Symbol.for('$$jest-internal-matcher');
 
+// Per-test fields that must not be shared when tests run concurrently.
+// `currentConcurrentTestName` (set by jest-circus via AsyncLocalStorage)
+// identifies the active test; everything else stays on the global state.
+type IsolatedMatcherState = {
+  assertionCalls: number;
+  currentTestName?: string;
+  expectedAssertionsNumber: number | null;
+  expectedAssertionsNumberError?: Error;
+  isExpectingAssertions: boolean;
+  isExpectingAssertionsError?: Error;
+  numPassingAsserts: number;
+  suppressedErrors: Array<Error>;
+  testFailing?: boolean;
+};
+
+const ISOLATED_STATE_KEYS = [
+  'assertionCalls',
+  'currentTestName',
+  'expectedAssertionsNumber',
+  'expectedAssertionsNumberError',
+  'isExpectingAssertions',
+  'isExpectingAssertionsError',
+  'numPassingAsserts',
+  'suppressedErrors',
+  'testFailing',
+] as const satisfies ReadonlyArray<keyof IsolatedMatcherState>;
+
+type IsolatedStateKey = (typeof ISOLATED_STATE_KEYS)[number];
+
+type IsolatedMatcherEntry = {
+  isolated: IsolatedMatcherState;
+  view: MatcherState;
+};
+
+type JestMatchersObject = {
+  customEqualityTesters: Array<Tester>;
+  isolatedMatcherStates: Map<string, IsolatedMatcherEntry>;
+  matchers: MatchersObject;
+  state: MatcherState;
+};
+
+const isolatedStateKeySet = new Set<string>(ISOLATED_STATE_KEYS);
+
+const isIsolatedStateKey = (key: string | symbol): key is IsolatedStateKey =>
+  typeof key === 'string' && isolatedStateKeySet.has(key);
+
+const createIsolatedMatcherState = (): IsolatedMatcherState => ({
+  assertionCalls: 0,
+  expectedAssertionsNumber: null,
+  isExpectingAssertions: false,
+  numPassingAsserts: 0,
+  suppressedErrors: [],
+});
+
+const createIsolatedStateView = (
+  globalState: MatcherState,
+  isolated: IsolatedMatcherState,
+): MatcherState =>
+  new Proxy(globalState, {
+    get(target, prop, receiver) {
+      if (isIsolatedStateKey(prop)) {
+        return isolated[prop];
+      }
+      return Reflect.get(target, prop, receiver);
+    },
+    getOwnPropertyDescriptor(target, prop) {
+      if (isIsolatedStateKey(prop)) {
+        return {
+          configurable: true,
+          enumerable: true,
+          value: isolated[prop],
+          writable: true,
+        };
+      }
+      return Reflect.getOwnPropertyDescriptor(target, prop);
+    },
+    has(target, prop) {
+      return isIsolatedStateKey(prop)
+        ? prop in isolated || prop in target
+        : Reflect.has(target, prop);
+    },
+    ownKeys(target) {
+      return [
+        ...new Set([...Reflect.ownKeys(target), ...Reflect.ownKeys(isolated)]),
+      ];
+    },
+    set(target, prop, value, receiver) {
+      if (isIsolatedStateKey(prop)) {
+        // IsolatedMatcherState values are not a single assignable union.
+        (isolated as Record<IsolatedStateKey, unknown>)[prop] = value;
+        return true;
+      }
+      return Reflect.set(target, prop, value, receiver);
+    },
+  });
+
 if (!Object.prototype.hasOwnProperty.call(globalThis, JEST_MATCHERS_OBJECT)) {
   const defaultState: MatcherState = {
     assertionCalls: 0,
@@ -35,19 +131,52 @@ if (!Object.prototype.hasOwnProperty.call(globalThis, JEST_MATCHERS_OBJECT)) {
   Object.defineProperty(globalThis, JEST_MATCHERS_OBJECT, {
     value: {
       customEqualityTesters: [],
+      isolatedMatcherStates: new Map(),
       matchers: Object.create(null),
       state: defaultState,
     },
   });
 }
 
-export const getState = <State extends MatcherState = MatcherState>(): State =>
-  (globalThis as any)[JEST_MATCHERS_OBJECT].state;
+const getMatchersObject = (): JestMatchersObject => {
+  const store = (globalThis as any)[JEST_MATCHERS_OBJECT] as JestMatchersObject;
+  // Another copy of `expect` may have created the registry without isolation.
+  if (store.isolatedMatcherStates == null) {
+    store.isolatedMatcherStates = new Map();
+  }
+  return store;
+};
+
+const getConcurrentTestName = (): string | undefined =>
+  getMatchersObject().state.currentConcurrentTestName?.();
+
+const getIsolatedStateView = (testName: string): MatcherState => {
+  const store = getMatchersObject();
+  const existing = store.isolatedMatcherStates.get(testName);
+  if (existing) {
+    return existing.view;
+  }
+
+  const isolated = createIsolatedMatcherState();
+  const view = createIsolatedStateView(store.state, isolated);
+  store.isolatedMatcherStates.set(testName, {isolated, view});
+  return view;
+};
+
+export const getState = <
+  State extends MatcherState = MatcherState,
+>(): State => {
+  const testName = getConcurrentTestName();
+  if (testName != null) {
+    return getIsolatedStateView(testName) as State;
+  }
+  return getMatchersObject().state as State;
+};
 
 export const setState = <State extends MatcherState = MatcherState>(
   state: Partial<State>,
 ): void => {
-  Object.assign((globalThis as any)[JEST_MATCHERS_OBJECT].state, state);
+  Object.assign(getState<State>(), state);
 };
 
 export const getMatchers = (): MatchersObject =>

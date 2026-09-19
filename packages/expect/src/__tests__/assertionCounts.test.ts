@@ -45,6 +45,85 @@ describe('.hasAssertions()', () => {
   it('hasAssertions not leaking to global state', () => {});
 });
 
+describe('concurrent isolation', () => {
+  const previousGetter = jestExpect.getState().currentConcurrentTestName;
+  let activeTest: string | undefined;
+
+  beforeEach(() => {
+    activeTest = undefined;
+    jestExpect.setState({
+      currentConcurrentTestName: () => activeTest ?? previousGetter?.(),
+    });
+  });
+
+  afterEach(() => {
+    activeTest = undefined;
+    jestExpect.setState({currentConcurrentTestName: previousGetter});
+    jestExpect.extractExpectedAssertionsErrors();
+  });
+
+  it('does not share assertion counts across concurrent tests', () => {
+    activeTest = 'A';
+    jestExpect.assertions(1);
+    jestExpect('a').toBe('a');
+
+    activeTest = 'B';
+    jestExpect.assertions(1);
+    jestExpect('b').toBe('b');
+
+    activeTest = 'A';
+    const errorsA = jestExpect.extractExpectedAssertionsErrors();
+    activeTest = 'B';
+    const errorsB = jestExpect.extractExpectedAssertionsErrors();
+
+    activeTest = undefined;
+    expect(errorsA).toEqual([]);
+    expect(errorsB).toEqual([]);
+  });
+
+  it('reports extra assertions only for the concurrent test that made them', () => {
+    activeTest = 'A';
+    jestExpect.assertions(1);
+    jestExpect('a').toBe('a');
+    jestExpect('aa').toBe('aa');
+
+    activeTest = 'B';
+    jestExpect.assertions(1);
+    jestExpect('b').toBe('b');
+
+    activeTest = 'A';
+    const errorsA = jestExpect.extractExpectedAssertionsErrors();
+    activeTest = 'B';
+    const errorsB = jestExpect.extractExpectedAssertionsErrors();
+
+    activeTest = undefined;
+    expect(errorsA).toHaveLength(1);
+    expect(errorsA[0].actual).toBe('2');
+    expect(errorsA[0].expected).toBe('1');
+    expect(errorsB).toEqual([]);
+  });
+
+  it('does not share hasAssertions across concurrent tests', () => {
+    activeTest = 'A';
+    jestExpect.hasAssertions();
+
+    activeTest = 'B';
+    jestExpect.hasAssertions();
+    jestExpect('b').toBe('b');
+
+    activeTest = 'A';
+    const errorsA = jestExpect.extractExpectedAssertionsErrors();
+    activeTest = 'B';
+    const errorsB = jestExpect.extractExpectedAssertionsErrors();
+
+    activeTest = undefined;
+    expect(errorsA).toHaveLength(1);
+    expect(errorsA[0].actual).toBe('none');
+    expect(errorsA[0].expected).toBe('at least one');
+    expect(errorsB).toEqual([]);
+  });
+});
+
 describe('numPassingAsserts', () => {
   it('verify the default value of numPassingAsserts', () => {
     const {numPassingAsserts} = jestExpect.getState();
