@@ -18,6 +18,8 @@
 - `[jest-each]` Escape a table row's keys before building the `$variable` interpolation `RegExp`, so a column name such as `count(*)` no longer fails the whole table with `Invalid regular expression`, and a `.` or `|` in a column name is matched literally ([#16345](https://github.com/jestjs/jest/pull/16345))
 - `[@jest/source-map]` Resolve absolute Windows paths in a source map's `sources` and `sourceRoot` again, instead of appending them to the transformed file's directory ([#16439](https://github.com/jestjs/jest/pull/16439))
 
+- `[jest-snapshot]` Assert the snapshot e2e tests' obsolete- and removed-snapshot guards against the `Snapshots:` summary line, replacing four checks that could not fail: three matched a message Jest stopped printing in 23.0.0, and one read `stdout`, where a reporter never writes ([#16432](https://github.com/jestjs/jest/pull/16432))
+
 ## 30.5.1
 
 ### Fixes
