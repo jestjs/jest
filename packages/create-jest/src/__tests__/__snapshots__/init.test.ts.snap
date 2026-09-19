@@ -72,6 +72,24 @@ Object {
 }
 `;
 
+exports[`init has-jest-config-file-yaml ask the user whether to override config or not user answered with "Yes" 1`] = `
+Object {
+  "initial": true,
+  "message": "It seems that you already have a jest configuration, do you want to override it?",
+  "name": "continue",
+  "type": "confirm",
+}
+`;
+
+exports[`init has-jest-config-file-yml ask the user whether to override config or not user answered with "Yes" 1`] = `
+Object {
+  "initial": true,
+  "message": "It seems that you already have a jest configuration, do you want to override it?",
+  "name": "continue",
+  "type": "confirm",
+}
+`;
+
 exports[`init project using jest.config.ts ask the user whether he wants to use Typescript or not user answered with "Yes" 1`] = `
 Array [
   Object {

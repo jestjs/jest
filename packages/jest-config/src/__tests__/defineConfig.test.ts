@@ -7,7 +7,11 @@
 
 import type {Config} from '@jest/types';
 
-import {defineConfig} from '..';
+import {defineConfig, isJSONString} from '..';
+
+test('exports isJSONString', () => {
+  expect(isJSONString('{"verbose": true}')).toBe(true);
+});
 
 describe('defineConfig', () => {
   it('should return the same config when object config is provided', () => {

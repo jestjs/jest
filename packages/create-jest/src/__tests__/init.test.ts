@@ -6,8 +6,9 @@
  */
 
 /* eslint-disable no-eval */
+import {tmpdir} from 'node:os';
 import * as path from 'path';
-import {writeFileSync} from 'graceful-fs';
+import {unlinkSync, writeFileSync} from 'graceful-fs';
 import * as prompts from 'prompts';
 import {constants} from 'jest-config';
 import {runCreate} from '../runCreate';
@@ -21,6 +22,7 @@ jest.mock('path', () => ({
 }));
 jest.mock('graceful-fs', () => ({
   ...jest.requireActual<typeof import('graceful-fs')>('graceful-fs'),
+  unlinkSync: jest.fn<typeof unlinkSync>(),
   writeFileSync: jest.fn(),
 }));
 
@@ -225,8 +227,22 @@ describe('init', () => {
             jest.mocked(writeFileSync).mock.calls[0][0];
           const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
 
-          expect(jestConfigFileName).toBe(`jest.config.${extension}`);
+          const expectedExtension = 'js';
+          expect(path.basename(jestConfigFileName as string)).toBe(
+            `jest.config.${expectedExtension}`,
+          );
           expect(writtenJestConfig).toBeDefined();
+          expect(eval(writtenJestConfig as string)).toEqual({});
+
+          if (extension === expectedExtension) {
+            expect(unlinkSync).not.toHaveBeenCalled();
+          } else {
+            expect(unlinkSync).toHaveBeenCalledWith(
+              resolveFromFixture(
+                `has-jest-config-file-${extension}/jest.config.${extension}`,
+              ),
+            );
+          }
         });
 
         it('user answered with "No"', async () => {
@@ -239,6 +255,97 @@ describe('init', () => {
           expect(prompts).toHaveBeenCalledTimes(1);
         });
       });
+    },
+  );
+
+  describe.each([
+    ['top-level rc', 'has-jest-rc-file', '.jestrc'],
+    ['nested rc', 'has-nested-jest-rc-file', '.config/jestrc.yml'],
+  ])('project with %s', (_description, fixture, configPlace) => {
+    test('replaces the existing config with a generated JavaScript config', async () => {
+      jest
+        .mocked(prompts)
+        .mockResolvedValueOnce({continue: true})
+        .mockResolvedValueOnce({});
+
+      await runCreate(resolveFromFixture(fixture));
+
+      expect(prompts).toHaveBeenCalledTimes(2);
+      expect(unlinkSync).toHaveBeenCalledWith(
+        resolveFromFixture(`${fixture}/${configPlace}`),
+      );
+      expect(
+        path.basename(jest.mocked(writeFileSync).mock.calls[0][0] as string),
+      ).toBe('jest.config.js');
+    });
+  });
+
+  test('removes every existing config after generating its replacement', async () => {
+    jest
+      .mocked(prompts)
+      .mockResolvedValueOnce({continue: true})
+      .mockResolvedValueOnce({});
+
+    const fixture = resolveFromFixture('has-multiple-jest-config-files');
+    await runCreate(fixture);
+
+    expect(unlinkSync).toHaveBeenCalledTimes(2);
+    expect(unlinkSync).toHaveBeenCalledWith(
+      path.join(fixture, 'jest.config.yaml'),
+    );
+    expect(unlinkSync).toHaveBeenCalledWith(path.join(fixture, '.jestrc'));
+  });
+
+  test.each([true, false])(
+    'preserves the generated config when replacing an rc symlink (target exists: %s)',
+    async targetExists => {
+      const fs =
+        jest.requireActual<typeof import('graceful-fs')>('graceful-fs');
+      const rootDir = fs.realpathSync(
+        fs.mkdtempSync(path.join(tmpdir(), 'create-jest-')),
+      );
+      const configPath = path.join(rootDir, 'jest.config.js');
+      const rcPath = path.join(rootDir, '.config', 'jestrc.js');
+
+      try {
+        fs.mkdirSync(path.dirname(rcPath));
+        fs.writeFileSync(path.join(rootDir, 'package.json'), '{}');
+        if (targetExists) {
+          fs.writeFileSync(rcPath, 'module.exports = {};');
+        }
+        try {
+          fs.symlinkSync(rcPath, configPath);
+        } catch (error) {
+          if (
+            process.platform === 'win32' &&
+            (error as NodeJS.ErrnoException).code === 'EPERM'
+          ) {
+            // Windows may require elevated privileges to create symlinks.
+            return;
+          }
+          throw error;
+        }
+
+        if (targetExists) {
+          jest.mocked(prompts).mockResolvedValueOnce({continue: true});
+        }
+        jest.mocked(prompts).mockResolvedValueOnce({clearMocks: true});
+        jest.mocked(writeFileSync).mockImplementationOnce(fs.writeFileSync);
+        jest.mocked(unlinkSync).mockImplementation(fs.unlinkSync);
+
+        await runCreate(rootDir);
+
+        expect(fs.existsSync(configPath)).toBe(true);
+        expect(fs.lstatSync(configPath).isSymbolicLink()).toBe(false);
+        expect(eval(fs.readFileSync(configPath, 'utf8'))).toEqual({
+          clearMocks: true,
+        });
+        expect(fs.existsSync(rcPath)).toBe(false);
+      } finally {
+        jest.mocked(writeFileSync).mockReset();
+        jest.mocked(unlinkSync).mockReset();
+        fs.rmSync(rootDir, {force: true, recursive: true});
+      }
     },
   );
 
