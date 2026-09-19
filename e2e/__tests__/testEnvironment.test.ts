@@ -14,5 +14,5 @@ it('respects testEnvironment docblock', () => {
   const {json: result} = runWithJson('test-environment');
 
   expect(result.success).toBe(true);
-  expect(result.numTotalTests).toBe(4);
+  expect(result.numTotalTests).toBe(5);
 });
