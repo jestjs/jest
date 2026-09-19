@@ -1166,6 +1166,62 @@ describe('moduleMocker', () => {
       expect.assertions(4);
     });
 
+    it('restores the previous implementation after the callback throws', () => {
+      const mock = jest
+        .fn(() => 'outside callback')
+        .mockImplementationOnce(() => 'once');
+
+      expect(() =>
+        mock.withImplementation(
+          () => 'inside callback',
+          () => {
+            expect(mock()).toBe('inside callback');
+            throw new Error('boom');
+          },
+        ),
+      ).toThrow('boom');
+
+      expect(mock()).toBe('once');
+      expect(mock()).toBe('outside callback');
+    });
+
+    it('restores the previous implementation when the thenable getter throws', () => {
+      const mock = jest.fn(() => 'outside callback');
+      // eslint-disable-next-line unicorn/no-thenable
+      const thenable = Object.defineProperty({}, 'then', {
+        get() {
+          throw new Error('boom');
+        },
+      }) as Promise<unknown>;
+
+      expect(() =>
+        mock.withImplementation(
+          () => 'inside callback',
+          () => thenable,
+        ),
+      ).toThrow('boom');
+
+      expect(mock()).toBe('outside callback');
+    });
+
+    it('restores whenCalledWith fallbacks after the callback rejects', async () => {
+      const mock = jest.fn<(arg?: string) => string>(() => 'outside callback');
+      mock.whenCalledWith('branch').mockReturnValue('branch');
+
+      await expect(
+        mock.withImplementation(
+          () => 'inside callback',
+          async () => {
+            expect(mock('other')).toBe('inside callback');
+            throw new Error('boom');
+          },
+        ),
+      ).rejects.toThrow('boom');
+
+      expect(mock('branch')).toBe('branch');
+      expect(mock('other')).toBe('outside callback');
+    });
+
     it('mockImplementationOnce does not bleed into withImplementation', () => {
       const mock = jest
         .fn(() => 'outside callback')
