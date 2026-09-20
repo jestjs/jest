@@ -286,3 +286,233 @@ function _getJestObj() {
 }
 
 `;
+
+exports[`babel 7 babel-plugin-jest-hoist 13. jest.hoisted const factory: 13. jest.hoisted const factory 1`] = `
+
+const {mockGet} = jest.hoisted(() => ({mockGet: jest.fn()}));
+
+jest.mock('./api', () => ({get: mockGet}));
+
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const {mockGet} = _getJestObj().hoisted(() => ({
+  mockGet: _getJestObj().fn(),
+}));
+_getJestObj().mock('./api', () => ({
+  get: mockGet,
+}));
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+
+`;
+
+exports[`babel 7 babel-plugin-jest-hoist 14. jest.hoisted let factory: 14. jest.hoisted let factory 1`] = `
+
+let label = jest.hoisted(() => 'hoisted-label');
+
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+let label = _getJestObj().hoisted(() => 'hoisted-label');
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+
+`;
+
+exports[`babel 7 babel-plugin-jest-hoist 15. jest.hoisted var factory: 15. jest.hoisted var factory 1`] = `
+
+var label = jest.hoisted(() => 'hoisted-label');
+
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+var label = _getJestObj().hoisted(() => 'hoisted-label');
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+
+`;
+
+exports[`babel 7 babel-plugin-jest-hoist 16. jest.hoisted multi declarators preserves whole statement: 16. jest.hoisted multi declarators preserves whole statement 1`] = `
+
+const a = jest.hoisted(() => 1),
+  b = 2;
+
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const a = _getJestObj().hoisted(() => 1),
+  b = 2;
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+
+`;
+
+exports[`babel 7 babel-plugin-jest-hoist 17. jest.hoisted bare call hoists like jest.mock: 17. jest.hoisted bare call hoists like jest.mock 1`] = `
+
+require('x');
+jest.hoisted(() => (globalThis.__seeded__ = true));
+
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+_getJestObj().hoisted(() => (globalThis.__seeded__ = true));
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+require('x');
+
+`;
+
+exports[`babel 7 babel-plugin-jest-hoist 18. jest.hoisted bare call rewrites jest refs in factory: 18. jest.hoisted bare call rewrites jest refs in factory 1`] = `
+
+require('x');
+jest.hoisted(() => {
+  globalThis.__fn__ = jest.fn();
+});
+
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+_getJestObj().hoisted(() => {
+  globalThis.__fn__ = _getJestObj().fn();
+});
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+require('x');
+
+`;
+
+exports[`babel 7 babel-plugin-jest-hoist 19. jest.hoisted rewrites jest refs in factory body: 19. jest.hoisted rewrites jest refs in factory body 1`] = `
+
+const {mockFn} = jest.hoisted(() => ({mockFn: jest.fn()}));
+jest.mock('./api', () => ({get: mockFn}));
+
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const {mockFn} = _getJestObj().hoisted(() => ({
+  mockFn: _getJestObj().fn(),
+}));
+_getJestObj().mock('./api', () => ({
+  get: mockFn,
+}));
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+
+`;
+
+exports[`babel 7 babel-plugin-jest-hoist 23. jest.hoisted preserves relative order of multiple declarations: 23. jest.hoisted preserves relative order of multiple declarations 1`] = `
+
+require('x');
+const a = jest.hoisted(() => 1);
+const b = jest.hoisted(() => 2);
+
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const a = _getJestObj().hoisted(() => 1);
+const b = _getJestObj().hoisted(() => 2);
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+require('x');
+
+`;
+
+exports[`babel 7 babel-plugin-jest-hoist 24. jest.hoisted with destructuring: 24. jest.hoisted with destructuring 1`] = `
+
+const {one, two} = jest.hoisted(() => ({one: 1, two: 2}));
+jest.mock('./api', () => ({one, two}));
+
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const {one, two} = _getJestObj().hoisted(() => ({
+  one: 1,
+  two: 2,
+}));
+_getJestObj().mock('./api', () => ({
+  one,
+  two,
+}));
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+
+`;
+
+exports[`babel 7 babel-plugin-jest-hoist 25. jest.mock can reference jest.hoisted binding declared later in file: 25. jest.mock can reference jest.hoisted binding declared later in file 1`] = `
+
+jest.mock('./api', () => ({get: mockGet}));
+
+const {mockGet} = jest.hoisted(() => ({mockGet: jest.fn()}));
+
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+_getJestObj().mock('./api', () => ({
+  get: mockGet,
+}));
+const {mockGet} = _getJestObj().hoisted(() => ({
+  mockGet: _getJestObj().fn(),
+}));
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+
+`;
+
+exports[`babel 7 babel-plugin-jest-hoist 29. jest.hoisted and jest.mock preserve source order when interleaved: 29. jest.hoisted and jest.mock preserve source order when interleaved 1`] = `
+
+require('x');
+jest.hoisted(() => (globalThis.__a__ = 1));
+jest.mock('./first', () => ({value: 'first'}));
+jest.hoisted(() => (globalThis.__b__ = 2));
+jest.mock('./second', () => ({value: 'second'}));
+
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+_getJestObj().hoisted(() => (globalThis.__a__ = 1));
+_getJestObj().mock('./first', () => ({
+  value: 'first',
+}));
+_getJestObj().hoisted(() => (globalThis.__b__ = 2));
+_getJestObj().mock('./second', () => ({
+  value: 'second',
+}));
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+require('x');
+
+`;

@@ -192,6 +192,122 @@ export function defineTests({
         formatResult,
         snapshot: true,
       },
+      'jest.hoisted const factory': {
+        code: formatResult(`
+          const { mockGet } = jest.hoisted(() => ({ mockGet: jest.fn() }));
+
+          jest.mock('./api', () => ({ get: mockGet }));
+        `),
+        formatResult,
+        snapshot: true,
+      },
+      'jest.hoisted let factory': {
+        code: formatResult(`
+          let label = jest.hoisted(() => 'hoisted-label');
+        `),
+        formatResult,
+        snapshot: true,
+      },
+      'jest.hoisted var factory': {
+        code: formatResult(`
+          var label = jest.hoisted(() => 'hoisted-label');
+        `),
+        formatResult,
+        snapshot: true,
+      },
+      'jest.hoisted multi declarators preserves whole statement': {
+        code: formatResult(`
+          const a = jest.hoisted(() => 1), b = 2;
+        `),
+        formatResult,
+        snapshot: true,
+      },
+      'jest.hoisted bare call hoists like jest.mock': {
+        code: formatResult(`
+          require('x');
+          jest.hoisted(() => globalThis.__seeded__ = true);
+        `),
+        formatResult,
+        snapshot: true,
+      },
+      'jest.hoisted bare call rewrites jest refs in factory': {
+        code: formatResult(`
+          require('x');
+          jest.hoisted(() => { globalThis.__fn__ = jest.fn(); });
+        `),
+        formatResult,
+        snapshot: true,
+      },
+      'jest.hoisted rewrites jest refs in factory body': {
+        code: formatResult(`
+          const { mockFn } = jest.hoisted(() => ({ mockFn: jest.fn() }));
+          jest.mock('./api', () => ({ get: mockFn }));
+        `),
+        formatResult,
+        snapshot: true,
+      },
+      'jest.hoisted throws when nested inside a block': {
+        code: 'if (true) { const x = jest.hoisted(() => 1); }',
+        error: /must be called at the top level of the file/,
+      },
+      'jest.hoisted throws when factory argument is not a function': {
+        code: 'const x = jest.hoisted({ value: 1 });',
+        error: /must be an inline function/,
+      },
+      'jest.hoisted throws when called with no arguments': {
+        code: 'const x = jest.hoisted();',
+        error: /must be called with exactly one argument/,
+      },
+      'jest.hoisted preserves relative order of multiple declarations': {
+        code: formatResult(`
+          require('x');
+          const a = jest.hoisted(() => 1);
+          const b = jest.hoisted(() => 2);
+        `),
+        formatResult,
+        snapshot: true,
+      },
+      'jest.hoisted with destructuring': {
+        code: formatResult(`
+          const { one, two } = jest.hoisted(() => ({ one: 1, two: 2 }));
+          jest.mock('./api', () => ({ one, two }));
+        `),
+        formatResult,
+        snapshot: true,
+      },
+      'jest.mock can reference jest.hoisted binding declared later in file': {
+        code: formatResult(`
+          jest.mock('./api', () => ({ get: mockGet }));
+
+          const { mockGet } = jest.hoisted(() => ({ mockGet: jest.fn() }));
+        `),
+        formatResult,
+        snapshot: true,
+      },
+      'jest.hoisted called inside jest.mock factory throws': {
+        code: "jest.mock('./api', () => { jest.hoisted(() => 1); return {}; });",
+        error: /must be called at the top level of the file/,
+      },
+      'jest.mock called inside jest.hoisted factory throws': {
+        code: "jest.hoisted(() => { jest.mock('./api', () => ({})); return 1; });",
+        error: /`jest\.mock` cannot be called inside a `jest\.hoisted` factory/,
+      },
+      'jest.hoisted called inside another jest.hoisted factory throws': {
+        code: 'jest.hoisted(() => { jest.hoisted(() => 1); return 1; });',
+        error:
+          /`jest\.hoisted` cannot be called inside a `jest\.hoisted` factory/,
+      },
+      'jest.hoisted and jest.mock preserve source order when interleaved': {
+        code: formatResult(`
+          require('x');
+          jest.hoisted(() => globalThis.__a__ = 1);
+          jest.mock('./first', () => ({ value: 'first' }));
+          jest.hoisted(() => globalThis.__b__ = 2);
+          jest.mock('./second', () => ({ value: 'second' }));
+        `),
+        formatResult,
+        snapshot: true,
+      },
     },
     /* eslint-enable */
   });
