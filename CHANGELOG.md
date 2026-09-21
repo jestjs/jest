@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-mock]` Generate the properties of a mocked instance on the instances created from that mock's `constructor`, so `new (jest.createMockFromModule('path/to/instance').constructor)()` has the same shape as the instance that was mocked, instead of only the methods that live on its prototype chain ([#16446](https://github.com/jestjs/jest/pull/16446))
+
 ### Chore & Maintenance
 
 ## 30.5.2
