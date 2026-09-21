@@ -727,10 +727,12 @@ export class ModuleMocker {
   private _makeComponent<T>(
     metadata: MockMetadata<T>,
     restore?: () => void,
+    instanceMembers?: Record<string, MockMetadata<any>>,
   ): Record<string, any>;
   private _makeComponent<T extends UnknownFunction>(
     metadata: MockMetadata<T>,
     restore?: () => void,
+    instanceMembers?: Record<string, MockMetadata<any>>,
   ): Record<string, any> | Array<unknown> | RegExp | T | Mock | undefined {
     if (metadata.type === 'object') {
       return new this._environmentGlobal.Object();
@@ -748,6 +750,17 @@ export class ModuleMocker {
     } else if (metadata.type === 'function') {
       const prototype = metadata.members?.prototype?.members ?? {};
       const prototypeSlots = this._getSlots(prototype);
+      // When a mocked instance's constructor is used with `new`, the created
+      // object should have the same shape as the mocked instance, so copy the
+      // instance's own members as well - not just the methods that live on its
+      // prototype chain. Members that only reference another member have no
+      // metadata of their own; the prototype loop above already mocks those.
+      const instanceSlots = instanceMembers
+        ? this._getSlots(instanceMembers).filter(slot => {
+            const slotMetadata = instanceMembers[slot];
+            return slot !== 'constructor' && slotMetadata.type != null;
+          })
+        : [];
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const mocker = this;
       const mockConstructor = matchArity(function (
@@ -799,6 +812,14 @@ export class ModuleMocker {
                   // @ts-expect-error no index signature
                   this[slot]._protoImpl = protoImpl;
                 }
+              }
+
+              // Copy over the mocked instance's own members so that instances
+              // created from the mocked constructor keep the shape of the
+              // instance that was mocked.
+              for (const slot of instanceSlots) {
+                // @ts-expect-error no index signature
+                this[slot] = mocker.generateFromMetadata(instanceMembers[slot]);
               }
 
               // Run the mock constructor implementation
@@ -1081,8 +1102,9 @@ export class ModuleMocker {
       number,
       Record<string, any> | Array<unknown> | RegExp | T | Mock | undefined
     >,
+    instanceMembers?: Record<string, MockMetadata<any>>,
   ): Mocked<T> {
-    const mock = this._makeComponent(metadata);
+    const mock = this._makeComponent(metadata, undefined, instanceMembers);
     if (metadata.refID != null) {
       refs[metadata.refID] = mock;
     }
@@ -1090,7 +1112,16 @@ export class ModuleMocker {
     for (const slot of this._getSlots(metadata.members)) {
       const slotMetadata = (metadata.members && metadata.members[slot]) || {};
       if (slotMetadata.ref == null) {
-        mock[slot] = this._generateMock(slotMetadata, callbacks, refs);
+        // The constructor of a mocked instance should produce new instances
+        // with the same shape as the mocked instance, so hand it the mocked
+        // instance's members.
+        const members =
+          metadata.type === 'object' &&
+          slot === 'constructor' &&
+          slotMetadata.type === 'function'
+            ? metadata.members
+            : undefined;
+        mock[slot] = this._generateMock(slotMetadata, callbacks, refs, members);
       } else {
         callbacks.push(
           (function (ref) {

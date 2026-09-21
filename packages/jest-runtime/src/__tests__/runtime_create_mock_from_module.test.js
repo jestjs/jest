@@ -49,6 +49,27 @@ describe('Runtime', () => {
 
       expect(mockModule.test.mock).toBeTruthy();
     });
+
+    it('mocks the properties of instances created from a mocked instance', async () => {
+      const runtime = await createRuntime(__filename);
+      const testRequire = runtime.requireModule.bind(
+        runtime,
+        runtime.__mockRootPath,
+      );
+
+      const module = testRequire('RegularModule');
+      const mock = module.jest.createMockFromModule('ClassInstanceModule');
+
+      expect(mock.array).toEqual([]);
+      expect(mock.lang).toBe('JS');
+
+      const MockClassInstance = mock.constructor;
+      const instance = new MockClassInstance();
+
+      expect(instance.array).toEqual([]);
+      expect(instance.lang).toBe('JS');
+      expect(typeof instance.foo).toBe('function');
+    });
   });
 
   it('creates mock objects in the right environment', async () => {
