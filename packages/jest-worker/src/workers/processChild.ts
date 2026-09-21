@@ -21,7 +21,10 @@ import {
   PARENT_MESSAGE_SETUP_ERROR,
   type ParentMessageMemUsage,
 } from '../types';
-import {packMessage} from './safeMessageTransferring';
+import {
+  packMessage,
+  replaceFunctionsWithStringReferences,
+} from './safeMessageTransferring';
 
 type UnknownFunction = (...args: Array<unknown>) => unknown | Promise<unknown>;
 
@@ -145,13 +148,37 @@ function reportError(error: Error, type: PARENT_MESSAGE_ERROR) {
     error = new Error('"null" or "undefined" thrown');
   }
 
-  process.send([
+  const payload = [
     type,
     error.constructor && error.constructor.name,
     error.message,
     error.stack,
-    typeof error === 'object' ? {...error} : error,
-  ]);
+    typeof error === 'object'
+      ? replaceFunctionsWithStringReferences({...error})
+      : error,
+  ];
+
+  try {
+    process.send(payload);
+  } catch (sendError) {
+    if (
+      isError(sendError) &&
+      // if .send is a function, it's a serialization issue
+      !sendError.message.includes('.send is not a function')
+    ) {
+      // Apply specific serialization only in error cases
+      // to avoid affecting performance in regular cases.
+      process.send([
+        payload[0],
+        payload[1],
+        payload[2],
+        payload[3],
+        packMessage(payload[4]),
+      ]);
+    } else {
+      throw sendError;
+    }
+  }
 }
 
 function end(): void {

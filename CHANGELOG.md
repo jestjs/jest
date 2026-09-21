@@ -4,6 +4,9 @@
 
 ### Fixes
 
+- `[jest-worker]` Preserve functions crossing the worker boundary as string references (e.g. `[Function foo]`) instead of dropping them silently, so values such as a failed matcher's `actual` and `expected` survive a run with `workerThreads: true` ([#14423](https://github.com/jestjs/jest/issues/14423))
+- `[jest-worker]` Serialize the extra properties of worker errors, so a worker throwing an error carrying a function no longer crashes the run with an uncaught `DataCloneError` ([#14423](https://github.com/jestjs/jest/issues/14423))
+
 ### Chore & Maintenance
 
 ## 30.5.2
