@@ -16,6 +16,7 @@ import {
   diff as diffDefault,
   diffStringsRaw,
   diffStringsUnified,
+  escapeInvisibleCharacters,
 } from 'jest-diff';
 import {
   format as prettyFormat,
@@ -134,9 +135,13 @@ const replaceTrailingSpaces = (text: string): string =>
   text.replaceAll(/\s+$/gm, spaces => SPACE_SYMBOL.repeat(spaces.length));
 
 export const printReceived = (object: unknown): string =>
-  RECEIVED_COLOR(replaceTrailingSpaces(stringify(object)));
+  RECEIVED_COLOR(
+    replaceTrailingSpaces(escapeInvisibleCharacters(stringify(object))),
+  );
 export const printExpected = (value: unknown): string =>
-  EXPECTED_COLOR(replaceTrailingSpaces(stringify(value)));
+  EXPECTED_COLOR(
+    replaceTrailingSpaces(escapeInvisibleCharacters(stringify(value))),
+  );
 
 export function printWithType<T>(
   name: string,

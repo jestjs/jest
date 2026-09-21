@@ -5,7 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {escapeControlCharacters} from '../escapeControlCharacters';
+import {
+  escapeControlCharacters,
+  escapeInvisibleCharacters,
+} from '../escapeControlCharacters';
 
 describe('escapeControlCharacters', () => {
   test('preserves regular printable characters', () => {
@@ -111,5 +114,57 @@ describe('escapeControlCharacters', () => {
     const endControl = 'end\u0001';
     expect(escapeControlCharacters(startControl)).toBe('\\x01start');
     expect(escapeControlCharacters(endControl)).toBe('end\\x01');
+  });
+
+  test('escapes zero width space character', () => {
+    const input = 'before\u200Bafter';
+    expect(escapeControlCharacters(input)).toBe('before\\u200bafter');
+  });
+
+  test('escapes zero width joiner character', () => {
+    const input = '👩\u200D👦';
+    expect(escapeControlCharacters(input)).toBe('👩\\u200d👦');
+  });
+
+  test('escapes byte order mark character', () => {
+    const input = '\uFEFFTest content';
+    expect(escapeControlCharacters(input)).toBe('\\ufeffTest content');
+  });
+
+  test('escapes variation selector character', () => {
+    const input = '✔\uFE0F';
+    expect(escapeControlCharacters(input)).toBe('✔\\ufe0f');
+  });
+
+  test('escapes directional mark characters', () => {
+    const input = 'before\u200E\u200Fafter';
+    expect(escapeControlCharacters(input)).toBe('before\\u200e\\u200fafter');
+  });
+
+  test('escapes soft hyphen character', () => {
+    const input = 'be\u00ADfore';
+    expect(escapeControlCharacters(input)).toBe('be\\u00adfore');
+  });
+
+  test('does not escape a character which is already escaped', () => {
+    const input = 'before\u200Bafter';
+    expect(escapeControlCharacters(escapeControlCharacters(input))).toBe(
+      'before\\u200bafter',
+    );
+  });
+
+  describe('escapeInvisibleCharacters', () => {
+    test('escapes invisible characters', () => {
+      const input = 'before\u200B\uFEFFafter';
+      expect(escapeInvisibleCharacters(input)).toBe(
+        'before\\u200b\\ufeffafter',
+      );
+    });
+
+    test('does not escape control characters', () => {
+      // Values which are printed can contain ANSI escape sequences.
+      const input = '\u001B[31mbefore\u001B[39mafter';
+      expect(escapeInvisibleCharacters(input)).toBe(input);
+    });
   });
 });

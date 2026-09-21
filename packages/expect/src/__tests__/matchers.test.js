@@ -277,6 +277,25 @@ describe('.toBe()', () => {
     });
   }
 
+  // https://github.com/jestjs/jest/issues/10584
+  it('fails for one-line strings which differ by a zero width character', () => {
+    expect(() =>
+      jestExpect('zero\u200Bwidth').toBe('zerowidth'),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  it('fails for strings which differ by a byte order mark', () => {
+    expect(() =>
+      jestExpect('\uFEFFTest content').toBe('Test content'),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  it('fails for multiline strings which differ by a zero width character', () => {
+    expect(() =>
+      jestExpect('first line\nzero\u200Bwidth').toBe('first line\nzerowidth'),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
   it('does not crash on circular references', () => {
     const obj = {};
     obj.circular = obj;
