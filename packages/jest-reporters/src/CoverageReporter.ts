@@ -130,21 +130,35 @@ export default class CoverageReporter extends BaseReporter {
     testContexts: Set<TestContext>,
   ): Promise<void> {
     const files: Array<{config: Config.ProjectConfig; path: string}> = [];
+    const seenFiles = new Set<string>();
 
     for (const context of testContexts) {
       const config = context.config;
-      if (
+      const hasGlobalCollect =
         this._globalConfig.collectCoverageFrom &&
-        this._globalConfig.collectCoverageFrom.length > 0
-      ) {
+        this._globalConfig.collectCoverageFrom.length > 0;
+
+      const globs = hasGlobalCollect
+        ? this._globalConfig.collectCoverageFrom!
+        : config.collectCoverageFrom;
+
+      const rootDir = hasGlobalCollect
+        ? this._globalConfig.rootDir
+        : config.rootDir;
+
+      if (globs && globs.length > 0) {
         for (const filePath of context.hasteFS.matchFilesWithGlob(
-          this._globalConfig.collectCoverageFrom,
-          this._globalConfig.rootDir,
-        ))
-          files.push({
-            config,
-            path: filePath,
-          });
+          globs,
+          rootDir,
+        )) {
+          if (!seenFiles.has(filePath)) {
+            seenFiles.add(filePath);
+            files.push({
+              config,
+              path: filePath,
+            });
+          }
+        }
       }
     }
 
