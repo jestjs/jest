@@ -36,6 +36,7 @@ import type {ReporterContext} from './types';
 type CoverageWorker = typeof import('./CoverageWorker');
 
 const FAIL_COLOR = chalk.bold.red;
+const WARN_COLOR = chalk.bold.yellow;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
 
 function getMaxCols(): number {
@@ -241,7 +242,34 @@ export default class CoverageReporter extends BaseReporter {
   }
 
   private _checkThreshold(map: istanbulCoverage.CoverageMap) {
-    const {coverageThreshold} = this._globalConfig;
+    const {coverageThreshold, shard} = this._globalConfig;
+
+    // A shard runs a subset of the test files, so the coverage it collects is
+    // a subset of the project's. Every file the shard did not exercise is
+    // still reported, at zero, so a threshold checked here is checked against
+    // a run that was never meant to cover everything - it fails for the shards
+    // and passes for none of them, whatever the code actually covers.
+    //
+    // The check is skipped rather than adjusted because there is no adjustment
+    // to make: the number a `global` threshold is about is the whole project's
+    // coverage, and no single shard has it. Jest has no step that merges the
+    // shards' coverage or checks a threshold against a report it did not just
+    // produce, so enforcing a whole-project number happens outside Jest
+    // (#12751).
+    //
+    // `--shard=1/1` is a complete run, so it keeps its thresholds.
+    if (coverageThreshold && shard && shard.shardCount > 1) {
+      this.log(
+        WARN_COLOR(
+          'Jest: Coverage thresholds are not checked when running a shard, ' +
+            `as shard ${shard.shardIndex}/${shard.shardCount} only covers ` +
+            'part of the project. Jest cannot merge coverage across shards, ' +
+            'so enforce a whole-project threshold outside Jest, against the ' +
+            'merged coverage from every shard.',
+        ),
+      );
+      return;
+    }
 
     if (coverageThreshold) {
       function check(
