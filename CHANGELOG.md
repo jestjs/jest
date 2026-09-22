@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` Add `getTestPathMatcher()` to expose the rules that decide whether a path is a test file of a project, so third-party tools can resolve project ownership from a normalized project config alone ([#16450](https://github.com/jestjs/jest/pull/16450))
+
 ### Fixes
 
 ### Chore & Maintenance
