@@ -138,5 +138,5 @@ test('incremental merging produces the same result as a single end-of-run merge'
   const calls = mergeProcessCovs.mock.results;
   // Incremental merges during the run plus the final end-of-run merge.
   expect(calls).toHaveLength(EXPECTED_INCREMENTAL_MERGES + 1);
-  expect(calls[calls.length - 1].value).toEqual(expected);
+  expect(calls.at(-1).value).toEqual(expected);
 });
