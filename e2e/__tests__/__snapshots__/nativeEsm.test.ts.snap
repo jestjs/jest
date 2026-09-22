@@ -40,6 +40,14 @@ Time:        <<REPLACED>>
 Ran all test suites matching native-esm-prefixed-builtin.test.js."
 `;
 
+exports[`on node >=24.9.0 supports concurrent imports sharing a top-level await dependency 1`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching native-esm-tla-concurrent.test.js."
+`;
+
 exports[`properly handle re-exported native modules in ESM via CJS 1`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
