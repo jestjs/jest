@@ -6,7 +6,7 @@
  */
 
 import {spawnSync} from 'child_process';
-import {readFileSync} from 'fs';
+import {readFileSync} from 'graceful-fs';
 import * as path from 'path';
 
 const repoRoot = path.resolve(

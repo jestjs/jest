@@ -9,8 +9,8 @@ import nativeModule from 'node:module';
 import * as path from 'node:path';
 import slash from 'slash';
 import type {JestEnvironment} from '@jest/environment';
-import type {SourceMapRegistry} from '@jest/source-map';
 import {EXTENSION as SnapshotExtension} from '@jest/snapshot-utils';
+import type {SourceMapRegistry} from '@jest/source-map';
 import type {TestContext, V8CoverageResult} from '@jest/test-result';
 import {
   type ScriptTransformer,

@@ -38,10 +38,7 @@ import {deepMerge, serialize} from './utils';
 export {addSerializer, getSerializers} from './plugins';
 // Re-exported from `@jest/snapshot-utils` for backwards compatibility.
 export {EXTENSION} from '@jest/snapshot-utils';
-export {
-  buildSnapshotResolver,
-  isSnapshotPath,
-} from './SnapshotResolver';
+export {buildSnapshotResolver, isSnapshotPath} from './SnapshotResolver';
 export type {SnapshotResolver} from './SnapshotResolver';
 export {default as SnapshotState} from './State';
 export type {Context, SnapshotMatchers} from './types';
