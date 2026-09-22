@@ -80,7 +80,7 @@ describe('replaceFunctionsWithStringReferences', () => {
 
   it('does not recurse into errors of this realm', () => {
     const error = new Error('boom');
-    error.handler = () => {};
+    (error as Error & { handler: unknown }).handler = () => {};
 
     expect(replaceFunctionsWithStringReferences(error)).toBe(error);
   });
