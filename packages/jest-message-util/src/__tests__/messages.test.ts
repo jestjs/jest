@@ -20,6 +20,7 @@ import {
   getStackTraceLines,
   getTopFrame,
   hasNestedErrors,
+  parseStackLine,
 } from '..';
 
 const rootDir = tempy.directory();
@@ -1034,5 +1035,191 @@ describe('frame classification', () => {
 
   it.each(externalFiles)('renders the code frame of %s', (_label, file) => {
     expect(format(file, testFile)).toContain(`source of ${file}`);
+  });
+});
+
+// Firefox and Safari write `functionName@location` where V8 writes
+// `at functionName (location)`. `stack-utils` reads the `functionName@` prefix
+// as part of the file, which makes the location unusable: it is not an absolute
+// path, so a browser stack gets neither a relative call site nor a code frame.
+describe('browser stack frames', () => {
+  const config = {rootDir, testMatch: []};
+  const format = (stack: string) =>
+    stripVTControlCharacters(
+      formatStackTrace(stack, config, {noStackTrace: false}),
+    );
+  const browserStack = (...lines: Array<string>) =>
+    ['Error: boom', ...lines].join('\n');
+
+  describe('parseStackLine', () => {
+    it('parses a Firefox frame', () => {
+      expect(
+        parseStackLine('someFn@http://localhost:3000/static/js/main.js:12:34'),
+      ).toEqual({
+        column: 34,
+        file: 'http://localhost:3000/static/js/main.js',
+        function: 'someFn',
+        line: 12,
+      });
+    });
+
+    it('parses an anonymous Firefox frame, which carries no function name', () => {
+      expect(parseStackLine('@http://localhost:3000/main.js:12:34')).toEqual({
+        column: 34,
+        file: 'http://localhost:3000/main.js',
+        line: 12,
+      });
+    });
+
+    it('parses the top level frame Safari reports', () => {
+      expect(
+        parseStackLine('global code@http://localhost:3000/app.js:5:10'),
+      ).toEqual({
+        column: 10,
+        file: 'http://localhost:3000/app.js',
+        function: 'global code',
+        line: 5,
+      });
+    });
+
+    it('parses a frame pointing at an absolute path', () => {
+      expect(parseStackLine('anonymous function@/app/file.js:3:4')).toEqual({
+        column: 4,
+        file: '/app/file.js',
+        function: 'anonymous function',
+        line: 3,
+      });
+    });
+
+    it('parses a frame without a column', () => {
+      expect(parseStackLine('someFn@http://localhost:3000/main.js:3')).toEqual({
+        file: 'http://localhost:3000/main.js',
+        function: 'someFn',
+        line: 3,
+      });
+    });
+
+    it('normalises a Windows path', () => {
+      expect(parseStackLine(String.raw`someFn@C:\app\file.js:2:3`)).toEqual({
+        column: 3,
+        file: 'C:/app/file.js',
+        function: 'someFn',
+        line: 2,
+      });
+    });
+
+    it('keeps the location of a frame that runs eval code', () => {
+      expect(parseStackLine('someFn@/app/file.js:3:4 > eval:9:9')).toEqual({
+        column: 4,
+        file: '/app/file.js',
+        function: 'someFn',
+        line: 3,
+      });
+    });
+
+    it('collapses the eval chain Firefox appends to a frame', () => {
+      expect(
+        parseStackLine(
+          'someFn@http://host/main.js line 12 > eval line 5 > eval:1:2',
+        ),
+      ).toEqual({file: 'http://host/main.js', function: 'someFn', line: 12});
+    });
+
+    it('resolves a file:// location', () => {
+      const [url, file] =
+        process.platform === 'win32'
+          ? ['file:///C:/app/file.js', 'C:/app/file.js']
+          : ['file:///app/file.js', '/app/file.js'];
+
+      expect(parseStackLine(`someFn@${url}:2:3`)).toEqual({
+        column: 3,
+        file,
+        function: 'someFn',
+        line: 2,
+      });
+    });
+
+    it('parses a V8 frame the same way as before', () => {
+      expect(parseStackLine('    at someFn (/app/file.js:9:1)')).toEqual({
+        column: 1,
+        file: '/app/file.js',
+        function: 'someFn',
+        line: 9,
+      });
+      expect(parseStackLine('at <anonymous>')).toBeNull();
+      expect(parseStackLine('at native')).toEqual({native: true});
+    });
+
+    it('does not read a line without a location as a browser frame', () => {
+      // both of these contain an `@` or a `:line:column`, and both are left to
+      // `stack-utils` exactly as they were before browser frames were parsed
+      expect(parseStackLine('Error: user@host.com:1:2')).toEqual({
+        column: 2,
+        file: 'Error: user@host.com',
+        line: 1,
+      });
+      expect(parseStackLine('boom@12:30:45')).toEqual({
+        column: 45,
+        file: 'boom@12',
+        line: 30,
+      });
+    });
+  });
+
+  describe('getTopFrame', () => {
+    it('returns the top frame of a browser stack', () => {
+      expect(
+        getTopFrame([
+          'Error: boom',
+          'someFn@http://localhost:3000/static/js/main.js:12:34',
+        ]),
+      ).toEqual({
+        column: 34,
+        file: 'http://localhost:3000/static/js/main.js',
+        function: 'someFn',
+        line: 12,
+      });
+    });
+
+    it('keeps a V8 frame whose path contains an @', () => {
+      expect(getTopFrame(['    at someFn (/app/@scope/pkg/x.js:1:2)'])).toEqual(
+        {
+          column: 2,
+          file: '/app/@scope/pkg/x.js',
+          function: 'someFn',
+          line: 1,
+        },
+      );
+    });
+  });
+
+  describe('formatStackTrace', () => {
+    beforeEach(() => {
+      jest.mocked(readFileSync).mockImplementation(file => `source of ${file}`);
+    });
+
+    it('renders a code frame for a browser frame of the project', () => {
+      const testFile = `${slash(rootDir)}/__tests__/x.test.js`;
+
+      expect(format(browserStack(`someFn@${testFile}:1:1`))).toContain(
+        `source of ${testFile}`,
+      );
+    });
+
+    it('makes the call site of a browser frame relative', () => {
+      expect(
+        format(browserStack(`someFn@${slash(rootDir)}/sub/file.js:1:1`)),
+      ).toContain('someFn@sub/file.js:1:1');
+    });
+
+    it('leaves a URL call site alone', () => {
+      const rendered = format(
+        browserStack('someFn@http://localhost:3000/static/js/main.js:12:34'),
+      );
+
+      expect(rendered).toContain(
+        'someFn@http://localhost:3000/static/js/main.js:12:34',
+      );
+    });
   });
 });
