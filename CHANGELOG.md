@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` Add support for `tsx` as a config loader via `/* @jest-config-loader tsx */` docblock ([#16406](https://github.com/jestjs/jest/pull/16406))
+
 ### Fixes
 
 ### Chore & Maintenance
