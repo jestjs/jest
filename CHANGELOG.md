@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-message-util]` Parse Firefox and Safari stack frames, which are written as `functionName@location` and were reported with the function name glued to the front of the file, so a browser stack rendered no code frame and pointed at a path that does not exist ([#16454](https://github.com/jestjs/jest/pull/16454))
+
 ### Chore & Maintenance
 
 ## 30.5.2
