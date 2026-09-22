@@ -34,6 +34,7 @@ const resolveWithPrefix = (
   {
     filePath,
     humanOptionName,
+    isShorthand = false,
     optionName,
     prefix,
     requireResolveFunction,
@@ -41,6 +42,7 @@ const resolveWithPrefix = (
   }: {
     filePath: string;
     humanOptionName: string;
+    isShorthand?: boolean;
     optionName: string;
     prefix: string;
     requireResolveFunction: (moduleName: string) => string;
@@ -48,29 +50,40 @@ const resolveWithPrefix = (
   },
 ): string => {
   const fileName = replaceRootDirInPath(rootDir, filePath);
-  let module = Resolver.findNodeModule(`${prefix}${fileName}`, {
-    basedir: rootDir,
-    resolver: resolver || undefined,
-  });
-  if (module) {
-    return module;
+
+  const resolveFromRootDir = (name: string): string | null =>
+    Resolver.findNodeModule(name, {
+      basedir: rootDir,
+      resolver: resolver || undefined,
+    });
+
+  const resolveFromJest = (name: string): string | null => {
+    try {
+      return requireResolveFunction(name) ?? null;
+    } catch {
+      return null;
+    }
+  };
+
+  // A shorthand denotes a package Jest itself expands, so the copy Jest resolves from
+  // its own location has to win: a third-party dependency can hoist a stale copy of
+  // such a package to the top of the project's tree (see #5913), and that must not
+  // shadow the copy Jest is built against. Resolving from Jest still walks up into the
+  // project's `node_modules`, so a copy installed there is found if Jest has none.
+  // Anything else - a fully qualified package name or a path - is an explicit choice by
+  // the user and keeps resolving from the project first, so a version can be pinned.
+  const resolvers = isShorthand
+    ? [resolveFromJest, resolveFromRootDir]
+    : [resolveFromRootDir, resolveFromJest];
+
+  for (const moduleName of [`${prefix}${fileName}`, fileName]) {
+    for (const resolve of resolvers) {
+      const resolved = resolve(moduleName);
+      if (resolved) {
+        return resolved;
+      }
+    }
   }
-
-  try {
-    return requireResolveFunction(`${prefix}${fileName}`);
-  } catch {}
-
-  module = Resolver.findNodeModule(fileName, {
-    basedir: rootDir,
-    resolver: resolver || undefined,
-  });
-  if (module) {
-    return module;
-  }
-
-  try {
-    return requireResolveFunction(fileName);
-  } catch {}
 
   throw createValidationError(
     `  ${humanOptionName} ${chalk.bold(
@@ -82,12 +95,9 @@ const resolveWithPrefix = (
 };
 
 /**
- * Finds the test environment to use:
- *
- * 1. looks for jest-environment-<name> relative to project.
- * 1. looks for jest-environment-<name> relative to Jest.
- * 1. looks for <name> relative to project.
- * 1. looks for <name> relative to Jest.
+ * Finds the test environment to use. Names Jest expands itself (`node`, `jsdom`) are
+ * resolved from Jest's own location first, fully qualified names and paths from the
+ * project first.
  */
 export const resolveTestEnvironment = ({
   rootDir,
@@ -98,6 +108,14 @@ export const resolveTestEnvironment = ({
   testEnvironment: string;
   requireResolveFunction: (moduleName: string) => string;
 }): string => {
+  // `node` and `jsdom` are the shorthands for the environments Jest expands itself:
+  // `node` to the `jest-environment-node` Jest ships, `jsdom` to `jest-environment-jsdom`.
+  // They are resolved from Jest's own location first, so a copy hoisted into the project
+  // cannot shadow them (see #5913). Every other value - including a fully qualified name
+  // such as `jest-environment-jsdom`, a path or a custom environment - is resolved from
+  // the project first, so a version can be pinned.
+  const isShorthand = filePath === 'jsdom' || filePath === 'node';
+
   // we don't want to resolve the actual `jsdom` module if `jest-environment-jsdom` is not installed, but `jsdom` package is
   if (filePath === 'jsdom') {
     filePath = 'jest-environment-jsdom';
@@ -107,6 +125,7 @@ export const resolveTestEnvironment = ({
     return resolveWithPrefix(undefined, {
       filePath,
       humanOptionName: 'Test environment',
+      isShorthand,
       optionName: 'testEnvironment',
       prefix: 'jest-environment-',
       requireResolveFunction,
