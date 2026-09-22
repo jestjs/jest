@@ -58,6 +58,25 @@ const CoverageThreshold = Type.Unsafe<{
   [path: string]: Static<typeof CoverageThresholdValue>;
 }>(CoverageThresholdBase);
 
+// Options forwarded to `jest-diff` when a diff is rendered.
+// `expand` is a top level option and the function-valued options (such as
+// `aColor` and `compareKeys`) cannot be sent to the test workers, so neither is
+// part of these options. `omitAnnotationLines` is left out as well because the
+// annotation lines are what `printDiffOrStringify` uses to tell a rendered diff
+// from its fallback.
+export const DiffOptions = Type.Partial(
+  Type.Object({
+    aAnnotation: Type.String(),
+    aIndicator: Type.String(),
+    bAnnotation: Type.String(),
+    bIndicator: Type.String(),
+    commonIndicator: Type.String(),
+    contextLines: Type.Integer({minimum: 0}),
+    emptyFirstOrLastLinePlaceholder: Type.String(),
+    includeChangeCounts: Type.Boolean(),
+  }),
+);
+
 // TODO: add type test that these are all the colors available in chalk.ForegroundColor
 export const ChalkForegroundColors = Type.Union([
   Type.Literal('black'),
@@ -247,6 +266,7 @@ export const InitialOptions = Type.Partial(
     dependencyExtractor: Type.String(),
     detectLeaks: Type.Boolean(),
     detectOpenHandles: Type.Boolean(),
+    diffOptions: DiffOptions,
     displayName: Type.Union([Type.String(), DisplayName]),
     expand: Type.Boolean(),
     extensionsToTreatAsEsm: Type.Array(Type.String()),

@@ -985,6 +985,7 @@ export default async function normalize(
       case 'coverageThreshold':
       case 'detectLeaks':
       case 'detectOpenHandles':
+      case 'diffOptions':
       case 'errorOnDeprecated':
       case 'expand':
       case 'extensionsToTreatAsEsm':

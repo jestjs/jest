@@ -2432,3 +2432,62 @@ describe('runInBand', () => {
     expect(options.runInBand).toBe(true);
   });
 });
+
+describe('diffOptions', () => {
+  test('is undefined when not set', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.diffOptions).toBeUndefined();
+  });
+
+  test('is passed through', async () => {
+    const {options} = await normalize(
+      {
+        diffOptions: {
+          aAnnotation: 'Expected',
+          aIndicator: '<',
+          contextLines: 3,
+        },
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+    expect(options.diffOptions).toEqual({
+      aAnnotation: 'Expected',
+      aIndicator: '<',
+      contextLines: 3,
+    });
+  });
+
+  test('no validation warning in project config', async () => {
+    const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+    const rootDir = '/root/path/foo';
+    const {options} = await normalize(
+      {
+        diffOptions: {contextLines: 1},
+        rootDir,
+      },
+      {} as Config.Argv,
+      rootDir,
+      1,
+      true, // isProjectOptions
+    );
+
+    expect(mockWarn).not.toHaveBeenCalled();
+    expect(options.diffOptions).toEqual({contextLines: 1});
+  });
+
+  test('warns about an unknown option inside diffOptions', async () => {
+    const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+    await normalize(
+      {
+        diffOptions: {aAnnotaton: 'Expected'},
+        rootDir: '/root/path/foo',
+      } as Config.InitialOptions,
+      {} as Config.Argv,
+    );
+
+    expect(mockWarn).toHaveBeenCalledWith(
+      expect.stringContaining('diffOptions.aAnnotaton'),
+    );
+  });
+});

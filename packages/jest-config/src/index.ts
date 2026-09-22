@@ -207,6 +207,7 @@ const groupOptions = (
     dependencyExtractor: options.dependencyExtractor,
     detectLeaks: options.detectLeaks,
     detectOpenHandles: options.detectOpenHandles,
+    diffOptions: options.diffOptions,
     displayName: options.displayName,
     errorOnDeprecated: options.errorOnDeprecated,
     extensionsToTreatAsEsm: options.extensionsToTreatAsEsm,
