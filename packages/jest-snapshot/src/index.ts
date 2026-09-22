@@ -6,7 +6,7 @@
  */
 
 import * as fs from 'graceful-fs';
-import {escapeBacktickString} from '@jest/snapshot-utils';
+import {EXTENSION, escapeBacktickString} from '@jest/snapshot-utils';
 import type {Config} from '@jest/types';
 import type {MatcherFunctionWithContext} from 'expect';
 import {
@@ -20,7 +20,7 @@ import {
   stringify,
 } from 'jest-matcher-utils';
 import {isError} from 'jest-util';
-import {EXTENSION, type SnapshotResolver} from './SnapshotResolver';
+import type {SnapshotResolver} from './SnapshotResolver';
 import {
   PROPERTIES_ARG,
   SNAPSHOT_ARG,
@@ -36,8 +36,9 @@ import type {Context, FileSystem, MatchSnapshotConfig} from './types';
 import {deepMerge, serialize} from './utils';
 
 export {addSerializer, getSerializers} from './plugins';
+// Re-exported from `@jest/snapshot-utils` for backwards compatibility.
+export {EXTENSION} from '@jest/snapshot-utils';
 export {
-  EXTENSION,
   buildSnapshotResolver,
   isSnapshotPath,
 } from './SnapshotResolver';
