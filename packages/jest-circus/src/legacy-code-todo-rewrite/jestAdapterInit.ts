@@ -101,7 +101,10 @@ export const initialize = async ({
     addEventHandler(environment.handleTestEvent.bind(environment));
   }
 
-  jestExpect.setState({expand: globalConfig.expand});
+  jestExpect.setState({
+    diffOptions: config.diffOptions,
+    expand: globalConfig.expand,
+  });
 
   const runtimeGlobals: RuntimeGlobals = {
     ...globalsObject,

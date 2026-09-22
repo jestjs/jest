@@ -72,6 +72,7 @@ export interface MatcherState {
    */
   currentTestIdentity?: () => object | undefined;
   currentTestName?: string;
+  diffOptions?: jestMatcherUtils.DiffOptions;
   error?: Error;
   expand?: boolean;
   expectedAssertionsNumber: number | null;

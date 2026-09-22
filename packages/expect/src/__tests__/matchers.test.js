@@ -2400,3 +2400,96 @@ describe('toMatchObject()', () => {
     jestExpect([badIterable]).toMatchObject([badIterable]);
   });
 });
+
+describe('diffOptions', () => {
+  afterEach(() => {
+    jestExpect.setState({diffOptions: undefined});
+  });
+
+  const getThrownMessage = fn => {
+    try {
+      fn();
+    } catch (error) {
+      return error.message;
+    }
+
+    throw new Error('Expected the matcher to throw, but it did not');
+  };
+
+  it('uses the annotations and indicators from diffOptions', () => {
+    jestExpect.setState({
+      diffOptions: {
+        aAnnotation: 'EXPECTED',
+        aIndicator: '<',
+        bAnnotation: 'RECEIVED',
+        bIndicator: '>',
+        includeChangeCounts: false,
+      },
+    });
+
+    const message = getThrownMessage(() => jestExpect({a: 1}).toEqual({a: 2}));
+
+    expect(message).toContain('< EXPECTED');
+    expect(message).toContain('> RECEIVED');
+    // `includeChangeCounts: false` removes the change counts from the header.
+    expect(message).not.toMatch(/EXPECTED\s+- \d/);
+    expect(message).not.toMatch(/RECEIVED\s+\+ \d/);
+  });
+
+  it('uses the annotations from diffOptions for multi line string diffs', () => {
+    jestExpect.setState({
+      diffOptions: {aAnnotation: 'EXPECTED', bAnnotation: 'RECEIVED'},
+    });
+
+    const message = getThrownMessage(() =>
+      jestExpect('line one\nline two').toBe('line one\nline three'),
+    );
+
+    expect(message).toContain('- EXPECTED');
+    expect(message).toContain('+ RECEIVED');
+  });
+
+  it('uses the annotations from diffOptions for thrown error diffs', () => {
+    jestExpect.setState({
+      diffOptions: {aAnnotation: 'EXPECTED', bAnnotation: 'RECEIVED'},
+    });
+
+    const message = getThrownMessage(() =>
+      jestExpect(() => {
+        throw new Error('line one\nline two');
+      }).toThrow(new Error('line one\nline three')),
+    );
+
+    expect(message).toContain('- EXPECTED');
+    expect(message).toContain('+ RECEIVED');
+  });
+
+  it('uses contextLines from diffOptions', () => {
+    const expected = {a: 1, b: 2, c: 3, d: 4, e: 5};
+    const received = {a: 1, b: 2, c: 3, d: 4, e: 6};
+
+    const defaultMessage = getThrownMessage(() =>
+      jestExpect(received).toEqual(expected),
+    );
+
+    jestExpect.setState({diffOptions: {contextLines: 0}});
+
+    const message = getThrownMessage(() =>
+      jestExpect(received).toEqual(expected),
+    );
+
+    expect(defaultMessage).toContain('"d": 4');
+    expect(message).not.toContain('"d": 4');
+    expect(message).toContain('"e": 5');
+  });
+
+  it('uses changeColor from diffOptions for single line string diffs', () => {
+    jestExpect.setState({diffOptions: {changeColor: chalk.underline}});
+
+    const message = getThrownMessage(() => jestExpect('abcdef').toBe('abXdef'));
+
+    expect(message).toContain(chalk.underline('c'));
+    expect(message).toContain(chalk.underline('X'));
+    expect(message).not.toContain(chalk.inverse('c'));
+  });
+});

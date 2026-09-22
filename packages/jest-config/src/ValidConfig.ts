@@ -13,6 +13,17 @@ import {NODE_MODULES} from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
+const DIFF_OPTIONS_SAMPLE: Required<Config.DiffOptions> = {
+  aAnnotation: 'Expected',
+  aIndicator: '-',
+  bAnnotation: 'Received',
+  bIndicator: '+',
+  commonIndicator: ' ',
+  contextLines: 5,
+  emptyFirstOrLastLinePlaceholder: '↵',
+  includeChangeCounts: true,
+};
+
 export const initialOptions: Required<Config.InitialOptions> = {
   automock: false,
   bail: multipleValidOptions(false, 0),
@@ -40,6 +51,7 @@ export const initialOptions: Required<Config.InitialOptions> = {
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   detectLeaks: false,
   detectOpenHandles: false,
+  diffOptions: DIFF_OPTIONS_SAMPLE,
   displayName: multipleValidOptions('test-config', {
     color: 'blue',
     name: 'test-config',
@@ -224,6 +236,7 @@ export const initialProjectOptions: Required<Config.InitialProjectOptions> = {
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   detectLeaks: false,
   detectOpenHandles: false,
+  diffOptions: DIFF_OPTIONS_SAMPLE,
   displayName: multipleValidOptions('test-config', {
     color: 'blue',
     name: 'test-config',

@@ -606,6 +606,50 @@ export default defineConfig({
 });
 ```
 
+### `diffOptions` \[object]
+
+Default: `undefined`
+
+Allows overriding the options used to render a diff, as documented in the [`jest-diff` readme](https://github.com/jestjs/jest/tree/main/packages/jest-diff#options). The available options are `aAnnotation`, `aIndicator`, `bAnnotation`, `bIndicator`, `commonIndicator`, `contextLines`, `emptyFirstOrLastLinePlaceholder` and `includeChangeCounts`.
+
+The options that take a function (`aColor`, `bColor`, `commonColor`, `changeColor`, `changeLineTrailingSpaceColor`, `commonLineTrailingSpaceColor`, `patchColor` and `compareKeys`) are not accepted, for the same reason `snapshotFormat` does not accept `compareKeys`: they cannot be passed to the test workers. Use `--no-color` or the `FORCE_COLOR` environment variable to control the colors instead. `expand` and `omitAnnotationLines` are not accepted either: the former is a global option with its own [`--expand`](CLI.md#--expand) flag, and the annotation lines are needed to tell a rendered diff from a fallback message.
+
+For example, this config changes the labels of the diff to match the wording of your team, and shows less context around each change:
+
+```js tab title="jest.config.js"
+const {defineConfig} = require('jest');
+
+module.exports = defineConfig({
+  diffOptions: {
+    aAnnotation: 'Expected',
+    aIndicator: '<',
+    bAnnotation: 'Received',
+    bIndicator: '>',
+    contextLines: 1,
+  },
+});
+```
+
+```ts tab title="jest.config.ts"
+import {defineConfig} from 'jest';
+
+export default defineConfig({
+  diffOptions: {
+    aAnnotation: 'Expected',
+    aIndicator: '<',
+    bAnnotation: 'Received',
+    bIndicator: '>',
+    contextLines: 1,
+  },
+});
+```
+
+```js title="some.test.js"
+test('does not show unrelated lines around the change', () => {
+  expect({a: 1, b: 2, c: 3}).toEqual({a: 1, b: 2, c: 4});
+});
+```
+
 ### `errorOnDeprecated` \[boolean]
 
 Default: `false`

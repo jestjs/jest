@@ -134,6 +134,8 @@ export type HasteConfig = {
   retainAllFiles?: boolean;
 };
 
+export type DiffOptions = NonNullable<InitialOptions['diffOptions']>;
+
 export type CoverageReporterName = keyof ReportOptions;
 
 export type CoverageReporterWithOptions<K = CoverageReporterName> =
@@ -348,6 +350,7 @@ export type ProjectConfig = {
   dependencyExtractor?: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
+  diffOptions?: DiffOptions;
   displayName?: DisplayName;
   errorOnDeprecated: boolean;
   extensionsToTreatAsEsm: Array<string>;
