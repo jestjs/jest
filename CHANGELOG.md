@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-reporters]` Transform untested files with the `v8` coverage provider too, so a file that is erased by its transformer (a TypeScript file that only exports types, or a module that only has `export {}`) is reported with no statements instead of every line being reported as uncovered, matching the `babel` coverage provider ([#16447](https://github.com/jestjs/jest/pull/16447))
+
 ### Chore & Maintenance
 
 ## 30.5.2
