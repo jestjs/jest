@@ -6,7 +6,7 @@
  */
 
 import * as path from 'node:path';
-import {mergeProcessCovs} from '@bcoe/v8-coverage';
+import {mergeProcessCovs, type ProcessCov} from '@bcoe/v8-coverage';
 import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import chalk from 'chalk';
 import {glob} from 'glob';
@@ -38,6 +38,12 @@ type CoverageWorker = typeof import('./CoverageWorker');
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
 
+// Maximum number of unmerged V8 `ScriptCoverage` entries kept in memory before
+// they are merged into the running total. Without this, every test file's raw
+// V8 coverage output is retained until the end of the run, growing the main
+// process memory without bound on large codebases (see #14287).
+const V8_COVERAGE_MERGE_THRESHOLD = 10_000;
+
 function getMaxCols(): number {
   if (process.stdout.columns) {
     return process.stdout.columns;
@@ -64,6 +70,9 @@ export default class CoverageReporter extends BaseReporter {
   private readonly _globalConfig: Config.GlobalConfig;
   private readonly _sourceMapStore: libSourceMaps.MapStore;
   private readonly _v8CoverageResults: Array<V8CoverageResult>;
+  private _v8MergedCoverage: ProcessCov | undefined;
+  private _v8UnmergedScriptCoverageCount: number;
+  private readonly _v8CodeTransformResults: Map<string, RuntimeTransformResult>;
 
   static readonly filename = __filename;
 
@@ -74,17 +83,69 @@ export default class CoverageReporter extends BaseReporter {
     this._globalConfig = globalConfig;
     this._sourceMapStore = libSourceMaps.createSourceMapStore();
     this._v8CoverageResults = [];
+    this._v8MergedCoverage = undefined;
+    this._v8UnmergedScriptCoverageCount = 0;
+    this._v8CodeTransformResults = new Map();
   }
 
   override onTestResult(_test: Test, testResult: TestResult): void {
     if (testResult.v8Coverage) {
-      this._v8CoverageResults.push(testResult.v8Coverage);
+      this._addV8CoverageResult(testResult.v8Coverage);
       return;
     }
 
     if (testResult.coverage) {
       this._coverageMap.merge(testResult.coverage);
     }
+  }
+
+  /**
+   * Records raw V8 coverage for a test file. Once the pending results grow
+   * past `V8_COVERAGE_MERGE_THRESHOLD` script coverages, they are merged into
+   * the running total and the raw chunks are dropped, so the main process
+   * memory stays bounded for the rest of the run instead of accumulating
+   * every test file's raw output until the end (see #14287).
+   */
+  private _addV8CoverageResult(v8Coverage: V8CoverageResult): void {
+    for (const {codeTransformResult, result} of v8Coverage) {
+      if (
+        codeTransformResult &&
+        !this._v8CodeTransformResults.has(result.url)
+      ) {
+        this._v8CodeTransformResults.set(result.url, codeTransformResult);
+      }
+    }
+
+    this._v8CoverageResults.push(v8Coverage);
+    this._v8UnmergedScriptCoverageCount += v8Coverage.length;
+
+    if (this._v8UnmergedScriptCoverageCount >= V8_COVERAGE_MERGE_THRESHOLD) {
+      this._mergeV8CoverageResults();
+    }
+  }
+
+  private _mergeV8CoverageResults(): void {
+    const processCovs = this._v8CoverageResults.map(cov => ({
+      result: cov.map(r => r.result),
+    }));
+
+    if (this._v8MergedCoverage !== undefined) {
+      processCovs.unshift(this._v8MergedCoverage);
+    }
+
+    this._v8MergedCoverage = mergeProcessCovs(processCovs);
+    this._v8CoverageResults.length = 0;
+    this._v8UnmergedScriptCoverageCount = 0;
+  }
+
+  private _hasV8CoverageData(filename: string): boolean {
+    return (
+      (this._v8MergedCoverage?.result.some(res => res.url === filename) ??
+        false) ||
+      this._v8CoverageResults.some(v8Res =>
+        v8Res.some(innerRes => innerRes.result.url === filename),
+      )
+    );
   }
 
   override async onRunComplete(
@@ -177,9 +238,7 @@ export default class CoverageReporter extends BaseReporter {
       const filename = fileObj.path;
       const config = fileObj.config;
 
-      const hasCoverageData = this._v8CoverageResults.some(v8Res =>
-        v8Res.some(innerRes => innerRes.result.url === filename),
-      );
+      const hasCoverageData = this._hasV8CoverageData(filename);
 
       if (
         !hasCoverageData &&
@@ -204,7 +263,7 @@ export default class CoverageReporter extends BaseReporter {
 
           if (result) {
             if (result.kind === 'V8Coverage') {
-              this._v8CoverageResults.push([
+              this._addV8CoverageResult([
                 {codeTransformResult: undefined, result: result.result},
               ]);
             } else {
@@ -470,22 +529,19 @@ export default class CoverageReporter extends BaseReporter {
     reportContext: istanbulReport.Context;
   }> {
     if (this._globalConfig.coverageProvider === 'v8') {
-      const mergedCoverages = mergeProcessCovs(
-        this._v8CoverageResults.map(cov => ({result: cov.map(r => r.result)})),
-      );
+      const processCovs = this._v8CoverageResults.map(cov => ({
+        result: cov.map(r => r.result),
+      }));
 
-      const fileTransforms = new Map<string, RuntimeTransformResult>();
+      if (this._v8MergedCoverage !== undefined) {
+        processCovs.unshift(this._v8MergedCoverage);
+      }
 
-      for (const res of this._v8CoverageResults)
-        for (const r of res) {
-          if (r.codeTransformResult && !fileTransforms.has(r.result.url)) {
-            fileTransforms.set(r.result.url, r.codeTransformResult);
-          }
-        }
+      const mergedCoverages = mergeProcessCovs(processCovs);
 
       const transformedCoverage = await Promise.all(
         mergedCoverages.result.map(async res => {
-          const fileTransform = fileTransforms.get(res.url);
+          const fileTransform = this._v8CodeTransformResults.get(res.url);
 
           let sourcemapContent: EncodedSourceMap | undefined = undefined;
 
