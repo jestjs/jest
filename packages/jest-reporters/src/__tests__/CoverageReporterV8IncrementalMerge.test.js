@@ -59,10 +59,10 @@ beforeEach(() => {
   fs.writeFileSync(
     sourceMapPath,
     JSON.stringify({
-      version: 3,
-      sources: ['input.js'],
-      names: [],
       mappings: '',
+      names: [],
+      sources: ['input.js'],
+      version: 3,
     }),
   );
 });
@@ -76,19 +76,19 @@ function makeV8CoverageResult(url, seed) {
         sourceMapPath,
       },
       result: {
-        scriptId: `${seed}`,
-        url,
         functions: [
           {
             functionName: '',
+            isBlockCoverage: true,
             // Overlapping ranges so merging actually combines the chunks.
             ranges: [
-              {startOffset: 0, endOffset: 100, count: seed % 3},
-              {startOffset: 10, endOffset: 50, count: 1 + (seed % 2)},
+              {count: seed % 3, endOffset: 100, startOffset: 0},
+              {count: 1 + (seed % 2), endOffset: 50, startOffset: 10},
             ],
-            isBlockCoverage: true,
           },
         ],
+        scriptId: `${seed}`,
+        url,
       },
     },
   ];

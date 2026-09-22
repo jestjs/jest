@@ -6,7 +6,7 @@
  */
 
 import * as path from 'node:path';
-import {mergeProcessCovs, type ProcessCov} from '@bcoe/v8-coverage';
+import {type ProcessCov, mergeProcessCovs} from '@bcoe/v8-coverage';
 import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import chalk from 'chalk';
 import {glob} from 'glob';
