@@ -66,3 +66,19 @@ describe('useRealTimers', () => {
     expect(result.exitCode).toBe(0);
   });
 });
+
+describe('timers/promises', () => {
+  test('fakes the timers promises API', () => {
+    const result = runJest('fake-timers/timers-promises');
+
+    expect(result.exitCode).toBe(0);
+  });
+
+  test('fakes the timers promises API imported with ESM syntax', () => {
+    const result = runJest('fake-timers/timers-promises-esm', [], {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
+    });
+
+    expect(result.exitCode).toBe(0);
+  });
+});

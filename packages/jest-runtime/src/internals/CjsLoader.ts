@@ -81,7 +81,7 @@ export class CjsLoader {
     isRequireActual = false,
   ): T {
     if (moduleName && this.resolution.isCoreModule(moduleName)) {
-      return this.coreModule.require(moduleName) as T;
+      return this.coreModule.require(moduleName, isRequireActual) as T;
     }
 
     const isInternal = options?.isInternalModule ?? false;
