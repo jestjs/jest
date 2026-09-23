@@ -24,10 +24,10 @@ exports[`prints correct coverage report, if a TS module is transpiled by Babel t
 --------------|---------|----------|---------|---------|-------------------
 File          | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 --------------|---------|----------|---------|---------|-------------------
-All files     |      50 |       25 |      25 |      50 |                   
+All files     |   80.76 |       50 |      50 |   80.76 |                   
  module.ts    |   80.76 |       50 |      50 |   80.76 | 16-18,21-22       
- types.ts     |       0 |        0 |       0 |       0 | 1-8               
- uncovered.ts |       0 |        0 |       0 |       0 | 1-8               
+ types.ts     |       0 |        0 |       0 |       0 |                   
+ uncovered.ts |       0 |        0 |       0 |       0 |                   
 --------------|---------|----------|---------|---------|-------------------"
 `;
 
@@ -40,10 +40,10 @@ exports[`prints correct coverage report, if a TS module is transpiled by custom 
 --------------|---------|----------|---------|---------|-------------------
 File          | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 --------------|---------|----------|---------|---------|-------------------
-All files     |      50 |       25 |      25 |      50 |                   
+All files     |   80.76 |       50 |      50 |   80.76 |                   
  module.ts    |   80.76 |       50 |      50 |   80.76 | 16-18,21-22       
- types.ts     |       0 |        0 |       0 |       0 | 1-8               
- uncovered.ts |       0 |        0 |       0 |       0 | 1-8               
+ types.ts     |       0 |        0 |       0 |       0 |                   
+ uncovered.ts |       0 |        0 |       0 |       0 |                   
 --------------|---------|----------|---------|---------|-------------------"
 `;
 
@@ -56,9 +56,9 @@ exports[`prints correct coverage report, if an ESM module is put under test with
 --------------|---------|----------|---------|---------|-------------------
 File          | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 --------------|---------|----------|---------|---------|-------------------
-All files     |   59.37 |       50 |   33.33 |   59.37 |                   
+All files     |   79.16 |    66.66 |      50 |   79.16 |                   
  module.js    |   79.16 |    66.66 |      50 |   79.16 | 14-16,19-20       
- uncovered.js |       0 |        0 |       0 |       0 | 1-8               
+ uncovered.js |       0 |        0 |       0 |       0 |                   
 --------------|---------|----------|---------|---------|-------------------"
 `;
 

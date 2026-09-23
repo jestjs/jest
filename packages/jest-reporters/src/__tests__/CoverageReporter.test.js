@@ -7,6 +7,7 @@
 
 jest
   .mock('istanbul-lib-source-maps')
+  .mock('../CoverageWorker', () => ({worker: jest.fn()}))
   .mock('istanbul-lib-report', () => ({
     ...jest.requireActual('istanbul-lib-report'),
     createContext: jest.fn(),
@@ -452,6 +453,118 @@ describe('onRunComplete', () => {
       projectRoot: './',
     });
     expect(testReporter.getLastError()).toBeUndefined();
+  });
+
+  describe('files that are transformed into code without statements', () => {
+    const istanbulCoverage = jest.requireActual('istanbul-lib-coverage');
+
+    const erasedFile = fixturePath('erased-file.ts');
+    const v8File = fixturePath('types.ts');
+
+    const createEmptyCoverage = () =>
+      istanbulCoverage.createFileCoverage({
+        b: {},
+        branchMap: {},
+        f: {},
+        fnMap: {},
+        path: erasedFile,
+        s: {},
+        statementMap: {},
+      });
+
+    const testContext = {
+      config: {},
+      hasteFS: {matchFilesWithGlob: () => [erasedFile]},
+    };
+
+    const createReporter = () =>
+      new CoverageReporter(
+        {
+          collectCoverage: true,
+          collectCoverageFrom: ['**/*.ts'],
+          coverageProvider: 'v8',
+          maxWorkers: 1,
+          rootDir: process.cwd(),
+        },
+        {changedFiles: undefined},
+      );
+
+    let CoverageWorker;
+
+    beforeEach(() => {
+      // These tests need real coverage maps, while the outer `beforeEach`
+      // replaces `createCoverageMap` with a summary-only stub, so the reporter
+      // is loaded again from a clean module registry.
+      jest.resetModules();
+      CoverageReporter = require('../CoverageReporter').default;
+      CoverageWorker = require('../CoverageWorker');
+    });
+
+    test('collects them separately from the V8 coverage results', async () => {
+      CoverageWorker.worker.mockResolvedValue({
+        coverage: createEmptyCoverage(),
+        kind: 'EmptyCoverage',
+      });
+
+      const testReporter = createReporter();
+      testReporter.log = jest.fn();
+
+      await testReporter._addUntestedFiles(new Set([testContext]));
+
+      expect(CoverageWorker.worker).toHaveBeenCalledTimes(1);
+      expect(testReporter._emptyCoverageMap.files()).toEqual([erasedFile]);
+      expect(testReporter._v8CoverageResults).toEqual([]);
+      expect(testReporter._coverageMap.files()).toEqual([]);
+    });
+
+    test('reports them in the V8 coverage report', async () => {
+      CoverageWorker.worker.mockResolvedValue({
+        coverage: createEmptyCoverage(),
+        kind: 'EmptyCoverage',
+      });
+
+      const testReporter = createReporter();
+      testReporter.log = jest.fn();
+      testReporter.onTestResult(
+        {},
+        {
+          testFilePath: v8File,
+          v8Coverage: [{result: {functions: [], url: v8File}}],
+        },
+      );
+
+      await testReporter.onRunComplete(new Set([testContext]), mockAggResults);
+
+      expect(mockAggResults.coverageMap.files().sort()).toEqual(
+        [erasedFile, v8File].sort(),
+      );
+      expect(
+        mockAggResults.coverageMap.fileCoverageFor(erasedFile).toSummary()
+          .statements.total,
+      ).toBe(0);
+    });
+
+    test('keeps the ordinary V8 coverage results untouched', async () => {
+      CoverageWorker.worker.mockResolvedValue({
+        kind: 'V8Coverage',
+        result: {functions: [], url: erasedFile},
+      });
+
+      const testReporter = createReporter();
+      testReporter.log = jest.fn();
+
+      await testReporter._addUntestedFiles(new Set([testContext]));
+
+      expect(testReporter._v8CoverageResults).toEqual([
+        [
+          {
+            codeTransformResult: undefined,
+            result: {functions: [], url: erasedFile},
+          },
+        ],
+      ]);
+      expect(testReporter._emptyCoverageMap.files()).toEqual([]);
+    });
   });
 
   describe('maxCols fallback logic in CI', () => {
