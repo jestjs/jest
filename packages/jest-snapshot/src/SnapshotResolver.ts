@@ -7,6 +7,7 @@
 
 import * as path from 'node:path';
 import chalk from 'chalk';
+import {DOT_EXTENSION} from '@jest/snapshot-utils';
 import {createTranspilingRequire} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {interopRequireDefault} from 'jest-util';
@@ -19,9 +20,6 @@ export type SnapshotResolver = {
   /** Example test path, used for preflight consistency check of the implementation above. */
   testPathForConsistencyCheck: string;
 };
-
-export const EXTENSION = 'snap';
-export const DOT_EXTENSION = `.${EXTENSION}`;
 
 export const isSnapshotPath = (path: string): boolean =>
   path.endsWith(DOT_EXTENSION);

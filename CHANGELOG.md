@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-runtime, @jest/snapshot-utils]` Move the `EXTENSION` constant into the dependency-free `@jest/snapshot-utils` package so `jest-runtime` no longer pulls in the babel-heavy `jest-snapshot` bundle just to build the haste map's `extensions` list ([#16453](https://github.com/jestjs/jest/pull/16453))
+
 ### Chore & Maintenance
 
 ## 30.5.2
