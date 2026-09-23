@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
+import * as fs from 'graceful-fs';
 import * as os from 'os';
 import * as path from 'path';
 import {readConfigs} from '../';
@@ -36,7 +36,7 @@ describe('readConfigs with an explicit --config file', () => {
 
   afterEach(() => {
     cwdSpy.mockRestore();
-    fs.rmSync(tmpRoot, {recursive: true, force: true});
+    fs.rmSync(tmpRoot, {force: true, recursive: true});
   });
 
   test('does not throw "Could not find a config file"', async () => {
