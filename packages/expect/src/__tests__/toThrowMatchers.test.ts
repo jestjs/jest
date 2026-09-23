@@ -571,7 +571,7 @@ describe('toThrow', () => {
     });
   });
 
-  describe('promise/async throws if Error-like object is returned', () => {
+  describe('promise/async throws if rejects', () => {
     const asyncFn = async (shouldThrow?: boolean, resolve?: boolean) => {
       let err;
       if (shouldThrow) {
@@ -607,10 +607,10 @@ describe('toThrow', () => {
       await jestExpect(asyncFn(false, true)).resolves.not.toThrow('banana');
       await jestExpect(asyncFn(false, true)).resolves.not.toThrow(/banana/);
 
-      await jestExpect(asyncFn()).rejects.not.toThrow();
+      await jestExpect(asyncFn()).rejects.toThrow();
       await jestExpect(asyncFn()).rejects.not.toThrow(Error);
-      await jestExpect(asyncFn()).rejects.not.toThrow('apple');
-      await jestExpect(asyncFn()).rejects.not.toThrow(/apple/);
+      await jestExpect(asyncFn()).rejects.toThrow('apple');
+      await jestExpect(asyncFn()).rejects.toThrow(/apple/);
       await jestExpect(asyncFn()).rejects.not.toThrow('banana');
       await jestExpect(asyncFn()).rejects.not.toThrow(/banana/);
 
@@ -625,7 +625,7 @@ describe('toThrow', () => {
 
     test('did not throw at all', async () => {
       await expect(
-        jestExpect(asyncFn()).rejects.toThrow(),
+        jestExpect(asyncFn(false, true)).rejects.toThrow(),
       ).rejects.toThrowErrorMatchingSnapshot();
     });
 
@@ -638,6 +638,12 @@ describe('toThrow', () => {
     test('threw, but should not have', async () => {
       await expect(
         jestExpect(asyncFn(true)).rejects.not.toThrow(),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('rejects with non-Error value, expected substring does not match', async () => {
+      await expect(
+        jestExpect(Promise.reject('apple')).rejects.toThrow('banana'),
       ).rejects.toThrowErrorMatchingSnapshot();
     });
   });
