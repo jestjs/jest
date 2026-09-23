@@ -16,6 +16,11 @@ import {
 } from '@sinonjs/fake-timers';
 import type {Config} from '@jest/types';
 import {formatStackTrace} from 'jest-message-util';
+import {
+  type FakeableTimersPromisesAPI,
+  type TimersPromisesModule,
+  createTimersPromises,
+} from './timersPromises';
 
 export default class FakeTimers {
   private _clock!: InstalledClock;
@@ -23,6 +28,7 @@ export default class FakeTimers {
   private _fakingTime: boolean;
   private readonly _global: typeof globalThis;
   private readonly _fakeTimers: FakeTimerWithContext;
+  private _timersPromises: TimersPromisesModule | undefined;
 
   constructor({
     global,
@@ -195,6 +201,32 @@ export default class FakeTimers {
     }
 
     return 0;
+  }
+
+  /**
+   * A `timers/promises` module that schedules on the installed fake clock
+   * while fake timers are on, and forwards to Node's own implementation while
+   * they are off. Node implements `timers/promises` on its internal timers, so
+   * without this the API would silently escape fake timers.
+   */
+  get timersPromises(): TimersPromisesModule {
+    if (this._timersPromises === undefined) {
+      this._timersPromises = createTimersPromises(api =>
+        this._getFakeClock(api),
+      );
+    }
+
+    return this._timersPromises;
+  }
+
+  private _getFakeClock(
+    api: FakeableTimersPromisesAPI,
+  ): InstalledClock | undefined {
+    if (this._fakingTime && this._clock.methods.includes(api)) {
+      return this._clock;
+    }
+
+    return undefined;
   }
 
   private _checkFakeTimers() {
