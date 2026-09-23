@@ -26,7 +26,9 @@ describe('readConfigs with an explicit --config file', () => {
     // same `tryRealpath` jest itself uses (8.3 short names on Windows,
     // /var -> /private/var on macOS) so the mocked cwd matches the paths
     // jest resolves internally.
-    tmpRoot = tryRealpath(fs.mkdtempSync(path.join(os.tmpdir(), 'jest-16457-')));
+    tmpRoot = tryRealpath(
+      fs.mkdtempSync(path.join(os.tmpdir(), 'jest-16457-')),
+    );
     emptyCwd = path.join(tmpRoot, 'empty-cwd');
     fs.mkdirSync(emptyCwd, {recursive: true});
     configFile = path.join(tmpRoot, 'custom.config.cjs');
