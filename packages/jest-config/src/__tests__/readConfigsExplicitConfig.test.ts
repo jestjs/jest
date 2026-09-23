@@ -8,6 +8,7 @@
 import * as fs from 'graceful-fs';
 import * as os from 'os';
 import * as path from 'path';
+import {tryRealpath} from 'jest-util';
 import {readConfigs} from '../';
 
 // Regression test for https://github.com/jestjs/jest/issues/16457:
@@ -21,12 +22,11 @@ describe('readConfigs with an explicit --config file', () => {
 
   beforeEach(() => {
     // os.tmpdir() has no package.json / jest config in any of its ancestors,
-    // mirroring the issue's `mktemp -d` reproduction. Resolve symlinks
-    // (e.g. /var -> /private/var on macOS, 8.3 short names on Windows) so
-    // the mocked cwd matches the paths jest resolves internally.
-    tmpRoot = fs.realpathSync(
-      fs.mkdtempSync(path.join(os.tmpdir(), 'jest-16457-')),
-    );
+    // mirroring the issue's `mktemp -d` reproduction. Canonicalize with the
+    // same `tryRealpath` jest itself uses (8.3 short names on Windows,
+    // /var -> /private/var on macOS) so the mocked cwd matches the paths
+    // jest resolves internally.
+    tmpRoot = tryRealpath(fs.mkdtempSync(path.join(os.tmpdir(), 'jest-16457-')));
     emptyCwd = path.join(tmpRoot, 'empty-cwd');
     fs.mkdirSync(emptyCwd, {recursive: true});
     configFile = path.join(tmpRoot, 'custom.config.cjs');
