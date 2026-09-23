@@ -128,6 +128,12 @@ Runs tests related to the changes since the provided branch or commit hash. If t
 
 When this option is provided, Jest will assume it is running in a CI environment. This changes the behavior when a new snapshot is encountered. Instead of the regular behavior of storing a new snapshot automatically, it will fail the test and require Jest to be run with `--updateSnapshot`.
 
+:::tip
+
+As of Jest 20, this option is automatically enabled when Jest detects it is running in a CI system.
+
+:::
+
 ### `--clearCache`
 
 Deletes the Jest cache directory and then exits without running tests. Will delete `cacheDirectory` if the option is passed, or Jest's default cache directory. The default cache directory can be found by calling `jest --showConfig`.
