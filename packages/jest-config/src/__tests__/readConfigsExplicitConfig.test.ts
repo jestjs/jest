@@ -17,12 +17,16 @@ describe('readConfigs with an explicit --config file', () => {
   let tmpRoot: string;
   let emptyCwd: string;
   let configFile: string;
-  let cwdSpy: jest.SpyInstance;
+  let cwdSpy: jest.SpiedFunction<() => string>;
 
   beforeEach(() => {
     // os.tmpdir() has no package.json / jest config in any of its ancestors,
-    // mirroring the issue's `mktemp -d` reproduction.
-    tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'jest-16457-'));
+    // mirroring the issue's `mktemp -d` reproduction. Resolve symlinks
+    // (e.g. /var -> /private/var on macOS, 8.3 short names on Windows) so
+    // the mocked cwd matches the paths jest resolves internally.
+    tmpRoot = fs.realpathSync(
+      fs.mkdtempSync(path.join(os.tmpdir(), 'jest-16457-')),
+    );
     emptyCwd = path.join(tmpRoot, 'empty-cwd');
     fs.mkdirSync(emptyCwd, {recursive: true});
     configFile = path.join(tmpRoot, 'custom.config.cjs');
