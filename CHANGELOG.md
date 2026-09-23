@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-mock, jest-runner]` Add `ModuleMocker.getUnusedStubs()` and report the stubs of a test file that were never used when it opts in with the `@jest-report-unused-stubs` docblock pragma ([#16462](https://github.com/jestjs/jest/pull/16462))
+
 ### Fixes
 
 ### Chore & Maintenance

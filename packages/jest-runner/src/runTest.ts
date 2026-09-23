@@ -28,6 +28,7 @@ import {formatExecError} from 'jest-message-util';
 import Resolver, {resolveTestEnvironment} from 'jest-resolve';
 import type RuntimeClass from 'jest-runtime';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
+import reportUnusedStubs from './reportUnusedStubs';
 import type {TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
@@ -90,6 +91,7 @@ async function runTestInternal(
   const testSource = fs.readFileSync(path, 'utf8');
   const docblockPragmas = docblock.parse(docblock.extract(testSource));
   const customEnvironment = docblockPragmas['jest-environment'];
+  const shouldReportUnusedStubs = 'jest-report-unused-stubs' in docblockPragmas;
 
   const loadTestEnvironmentStart = Date.now();
   let testEnvironment = projectConfig.testEnvironment;
@@ -308,6 +310,10 @@ async function runTestInternal(
       if (collectV8Coverage) {
         await runtime.stopCollectingV8Coverage();
       }
+    }
+
+    if (shouldReportUnusedStubs) {
+      reportUnusedStubs(environment, testConsole);
     }
 
     freezeConsole(testConsole, projectConfig);
