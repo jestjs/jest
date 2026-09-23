@@ -7,8 +7,10 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
+import {pathToFileURL} from 'url';
 import * as fs from 'graceful-fs';
 import {createDirectory} from 'jest-util';
+import {onNodeVersions} from '@jest/test-utils';
 import {cleanup, runYarnInstall} from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 
@@ -17,6 +19,14 @@ const project1DIR = path.join(tmpdir(), 'jest-global-teardown-project-1');
 const project2DIR = path.join(tmpdir(), 'jest-global-teardown-project-2');
 const e2eDir = path.resolve(__dirname, '../global-teardown');
 const esmTmpDir = path.join(tmpdir(), 'jest-global-teardown-esm');
+const esmTypeScriptE2eDir = path.resolve(
+  __dirname,
+  '../global-teardown-esm-typescript',
+);
+const esmTypeScriptTmpDir = path.join(
+  tmpdir(),
+  'jest-global-teardown-esm-typescript',
+);
 
 beforeAll(() => {
   runYarnInstall(e2eDir);
@@ -27,12 +37,14 @@ beforeEach(() => {
   cleanup(project1DIR);
   cleanup(project2DIR);
   cleanup(esmTmpDir);
+  cleanup(esmTypeScriptTmpDir);
 });
 afterAll(() => {
   cleanup(DIR);
   cleanup(project1DIR);
   cleanup(project2DIR);
   cleanup(esmTmpDir);
+  cleanup(esmTypeScriptTmpDir);
 });
 
 test('globalTeardown is triggered once after all test suites', () => {
@@ -139,4 +151,21 @@ test('globalTeardown works with ESM modules', () => {
   });
 
   expect(exitCode).toBe(0);
+});
+
+onNodeVersions('>=20.19.0 <21 || >=22.12.0', () => {
+  test('globalTeardown works with TypeScript that uses import.meta', () => {
+    const {exitCode} = runJest(esmTypeScriptE2eDir, ['--no-cache'], {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
+    });
+
+    expect(exitCode).toBe(0);
+    expect(
+      fs.readFileSync(path.join(esmTypeScriptTmpDir, 'teardown.txt'), 'utf8'),
+    ).toBe(
+      pathToFileURL(
+        fs.realpathSync(path.join(esmTypeScriptE2eDir, 'teardown.ts')),
+      ).href,
+    );
+  });
 });

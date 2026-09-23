@@ -1,0 +1,11 @@
+{
+  "name": "global-setup-esm-typescript",
+  "version": "1.0.0",
+  "jest": {
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
+    "globalSetup": "<rootDir>/setup.ts",
+    "testEnvironment": "node"
+  }
+}
