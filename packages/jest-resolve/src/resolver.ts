@@ -8,6 +8,7 @@
 import {isBuiltin} from 'node:module';
 import * as path from 'node:path';
 import chalk from 'chalk';
+import * as fs from 'graceful-fs';
 import slash from 'slash';
 import type {IModuleMap} from 'jest-haste-map';
 import {requireOrImportModule, tryRealpath} from 'jest-util';
@@ -65,6 +66,9 @@ export default class Resolver {
   private readonly _supportsNativePlatform: boolean;
   private readonly _extensions: Array<string>;
   private readonly _isCoreModuleCache: Map<string, boolean>;
+  private readonly _moduleCasingWarnings: Array<string>;
+  private readonly _reportedModuleCasing: Set<string>;
+  private readonly _directoryEntries: Map<string, Set<string>>;
   private _canResolveSync: boolean | undefined;
   private _hasDistinctAsyncResolver: boolean | undefined;
 
@@ -89,6 +93,9 @@ export default class Resolver {
     this._moduleNameCache = new Map();
     this._modulePathCache = new Map();
     this._isCoreModuleCache = new Map();
+    this._moduleCasingWarnings = [];
+    this._reportedModuleCasing = new Set();
+    this._directoryEntries = new Map();
 
     const configuredExtensions = this._options.extensions ?? [];
     const extensions = [...configuredExtensions];
@@ -447,7 +454,10 @@ export default class Resolver {
     const module =
       this.resolveStubModuleName(from, moduleName, options) ||
       this.resolveModuleFromDirIfExists(dirname, moduleName, options);
-    if (module) return module;
+    if (module) {
+      this._checkModuleCasing(moduleName, module);
+      return module;
+    }
 
     // 5. Throw an error if the module could not be found. `resolve.sync` only
     // produces an error based on the dirname but we have the actual current
@@ -469,12 +479,25 @@ export default class Resolver {
         options,
       ));
 
-    if (module) return module;
+    if (module) {
+      this._checkModuleCasing(moduleName, module);
+      return module;
+    }
 
     // 5. Throw an error if the module could not be found. `resolve` only
     // produces an error based on the dirname but we have the actual current
     // module name available.
     this._throwModNotFoundError(from, moduleName);
+  }
+
+  /**
+   * Drains the case-only mismatches collected since the last call. The resolver
+   * is the only place that sees both the requested and the resolved specifier,
+   * but it has no access to the test's console, so `jest-runtime` drains these
+   * and forwards them to the test, where the user can actually see them.
+   */
+  getModuleCasingWarnings(): Array<string> {
+    return this._moduleCasingWarnings.splice(0);
   }
 
   /**
@@ -515,14 +538,125 @@ export default class Resolver {
     return null;
   }
 
+  // A specifier that differs from the file on disk only by case still resolves
+  // on a case-insensitive file system (macOS, Windows) but not on a
+  // case-sensitive one, so an import that "works" locally fails in CI with no
+  // explanation. Collected rather than logged: `jest-runtime` drains these and
+  // emits them through the test's console, which is where a user looks.
+  private _checkModuleCasing(requested: string, resolved: string): void {
+    const requestedName = path.parse(requested).name;
+    let resolvedWithCasing = resolved;
+    let resolvedName = path.parse(resolved).name;
+
+    if (requestedName === resolvedName) {
+      // Node resolution builds the path out of the specifier it was given, so
+      // on a case-insensitive file system the resolved path repeats the
+      // requested casing and only the directory listing holds the real one.
+      const onDisk = this._getOnDiskPath(resolved);
+      if (!onDisk) {
+        return;
+      }
+      resolvedWithCasing = onDisk;
+      resolvedName = path.parse(onDisk).name;
+    }
+
+    if (
+      requestedName === resolvedName ||
+      requestedName.toUpperCase() !== resolvedName.toUpperCase()
+    ) {
+      return;
+    }
+
+    // A resolver instance lives for a whole test file and resolution repeats
+    // constantly, so a pair is only ever reported once.
+    const key = `${requested}\0${resolvedWithCasing}`;
+    if (this._reportedModuleCasing.has(key)) {
+      return;
+    }
+    this._reportedModuleCasing.add(key);
+
+    this._moduleCasingWarnings.push(
+      `Module ${requested} resolved, but has different casing: ${resolvedWithCasing}`,
+    );
+  }
+
+  // Returns the path of the file as the directory listing spells it when that
+  // is not how `resolved` spells it, and null when the casing already matches.
+  private _getOnDiskPath(resolved: string): string | null {
+    const dir = path.dirname(resolved);
+    const base = path.basename(resolved);
+    const entries = this._getDirectoryEntries(dir);
+
+    if (entries.has(base)) {
+      return null;
+    }
+
+    const lowercaseBase = base.toLowerCase();
+    for (const entry of entries) {
+      if (entry.toLowerCase() === lowercaseBase) {
+        return path.join(dir, entry);
+      }
+    }
+
+    return null;
+  }
+
+  // Directory listings are cached: a resolver instance resolves from the same
+  // directories over and over, and listing one of them per resolution would
+  // cost more than the check is worth.
+  private _getDirectoryEntries(dir: string): Set<string> {
+    let entries = this._directoryEntries.get(dir);
+
+    if (!entries) {
+      try {
+        entries = new Set(fs.readdirSync(dir));
+      } catch {
+        entries = new Set();
+      }
+      this._directoryEntries.set(dir, entries);
+    }
+
+    return entries;
+  }
+
   private _throwModNotFoundError(from: string, moduleName: string): never {
     const relativePath =
       slash(path.relative(this._options.rootDir, from)) || '.';
 
+    const similarlyNamedFiles = this._getSimilarlyNamedFiles(from, moduleName);
+    const hint = similarlyNamedFiles
+      ? `. Did you mean to import one of: ${similarlyNamedFiles}?`
+      : '';
+
     throw new ModuleNotFoundError(
-      `Cannot find module '${moduleName}' from '${relativePath}'`,
+      `Cannot find module '${moduleName}' from '${relativePath}'${hint}`,
       moduleName,
     );
+  }
+
+  // On a case-sensitive file system a wrongly-cased import misses, but the file
+  // it almost certainly meant sits in the same directory. Only case-only
+  // matches are listed, so a lookup that genuinely has no answer stays quiet.
+  private _getSimilarlyNamedFiles(from: string, moduleName: string): string {
+    const moduleParentDir = path.dirname(
+      path.resolve(path.dirname(from), moduleName),
+    );
+
+    const files = this._getDirectoryEntries(moduleParentDir);
+
+    const moduleBaseName = path.parse(moduleName).name;
+    const uppercaseModuleName = moduleBaseName.toUpperCase();
+
+    return [...files]
+      .filter(file => {
+        const fileName = path.parse(file).name;
+
+        return (
+          fileName !== moduleBaseName &&
+          fileName.toUpperCase() === uppercaseModuleName
+        );
+      })
+      .join(', ');
   }
 
   private _getMapModuleName(matches: RegExpMatchArray | null) {

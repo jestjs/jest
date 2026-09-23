@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-resolve, jest-runtime]` Warn when a module resolves to a file whose casing differs from the specifier, and suggest similarly named files when a module cannot be found - previously the mismatch was silent on case-insensitive file systems ([#16459](https://github.com/jestjs/jest/pull/16459))
+
 ### Chore & Maintenance
 
 ## 30.5.2
