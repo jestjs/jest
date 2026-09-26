@@ -6,6 +6,7 @@
  *
  */
 
+import descriptions from '../Descriptions';
 import getMaxWorkers from '../getMaxWorkers';
 
 jest.mock('os');
@@ -40,6 +41,13 @@ describe('getMaxWorkers', () => {
     it('50% = 2 workers', () => {
       const argv = {maxWorkers: '50%'};
       expect(getMaxWorkers(argv)).toBe(2);
+    });
+
+    it('describes the percentage formula without adding a worker', () => {
+      expect(descriptions.maxWorkers).toContain(
+        'rounded down with a minimum of 1',
+      );
+      expect(descriptions.maxWorkers).not.toContain('+ 1');
     });
 
     it('< 0 workers should become 1', () => {
