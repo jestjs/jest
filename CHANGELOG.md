@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[@jest/transform]` Don't write transformed code to the cache directory when `cache` is disabled (e.g. `--no-cache`), since it is never read back; source maps are still written ([#16464](https://github.com/jestjs/jest/pull/16464))
+
 ### Chore & Maintenance
 
 ## 30.5.2
