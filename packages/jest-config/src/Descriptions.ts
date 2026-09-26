@@ -41,7 +41,7 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   globals:
     'A set of global variables that need to be available in all test environments',
   maxWorkers:
-    'The maximum amount of workers used to run your tests. Can be specified as % or a number. E.g. maxWorkers: 10% will use 10% of your CPU amount + 1 as the maximum worker number. maxWorkers: 2 will use a maximum of 2 workers.',
+    'The maximum amount of workers used to run your tests. Can be specified as % or a number. E.g. maxWorkers: 10% will use 10% of the available CPUs, rounded down with a minimum of 1. maxWorkers: 2 will use a maximum of 2 workers.',
   moduleDirectories:
     "An array of directory names to be searched recursively up from the requiring module's location",
   moduleFileExtensions: 'An array of file extensions your modules use',
