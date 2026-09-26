@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-config]` Correct the scaffolded `maxWorkers` description to match the implemented floor-and-clamp percentage formula ([#16466](https://github.com/jestjs/jest/pull/16466))
+
 ### Chore & Maintenance
 
 ## 30.5.2
