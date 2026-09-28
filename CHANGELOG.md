@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-config]` Fix `--config <file>` throwing "Could not find a config file" when `cwd` has no discoverable config of its own (regression in 30.5.1) ([#16457](https://github.com/jestjs/jest/issues/16457))
+
 ### Chore & Maintenance
 
 ## 30.5.2

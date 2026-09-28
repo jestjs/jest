@@ -459,7 +459,15 @@ export async function readConfigs(
             : cwd;
           // The config that supplies the global config must not be validated
           // as a project config - its global options are in the right place.
+          //
+          // When `skipArgvConfigOption` is already `false`, this project's
+          // `readConfig` call below reads `argv.config` itself, so it
+          // necessarily supplies the global config - checking
+          // `resolveConfigPath(root, cwd, ...)` here is both redundant and
+          // unsafe, since `root` (typically `cwd`) may have no discoverable
+          // config of its own to traverse to.
           const suppliesGlobalConfig =
+            !skipArgvConfigOption ||
             (globalConfig == null && projectIndex === 0) ||
             (configPath != null &&
               typeof root === 'string' &&
