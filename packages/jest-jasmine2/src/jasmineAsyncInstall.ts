@@ -253,7 +253,7 @@ function makeConcurrent(
       'Jest: `test.step`/`it.step` are only supported in `jest-circus`.',
     );
   };
-  
+
   return concurrentFn;
 }
 

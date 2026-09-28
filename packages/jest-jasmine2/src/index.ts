@@ -382,8 +382,4 @@ const addSnapshotData = (results: TestResult, snapshotState: SnapshotState) => {
   results.snapshot.uncheckedKeys = [...uncheckedKeys];
 
   return results;
-
-  
 };
-
-
