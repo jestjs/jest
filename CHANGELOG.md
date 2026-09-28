@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-config]` Correct the `maxWorkers` description: a percentage uses that percentage of the CPU count directly, not "+ 1" ([#16465](https://github.com/facebook/jest/issues/16465))
+
 ### Chore & Maintenance
 
 ## 30.5.2
