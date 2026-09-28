@@ -248,7 +248,12 @@ function makeConcurrent(
   // eslint-disable-next-line @typescript-eslint/no-empty-function,unicorn/consistent-function-scoping
   concurrentFn.each = () => () => {};
   concurrentFn.failing = failing;
-
+  concurrentFn.step = () => {
+    throw new Error(
+      'Jest: `test.step`/`it.step` are only supported in `jest-circus`.',
+    );
+  };
+  
   return concurrentFn;
 }
 

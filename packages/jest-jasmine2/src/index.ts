@@ -225,6 +225,17 @@ export default async function jasmine2(
   environment.global.fit.failing = failing;
   environment.global.xit.failing = failing;
 
+  const step = () => {
+    throw new ErrorWithStack(
+      'Jest: `test.step`/`it.step` are only supported in `jest-circus`.',
+      step,
+    );
+  };
+
+  environment.global.it.step = step;
+  environment.global.fit.step = step;
+  environment.global.xit.step = step;
+
   environment.global.test = environment.global.it;
   environment.global.it.only = environment.global.fit;
   environment.global.it.todo = env.todo;
@@ -371,4 +382,8 @@ const addSnapshotData = (results: TestResult, snapshotState: SnapshotState) => {
   results.snapshot.uncheckedKeys = [...uncheckedKeys];
 
   return results;
+
+  
 };
+
+
