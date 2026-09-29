@@ -11,6 +11,7 @@
 
 import {
   type FunctionParameters,
+  type FunctionSignatures,
   equals,
   iterableEquality,
 } from '@jest/expect-utils';
@@ -104,8 +105,20 @@ export type SpiedClass<T extends ClassLike = UnknownClass> = MockInstance<
   (...args: ConstructorParameters<T>) => InstanceType<T>
 >;
 
+// Keep the pre-existing implementation signature while retaining every
+// overload in `T` for the return-value helpers on `MockInstance<T>`.
 export type SpiedFunction<T extends FunctionLike = UnknownFunction> =
-  MockInstance<(...args: Parameters<T>) => ReturnType<T>>;
+  MockInstance<T> & {
+    mockImplementation(
+      fn: (...args: Parameters<T>) => ReturnType<T>,
+    ): SpiedFunction<T>;
+    mockImplementationOnce(
+      fn: (...args: Parameters<T>) => ReturnType<T>,
+    ): SpiedFunction<T>;
+  } & Pick<
+      MockInstance<(...args: Parameters<T>) => ReturnType<T>>,
+      'withImplementation'
+    >;
 
 export type SpiedGetter<T> = MockInstance<() => T>;
 
@@ -131,33 +144,16 @@ export interface Mock<T extends FunctionLike = UnknownFunction>
   (...args: Parameters<T>): ReturnType<T>;
 }
 
-// `ReturnType<T>` picks the LAST overload signature of `T`, so for a function
-// like `pg.Client['end']` whose overloads are `(): Promise<void>` and
-// `(cb): void`, `ReturnType` collapses to `void` and the Promise-shaped
-// overload disappears — `mockResolvedValue` / `mockRejectedValue` then infer
-// `never` and reject any value. Walk up to four overloads and union their
-// return types so the Promise-shaped overload (if any) survives.
-type OverloadedReturnType<T> = T extends {
-  (...args: Array<any>): infer R1;
-  (...args: Array<any>): infer R2;
-  (...args: Array<any>): infer R3;
-  (...args: Array<any>): infer R4;
-}
-  ? R1 | R2 | R3 | R4
-  : T extends {
-        (...args: Array<any>): infer R1;
-        (...args: Array<any>): infer R2;
-        (...args: Array<any>): infer R3;
-      }
-    ? R1 | R2 | R3
-    : T extends {
-          (...args: Array<any>): infer R1;
-          (...args: Array<any>): infer R2;
-        }
-      ? R1 | R2
-      : T extends (...args: Array<any>) => infer R
-        ? R
-        : never;
+/**
+ * Like the built-in `ReturnType<T>`, but for overloaded functions yields a
+ * union of up to 15 overloads' return types instead of only the last one.
+ */
+type OverloadedReturnType<T extends FunctionLike> =
+  FunctionSignatures<T> extends infer S
+    ? S extends FunctionLike
+      ? ReturnType<S>
+      : never
+    : never;
 
 type ResolveType<T extends FunctionLike> = [
   Extract<OverloadedReturnType<T>, PromiseLike<any>>,
@@ -192,8 +188,8 @@ export interface MockInstance<
   withImplementation(fn: T, callback: () => void): void;
   mockName(name: string): this;
   mockReturnThis(): this;
-  mockReturnValue(value: ReturnType<T>): this;
-  mockReturnValueOnce(value: ReturnType<T>): this;
+  mockReturnValue(value: OverloadedReturnType<T>): this;
+  mockReturnValueOnce(value: OverloadedReturnType<T>): this;
   mockResolvedValue(value: ResolveType<T>): this;
   mockResolvedValueOnce(value: ResolveType<T>): this;
   mockRejectedValue(value: RejectType<T>): this;

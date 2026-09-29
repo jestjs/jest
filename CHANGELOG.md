@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[@jest/expect-utils, jest-mock]` Fix `spyOn` typings for overloaded methods so `mockReturnValue`, `mockResolvedValue`, and `mockRejectedValue` (and their `*Once` variants) accept any overload's return or resolved value instead of collapsing to the last overload ([#16191](https://github.com/jestjs/jest/pull/16191))
+
 ### Chore & Maintenance
 
 ## 30.5.2
