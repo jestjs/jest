@@ -29,7 +29,7 @@ jest.mock('child_process');
 
 let Worker: typeof import('../ChildProcessWorker').default;
 let childProcess: typeof import('child_process');
-let forkInterface: ReturnType<typeof childProcess.fork>;
+let forkInterface: MockedForkInterface;
 let originalExecArgv: typeof process.execArgv;
 let originalForceColor: string | undefined;
 
@@ -51,11 +51,9 @@ beforeEach(() => {
 
   childProcess = require('child_process') as typeof import('child_process');
   jest.mocked(childProcess.fork).mockImplementation(() => {
-    forkInterface = new MockedForkInterface() as unknown as ReturnType<
-      typeof childProcess.fork
-    >;
+    forkInterface = new MockedForkInterface();
 
-    return forkInterface;
+    return forkInterface as unknown as ReturnType<typeof childProcess.fork>;
   });
 
   totalmem.mockReset();
