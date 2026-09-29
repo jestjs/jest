@@ -986,23 +986,11 @@ This is only available with the default [jest-circus](https://github.com/jestjs/
 
 Use `test.step` to name a section of a test body. A step does not report its own pass or fail status - if the callback throws, the error message is prefixed with the path of active step titles (nested steps joined with `>`), so a failure in a long test is easier to place.
 
-\`\`\`js
-test('login flow', async () => {
-  await test.step('navigate to the login page', async () => {
-    await page.goto('https://example.com/login');
-  });
+\`\`\`js test('login flow', async () => { await test.step('navigate to the login page', async () => { await page.goto('https://example.com/login'); });
 
-  await test.step('fill in credentials', async () => {
-    await page.fill('#username', 'user');
-    await page.fill('#password', 'pass');
-  });
+await test.step('fill in credentials', async () => { await page.fill('#username', 'user'); await page.fill('#password', 'pass'); });
 
-  await test.step('submit the form', async () => {
-    await page.click('#submit');
-    await expect(page.locator('.welcome')).toBeVisible();
-  });
-});
-\`\`\`
+await test.step('submit the form', async () => { await page.click('#submit'); await expect(page.locator('.welcome')).toBeVisible(); }); }); \`\`\`
 
 Steps can be nested, and `test.step` works with both synchronous and asynchronous callbacks.
 
