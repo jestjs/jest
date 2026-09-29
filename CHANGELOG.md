@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[jest-worker]` Skip the idle-memory check when a worker is shutting down, so `workerIdleMemoryLimit` no longer prints `Unable to check memory usage Error: write EPIPE`
+- `[jest-worker]` Skip the idle-memory check when a worker is shutting down, so `workerIdleMemoryLimit` no longer prints `Unable to check memory usage Error: write EPIPE` ([#16475](https://github.com/jestjs/jest/pull/16475))
 
 ### Chore & Maintenance
 
