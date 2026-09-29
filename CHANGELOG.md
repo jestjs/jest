@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-circus]` Add `test.step()`/`it.step()` for named step reporting ([#16473](https://github.com/jestjs/jest/pull/16473))
+
 ### Fixes
 
 ### Chore & Maintenance
@@ -11,7 +13,6 @@
 ### Features
 
 - `[@jest/transform]` Strip TypeScript types with Node when no transformer claims a `.ts`, `.mts` or `.cts` file ([#16421](https://github.com/jestjs/jest/pull/16421))
-- `[jest-circus]` Add `test.step()`/`it.step()` for named step reporting ([#16473](https://github.com/jestjs/jest/pull/16473))
 
 ### Fixes
 
