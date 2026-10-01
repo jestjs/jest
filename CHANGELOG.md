@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-runtime]` Honor the test environment's export conditions for CommonJS modules instead of always adding `node` ([#16478](https://github.com/jestjs/jest/pull/16478))
+
 ### Chore & Maintenance
 
 ## 30.5.2
