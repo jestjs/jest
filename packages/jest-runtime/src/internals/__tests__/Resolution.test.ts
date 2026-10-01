@@ -23,8 +23,8 @@ jest.mock('graceful-fs', () => ({
 
 // `module-sync` is only offered to `require()` when Node can load ESM that way.
 const CJS = hasSyncEsm
-  ? ['require', 'module-sync', 'node', 'default']
-  : ['require', 'node', 'default'];
+  ? ['require', 'module-sync', 'default']
+  : ['require', 'default'];
 const ESM = ['import', 'module-sync', 'default'];
 
 function makeResolver(overrides: Partial<Resolver> = {}): Resolver {
@@ -88,7 +88,7 @@ describe('Resolution', () => {
 
   describe('conditions', () => {
     testWithSyncEsm(
-      'with no env conditions, uses Node defaults including "module-sync"',
+      'includes "module-sync" when require(esm) is available',
       () => {
         const resolver = makeResolver();
         const r = new Resolution(resolver, [], []);
@@ -97,7 +97,7 @@ describe('Resolution', () => {
         r.resolveEsm('/a', 'foo');
 
         expect(resolver.resolveModule).toHaveBeenNthCalledWith(1, '/a', 'foo', {
-          conditions: ['require', 'module-sync', 'node', 'default'],
+          conditions: ['require', 'module-sync', 'default'],
         });
         expect(resolver.resolveModule).toHaveBeenNthCalledWith(2, '/a', 'foo', {
           conditions: ['import', 'module-sync', 'default'],
@@ -115,7 +115,7 @@ describe('Resolution', () => {
         r.resolveEsm('/a', 'foo');
 
         expect(resolver.resolveModule).toHaveBeenNthCalledWith(1, '/a', 'foo', {
-          conditions: ['require', 'node', 'default'],
+          conditions: ['require', 'default'],
         });
         expect(resolver.resolveModule).toHaveBeenNthCalledWith(2, '/a', 'foo', {
           conditions: ['import', 'module-sync', 'default'],
@@ -125,7 +125,7 @@ describe('Resolution', () => {
 
     test('appends env-provided conditions and de-dupes', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, ['default', 'browser'], []);
+      const r = new Resolution(resolver, ['default', 'browser', 'browser'], []);
 
       r.resolveCjs('/a', 'foo');
       r.resolveEsm('/a', 'foo');
@@ -135,6 +135,21 @@ describe('Resolution', () => {
       });
       expect(resolver.resolveModule).toHaveBeenNthCalledWith(2, '/a', 'foo', {
         conditions: [...ESM, 'browser'],
+      });
+    });
+
+    test('includes the conditions provided by the Node environment', () => {
+      const resolver = makeResolver();
+      const resolution = new Resolution(resolver, ['node', 'node-addons'], []);
+
+      resolution.resolveCjs('/a', 'foo');
+      resolution.resolveEsm('/a', 'foo');
+
+      expect(resolver.resolveModule).toHaveBeenNthCalledWith(1, '/a', 'foo', {
+        conditions: [...CJS, 'node', 'node-addons'],
+      });
+      expect(resolver.resolveModule).toHaveBeenNthCalledWith(2, '/a', 'foo', {
+        conditions: [...ESM, 'node', 'node-addons'],
       });
     });
   });

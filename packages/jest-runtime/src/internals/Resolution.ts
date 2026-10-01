@@ -39,7 +39,6 @@ export class Resolution {
         // that way. Claiming it otherwise resolves dual packages to their ESM
         // entry point, which we then cannot execute.
         ...(supportsSyncEvaluate ? ['module-sync'] : []),
-        'node',
         'default',
         ...envExportConditions,
       ]),
