@@ -7,6 +7,7 @@
 
 import * as os from 'os';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import istanbulCoverage from 'istanbul-lib-coverage';
 import libSourceMaps from 'istanbul-lib-source-maps';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
@@ -128,5 +129,97 @@ describe('generateEmptyCoverage', () => {
     );
 
     expect(nullCoverage).toBeNull();
+  });
+
+  it('generates a coverage object without statements for a file that is transformed into no code (v8 provider)', async () => {
+    const tsFilepath = path.join(rootDir, './__fixtures__/types.ts');
+
+    shouldInstrument.mockReturnValueOnce(true);
+
+    const emptyCoverage = await generateEmptyCoverage(
+      fs.readFileSync(tsFilepath, 'utf8'),
+      tsFilepath,
+      makeGlobalConfig({coverageProvider: 'v8'}),
+      makeProjectConfig({
+        cacheDirectory: os.tmpdir(),
+        cwd: rootDir,
+        rootDir,
+        transform: [
+          [
+            '\\.ts$',
+            require.resolve('babel-jest'),
+            {
+              configFile: false,
+              presets: [require.resolve('@babel/preset-typescript')],
+            },
+          ],
+        ],
+      }),
+    );
+
+    expect(emptyCoverage).toEqual({
+      coverage: expect.any(Object),
+      kind: 'EmptyCoverage',
+    });
+    expect(emptyCoverage.coverage.path).toBe(tsFilepath);
+    expect(emptyCoverage.coverage.statementMap).toEqual({});
+    expect(emptyCoverage.coverage.toSummary()).toMatchObject({
+      branches: {total: 0},
+      functions: {total: 0},
+      lines: {total: 0},
+      statements: {total: 0},
+    });
+  });
+
+  it('generates an empty v8 coverage result for untested code (v8 provider)', async () => {
+    const src = `
+    const a = (b, c) => {
+      if (b) {
+        return c;
+      } else {
+        return b;
+      }
+    };
+    module.exports = { a };
+    `;
+    const untestedFilepath = path.join(
+      rootDir,
+      'generateEmptyCoverage.test.js',
+    );
+
+    shouldInstrument.mockReturnValueOnce(true);
+
+    const emptyCoverage = await generateEmptyCoverage(
+      src,
+      untestedFilepath,
+      makeGlobalConfig({coverageProvider: 'v8'}),
+      makeProjectConfig({
+        cacheDirectory: os.tmpdir(),
+        cwd: rootDir,
+        rootDir,
+        transform: [['\\.js$', require.resolve('babel-jest')]],
+      }),
+    );
+
+    expect(emptyCoverage).toEqual({
+      kind: 'V8Coverage',
+      result: {
+        functions: [
+          {
+            functionName: '(empty-report)',
+            isBlockCoverage: true,
+            ranges: [
+              {
+                count: 0,
+                endOffset: fs.statSync(untestedFilepath).size,
+                startOffset: 0,
+              },
+            ],
+          },
+        ],
+        scriptId: '0',
+        url: untestedFilepath,
+      },
+    });
   });
 });

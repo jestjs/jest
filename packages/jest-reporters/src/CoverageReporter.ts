@@ -61,6 +61,7 @@ function getMaxCols(): number {
 export default class CoverageReporter extends BaseReporter {
   private readonly _context: ReporterContext;
   private readonly _coverageMap: istanbulCoverage.CoverageMap;
+  private readonly _emptyCoverageMap: istanbulCoverage.CoverageMap;
   private readonly _globalConfig: Config.GlobalConfig;
   private readonly _sourceMapStore: libSourceMaps.MapStore;
   private readonly _v8CoverageResults: Array<V8CoverageResult>;
@@ -71,6 +72,7 @@ export default class CoverageReporter extends BaseReporter {
     super();
     this._context = context;
     this._coverageMap = istanbulCoverage.createCoverageMap({});
+    this._emptyCoverageMap = istanbulCoverage.createCoverageMap({});
     this._globalConfig = globalConfig;
     this._sourceMapStore = libSourceMaps.createSourceMapStore();
     this._v8CoverageResults = [];
@@ -207,6 +209,10 @@ export default class CoverageReporter extends BaseReporter {
               this._v8CoverageResults.push([
                 {codeTransformResult: undefined, result: result.result},
               ]);
+            } else if (result.kind === 'EmptyCoverage') {
+              // V8 never reports coverage for these files, so they are merged into the
+              // final coverage map separately from the V8 coverage results.
+              this._emptyCoverageMap.addFileCoverage(result.coverage);
             } else {
               this._coverageMap.addFileCoverage(result.coverage);
             }
@@ -525,6 +531,10 @@ export default class CoverageReporter extends BaseReporter {
       const map = istanbulCoverage.createCoverageMap({});
 
       for (const res of transformedCoverage) map.merge(res);
+
+      // Files that are transformed into code without any statements get no V8 coverage
+      // results at all, they are collected separately from `_addUntestedFiles`.
+      map.merge(this._emptyCoverageMap);
 
       const reportContext = istanbulReport.createContext({
         coverageMap: map,
