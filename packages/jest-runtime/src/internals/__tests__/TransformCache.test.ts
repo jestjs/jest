@@ -83,10 +83,21 @@ describe('TransformCache', () => {
     });
 
     test('skips transform for internal modules and returns raw source', () => {
-      const {cache, transform} = makeFixture('orig');
+      const {cache, readFile, transform} = makeFixture('orig');
       expect(cache.transform('/a.js', internalOptions)).toBe('orig');
+      expect(readFile).toHaveBeenCalledWith('/a.js');
       expect(transform).not.toHaveBeenCalled();
       expect(cache.getCachedSource('/a.js')).toBeUndefined();
+    });
+
+    // The transformer memoizes results per worker and reads the source itself
+    // on a miss, so reading it here would only be thrown away on a hit.
+    test('leaves reading the source to the transformer', () => {
+      const {cache, readFile, transform} = makeFixture();
+      cache.transform('/a.js', userOptions);
+      expect(readFile).not.toHaveBeenCalled();
+      expect(transform).toHaveBeenCalledTimes(1);
+      expect(transform.mock.calls[0][2]).toBeUndefined();
     });
 
     test('records sourceMapPath in the source-map registry', () => {
@@ -105,7 +116,6 @@ describe('TransformCache', () => {
       expect(transform).toHaveBeenCalledWith(
         '/a.js',
         expect.objectContaining({collectCoverage: false}),
-        'console.log("orig")',
       );
     });
   });
@@ -129,6 +139,14 @@ describe('TransformCache', () => {
         cache.transformAsync('/a.js', internalOptions),
       ).resolves.toBe('orig');
       expect(transformAsync).not.toHaveBeenCalled();
+    });
+
+    test('leaves reading the source to the transformer', async () => {
+      const {cache, readFile, transformAsync} = makeFixture();
+      await cache.transformAsync('/a.js', userOptions);
+      expect(readFile).not.toHaveBeenCalled();
+      expect(transformAsync).toHaveBeenCalledTimes(1);
+      expect(transformAsync.mock.calls[0][2]).toBeUndefined();
     });
   });
 

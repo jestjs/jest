@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-runtime]` Stop re-reading every required module's source from disk in each test file before asking the transformer, which already holds the result for the worker ([#16477](https://github.com/jestjs/jest/pull/16477))
+
 ## 30.5.2
 
 ### Features
