@@ -37,6 +37,10 @@ export type BlockName = string;
 export type BlockNameLike = BlockName | NameLike;
 
 export type HookFn = TestFn;
+export type StepFn = <T>(
+  title: string,
+  fn: () => T | PromiseLike<T>,
+) => Promise<T>;
 
 export type Col = unknown;
 export type Row = ReadonlyArray<Col>;
@@ -121,6 +125,7 @@ export interface ItBase {
   (testName: TestNameLike, fn: TestFn, timeout?: number): void;
   each: Each<TestFn>;
   failing: Failing<TestFn>;
+  step: StepFn;
 }
 
 export interface It extends ItBase {
@@ -133,6 +138,7 @@ export interface ItConcurrentBase {
   (testName: TestNameLike, testFn: ConcurrentTestFn, timeout?: number): void;
   each: Each<ConcurrentTestFn>;
   failing: Failing<ConcurrentTestFn>;
+  step: StepFn;
 }
 
 export interface ItConcurrentExtended extends ItConcurrentBase {

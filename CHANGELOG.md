@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-circus]` Add `test.step()`/`it.step()` for named step reporting ([#16473](https://github.com/jestjs/jest/pull/16473))
+
 ### Fixes
 
 ### Chore & Maintenance

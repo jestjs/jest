@@ -9,6 +9,7 @@ import type {Circus, Global} from '@jest/types';
 import {bind as bindEach} from 'jest-each';
 import {ErrorWithStack, convertDescriptorToString, isPromise} from 'jest-util';
 import {dispatchSync} from './state';
+import {step} from './step';
 
 export {
   setState,
@@ -243,6 +244,12 @@ const test: Global.It = (() => {
   concurrentTest.skip = skip;
   concurrentTest.failing = bindFailing(true);
   concurrentOnly.failing = bindFailing(true, 'only');
+
+  test.step = step;
+  only.step = step;
+  skip.step = step;
+  concurrentTest.step = step;
+  concurrentOnly.step = step;
 
   return test;
 })();
