@@ -2549,6 +2549,150 @@ describe('moduleMocker.clearMocksOnScope', () => {
     const forged = {_isMockFunction: true};
     expect(() => moduleMocker.clearMocksOnScope({forged})).not.toThrow();
   });
+  describe('getUnusedStubs', () => {
+    it('reports a stub that was never called', () => {
+      const mock = moduleMocker.fn();
+      mock.mockReturnValue('value');
+
+      expect(moduleMocker.getUnusedStubs()).toEqual([mock]);
+    });
+
+    it('reports a stub created with `mockImplementation` that was never called', () => {
+      const mock = moduleMocker.fn();
+      mock.mockImplementation(() => 'value');
+
+      expect(moduleMocker.getUnusedStubs()).toEqual([mock]);
+    });
+
+    it('reports a stub that was never called but configured once', () => {
+      const mock = moduleMocker.fn();
+      mock.mockReturnValueOnce('value');
+
+      expect(moduleMocker.getUnusedStubs()).toEqual([mock]);
+    });
+
+    it('reports the mock name of a stub that was never called', () => {
+      const mock = moduleMocker.fn().mockName('unusedStub');
+      mock.mockReturnValue('value');
+
+      expect(
+        moduleMocker.getUnusedStubs().map(stub => stub.getMockName()),
+      ).toEqual(['unusedStub']);
+    });
+
+    it('does not report a stub whose mock was called', () => {
+      const mock = moduleMocker.fn();
+      mock.mockReturnValue('value');
+
+      mock();
+
+      expect(moduleMocker.getUnusedStubs()).toEqual([]);
+    });
+
+    it('does not report a stub whose calls were read', () => {
+      const mock = moduleMocker.fn();
+      mock.mockReturnValue('value');
+
+      expect(mock.mock.calls).toEqual([]);
+
+      expect(moduleMocker.getUnusedStubs()).toEqual([]);
+    });
+
+    it('does not report a stub that was asserted on', () => {
+      const mock = moduleMocker.fn();
+      mock.mockReturnValue('value');
+
+      expect(mock).toHaveBeenCalledTimes(0);
+
+      expect(moduleMocker.getUnusedStubs()).toEqual([]);
+    });
+
+    it('does not report mocks that were not stubbed', () => {
+      moduleMocker.fn();
+
+      expect(moduleMocker.getUnusedStubs()).toEqual([]);
+    });
+
+    it('does not report an implementation passed to `fn`', () => {
+      const mock = moduleMocker.fn(() => 'value');
+
+      expect(mock()).toBe('value');
+      expect(moduleMocker.getUnusedStubs()).toEqual([]);
+    });
+
+    it('reports a stub on top of a spy, but not the spy itself', () => {
+      const object = {method: () => 'value'};
+      moduleMocker.spyOn(object, 'method');
+
+      expect(moduleMocker.getUnusedStubs()).toEqual([]);
+
+      object.method.mockReturnValue('stubbed');
+
+      expect(moduleMocker.getUnusedStubs()).toEqual([object.method]);
+    });
+
+    it('does not report automocked functions', () => {
+      const source = {method: () => 'value'};
+      const automock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(source)!,
+      );
+
+      expect(typeof automock.method).toBe('function');
+      expect(moduleMocker.getUnusedStubs()).toEqual([]);
+    });
+
+    it('does not report an implementation restored from mock metadata', () => {
+      const mock = moduleMocker.generateFromMetadata({
+        mockImpl: () => 'value',
+        type: 'function',
+      });
+
+      expect(moduleMocker.getUnusedStubs()).toEqual([]);
+    });
+
+    it('keeps reporting a stub after the mock was cleared and reset', () => {
+      const mock = moduleMocker.fn();
+      mock.mockReturnValue('value');
+
+      mock.mockClear();
+      mock.mockReset();
+
+      expect(moduleMocker.getUnusedStubs()).toEqual([mock]);
+    });
+
+    it('does not report a stub after the mock was called and reset', () => {
+      const mock = moduleMocker.fn();
+      mock.mockReturnValue('value');
+
+      mock();
+      mock.mockReset();
+
+      expect(moduleMocker.getUnusedStubs()).toEqual([]);
+    });
+
+    it('does not report a stub whose `mock` state was assigned', () => {
+      const mock = moduleMocker.fn();
+      const other = moduleMocker.fn();
+      mock.mockReturnValue('value');
+      other.mockReturnValue('value');
+
+      expect(moduleMocker.getUnusedStubs()).toEqual([mock, other]);
+
+      mock.mock = other.mock;
+
+      expect(moduleMocker.getUnusedStubs()).toEqual([]);
+    });
+
+    it('does not report implementations set with `withImplementation`', () => {
+      const mock = moduleMocker.fn();
+      mock.withImplementation(
+        () => 'value',
+        () => {},
+      );
+
+      expect(moduleMocker.getUnusedStubs()).toEqual([]);
+    });
+  });
 });
 
 describe('mocked', () => {

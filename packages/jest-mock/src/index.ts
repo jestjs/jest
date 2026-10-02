@@ -538,6 +538,10 @@ export class ModuleMocker {
   private readonly _environmentGlobal: typeof globalThis;
   private _mockState: WeakMap<Mock, MockFunctionState>;
   private _mockConfigRegistry: WeakMap<Function, MockFunctionConfig>;
+  // Maps every mock stubbed in this environment to whether that stub was used.
+  // A strong Map, rather than a WeakMap, so the mocks can be enumerated when
+  // reporting unused stubs at the end of the run.
+  private _stubState: Map<Mock, boolean>;
   private _spyState: Set<() => void>;
   private _invocationCallCounter: number;
 
@@ -550,6 +554,7 @@ export class ModuleMocker {
     this._environmentGlobal = global;
     this._mockState = new WeakMap();
     this._mockConfigRegistry = new WeakMap();
+    this._stubState = new Map();
     this._spyState = new Set();
     this._invocationCallCounter = 1;
   }
@@ -704,6 +709,27 @@ export class ModuleMocker {
     };
   }
 
+  private _registerStub(f: Mock): void {
+    if (!this._stubState.has(f)) {
+      this._stubState.set(f, false);
+    }
+  }
+
+  private _markStubUsed(f: Mock): void {
+    if (this._stubState.get(f) === false) {
+      this._stubState.set(f, true);
+    }
+  }
+
+  /**
+   * Excludes a mock from `getUnusedStubs()`: Jest installs implementations on
+   * mocks it creates itself — spies and automocks — and those are not stubs
+   * configured by the test file.
+   */
+  private _unregisterStub(f: Mock): void {
+    this._stubState.delete(f);
+  }
+
   private _makeComponent<T extends Record<string, any>>(
     metadata: MockMetadata<T, 'object'>,
     restore?: () => void,
@@ -756,6 +782,7 @@ export class ModuleMocker {
       ) {
         const mockState = mocker._ensureMockState(f);
         const mockConfig = mocker._ensureMockConfig(f);
+        mocker._markStubUsed(f);
         mockState.instances.push(this);
         mockState.contexts.push(this);
         mockState.calls.push(args);
@@ -869,8 +896,14 @@ export class ModuleMocker {
       Object.defineProperty(f, 'mock', {
         configurable: false,
         enumerable: true,
-        get: () => this._ensureMockState(f),
-        set: val => this._mockState.set(f, val),
+        get: () => {
+          this._markStubUsed(f);
+          return this._ensureMockState(f);
+        },
+        set: val => {
+          this._markStubUsed(f);
+          this._mockState.set(f, val);
+        },
       });
 
       f.mockClear = () => {
@@ -921,6 +954,7 @@ export class ModuleMocker {
       f.mockImplementationOnce = (fn: T) => {
         // next function call will use this mock implementation return value
         // or default mock implementation return value
+        this._registerStub(f);
         const mockConfig = this._ensureMockConfig(f);
         mockConfig.specificMockImpls.push(fn);
         return f;
@@ -967,6 +1001,7 @@ export class ModuleMocker {
       f.mockImplementation = (fn: T) => {
         // next function call will use mock implementation return value;
         // when whenCalledWith routing is active, set the fall-through instead
+        this._registerStub(f);
         const mockConfig = this._ensureMockConfig(f);
         if (mockConfig.mockImpl === dispatcherImpl) {
           mockConfig.fallbackImpl = fn;
@@ -1011,7 +1046,9 @@ export class ModuleMocker {
       };
 
       if (metadata.mockImpl) {
+        // Restored by the mocker from the metadata, so not a stub the user wrote.
         f.mockImplementation(metadata.mockImpl);
+        this._unregisterStub(f);
       }
 
       return f;
@@ -1238,6 +1275,10 @@ export class ModuleMocker {
     });
     if (implementation) {
       fn.mockImplementation(implementation);
+      // Jest itself passes an implementation here for the timer APIs it
+      // installs (legacy fake timers), so an implementation given to `fn`
+      // cannot be attributed to the test file.
+      this._unregisterStub(fn);
     }
     return fn;
   }
@@ -1357,6 +1398,7 @@ export class ModuleMocker {
       mock.mockImplementation(function (this: unknown) {
         return original.apply(this, arguments);
       });
+      this._unregisterStub(mock);
     }
 
     return object[methodKey] as Mock;
@@ -1439,6 +1481,7 @@ export class ModuleMocker {
         // @ts-expect-error - wrong context
         return original.apply(this, arguments);
       });
+      this._unregisterStub(descriptor[accessType] as Mock);
     }
 
     Object.defineProperty(object, propertyKey, descriptor);
@@ -1586,6 +1629,23 @@ export class ModuleMocker {
         (value as Mock).mockClear();
       }
     }
+  }
+
+  /**
+   * Returns the mocks in this environment that were stubbed through
+   * `mockImplementation`, `mockImplementationOnce` or the helpers built on
+   * them, and whose stub was never used — neither called, nor inspected
+   * through a property such as `.mock`.
+   *
+   * The report is deliberately conservative: a mock that any test can have
+   * depended on is never included. Implementations passed to `withImplementation`
+   * or to `fn`, and mocks Jest creates itself (spies and automocks), are not
+   * tracked, and a stub stays registered across `mockClear` and `mockReset`.
+   */
+  getUnusedStubs(): Array<Mock> {
+    return [...this._stubState]
+      .filter(([, used]) => !used)
+      .map(([mock]) => mock);
   }
 
   resetAllMocks(): void {
