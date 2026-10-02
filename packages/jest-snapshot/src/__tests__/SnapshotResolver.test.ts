@@ -15,6 +15,7 @@ import {
 describe('defaults', () => {
   let snapshotResolver: SnapshotResolver;
   const projectConfig = makeProjectConfig({
+    id: 'default-resolver',
     rootDir: 'default',
     // snapshotResolver: null,
   });
@@ -50,6 +51,7 @@ describe('custom resolver in project config', () => {
     'customSnapshotResolver.js',
   );
   const projectConfig = makeProjectConfig({
+    id: 'custom-resolver',
     rootDir: 'custom1',
     snapshotResolver: customSnapshotResolverFile,
   });
@@ -79,6 +81,33 @@ describe('custom resolver in project config', () => {
       ),
     ).toBe(path.resolve('/abc/cde/__tests__/a.test.js'));
   });
+});
+
+it('keeps resolver caches separate for projects sharing a root and resolver', async () => {
+  const rootDir = 'shared-resolver-root';
+  const snapshotResolver = '/shared-resolver.js';
+  const createResolver = (suffix: string): SnapshotResolver => ({
+    resolveSnapshotPath: testPath => `${testPath}${suffix}`,
+    resolveTestPath: snapshotPath => snapshotPath.slice(0, -suffix.length),
+    testPathForConsistencyCheck: 'example.test.js',
+  });
+  const createLocalRequire =
+    (resolver: SnapshotResolver) =>
+    async <T = unknown>(): Promise<T> =>
+      resolver as T;
+
+  const first = await buildSnapshotResolver(
+    makeProjectConfig({id: 'shared-root-one', rootDir, snapshotResolver}),
+    createLocalRequire(createResolver('.one')),
+  );
+  const second = await buildSnapshotResolver(
+    makeProjectConfig({id: 'shared-root-two', rootDir, snapshotResolver}),
+    createLocalRequire(createResolver('.two')),
+  );
+
+  expect(first).not.toBe(second);
+  expect(first.resolveSnapshotPath('test.js')).toBe('test.js.one');
+  expect(second.resolveSnapshotPath('test.js')).toBe('test.js.two');
 });
 
 describe('malformed custom resolver in project config', () => {
