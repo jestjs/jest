@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-fake-timers, jest-runtime]` Run `node:timers/promises` timers on the fake clock while fake timers are installed, so `setTimeout`, `setImmediate`, `setInterval` and `scheduler.wait` from that module can be advanced with `jest.advanceTimersByTimeAsync()` and friends ([#16460](https://github.com/jestjs/jest/pull/16460))
+
 ### Fixes
 
 ### Chore & Maintenance

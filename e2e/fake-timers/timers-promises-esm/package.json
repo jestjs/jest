@@ -1,0 +1,8 @@
+{
+  "name": "timers-promises-esm",
+  "type": "module",
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
+  }
+}

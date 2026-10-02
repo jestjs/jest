@@ -212,7 +212,7 @@ export class CoreModuleProvider {
     this.requireBuilder = options.requireBuilder;
   }
 
-  require(moduleName: string): unknown {
+  require(moduleName: string, isRequireActual = false): unknown {
     const moduleWithoutNodePrefix =
       this.resolution.normalizeCoreModuleSpecifier(moduleName);
 
@@ -222,6 +222,20 @@ export class CoreModuleProvider {
 
     if (moduleWithoutNodePrefix === 'module') {
       return this.getMockedModuleClass();
+    }
+
+    // `timers/promises` is built on Node's internal timers, so it never goes
+    // through the globals fake timers replace. Hand out the faked module
+    // instead, unless the test explicitly asked for the real one.
+    if (moduleWithoutNodePrefix === 'timers/promises' && !isRequireActual) {
+      const fakeTimers = this.environment.fakeTimersModern;
+
+      if (fakeTimers !== null) {
+        // The real module is protected below, so the faked one is too: tests
+        // are free to assign it to a global.
+        protectProperties(fakeTimers.timersPromises);
+        return fakeTimers.timersPromises;
+      }
     }
 
     const coreModule = require(moduleName);
