@@ -269,7 +269,7 @@ export default class ChildProcessWorker
         break;
 
       case PARENT_MESSAGE_CLIENT_ERROR:
-        error = response[4];
+        error = unpackMessage(response[4]);
 
         if (error != null && typeof error === 'object') {
           const extra = error;

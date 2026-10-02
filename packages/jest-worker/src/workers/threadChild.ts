@@ -23,7 +23,10 @@ import {
   type ParentMessageMemUsage,
 } from '../types';
 import {isDataCloneError} from './isDataCloneError';
-import {packMessage} from './safeMessageTransferring';
+import {
+  packMessage,
+  replaceFunctionsWithStringReferences,
+} from './safeMessageTransferring';
 
 type UnknownFunction = (...args: Array<unknown>) => unknown | Promise<unknown>;
 
@@ -151,13 +154,35 @@ function reportError(error: Error, type: PARENT_MESSAGE_ERROR) {
     error = new Error('"null" or "undefined" thrown');
   }
 
-  parentPort!.postMessage([
+  const payload = [
     type,
     error.constructor && error.constructor.name,
     error.message,
     error.stack,
-    typeof error === 'object' ? {...error} : error,
-  ]);
+    typeof error === 'object'
+      ? replaceFunctionsWithStringReferences({...error})
+      : error,
+  ];
+
+  try {
+    parentPort!.postMessage(payload);
+  } catch (postMessageError) {
+    // Try to handle https://html.spec.whatwg.org/multipage/structured-data.html#structuredserializeinternal
+    // for `symbols` and `functions`
+    if (isDataCloneError(postMessageError)) {
+      parentPort!.postMessage([
+        payload[0],
+        payload[1],
+        payload[2],
+        payload[3],
+        packMessage(payload[4]),
+      ]);
+
+      return;
+    }
+
+    throw postMessageError;
+  }
 }
 
 function end(): void {
