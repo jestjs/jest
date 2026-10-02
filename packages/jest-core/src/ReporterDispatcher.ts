@@ -5,7 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Reporter, ReporterOnStartOptions} from '@jest/reporters';
+import {
+  CoverageReporter,
+  type Reporter,
+  type ReporterOnStartOptions,
+} from '@jest/reporters';
 import type {
   AggregatedResult,
   Test,
@@ -98,6 +102,13 @@ export default class ReporterDispatcher {
     testContexts: Set<TestContext>,
     results: AggregatedResult,
   ): Promise<void> {
+    // Coverage is input to custom reporters, regardless of their output order.
+    for (const reporter of this._reporters) {
+      if (reporter instanceof CoverageReporter) {
+        results.coverageMap = await reporter.getCoverageMap(testContexts);
+      }
+    }
+
     for (const reporter of this._reporters) {
       if (reporter.onRunComplete) {
         await reporter.onRunComplete(testContexts, results);

@@ -121,6 +121,27 @@ describe('onRunComplete', () => {
     }));
   });
 
+  test('prepares coverage without writing reports and reuses it on completion', async () => {
+    const transformCoverage = jest.fn(async map => map);
+    libSourceMaps.createSourceMapStore.mockReturnValue({transformCoverage});
+    istanbulReports.create.mockClear();
+
+    const testReporter = new CoverageReporter({coverageReporters: ['json']});
+    const testContexts = new Set();
+    const map = await testReporter.getCoverageMap(testContexts);
+
+    expect(map.files()).toContain(
+      path.resolve(__dirname, '__fixtures__/path-test/100pc_coverage_file.js'),
+    );
+    expect(istanbulReports.create).not.toHaveBeenCalled();
+
+    await testReporter.onRunComplete(testContexts, mockAggResults);
+
+    expect(mockAggResults.coverageMap).toBe(map);
+    expect(transformCoverage).toHaveBeenCalledTimes(1);
+    expect(istanbulReports.create).toHaveBeenCalledTimes(1);
+  });
+
   test('getLastError() returns an error when threshold is not met for global', async () => {
     const testReporter = new CoverageReporter(
       {
