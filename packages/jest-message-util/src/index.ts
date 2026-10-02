@@ -69,6 +69,25 @@ const ANCESTRY_SEPARATOR = ' \u203A ';
 const TITLE_BULLET = chalk.bold('\u25CF ');
 const STACK_TRACE_COLOR = chalk.dim;
 const STACK_PATH_REGEXP = /\s*at.*\(?(:\d*:\d*|native)\)?/;
+// `stack-utils` only understands the V8 `at functionName (location)` shape.
+// Firefox and Safari write `functionName@location` instead, and `stack-utils`
+// does not reject the line: it reports the file as `functionName@location`,
+// which is not an absolute path, so no code frame is ever rendered for those
+// stacks and the location is wrong wherever it is read.
+const V8_FRAME_REGEXP = /^\s*at\s/;
+// Firefox appends the eval chain to the frame, e.g.
+// `foo@file.js line 12 > eval line 5 > eval:1:2`. The outermost line is the one
+// that points into the source, so the rest of the chain is dropped — the same
+// normalisation `error-stack-parser` applies.
+const FIREFOX_EVAL_CHAIN_REGEXP =
+  / line (\d+)(?: > eval line \d+)* > eval:\d+:\d+/g;
+// The `…:line:column > eval:line:column` variant names the eval'd code last, so
+// the frame's own location is the one written before it.
+const BROWSER_EVAL_SUFFIX_REGEXP = / > .*$/g;
+const BROWSER_FRAME_REGEXP = /^([^@]*)@(.+?)(?::(\d+))(?::(\d+))?$/;
+// The same split as `BROWSER_FRAME_REGEXP`, keeping the surrounding text so a
+// rendered line can be rebuilt.
+const BROWSER_PATH_REGEXP = /(^\s*[^@]*@)(.+?)(:\d+(?::\d+)?(?:\s*>.*)?$)/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
 
@@ -340,13 +359,24 @@ export const formatPath = (
   config: StackTraceConfig,
   relativeTestPath: string | null = null,
 ): string => {
-  // Extract the file path from the trace line.
-  const match = line.match(/(^\s*at .*?\(?)([^()]+)(:\d+:\d+\)?.*$)/);
+  // Extract the file path from the trace line: V8 frames carry it after `at`,
+  // browser frames after `@`.
+  const v8Match = line.match(/(^\s*at .*?\(?)([^()]+)(:\d+:\d+\)?.*$)/);
+  const browserMatch = v8Match ? null : line.match(BROWSER_PATH_REGEXP);
+  const match = v8Match ?? browserMatch;
+
   if (!match) {
     return line;
   }
 
-  let filePath = slash(path.relative(config.rootDir, match[2]));
+  let filePath = match[2];
+  // A browser frame can point at a URL, which has no relation to the project
+  // root; only a filesystem path can be made relative to it. V8 locations are
+  // always paths and keep being relativised.
+  if (!browserMatch || path.isAbsolute(filePath)) {
+    filePath = path.relative(config.rootDir, filePath);
+  }
+  filePath = slash(filePath);
   // highlight paths from the current test file
   if (
     (config.testMatch &&
@@ -357,6 +387,64 @@ export const formatPath = (
     filePath = chalk.reset.cyan(filePath);
   }
   return STACK_TRACE_COLOR(match[1]) + filePath + STACK_TRACE_COLOR(match[3]);
+};
+
+const parseV8StackLine = (line: string): Frame | null =>
+  stackUtils.parseLine(line) as Frame | null;
+
+const parseBrowserStackLine = (line: string): Frame | null => {
+  const match = BROWSER_FRAME_REGEXP.exec(
+    line
+      .replaceAll(FIREFOX_EVAL_CHAIN_REGEXP, ':$1')
+      .replaceAll(BROWSER_EVAL_SUFFIX_REGEXP, ''),
+  );
+
+  if (!match) {
+    return null;
+  }
+
+  const [, functionName, file, lineNumber, columnNumber] = match;
+
+  // A browser location is either a URL or a path, so requiring a separator
+  // keeps an error message that happens to contain `@` from reading as a frame.
+  if (!file.includes('/') && !file.includes('\\')) {
+    return null;
+  }
+
+  // `StackData` types `constructor` as a boolean flag, which no object literal
+  // can satisfy, so the frame is cast to the shape the callers expect.
+  const frame = {
+    file: slash(file),
+    line: Number(lineNumber),
+  } as Frame;
+
+  if (columnNumber !== undefined) {
+    frame.column = Number(columnNumber);
+  }
+
+  if (functionName) {
+    frame.function = functionName;
+  }
+
+  return frame;
+};
+
+// Parses a single stack line, whichever flavour the runtime wrote it in, and
+// resolves `file://` locations to filesystem paths. Returns `null` for a line
+// that carries no location, such as an `<anonymous>` frame.
+export const parseStackLine = (line: string): Frame | null => {
+  const trimmedLine = line.trim();
+  // V8 frames keep their leading `at`, so the two flavours cannot be confused
+  // and the browser shape is only worth considering for the other lines.
+  const parsedFrame = V8_FRAME_REGEXP.test(trimmedLine)
+    ? parseV8StackLine(trimmedLine)
+    : (parseBrowserStackLine(trimmedLine) ?? parseV8StackLine(trimmedLine));
+
+  if (parsedFrame?.file?.startsWith('file://')) {
+    parsedFrame.file = slash(fileURLToPath(parsedFrame.file));
+  }
+
+  return parsedFrame;
 };
 
 export function getStackTraceLines(
@@ -373,13 +461,10 @@ export function getTopFrame(lines: Array<string>): Frame | null {
       continue;
     }
 
-    const parsedFrame = stackUtils.parseLine(line.trim());
+    const parsedFrame = parseStackLine(line);
 
-    if (parsedFrame && parsedFrame.file) {
-      if (parsedFrame.file.startsWith('file://')) {
-        parsedFrame.file = slash(fileURLToPath(parsedFrame.file));
-      }
-      return parsedFrame as Frame;
+    if (parsedFrame?.file) {
+      return parsedFrame;
     }
   }
 
