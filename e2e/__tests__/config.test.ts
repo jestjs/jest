@@ -5,6 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {mkdtempSync, rmSync} from 'graceful-fs';
+import {tmpdir} from 'node:os';
+import * as path from 'node:path';
 import runJest, {getConfig} from '../runJest';
 
 test('config as JSON', () => {
@@ -119,4 +122,26 @@ test('should work with merged config as callback for define function config', ()
   ]);
 
   expect(result.exitCode).toBe(0);
+});
+
+test('--config <file> works when cwd has no discoverable config of its own', () => {
+  // Regression test for #16457: `suppliesGlobalConfig` (introduced by #16411)
+  // called `resolveConfigPath(cwd, ...)` even when `--config` already pointed
+  // directly at a config file, crashing with "Could not find a config file"
+  // whenever `cwd` had no jest config or package.json to traverse to.
+  const cwd = mkdtempSync(path.join(tmpdir(), 'jest-config-no-ancestor-'));
+  try {
+    const configPath = path.resolve(
+      __dirname,
+      '../config-single-project-no-ancestor-config/myconfig.js',
+    );
+
+    const result = runJest(cwd, ['--config', configPath, '--ci'], {
+      skipPkgJsonCheck: true,
+    });
+
+    expect(result.exitCode).toBe(0);
+  } finally {
+    rmSync(cwd, {force: true, recursive: true});
+  }
 });
