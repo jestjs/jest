@@ -552,6 +552,20 @@ describe('jest.fn()', () => {
     );
   });
 
+  test('.mockResolvedValue() / .mockRejectedValue() preserve Promise members of return unions', () => {
+    const mock = fn<() => string | PromiseLike<number>>();
+
+    expect(
+      mock
+        .mockResolvedValue(123)
+        .mockResolvedValueOnce(456)
+        .mockRejectedValue(new Error('boom'))
+        .mockRejectedValueOnce(new Error('boom')),
+    ).type.toBe<Mock<() => string | PromiseLike<number>>>();
+    expect(mock.mockResolvedValue).type.not.toBeCallableWith('test');
+    expect(mock.mockResolvedValueOnce).type.not.toBeCallableWith('test');
+  });
+
   test('.withImplementation()', () => {
     expect(mockFn.withImplementation(mockFnImpl, () => {})).type.toBe<void>();
     expect(mockFn.withImplementation(mockFnImpl, async () => {})).type.toBe<
