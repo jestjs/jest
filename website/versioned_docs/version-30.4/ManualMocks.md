@@ -33,6 +33,14 @@ If we want to mock Node's built-in modules (e.g.: `fs` or `path`), then explicit
 
 :::
 
+## Mocking multiple copies of a module
+
+`jest.mock('config')` resolves `config` from the calling file. Each installed copy is a separate module, so mocking one copy does not mock other copies of the same package.
+
+For example, a test helper with its own `node_modules/config` can mock that copy while the code under test loads the project's `node_modules/config`. This can happen with `npm link` or when dependencies are nested in a normal installation.
+
+Register the mock from a test file that resolves the same copy as the code under test. Alternatively, use [`moduleNameMapper`](Configuration.md#modulenamemapper-objectstring-string--arraystring) to map `^config$` to `<rootDir>/node_modules/config`, so both resolve to the project's copy. Only use this mapping if both should share that dependency; the helper may need a different installed version.
+
 ## Examples
 
 ```bash
