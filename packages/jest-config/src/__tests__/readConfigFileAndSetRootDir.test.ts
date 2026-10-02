@@ -15,6 +15,33 @@ jest.mock('graceful-fs').mock('jest-util');
 
 describe('readConfigFileAndSetRootDir', () => {
   describe('TypeScript ESM file', () => {
+    let restoreNativeTypeScriptSupport: (() => void) | undefined;
+
+    // `process.features.typescript` is `undefined` before Node 22.18/23.6,
+    // `false` when the flag is disabled and `'strip'`/`'transform'` otherwise.
+    const setNativeTypeScriptSupport = (support: string | false) => {
+      const original = Object.getOwnPropertyDescriptor(
+        process.features,
+        'typescript',
+      );
+      Object.defineProperty(process.features, 'typescript', {
+        configurable: true,
+        value: support,
+      });
+      restoreNativeTypeScriptSupport = () => {
+        if (original === undefined) {
+          delete (process.features as {typescript?: unknown}).typescript;
+        } else {
+          Object.defineProperty(process.features, 'typescript', original);
+        }
+      };
+    };
+
+    afterEach(() => {
+      restoreNativeTypeScriptSupport?.();
+      restoreNativeTypeScriptSupport = undefined;
+    });
+
     test('reads .mts config and sets `rootDir`', async () => {
       jest.mocked(requireOrImportModule).mockResolvedValueOnce({notify: true});
 
@@ -27,6 +54,7 @@ describe('readConfigFileAndSetRootDir', () => {
     });
 
     test('throws a clear error when native import fails, without falling back to ts-node', async () => {
+      setNativeTypeScriptSupport(false);
       jest
         .mocked(requireOrImportModule)
         .mockRejectedValueOnce(new Error('Unknown file extension ".mts"'));
@@ -43,6 +71,7 @@ describe('readConfigFileAndSetRootDir', () => {
     });
 
     test('throws a clear error when native import fails with a SyntaxError', async () => {
+      setNativeTypeScriptSupport(false);
       jest
         .mocked(requireOrImportModule)
         .mockRejectedValueOnce(new SyntaxError('Unexpected token'));
@@ -54,6 +83,26 @@ describe('readConfigFileAndSetRootDir', () => {
       await expect(readConfigFileAndSetRootDir(configPath)).rejects.toThrow(
         /jest\.config\.mts requires native TypeScript support/,
       );
+      expect(fs.readFileSync).not.toHaveBeenCalled();
+    });
+
+    test('surfaces the error thrown by the config when native TypeScript support is available', async () => {
+      setNativeTypeScriptSupport('strip');
+      jest
+        .mocked(requireOrImportModule)
+        .mockRejectedValueOnce(new Error('PORT env var is required'));
+
+      const configPath = path.join(
+        path.resolve('some', 'path', 'to'),
+        'jest.config.mts',
+      );
+      const error = await readConfigFileAndSetRootDir(configPath).then(
+        () => null,
+        (error_: Error) => error_,
+      );
+
+      expect(error?.message).toMatch('PORT env var is required');
+      expect(error?.message).not.toMatch('requires native TypeScript support');
       expect(fs.readFileSync).not.toHaveBeenCalled();
     });
   });
