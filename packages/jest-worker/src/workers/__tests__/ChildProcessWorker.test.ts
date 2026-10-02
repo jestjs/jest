@@ -10,6 +10,7 @@ import {PassThrough, type Stream} from 'stream';
 import getStream from 'get-stream';
 import {
   CHILD_MESSAGE_CALL,
+  CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
   type ChildMessage,
@@ -28,7 +29,7 @@ jest.mock('child_process');
 
 let Worker: typeof import('../ChildProcessWorker').default;
 let childProcess: typeof import('child_process');
-let forkInterface: ReturnType<typeof childProcess.fork>;
+let forkInterface: MockedForkInterface;
 let originalExecArgv: typeof process.execArgv;
 let originalForceColor: string | undefined;
 
@@ -50,11 +51,9 @@ beforeEach(() => {
 
   childProcess = require('child_process') as typeof import('child_process');
   jest.mocked(childProcess.fork).mockImplementation(() => {
-    forkInterface = new MockedForkInterface() as unknown as ReturnType<
-      typeof childProcess.fork
-    >;
+    forkInterface = new MockedForkInterface();
 
-    return forkInterface;
+    return forkInterface as unknown as ReturnType<typeof childProcess.fork>;
   });
 
   totalmem.mockReset();
@@ -714,4 +713,63 @@ it('should restart immediately when limit is 0 without checking memory', () => {
   );
   expect(worker.state).toBe(WorkerStates.RESTARTING);
   expect(forkInterface.kill).toHaveBeenCalledTimes(1);
+});
+
+it('does not query memory usage when END exits while the IPC channel is still connected', () => {
+  const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+  try {
+    const worker = new Worker({
+      forkOptions: {},
+      idleMemoryLimit: 1024 * 1024,
+      maxRetries: 3,
+      workerPath: '/tmp/foo',
+    } as WorkerOptions);
+
+    worker.send(
+      [CHILD_MESSAGE_END, false],
+      () => {},
+      () => {},
+      () => {},
+    );
+
+    // Race: Node can emit `exit` before `disconnect`, so `connected` is still true.
+    forkInterface.connected = true;
+    forkInterface.emit('exit', 0);
+
+    expect(forkInterface.send).not.toHaveBeenCalledWith(
+      [CHILD_MESSAGE_MEM_USAGE],
+      expect.any(Function),
+    );
+    expect(errorSpy).not.toHaveBeenCalled();
+    expect(forkInterface.kill).not.toHaveBeenCalled();
+  } finally {
+    errorSpy.mockRestore();
+  }
+});
+
+it('does not restart when END arrives with idleMemoryLimit 0', () => {
+  const worker = new Worker({
+    forkOptions: {},
+    idleMemoryLimit: 0,
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  } as WorkerOptions);
+
+  worker.send(
+    [CHILD_MESSAGE_END, false],
+    () => {},
+    () => {},
+    () => {},
+  );
+
+  forkInterface.connected = true;
+  forkInterface.emit('exit', 0);
+
+  expect(worker.state).not.toBe(WorkerStates.RESTARTING);
+  expect(forkInterface.kill).not.toHaveBeenCalled();
+  expect(forkInterface.send).not.toHaveBeenCalledWith(
+    [CHILD_MESSAGE_MEM_USAGE],
+    expect.any(Function),
+  );
 });

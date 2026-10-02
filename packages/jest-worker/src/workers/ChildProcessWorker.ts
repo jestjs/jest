@@ -10,6 +10,7 @@ import {totalmem} from 'node:os';
 import mergeStream from 'merge-stream';
 import {stdout as stdoutSupportsColor} from 'supports-color';
 import {
+  CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
   type ChildMessage,
@@ -436,16 +437,25 @@ export default class ChildProcessWorker
     onProcessStart(this);
 
     this._onProcessEnd = (...args) => {
-      const hasRequest = !!this._request;
+      const pendingRequest = this._request;
+      const hasRequest = !!pendingRequest;
 
       // Clean the request to avoid sending past requests to workers that fail
       // while waiting for a new request (timers, unhandled rejections...)
       this._request = null;
 
+      // CHILD_MESSAGE_END is answered by the child exiting, not by a reply.
+      // If we treat it like a finished call we try to query memory (or
+      // restart) over a half-closed IPC channel and print
+      // "Unable to check memory usage Error: write EPIPE".
+      const isShuttingDown =
+        pendingRequest != null && pendingRequest[0] === CHILD_MESSAGE_END;
+
       if (
         this._childIdleMemoryUsageLimit !== null &&
         this._child.connected &&
-        hasRequest
+        hasRequest &&
+        !isShuttingDown
       ) {
         if (this._childIdleMemoryUsageLimit === 0) {
           // Special case: `idleMemoryLimit` of `0` means always restart.
