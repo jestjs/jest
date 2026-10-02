@@ -8,6 +8,8 @@
 import {expect} from 'tstyche';
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
 import {jest, expect as jestExpect} from '@jest/globals';
+import type {TestResult} from '@jest/types';
+import {JestAssertionError, type SyncExpectationResult} from 'expect';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 
 // asymmetric matchers
@@ -446,6 +448,58 @@ expect(
 ).type.toRaiseError();
 
 // extend
+
+const matcherResult: TestResult.MatcherResult = {
+  message: 'images differ',
+  metadata: {diffPath: 'image-diff.png'},
+  pass: false,
+};
+const assertionResult = {
+  matcherResults: [matcherResult],
+} as TestResult.AssertionResult;
+const assertionError = new JestAssertionError();
+
+expect(matcherResult.metadata).type.toBe<
+  TestResult.MatcherMetadata | undefined
+>();
+expect(assertionResult.matcherResults).type.toBe<
+  Array<TestResult.MatcherResult> | undefined
+>();
+expect(assertionError.matcherResult).type.toBe<
+  TestResult.MatcherResult | undefined
+>();
+expect(
+  jestExpect.extend({
+    toHaveImageDiff(): SyncExpectationResult {
+      return {
+        message: () => 'images differ',
+        metadata: {
+          diffPath: 'image-diff.png',
+          nested: {ok: true},
+          sizes: [1, 2],
+        },
+        pass: false,
+      };
+    },
+  }),
+).type.toBe<void>();
+
+expect(
+  jestExpect.extend({
+    async toHaveAsyncImageDiff(): Promise<SyncExpectationResult> {
+      return {
+        message: () => 'images differ',
+        metadata: {diffPath: 'diff.png'},
+        pass: false,
+      };
+    },
+  }),
+).type.toBe<void>();
+expect<{
+  metadata: {diffPath: () => string};
+  message(): string;
+  pass: boolean;
+}>().type.not.toBeAssignableTo<SyncExpectationResult>();
 
 type MatcherUtils = typeof jestMatcherUtils & {
   iterableEquality: Tester;

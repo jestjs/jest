@@ -12,7 +12,7 @@ import isGeneratorFn from 'is-generator-fn';
 import slash from 'slash';
 import StackUtils from 'stack-utils';
 import type {Status, TestCaseResult} from '@jest/test-result';
-import type {Circus, Global} from '@jest/types';
+import type {Circus, Global, TestResult} from '@jest/types';
 import {flattenErrorStack} from 'jest-message-util';
 import {
   ErrorWithStack,
@@ -27,6 +27,17 @@ import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
 const jestEachBuildDir = slash(path.dirname(require.resolve('jest-each')));
+
+function isMatcherResult(value: unknown): value is TestResult.MatcherResult {
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    'message' in value &&
+    typeof value.message === 'string' &&
+    'pass' in value &&
+    typeof value.pass === 'boolean'
+  );
+}
 
 function takesDoneCallback(fn: Circus.AsyncFn): fn is Global.DoneTakingTestFn {
   return fn.length > 0;
@@ -517,6 +528,22 @@ export const parseSingleTestResult = (
     testResult.testPath,
   );
 
+  const matcherResults = testResult.errorsDetailed.flatMap(error => {
+    if (
+      !error ||
+      typeof error !== 'object' ||
+      !('matcherResult' in error) ||
+      !isMatcherResult(error.matcherResult)
+    ) {
+      return [];
+    }
+
+    // Raw actual/expected values stay in failureDetails. Only the portable
+    // matcher contract belongs in reporter events and formatted JSON.
+    const {message, metadata, pass} = error.matcherResult;
+    return [{message, ...(metadata === undefined ? {} : {metadata}), pass}];
+  });
+
   return {
     ancestorTitles,
     duration: testResult.duration,
@@ -526,6 +553,7 @@ export const parseSingleTestResult = (
     fullName,
     invocations: testResult.invocations,
     location: testResult.location,
+    ...(matcherResults.length > 0 ? {matcherResults} : {}),
     numPassingAsserts: testResult.numPassingAsserts,
     retryMessages: formatRetryError
       ? testResult.retryReasonsDetailed.map(formatRetryError)
