@@ -812,6 +812,45 @@ describe('ScriptTransformer', () => {
     );
   });
 
+  it('writes only the source map when `config.cache` is false', async () => {
+    config = {
+      ...config,
+      cache: false,
+      transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
+    };
+    const scriptTransformer = await createScriptTransformer(config);
+
+    const map = {
+      mappings: ';AAAA',
+      version: 3,
+    };
+
+    jest
+      .mocked(
+        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
+      )
+      .mockReturnValue({
+        code: 'content',
+        map,
+      });
+
+    const result = scriptTransformer.transform(
+      '/fruits/banana.js',
+      getCoverageOptions(),
+    );
+    expect(result.code).toBe('content');
+    expect(result.sourceMapPath).toEqual(expect.any(String));
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
+    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
+      result.sourceMapPath,
+      JSON.stringify(map),
+      {
+        encoding: 'utf8',
+        fsync: false,
+      },
+    );
+  });
+
   it('in async mode, writes source map if preprocessor supplies it', async () => {
     config = {
       ...config,
@@ -1654,7 +1693,7 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync).toHaveBeenCalledWith(cachePath, 'utf8');
     expect(writeFileAtomic.sync).not.toHaveBeenCalled();
 
-    // Don't read from the cache when `config.cache` is false.
+    // Neither read nor write the code cache when `config.cache` is false.
     jest.resetModules();
     reset();
     mockFs = mockFsCopy;
@@ -1665,7 +1704,11 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
     expect(fs.readFileSync).not.toHaveBeenCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(writeFileAtomic.sync).not.toHaveBeenCalledWith(
+      cachePath,
+      expect.anything(),
+      expect.anything(),
+    );
   });
 
   it('in async mode, reads values from the cache', async () => {
@@ -1701,7 +1744,7 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync).toHaveBeenCalledWith(cachePath, 'utf8');
     expect(writeFileAtomic.sync).not.toHaveBeenCalled();
 
-    // Don't read from the cache when `config.cache` is false.
+    // Neither read nor write the code cache when `config.cache` is false.
     jest.resetModules();
     reset();
     mockFs = mockFsCopy;
@@ -1715,7 +1758,11 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
     expect(fs.readFileSync).not.toHaveBeenCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(writeFileAtomic.sync).not.toHaveBeenCalledWith(
+      cachePath,
+      expect.anything(),
+      expect.anything(),
+    );
   });
 
   it('reads values from the cache when using async preprocessor', async () => {
@@ -1751,7 +1798,7 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync).toHaveBeenCalledWith(cachePath, 'utf8');
     expect(writeFileAtomic.sync).not.toHaveBeenCalled();
 
-    // Don't read from the cache when `config.cache` is false.
+    // Neither read nor write the code cache when `config.cache` is false.
     jest.resetModules();
     reset();
     mockFs = mockFsCopy;
@@ -1765,7 +1812,11 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
     expect(fs.readFileSync).not.toHaveBeenCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(writeFileAtomic.sync).not.toHaveBeenCalledWith(
+      cachePath,
+      expect.anything(),
+      expect.anything(),
+    );
   });
 
   it('reads values from the cache when the file contains colons', async () => {

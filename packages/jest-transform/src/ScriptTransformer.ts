@@ -494,7 +494,11 @@ class ScriptTransformer {
       writeCacheFile(sourceMapPath, sourceMapContent);
     }
 
-    writeCodeCacheFile(cacheFilePath, code);
+    // The code cache is only read back when `config.cache` is on. Source maps
+    // are still written: stack traces and coverage read them by path.
+    if (this._config.cache) {
+      writeCodeCacheFile(cacheFilePath, code);
+    }
 
     return {
       code,
