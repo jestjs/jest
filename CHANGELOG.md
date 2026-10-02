@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-reporters]` Merge V8 coverage incrementally once 10,000 unmerged script coverages are pending, bounding main-process memory on large codebases with `--coverageProvider=v8` ([#16452](https://github.com/jestjs/jest/pull/16452))
+
 ### Chore & Maintenance
 
 ## 30.5.2
