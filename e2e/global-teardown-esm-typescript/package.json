@@ -1,0 +1,11 @@
+{
+  "name": "global-teardown-esm-typescript",
+  "version": "1.0.0",
+  "jest": {
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
+    "globalTeardown": "<rootDir>/teardown.ts",
+    "testEnvironment": "node"
+  }
+}

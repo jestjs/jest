@@ -866,6 +866,8 @@ Any global variables that are defined through `globalSetup` can only be read in 
 
 While code transformation is applied to the linked setup-file, Jest will **not** transform any code in `node_modules`. This is due to the need to load the actual transformers (e.g. `babel` or `typescript`) to perform transformation.
 
+A setup file that is an ES module is imported as one, so `import.meta` works inside it. This requires your transformer to emit ESM for it, and running Jest with `--experimental-vm-modules` on Node 20.19, 22.12 or later - see [ES module hooks](ECMAScriptModules.md#es-modules-in-globalsetup-and-globalteardown).
+
 :::
 
 ```js title="setup.js"
@@ -897,7 +899,7 @@ This option allows the use of a custom global teardown module which must export 
 
 A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project.
 
-The same caveat concerning transformation of `node_modules` as for `globalSetup` applies to `globalTeardown`.
+The same caveat concerning transformation of `node_modules` as for `globalSetup` applies to `globalTeardown`. A teardown file that is an ES module is imported as one, under the same conditions as for [`globalSetup`](#globalsetup-string) - see [ES module hooks](ECMAScriptModules.md#es-modules-in-globalsetup-and-globalteardown).
 
 :::
 

@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-core]` Load a `globalSetup` or `globalTeardown` file that is an ES module as one, so `import.meta` works in it - including in TypeScript hooks treated as ESM through `extensionsToTreatAsEsm` ([#16463](https://github.com/jestjs/jest/pull/16463))
+
 ### Chore & Maintenance
 
 ## 30.5.2

@@ -8,8 +8,45 @@
 import type {Test} from '@jest/test-result';
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
+import Resolver from 'jest-resolve';
 import {isError} from 'jest-util';
 import prettyFormat from 'pretty-format';
+
+// Passed to the transformer for hooks that are ES modules, mirroring the caller
+// flags `jest-runtime` uses for test modules. Transpiling them to CommonJS
+// instead would break `import.meta`. The remaining options repeat the defaults
+// `requireAndTranspileModule` applies on its own.
+const esmTransformOptions = {
+  applyInteropRequireDefault: true,
+  instrument: false,
+  supportsDynamicImport: true,
+  supportsExportNamespaceFrom: true,
+  supportsStaticESM: true,
+  supportsTopLevelAwait: true,
+};
+
+function shouldLoadHookAsEsm(
+  modulePath: string,
+  projectConfig: Config.ProjectConfig,
+): boolean {
+  // Hooks run in the main process and are evaluated through `require`, so the
+  // only way to load an ES module is Node's `require(esm)` support. The flag
+  // is not part of `@types/node` yet, and it is `undefined` on Node versions
+  // that cannot do this at all.
+  const canRequireEsm =
+    (process.features as {require_module?: boolean}).require_module === true;
+
+  return (
+    canRequireEsm &&
+    // The same predicate `jest-runtime` uses for test modules. It only reports
+    // `true` when `vm` modules are available, i.e. when jest is run the way ESM
+    // is supported at all (`--experimental-vm-modules`).
+    Resolver.unstable_shouldLoadAsEsm(
+      modulePath,
+      projectConfig.extensionsToTreatAsEsm,
+    )
+  );
+}
 
 export default async function runGlobalHook({
   allTests,
@@ -57,6 +94,9 @@ export default async function runGlobalHook({
 
             await globalModule(globalConfig, projectConfig);
           },
+          shouldLoadHookAsEsm(modulePath, projectConfig)
+            ? esmTransformOptions
+            : undefined,
         );
       } catch (error) {
         if (

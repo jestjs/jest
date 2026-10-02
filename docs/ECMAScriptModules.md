@@ -60,6 +60,18 @@ Packages resolve through the [`require` and `module-sync` conditions](https://no
 
 On Node versions older than v24.9, `require()` of an ESM file still throws `ERR_REQUIRE_ESM`.
 
+## ES modules in `globalSetup` and `globalTeardown`
+
+A [`globalSetup`](Configuration.md#globalsetup-string) or [`globalTeardown`](Configuration.md#globalteardown-string) hook that is an ES module is imported as one, so `import.meta` is available inside it. This includes TypeScript hooks that are ESM only because of [`extensionsToTreatAsEsm`](Configuration.md#extensionstotreatasesm-arraystring), as long as your [transformer](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) emits ESM rather than CommonJS when Jest says the hook is ESM - `babel-jest` with `@babel/preset-env` does.
+
+Hooks run in the process running the CLI, before Jest's module system exists, so Node loads the hook itself, through [`require(esm)`](https://nodejs.org/api/modules.html#loading-ecmascript-modules-using-require). This needs a Node version where `require(esm)` is enabled by default - v20.19.0, v22.12.0, or v24 and later - and running Jest with `--experimental-vm-modules` as described above. On older Node versions, and without `--experimental-vm-modules`, a hook is still treated as CommonJS and transpiled accordingly.
+
+:::note
+
+Because Node loads an ESM hook natively, the modules it imports are neither transformed nor resolved by Jest - they follow Node's own ESM resolution, and top-level `await` in its graph is not supported (`ERR_REQUIRE_ASYNC_MODULE`). Keep an ESM hook's imports to what Node can load on its own.
+
+:::
+
 ## Divergences from Node
 
 Jest's module system diverges from Node's in a few places:

@@ -7,7 +7,9 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
+import {pathToFileURL} from 'url';
 import * as fs from 'graceful-fs';
+import {onNodeVersions} from '@jest/test-utils';
 import {
   cleanup,
   createEmptyPackage,
@@ -27,6 +29,14 @@ const nodeModulesDIR = path.join(tmpdir(), 'jest-global-setup-node-modules');
 const rejectionDir = path.join(tmpdir(), 'jest-global-setup-rejection');
 const e2eDir = path.resolve(__dirname, '../global-setup');
 const esmTmpDir = path.join(tmpdir(), 'jest-global-setup-esm');
+const esmTypeScriptE2eDir = path.resolve(
+  __dirname,
+  '../global-setup-esm-typescript',
+);
+const esmTypeScriptTmpDir = path.join(
+  tmpdir(),
+  'jest-global-setup-esm-typescript',
+);
 
 beforeAll(() => {
   runYarnInstall(e2eDir);
@@ -40,6 +50,7 @@ beforeEach(() => {
   cleanup(nodeModulesDIR);
   cleanup(rejectionDir);
   cleanup(esmTmpDir);
+  cleanup(esmTypeScriptTmpDir);
 });
 
 afterAll(() => {
@@ -50,6 +61,7 @@ afterAll(() => {
   cleanup(nodeModulesDIR);
   cleanup(rejectionDir);
   cleanup(esmTmpDir);
+  cleanup(esmTypeScriptTmpDir);
 });
 
 test('globalSetup is triggered once before all test suites', () => {
@@ -200,4 +212,20 @@ test('globalSetup works with ESM modules', () => {
   });
 
   expect(exitCode).toBe(0);
+});
+
+onNodeVersions('>=20.19.0 <21 || >=22.12.0', () => {
+  test('globalSetup works with TypeScript that uses import.meta', () => {
+    const {exitCode} = runJest(esmTypeScriptE2eDir, ['--no-cache'], {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
+    });
+
+    expect(exitCode).toBe(0);
+    expect(
+      fs.readFileSync(path.join(esmTypeScriptTmpDir, 'setup.txt'), 'utf8'),
+    ).toBe(
+      pathToFileURL(fs.realpathSync(path.join(esmTypeScriptE2eDir, 'setup.ts')))
+        .href,
+    );
+  });
 });
