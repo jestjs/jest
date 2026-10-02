@@ -23,6 +23,7 @@
     "@jest/fake-timers": "workspace:*",
     "@jest/globals": "workspace:*",
     "@jest/source-map": "workspace:*",
+    "@jest/snapshot-utils": "workspace:*",
     "@jest/test-result": "workspace:*",
     "@jest/transform": "workspace:*",
     "@jest/types": "workspace:*",
@@ -38,7 +39,6 @@
     "jest-mock": "workspace:*",
     "jest-regex-util": "workspace:*",
     "jest-resolve": "workspace:*",
-    "jest-snapshot": "workspace:*",
     "jest-util": "workspace:*",
     "slash": "^3.0.0",
     "strip-bom": "^4.0.0"
