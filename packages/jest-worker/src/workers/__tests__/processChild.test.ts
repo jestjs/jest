@@ -370,6 +370,46 @@ it('returns results with circular references', () => {
   expect(processCallError.self).toBe(processCallError.self.self);
 });
 
+it('fails the call when its result cannot be sent', () => {
+  const sendError = new RangeError('Invalid string length');
+  spyProcessSend
+    .mockImplementationOnce(() => {
+      throw sendError;
+    })
+    .mockImplementationOnce(() => {
+      throw sendError;
+    });
+
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_INITIALIZE,
+      true, // Not really used here, but for type purity.
+      './my-fancy-worker',
+    ],
+    null,
+  );
+
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_CALL,
+      true, // Not really used here, but for type purity.
+      'fooWorks',
+      [],
+    ],
+    null,
+  );
+
+  expect(spyProcessSend.mock.calls[2][0]).toEqual([
+    PARENT_MESSAGE_CLIENT_ERROR,
+    'RangeError',
+    'Invalid string length',
+    sendError.stack,
+    {},
+  ]);
+});
+
 it('calls the main module if the method call is "default"', () => {
   process.emit(
     'message',
