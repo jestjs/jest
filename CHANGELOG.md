@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-worker]` Fail the call when the child process cannot send its result, instead of crashing the child or leaving the call pending ([#16481](https://github.com/jestjs/jest/pull/16481))
+
 ### Chore & Maintenance
 
 ## 30.5.2
