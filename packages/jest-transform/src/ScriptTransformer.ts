@@ -328,6 +328,16 @@ class ScriptTransformer {
     this._transformsAreLoaded = true;
   }
 
+  private _transformerCacheKeyDependsOnOtherFiles(filename: string): boolean {
+    if (!this._transformsAreLoaded) {
+      return false;
+    }
+
+    const {transformer} = this._getTransformer(filename) ?? {};
+
+    return transformer?.cacheKeyDependsOnOtherFiles === true;
+  }
+
   private _getTransformer(filename: string) {
     if (!this._transformsAreLoaded) {
       throw new Error(
@@ -729,7 +739,15 @@ class ScriptTransformer {
       options.coverageProvider === 'babel' &&
       shouldInstrument(filename, options, this._config);
     const scriptCacheKey = getScriptCacheKey(filename, instrument, options);
-    let result = this._cache.transformedFiles.get(scriptCacheKey);
+    // If the transformer says its cache key depends on files other than
+    // `filename`, the in-process cache cannot be trusted - the key might have
+    // changed even though `filename` itself did not.
+    const useInProcessCache =
+      !this._transformerCacheKeyDependsOnOtherFiles(filename);
+
+    let result = useInProcessCache
+      ? this._cache.transformedFiles.get(scriptCacheKey)
+      : undefined;
     if (result) {
       return result;
     }
@@ -741,7 +759,7 @@ class ScriptTransformer {
       fileSource,
     );
 
-    if (scriptCacheKey) {
+    if (useInProcessCache && scriptCacheKey) {
       this._cache.transformedFiles.set(scriptCacheKey, result);
     }
 
@@ -758,7 +776,15 @@ class ScriptTransformer {
       shouldInstrument(filename, options, this._config);
     const scriptCacheKey = getScriptCacheKey(filename, instrument, options);
 
-    let result = this._cache.transformedFiles.get(scriptCacheKey);
+    // If the transformer says its cache key depends on files other than
+    // `filename`, the in-process cache cannot be trusted - the key might have
+    // changed even though `filename` itself did not.
+    const useInProcessCache =
+      !this._transformerCacheKeyDependsOnOtherFiles(filename);
+
+    let result = useInProcessCache
+      ? this._cache.transformedFiles.get(scriptCacheKey)
+      : undefined;
     if (result) {
       return result;
     }
@@ -770,7 +796,7 @@ class ScriptTransformer {
       fileSource,
     );
 
-    if (scriptCacheKey) {
+    if (useInProcessCache && scriptCacheKey) {
       this._cache.transformedFiles.set(scriptCacheKey, result);
     }
 

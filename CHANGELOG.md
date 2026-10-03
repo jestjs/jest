@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-transform]` Add an opt-in `cacheKeyDependsOnOtherFiles` flag so a transformer whose cache key depends on files other than the file being transformed is asked for a fresh key on every transform instead of being served the in-process cached result ([#16448](https://github.com/jestjs/jest/pull/16448))
+
 ### Fixes
 
 ### Chore & Maintenance

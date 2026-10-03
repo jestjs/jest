@@ -61,6 +61,18 @@ export interface SyncTransformer<TransformerConfig = unknown> {
    */
   canInstrument?: boolean;
 
+  /**
+   * Indicates that the value returned by `getCacheKey`/`getCacheKeyAsync` depends
+   * on files other than the file being transformed - for example when the
+   * transform expands a glob import into the files it matched.
+   *
+   * If `true`, Jest will not reuse the in-process transform cache for the files
+   * handled by this transformer, and will instead ask for a new cache key on
+   * every transform - so re-runs in the same process, such as `--watch`, pick up
+   * changes to those other files.
+   */
+  cacheKeyDependsOnOtherFiles?: boolean;
+
   getCacheKey?: (
     sourceText: string,
     sourcePath: string,
@@ -94,6 +106,18 @@ export interface AsyncTransformer<TransformerConfig = unknown> {
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
    */
   canInstrument?: boolean;
+
+  /**
+   * Indicates that the value returned by `getCacheKey`/`getCacheKeyAsync` depends
+   * on files other than the file being transformed - for example when the
+   * transform expands a glob import into the files it matched.
+   *
+   * If `true`, Jest will not reuse the in-process transform cache for the files
+   * handled by this transformer, and will instead ask for a new cache key on
+   * every transform - so re-runs in the same process, such as `--watch`, pick up
+   * changes to those other files.
+   */
+  cacheKeyDependsOnOtherFiles?: boolean;
 
   getCacheKey?: (
     sourceText: string,

@@ -76,6 +76,7 @@ type TransformedSource = {
 
 interface SyncTransformer<TransformerConfig = unknown> {
   canInstrument?: boolean;
+  cacheKeyDependsOnOtherFiles?: boolean;
 
   getCacheKey?: (
     sourceText: string,
@@ -104,6 +105,7 @@ interface SyncTransformer<TransformerConfig = unknown> {
 
 interface AsyncTransformer<TransformerConfig = unknown> {
   canInstrument?: boolean;
+  cacheKeyDependsOnOtherFiles?: boolean;
 
   getCacheKey?: (
     sourceText: string,
@@ -158,6 +160,8 @@ Be aware that `node_modules` is not transpiled with default config, the `transfo
 Semi-related to this are the supports flags we pass (see `CallerTransformOptions` above), but those should be used within the transform to figure out if it should return ESM or CJS, and has no direct bearing on sync vs async
 
 Though not required, we _highly recommend_ implementing `getCacheKey` as well, so we do not waste resources transpiling when we could have read its previous result from disk. You can use [`@jest/create-cache-key-function`](https://www.npmjs.com/package/@jest/create-cache-key-function) to help implement it.
+
+Jest caches the result of a transform in memory for the duration of the process (in addition to the on-disk cache), keyed by the cache key of the file. If your `getCacheKey{Async}` result depends on files _other than the file being transformed_ - for example when the transform expands a glob import into the list of files it matched - set `cacheKeyDependsOnOtherFiles` to `true`. Jest will then ask for a new cache key on every transform instead of reusing that in-memory entry, so changes to those other files are picked up by re-runs in the same process, such as `--watch`.
 
 Instead of having your custom transformer implement the `Transformer` interface directly, you can choose to export `createTransformer`, a factory function to dynamically create transformers. This is to allow having a transformer config in your jest config.
 
