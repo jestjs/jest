@@ -254,6 +254,53 @@ describe('moduleMocker', () => {
       expect(instanceFooMock.toString.mock).toBeDefined();
     });
 
+    it('mocks the properties of instances created from a mocked instance', () => {
+      class ClassFoo {
+        array: Array<number>;
+        lang: string;
+
+        constructor() {
+          this.array = [1, 2, 3];
+          this.lang = 'JS';
+        }
+
+        foo() {}
+      }
+
+      const mock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(new ClassFoo()),
+      );
+
+      expect(mock.array).toEqual([]);
+      expect(mock.lang).toBe('JS');
+
+      // `constructor` behaves as a mock of the class, so instances created from
+      // it have the same shape as the instance that was mocked.
+      const MockClassFoo = mock.constructor as unknown as typeof ClassFoo;
+      const foo = new MockClassFoo();
+
+      expect(foo.array).toEqual([]);
+      expect(foo.lang).toBe('JS');
+      expect(moduleMocker.isMockFunction(foo.foo)).toBe(true);
+    });
+
+    it('does not share mocked properties between the instances created from a mocked instance', () => {
+      class ClassFoo {
+        array: Array<number>;
+
+        constructor() {
+          this.array = [1, 2, 3];
+        }
+      }
+
+      const mock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(new ClassFoo()),
+      );
+      const MockClassFoo = mock.constructor as unknown as typeof ClassFoo;
+
+      expect(new MockClassFoo().array).not.toBe(new MockClassFoo().array);
+    });
+
     it('mocks ES2015 non-enumerable static properties and methods', () => {
       class ClassFoo {
         static foo() {}
