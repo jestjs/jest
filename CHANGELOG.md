@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-diff, jest-matcher-utils]` Show zero width and other invisible characters (U+200B zero width space, U+FEFF byte order mark, format characters, variation selectors and Hangul fillers) in diffs, so strings which differ only by them no longer look identical ([#16444](https://github.com/jestjs/jest/pull/16444))
+
 ### Chore & Maintenance
 
 ## 30.5.2

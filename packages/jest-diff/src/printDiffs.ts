@@ -8,6 +8,7 @@
 import {DIFF_EQUAL, type Diff, cleanupSemantic} from './cleanupSemantic';
 import {diffLinesUnified, printDiffLines} from './diffLines';
 import diffStrings from './diffStrings';
+import {escapeControlCharacters} from './escapeControlCharacters';
 import getAlignedDiffs from './getAlignedDiffs';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
 import type {DiffOptions} from './types';
@@ -36,8 +37,8 @@ export const diffStringsUnified = (
 
     // getAlignedDiffs assumes that a newline was appended to the strings.
     const diffs = diffStringsRaw(
-      isMultiline ? `${a}\n` : a,
-      isMultiline ? `${b}\n` : b,
+      escapeControlCharacters(isMultiline ? `${a}\n` : a),
+      escapeControlCharacters(isMultiline ? `${b}\n` : b),
       true, // cleanupSemantic
     );
 

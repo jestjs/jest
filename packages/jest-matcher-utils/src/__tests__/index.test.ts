@@ -232,6 +232,7 @@ describe('ensureNoExpected()', () => {
 });
 
 jest.mock('jest-diff', () => ({
+  ...jest.requireActual('jest-diff'),
   diff: () => 'diff output',
 }));
 describe('diff', () => {
