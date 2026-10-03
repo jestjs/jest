@@ -24,6 +24,29 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import type {Tester, TesterContext} from './types';
 
+// `jest-matcher-utils` exports this symbol to let an object declare which of its
+// properties are meant to be serialized, i.e. which ones are relevant when it is
+// printed. It is looked up with `Symbol.for` so that both packages agree on the
+// very same symbol without `@jest/expect-utils` depending on `jest-matcher-utils`.
+// https://github.com/jestjs/jest/issues/15073
+const SERIALIZABLE_PROPERTIES = Symbol.for('@jest/serializableProperties');
+
+// Objects with their own comparison semantics must keep ignoring
+// `SERIALIZABLE_PROPERTIES`: `Map`s and `Set`s are compared by `iterableEquality`,
+// arrays by their items, `Error`s by their message, and so on.
+const isBuiltInObject = (obj: object): boolean =>
+  Array.isArray(obj) ||
+  ArrayBuffer.isView(obj) ||
+  obj instanceof ArrayBuffer ||
+  obj instanceof Date ||
+  obj instanceof Error ||
+  obj instanceof Map ||
+  obj instanceof Promise ||
+  obj instanceof RegExp ||
+  obj instanceof Set ||
+  obj instanceof WeakMap ||
+  obj instanceof WeakSet;
+
 export type EqualsFunction = (
   a: unknown,
   b: unknown,
@@ -207,18 +230,52 @@ function eq(
 }
 
 function keys(obj: object, hasKey: (obj: object, key: string) => boolean) {
+  const serializableProperties = getSerializableProperties(obj);
   const keys = [];
   for (const key in obj) {
-    if (hasKey(obj, key)) {
+    if (hasKey(obj, key) && isSerializableKey(key, serializableProperties)) {
       keys.push(key);
     }
   }
   return [
     ...keys,
     ...Object.getOwnPropertySymbols(obj).filter(
-      symbol => Object.getOwnPropertyDescriptor(obj, symbol)!.enumerable,
+      symbol =>
+        Object.getOwnPropertyDescriptor(obj, symbol)!.enumerable &&
+        isSerializableKey(symbol, serializableProperties),
     ),
   ];
+}
+
+function isSerializableKey(
+  key: string | symbol,
+  serializableProperties: Array<string | symbol> | undefined,
+) {
+  return (
+    serializableProperties === undefined || serializableProperties.includes(key)
+  );
+}
+
+// Mirrors `getSerializableProperties` of `jest-matcher-utils`: an object is
+// compared by all of its own enumerable properties unless it declares a list of
+// `SERIALIZABLE_PROPERTIES`, in which case only the listed ones take part in the
+// comparison. The declaration is inherited, so declaring it on a class prototype
+// applies to every instance of that class.
+function getSerializableProperties(
+  obj: object,
+): Array<string | symbol> | undefined {
+  const serializableProperties: unknown = (obj as Record<string | symbol, any>)[
+    SERIALIZABLE_PROPERTIES
+  ];
+
+  if (!Array.isArray(serializableProperties) || isBuiltInObject(obj)) {
+    return;
+  }
+
+  return serializableProperties.filter(
+    (key): key is string | symbol =>
+      typeof key === 'string' || typeof key === 'symbol',
+  );
 }
 
 function hasKey(obj: any, key: string | symbol) {

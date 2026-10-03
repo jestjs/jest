@@ -1912,7 +1912,7 @@ Only set custom properties. Overwriting built-in state properties (such as `curr
 
 ### `SERIALIZABLE_PROPERTIES`
 
-Serializable properties is a set of properties that are considered serializable by Jest. This set is used to determine if a property should be serializable or not. If an object has a property that is not in this set, it is considered not serializable and will not be printed in error messages.
+Serializable properties is a set of properties that are considered serializable by Jest. This set is used to determine if a property should be serializable or not. If an object has a property that is not in this set, it is considered not serializable and will not be printed in error messages. Equality matchers such as `toEqual` and `toStrictEqual` only compare the properties of this set as well.
 
 You can add your own properties to this set to make sure that your objects are printed correctly. For example, if you have a `Volume` class, and you want to make sure that only the `amount` and `unit` properties are printed, you can add it to `SERIALIZABLE_PROPERTIES`:
 
@@ -1935,7 +1935,7 @@ Volume.prototype[SERIALIZABLE_PROPERTIES] = ['amount', 'unit'];
 expect(new Volume(1, 'L')).toEqual(new Volume(10, 'L'));
 ```
 
-This will print only the `amount` and `unit` properties in the error message, ignoring the `label` property.
+This will print only the `amount` and `unit` properties in the error message, ignoring the `label` property. `toEqual` and `toStrictEqual` only compare the `amount` and `unit` properties as well.
 
 ```bash
 expect(received).toEqual(expected) // deep equality

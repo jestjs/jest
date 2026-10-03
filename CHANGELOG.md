@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[expect-utils, expect]` Let `toEqual` and `toStrictEqual` compare only the properties an object declares via `SERIALIZABLE_PROPERTIES`, matching what the diff printer already does ([#16461](https://github.com/jestjs/jest/pull/16461))
+
 ### Chore & Maintenance
 
 ## 30.5.2
