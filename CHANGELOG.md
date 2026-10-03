@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-config, jest-resolve]` Resolve the `node` and `jsdom` `testEnvironment` shorthands from Jest's own location, so a stale `jest-environment-*` hoisted into the project can no longer shadow the environment Jest is built against ([#16449](https://github.com/jestjs/jest/pull/16449))
+
 ### Chore & Maintenance
 
 ## 30.5.2

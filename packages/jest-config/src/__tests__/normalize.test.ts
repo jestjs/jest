@@ -912,7 +912,16 @@ describe('testEnvironment', () => {
     Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
       .default;
     Resolver.findNodeModule = jest.fn((name: string) => {
-      if (['jsdom', 'jest-environment-jsdom'].includes(name)) {
+      if (
+        [
+          'node',
+          'jest-environment-node',
+          'jsdom',
+          'jest-environment-jsdom',
+          'custom-environment',
+          'jest-environment-custom-environment',
+        ].includes(name)
+      ) {
         return `node_modules/${name}`;
       }
       if (name.startsWith('/root')) {
@@ -922,7 +931,7 @@ describe('testEnvironment', () => {
     });
   });
 
-  it('resolves to an environment and prefers jest-environment-`name`', async () => {
+  it('resolves a shorthand testEnvironment to the environment jest ships', async () => {
     const {options} = await normalize(
       {
         rootDir: '/root',
@@ -931,7 +940,55 @@ describe('testEnvironment', () => {
       {} as Config.Argv,
     );
 
+    // `jsdom` is expanded by jest itself, so it resolves to jest's own copy
+    // rather than to a (possibly shadowing) copy in the project. See #5913.
+    expect(options.testEnvironment).toBe(
+      require.resolve('jest-environment-jsdom'),
+    );
+  });
+
+  it('resolves the `node` shorthand to the environment jest ships', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root',
+        testEnvironment: 'node',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.testEnvironment).toBe(
+      require.resolve('jest-environment-node'),
+    );
+  });
+
+  it('prefers a project-local environment when the full package name is given', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root',
+        testEnvironment: 'jest-environment-jsdom',
+      },
+      {} as Config.Argv,
+    );
+
+    // An explicitly written package name is a user decision - it must be
+    // resolved from the project so a version can be pinned.
     expect(options.testEnvironment).toBe('node_modules/jest-environment-jsdom');
+  });
+
+  it('prefers a project-local environment for an unprefixed name', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root',
+        testEnvironment: 'custom-environment',
+      },
+      {} as Config.Argv,
+    );
+
+    // `custom-environment` is not expanded by jest, so it can only come from
+    // the project - it keeps resolving from the project first.
+    expect(options.testEnvironment).toBe(
+      'node_modules/jest-environment-custom-environment',
+    );
   });
 
   it('resolves to node environment by default', async () => {
