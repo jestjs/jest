@@ -776,6 +776,155 @@ describe('resolveModuleAsync', () => {
   });
 });
 
+// A specifier that differs from the file on disk only by case resolves on a
+// case-insensitive file system (macOS, Windows) but throws on a case-sensitive
+// one, so relying on the host file system would make these tests pass on one
+// platform and fail on the other. The lookup is mocked instead and returns the
+// casing that is on disk, which is also what a case-sensitive file system
+// would return: a miss.
+describe('module casing', () => {
+  const src = require.resolve('../');
+  const rootDir = path.resolve(__dirname, '../..');
+  const onDisk = require.resolve('../__mocks__/mockJsDependency.js');
+  const requested = './__mocks__/MockJsDependency';
+  const warning = `Module ${requested} resolved, but has different casing: ${onDisk}`;
+
+  const createResolver = () =>
+    new Resolver(ModuleMap.create('/'), {rootDir} as ResolverConfig);
+
+  it('collects a warning when a module resolves with different casing', () => {
+    const resolver = createResolver();
+    jest
+      .spyOn(resolver, 'resolveModuleFromDirIfExists')
+      .mockReturnValue(onDisk);
+
+    expect(resolver.resolveModule(src, requested)).toBe(onDisk);
+    expect(resolver.getModuleCasingWarnings()).toEqual([warning]);
+  });
+
+  it('collects a warning from the async resolver too', async () => {
+    const resolver = createResolver();
+    jest
+      .spyOn(resolver, 'resolveModuleFromDirIfExistsAsync')
+      .mockResolvedValue(onDisk);
+
+    await expect(resolver.resolveModuleAsync(src, requested)).resolves.toBe(
+      onDisk,
+    );
+    expect(resolver.getModuleCasingWarnings()).toEqual([warning]);
+  });
+
+  it('reads the casing of the file that is really on disk', () => {
+    // Node resolution builds the path out of the specifier it was given, so on
+    // a case-insensitive file system the resolved path repeats the requested
+    // casing and the directory listing is the only place that knows the real
+    // one. `foo.js` is a real fixture, which keeps this independent of the
+    // case sensitivity of the file system the tests run on.
+    const requestedAsOnDisk = './__mocks__/Foo';
+    const resolvedAsRequested = path.join(path.dirname(onDisk), 'Foo.js');
+    const resolver = createResolver();
+    jest
+      .spyOn(resolver, 'resolveModuleFromDirIfExists')
+      .mockReturnValue(resolvedAsRequested);
+
+    expect(resolver.resolveModule(src, requestedAsOnDisk)).toBe(
+      resolvedAsRequested,
+    );
+    expect(resolver.getModuleCasingWarnings()).toEqual([
+      `Module ${requestedAsOnDisk} resolved, but has different casing: ${path.join(path.dirname(onDisk), 'foo.js')}`,
+    ]);
+  });
+
+  it('collects no warning when the casing matches', () => {
+    const resolver = createResolver();
+    jest
+      .spyOn(resolver, 'resolveModuleFromDirIfExists')
+      .mockReturnValue(onDisk);
+
+    expect(resolver.resolveModule(src, './__mocks__/mockJsDependency')).toBe(
+      onDisk,
+    );
+    expect(resolver.getModuleCasingWarnings()).toEqual([]);
+  });
+
+  it('only compares the file name, not the directories', () => {
+    const resolver = createResolver();
+    jest
+      .spyOn(resolver, 'resolveModuleFromDirIfExists')
+      .mockReturnValue(onDisk);
+
+    expect(resolver.resolveModule(src, './__MOCKS__/mockJsDependency')).toBe(
+      onDisk,
+    );
+    expect(resolver.getModuleCasingWarnings()).toEqual([]);
+  });
+
+  it('does not collect the same pair twice', () => {
+    const resolver = createResolver();
+    jest
+      .spyOn(resolver, 'resolveModuleFromDirIfExists')
+      .mockReturnValue(onDisk);
+
+    resolver.resolveModule(src, requested);
+    resolver.resolveModule(src, requested);
+    expect(resolver.getModuleCasingWarnings()).toEqual([warning]);
+
+    // The pair stays reported once the pending warnings have been drained,
+    // otherwise every require of the same module would warn again.
+    resolver.resolveModule(src, requested);
+    expect(resolver.getModuleCasingWarnings()).toEqual([]);
+  });
+
+  it('returns the collected warnings and clears them', () => {
+    const resolver = createResolver();
+    jest
+      .spyOn(resolver, 'resolveModuleFromDirIfExists')
+      .mockReturnValue(onDisk);
+
+    resolver.resolveModule(src, requested);
+    expect(resolver.getModuleCasingWarnings()).toEqual([warning]);
+    expect(resolver.getModuleCasingWarnings()).toEqual([]);
+  });
+
+  const resolveMissing = (resolver: Resolver, moduleName: string) => {
+    try {
+      resolver.resolveModule(src, moduleName);
+    } catch (error) {
+      return (error as Error).message;
+    }
+    return null;
+  };
+
+  it('suggests similarly named files when the module cannot be found', () => {
+    const resolver = createResolver();
+    jest.spyOn(resolver, 'resolveModuleFromDirIfExists').mockReturnValue(null);
+
+    expect(resolveMissing(resolver, './__mocks__/mockjsdependency')).toBe(
+      "Cannot find module './__mocks__/mockjsdependency' from 'src/index.ts'. Did you mean to import one of: mockJsDependency.js?",
+    );
+  });
+
+  it('does not suggest anything when no similarly named file exists', () => {
+    const resolver = createResolver();
+    jest.spyOn(resolver, 'resolveModuleFromDirIfExists').mockReturnValue(null);
+
+    expect(resolveMissing(resolver, './__mocks__/noSuchModule')).toBe(
+      "Cannot find module './__mocks__/noSuchModule' from 'src/index.ts'",
+    );
+  });
+
+  it('does not suggest anything when the directory cannot be read', () => {
+    const resolver = createResolver();
+    jest.spyOn(resolver, 'resolveModuleFromDirIfExists').mockReturnValue(null);
+
+    expect(
+      resolveMissing(resolver, './not-a-real-directory/noSuchModule'),
+    ).toBe(
+      "Cannot find module './not-a-real-directory/noSuchModule' from 'src/index.ts'",
+    );
+  });
+});
+
 describe('core module specifiers', () => {
   let resolver: Resolver;
   const src = require.resolve('../');

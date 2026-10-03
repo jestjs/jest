@@ -487,3 +487,71 @@ describe('Runtime requireModule module.children', () => {
     },
   );
 });
+
+// A specifier that differs from the file on disk only by case resolves on a
+// case-insensitive file system (macOS, Windows) but throws on a case-sensitive
+// one, so the module lookup is mocked to return the casing that is on disk.
+// That makes these assertions behave the same on both flavours of file system.
+describe('Runtime module casing warnings', () => {
+  let createRuntime;
+
+  const mismatch = (runtime, resolved) =>
+    jest
+      .spyOn(runtime._resolution.resolver, 'resolveModuleFromDirIfExists')
+      .mockReturnValue(resolved);
+
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('warns through the test console when a module resolves with different casing', async () => {
+    const runtime = await createRuntime(__filename);
+    const resolved = path.join(__dirname, 'test_root', 'RegularModule.js');
+    mismatch(runtime, resolved);
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    runtime.requireModule(runtime.__mockRootPath, 'Regularmodule');
+
+    expect(warn.mock.calls).toEqual([
+      [`Module Regularmodule resolved, but has different casing: ${resolved}`],
+    ]);
+  });
+
+  it('warns through the test console when that module fails to load', async () => {
+    const runtime = await createRuntime(__filename);
+    const resolved = path.join(__dirname, 'test_root', 'throwing.js');
+    mismatch(runtime, resolved);
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    expect(() =>
+      runtime.requireModule(runtime.__mockRootPath, 'Throwing'),
+    ).toThrow('throwing');
+
+    expect(warn.mock.calls).toEqual([
+      [`Module Throwing resolved, but has different casing: ${resolved}`],
+    ]);
+  });
+
+  it('drains the pending warnings when the module cannot be found', async () => {
+    const runtime = await createRuntime(__filename);
+    const pending = [
+      `Module Missing resolved, but has different casing: ${path.join(__dirname, 'test_root', 'missing.js')}`,
+    ];
+    jest
+      .spyOn(runtime._resolution, 'getModuleCasingWarnings')
+      .mockReturnValue(pending);
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    expect(() =>
+      runtime.requireModuleOrMock(runtime.__mockRootPath, 'DefinitelyMissing'),
+    ).toThrow(/Cannot find module 'DefinitelyMissing'/);
+
+    expect(new Set(warn.mock.calls.map(([warning]) => warning))).toEqual(
+      new Set(pending),
+    );
+  });
+});

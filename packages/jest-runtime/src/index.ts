@@ -402,12 +402,29 @@ export default class Runtime {
     options?: TransformOptions,
     isRequireActual = false,
   ): T {
-    return this.cjsLoader.requireModule<T>(
-      from,
-      moduleName,
-      options,
-      isRequireActual,
-    );
+    try {
+      return this.cjsLoader.requireModule<T>(
+        from,
+        moduleName,
+        options,
+        isRequireActual,
+      );
+    } finally {
+      // Covers both a successful resolution and the not-found path, which
+      // throws out of `requireModule`.
+      this._emitModuleCasingWarnings();
+    }
+  }
+
+  // The resolver records specifiers whose casing does not match the file on
+  // disk; the test's own console is where the user will actually see them, and
+  // anything logged there is copied to `result.console` by jest-runner.
+  private _emitModuleCasingWarnings(): void {
+    const testConsole = this._environment.global?.console;
+
+    for (const warning of this._resolution.getModuleCasingWarnings()) {
+      testConsole?.warn(warning);
+    }
   }
 
   requireInternalModule<T = unknown>(from: string, to?: string): T {
@@ -621,6 +638,10 @@ export default class Runtime {
         throw moduleNotFound;
       }
       throw error;
+    } finally {
+      // A mocked module is served from `_requireMockWithId` and never reaches
+      // `requireModule`, so the warnings still have to be drained here.
+      this._emitModuleCasingWarnings();
     }
   }
 

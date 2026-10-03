@@ -252,6 +252,12 @@ export class Resolution {
     );
   }
 
+  // The resolver collects case-only mismatches while resolving; the runtime
+  // drains them so it can emit them through the test's own console.
+  getModuleCasingWarnings(): Array<string> {
+    return this.resolver.getModuleCasingWarnings();
+  }
+
   getModulePaths(from: string): Array<string> {
     return this.resolver.getModulePaths(from);
   }
