@@ -26,6 +26,8 @@ export interface CacheKeyOptions extends ReducedTransformOptions {
   config: Config.ProjectConfig;
   /** Stringified version of the `config` - useful in cache busting. */
   configString: string;
+  /** Transformer configuration passed through `transform` option by the user. */
+  transformerConfig?: unknown;
 }
 
 export interface TransformResult {
