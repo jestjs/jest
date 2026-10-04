@@ -365,6 +365,7 @@ export class JestGlobals {
       },
       getSeed: () => this.globalConfig.seed,
       getTimerCount: () => _getFakeTimers().getTimerCount(),
+      hoisted: factory => factory(),
       isEnvironmentTornDown: () => this.testState.isTornDown(),
       isMockFunction: this.moduleMocker.isMockFunction,
       isolateModules,
