@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[@jest/create-cache-key-function]` Key on transformerConfig rather than full project config to allow multi-project transform cache sharing ([#16483](https://github.com/jestjs/jest/pull/16483))
+
 ### Chore & Maintenance
 
 ## 30.5.2
