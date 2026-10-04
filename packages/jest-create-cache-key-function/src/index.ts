@@ -15,6 +15,7 @@ import type {Config, TransformTypes} from '@jest/types';
 type OldCacheKeyOptions = {
   config: Config.ProjectConfig;
   instrument: boolean;
+  transformerConfig?: unknown;
 };
 
 type NewCacheKeyOptions = TransformTypes.CacheKeyOptions;
@@ -57,6 +58,24 @@ function getGlobalCacheKey(
     .slice(0, length);
 }
 
+function stableStringify(value: unknown): string {
+  if (value === null || typeof value !== 'object') {
+    return JSON.stringify(value);
+  }
+  if (Array.isArray(value)) {
+    return `[${value.map(stableStringify).join(',')}]`;
+  }
+  const keys = Object.keys(value as Record<string, unknown>).sort();
+  return `{${keys
+    .map(
+      k =>
+        `${JSON.stringify(k)}:${stableStringify(
+          (value as Record<string, unknown>)[k],
+        )}`,
+    )
+    .join(',')}}`;
+}
+
 // Missing before 27, which behaved as all-false.
 function callerSupport(
   options: OldCacheKeyOptions | NewCacheKeyOptions,
@@ -77,6 +96,15 @@ function callerSupport(
 function configStringOf(
   options: OldCacheKeyOptions | NewCacheKeyOptions,
 ): string {
+  if (
+    'transformerConfig' in options &&
+    options.transformerConfig !== undefined
+  ) {
+    return typeof options.transformerConfig === 'string'
+      ? options.transformerConfig
+      : stableStringify(options.transformerConfig);
+  }
+
   return 'configString' in options ? options.configString : '';
 }
 

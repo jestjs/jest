@@ -108,6 +108,88 @@ test('the project config changes the key', () => {
   expect(before).not.toEqual(after);
 });
 
+test('multi-project runs with different project configs share transform cache key', () => {
+  const createCacheKeyFunction = interopRequireDefault(
+    require('../index'),
+  ).default;
+  const createCacheKey = createCacheKeyFunction([], ['value']);
+  const projectAKey = createCacheKey(
+    'test',
+    '/monorepo/node_modules/pkg/index.js',
+    {
+      config: {
+        displayName: {color: 'blue', name: 'project-a'},
+        rootDir: '/monorepo/packages/project-a',
+      },
+      configString: JSON.stringify({
+        displayName: 'project-a',
+        rootDir: '/monorepo/packages/project-a',
+        setupFiles: ['/monorepo/packages/project-a/setup.js'],
+      }),
+      instrument: false,
+      transformerConfig: {target: 'es2022'},
+    },
+  );
+  const projectBKey = createCacheKey(
+    'test',
+    '/monorepo/node_modules/pkg/index.js',
+    {
+      config: {
+        displayName: {color: 'red', name: 'project-b'},
+        rootDir: '/monorepo/packages/project-b',
+      },
+      configString: JSON.stringify({
+        displayName: 'project-b',
+        rootDir: '/monorepo/packages/project-b',
+        setupFiles: ['/monorepo/packages/project-b/setup.js'],
+      }),
+      instrument: false,
+      transformerConfig: {target: 'es2022'},
+    },
+  );
+
+  expect(projectAKey).toEqual(projectBKey);
+});
+
+test('editing transformerConfig changes the key', () => {
+  const createCacheKeyFunction = interopRequireDefault(
+    require('../index'),
+  ).default;
+  const createCacheKey = createCacheKeyFunction([], ['value']);
+  const before = createCacheKey('test', 'test.js', {
+    config: {},
+    instrument: false,
+    transformerConfig: {target: 'es5'},
+  });
+  const after = createCacheKey('test', 'test.js', {
+    config: {},
+    instrument: false,
+    transformerConfig: {target: 'es2020'},
+  });
+
+  expect(before).not.toEqual(after);
+});
+
+test('transformerConfig object key ordering is deterministic', () => {
+  const createCacheKeyFunction = interopRequireDefault(
+    require('../index'),
+  ).default;
+  const createCacheKey = createCacheKeyFunction([], ['value']);
+  const keyA = createCacheKey('test', 'test.js', {
+    config: {},
+    instrument: false,
+    transformerConfig: {a: 1, b: 2},
+  });
+  const keyB = createCacheKey('test', 'test.js', {
+    config: {},
+    instrument: false,
+    // eslint-disable-next-line sort-keys
+    transformerConfig: {b: 2, a: 1},
+  });
+
+  expect(keyA).toEqual(keyB);
+});
+
 // The pre-27 signature passes it as its own argument rather than in the bag.
 test('the project config changes the key on the old signature', () => {
   const createCacheKeyFunction = interopRequireDefault(

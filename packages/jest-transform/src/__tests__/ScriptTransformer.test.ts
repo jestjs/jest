@@ -2189,6 +2189,62 @@ describe('ScriptTransformer', () => {
     });
   });
 
+  describe('multi-project transform caching', () => {
+    it('shares transform cache file across projects with matching transformer config', async () => {
+      const getCacheKey = jest.fn(
+        (_sourceText, _sourcePath, options) =>
+          `key_${JSON.stringify(options.transformerConfig)}`,
+      );
+
+      jest
+        .mocked(
+          (require('passthrough-preprocessor') as SyncTransformer).process,
+        )
+        .mockImplementation(() => ({code: 'module.exports = 42;'}));
+
+      (require('passthrough-preprocessor') as SyncTransformer).getCacheKey =
+        getCacheKey;
+
+      const projectAConfig = {
+        ...config,
+        displayName: {color: 'blue', name: 'project-a'},
+        rootDir: '/packages/project-a',
+        transform: [
+          ['\\.js$', 'passthrough-preprocessor', {target: 'es2022'}] as [
+            string,
+            string,
+            unknown,
+          ],
+        ],
+      };
+
+      const projectBConfig = {
+        ...config,
+        displayName: {color: 'red', name: 'project-b'},
+        rootDir: '/packages/project-b',
+        transform: [
+          ['\\.js$', 'passthrough-preprocessor', {target: 'es2022'}] as [
+            string,
+            string,
+            unknown,
+          ],
+        ],
+      };
+
+      const transformerA = await createScriptTransformer(projectAConfig);
+      const transformerB = await createScriptTransformer(projectBConfig);
+
+      transformerA.transform('/fruits/banana.js', getCoverageOptions());
+      transformerB.transform('/fruits/banana.js', getCoverageOptions());
+
+      const written = jest
+        .mocked(writeFileAtomic.sync)
+        .mock.calls.map(([filePath]) => filePath);
+
+      expect(new Set(written).size).toBe(1);
+    });
+  });
+
   (supportsTypeStripping ? describe : describe.skip)('type stripping', () => {
     beforeEach(() => {
       mockFs['/fruits/durian.ts'] =
