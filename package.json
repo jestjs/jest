@@ -9,7 +9,7 @@
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
     "@babel/register": "^7.27.1",
-    "@crowdin/cli": "^4.7.0",
+    "@crowdin/cli": "^5.0.0",
     "@eslint-community/eslint-plugin-eslint-comments": "^4.5.0",
     "@eslint/js": "^10.0.0",
     "@eslint/markdown": "^8.0.0",
