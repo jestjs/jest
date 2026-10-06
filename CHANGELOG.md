@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[expect]` Attach the rejection reason to the error `.resolves` throws for a rejected promise, and the fulfilled value to the error `.rejects` throws for a fulfilled promise, as its `cause` when the value is an error, so the failure report prints its stack trace ([#16484](https://github.com/jestjs/jest/pull/16484))
+
 ### Fixes
 
 ### Chore & Maintenance

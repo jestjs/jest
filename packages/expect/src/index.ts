@@ -10,7 +10,7 @@
 
 import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
-import {ErrorWithStack, isPromise} from 'jest-util';
+import {ErrorWithStack, isError, isPromise} from 'jest-util';
 import {
   any,
   anything,
@@ -160,6 +160,11 @@ const getMessage = (message?: () => string) =>
   (message && message()) ||
   matcherUtils.RECEIVED_COLOR('No message was specified for this matcher.');
 
+// `instanceof` misses errors created in another realm, and `isError` misses
+// objects that only inherit from `Error`, such as the errors axios throws.
+const isErrorLike = (value: unknown): value is Error =>
+  isError(value) || value instanceof Error;
+
 const makeResolveMatcher =
   (
     matcherName: string,
@@ -211,6 +216,9 @@ const makeResolveMatcher =
           )}\n\n` +
           'Received promise rejected instead of resolved\n' +
           `Rejected to value: ${matcherUtils.printReceived(error)}`;
+        if (isErrorLike(error)) {
+          outerErr.cause = error;
+        }
         throw outerErr;
       },
     );
@@ -262,6 +270,9 @@ const makeRejectMatcher =
           )}\n\n` +
           'Received promise resolved instead of rejected\n' +
           `Resolved to value: ${matcherUtils.printReceived(result)}`;
+        if (isErrorLike(result)) {
+          outerErr.cause = result;
+        }
         throw outerErr;
       },
       error =>
