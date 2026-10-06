@@ -2016,10 +2016,10 @@ Expected: <g>{"asymmetricMatch": [Function asymmetricMatch]}</>
 Received: <r>"Eve"</>
 `;
 
-exports[`.toEqual() {pass: false} expect("abc").toEqual({"0": "a", "1": "b", "2": "c"}) 1`] = `
+exports[`.toEqual() {pass: false} expect("abc").toEqual([String: "abc"]) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-Expected: <g>{"0": "a", "1": "b", "2": "c"}</>
+Expected: <g>[String: "abc"]</>
 Received: <r>"abc"</>
 `;
 
@@ -2157,11 +2157,25 @@ exports[`.toEqual() {pass: false} expect([97, 98, 99]).toEqual([97, 98, 100]) 1`
 <d>  ]</>
 `;
 
-exports[`.toEqual() {pass: false} expect({"0": "a", "1": "b", "2": "c"}).toEqual("abc") 1`] = `
+exports[`.toEqual() {pass: false} expect([Number: 0]).toEqual([Number: 1]) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: <g>[Number: 1]</>
+Received: <r>[Number: 0]</>
+`;
+
+exports[`.toEqual() {pass: false} expect([Number: 0]).toEqual(0) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: <g>0</>
+Received: <r>[Number: 0]</>
+`;
+
+exports[`.toEqual() {pass: false} expect([String: "abc"]).toEqual("abc") 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 Expected: <g>"abc"</>
-Received: <r>{"0": "a", "1": "b", "2": "c"}</>
+Received: <r>[String: "abc"]</>
 `;
 
 exports[`.toEqual() {pass: false} expect({"a": 1, "b": 2}).toEqual(ObjectContaining {"a": 2}) 1`] = `
@@ -2328,20 +2342,6 @@ exports[`.toEqual() {pass: false} expect({"target": {"nodeType": 1, "value": "a"
 <d>  }</>
 `;
 
-exports[`.toEqual() {pass: false} expect({}).toEqual({}) 1`] = `
-<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
-
-Expected: <g>{}</>
-Received: serializes to the same string
-`;
-
-exports[`.toEqual() {pass: false} expect({}).toEqual(0) 1`] = `
-<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
-
-Expected: <g>0</>
-Received: <r>{}</>
-`;
-
 exports[`.toEqual() {pass: false} expect({Symbol(foo): 1, Symbol(bar): 2}).toEqual({Symbol(foo): Any<Number>, Symbol(bar): 1}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
@@ -2355,10 +2355,10 @@ exports[`.toEqual() {pass: false} expect({Symbol(foo): 1, Symbol(bar): 2}).toEqu
 <d>  }</>
 `;
 
-exports[`.toEqual() {pass: false} expect(0).toEqual({}) 1`] = `
+exports[`.toEqual() {pass: false} expect(0).toEqual([Number: 0]) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-Expected: <g>{}</>
+Expected: <g>[Number: 0]</>
 Received: <r>0</>
 `;
 
@@ -2836,6 +2836,13 @@ Expected: not <g>Any<Function></>
 Received:     <r>[Function anonymous]</>
 `;
 
+exports[`.toEqual() {pass: true} expect([Number: 0]).not.toEqual([Number: 0]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[Number: 0]</>
+
+`;
+
 exports[`.toEqual() {pass: true} expect({"a": 1, "b": [Function b], "c": true}).not.toEqual({"a": 1, "b": Any<Function>, "c": Anything}) 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
@@ -2907,13 +2914,6 @@ Expected: not <g>{"nodeName": "div", "nodeType": 1}</>
 `;
 
 exports[`.toEqual() {pass: true} expect({}).not.toEqual({}) 1`] = `
-<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
-
-Expected: not <g>{}</>
-
-`;
-
-exports[`.toEqual() {pass: true} expect({}).not.toEqual({}) 2`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 Expected: not <g>{}</>

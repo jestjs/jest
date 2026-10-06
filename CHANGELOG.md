@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[pretty-format]` Print `Number`, `String`, `Boolean` and `BigInt` wrapper objects with the primitive they wrap, so a failing assertion shows `[Number: 1]` instead of `Number {}` ([#16409](https://github.com/jestjs/jest/pull/16409))
+
 ### Chore & Maintenance
 
 ## 30.5.2
