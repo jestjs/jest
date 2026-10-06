@@ -304,8 +304,8 @@ const config = {
       },
       algolia: {
         indexName: 'jest-v2',
-        appId: 'HP439UUSOL',
-        apiKey: 'e5e670fd16f8f17caada79d6b0931682',
+        appId: process.env.ALGOLIA_APP_ID || 'HP439UUSOL',
+        apiKey: process.env.ALGOLIA_API_KEY,
         contextualSearch: true,
       },
     }),
