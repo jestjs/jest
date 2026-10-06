@@ -1,5 +1,12 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`.rejects exposes the resolved value as cause when it is an error 1`] = `
+<d>expect(</><r>received</><d>).</>rejects<d>.</>toThrow<d>()</>
+
+Received promise resolved instead of rejected
+Resolved to value: <r>[Error: resolved instead]</>
+`;
+
 exports[`.rejects fails for promise that resolves 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>toBe<d>()</>
 
@@ -75,6 +82,13 @@ exports[`.rejects fails non-promise value undefined 1`] = `
 <b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has value: <r>undefined</>
+`;
+
+exports[`.resolves exposes the rejection reason as cause when it is an error 1`] = `
+<d>expect(</><r>received</><d>).</>resolves<d>.</>toBe<d>()</>
+
+Received promise rejected instead of resolved
+Rejected to value: <r>[Error: rejected instead]</>
 `;
 
 exports[`.resolves fails for promise that rejects 1`] = `

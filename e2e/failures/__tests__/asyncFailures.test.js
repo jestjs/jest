@@ -19,6 +19,16 @@ test('expect reject', () =>
 test('expect resolve', () =>
   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
 
+test('expect resolve, but reject with an error', () =>
+  expect(Promise.reject(new Error('rejection reason'))).resolves.toEqual({
+    foo: 'bar',
+  }));
+
+test('expect reject, but resolve with an error', () =>
+  expect(Promise.resolve(new Error('resolved value'))).rejects.toThrow(
+    'another reason',
+  ));
+
 test('timeout', done => {
   setTimeout(done, 50);
 }, 5);
