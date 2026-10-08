@@ -10,6 +10,7 @@ import {PassThrough, type Stream} from 'stream';
 import getStream from 'get-stream';
 import {
   CHILD_MESSAGE_CALL,
+  CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
   type ChildMessage,
@@ -714,4 +715,29 @@ it('should restart immediately when limit is 0 without checking memory', () => {
   );
   expect(worker.state).toBe(WorkerStates.RESTARTING);
   expect(forkInterface.kill).toHaveBeenCalledTimes(1);
+});
+
+describe('when the child exits after CHILD_MESSAGE_END before disconnecting', () => {
+  it.each([{idleMemoryLimit: 0.5}, {idleMemoryLimit: 0}])(
+    'does not check memory or restart with %o',
+    async ({idleMemoryLimit}) => {
+      const worker = new Worker({
+        forkOptions: {},
+        idleMemoryLimit,
+        maxRetries: 3,
+        workerPath: '/tmp/foo',
+      } as WorkerOptions);
+
+      worker.send([CHILD_MESSAGE_END, false], jest.fn(), jest.fn(), jest.fn());
+      jest.mocked(forkInterface.send).mockClear();
+
+      // The IPC channel can still report `connected` when `exit` fires.
+      forkInterface.emit('exit', 0, null);
+
+      expect(forkInterface.send).not.toHaveBeenCalled();
+      expect(forkInterface.kill).not.toHaveBeenCalled();
+      await worker.waitForExit();
+      expect(worker.state).toBe(WorkerStates.SHUT_DOWN);
+    },
+  );
 });

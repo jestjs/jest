@@ -10,6 +10,7 @@ import {totalmem} from 'node:os';
 import mergeStream from 'merge-stream';
 import {stdout as stdoutSupportsColor} from 'supports-color';
 import {
+  CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
   type ChildMessage,
@@ -437,6 +438,9 @@ export default class ChildProcessWorker
 
     this._onProcessEnd = (...args) => {
       const hasRequest = !!this._request;
+      // The child answers `CHILD_MESSAGE_END` by exiting, so this runs from
+      // `_onExit`, where `connected` can still be true on a closed channel.
+      const isEndRequest = this._request?.[0] === CHILD_MESSAGE_END;
 
       // Clean the request to avoid sending past requests to workers that fail
       // while waiting for a new request (timers, unhandled rejections...)
@@ -445,7 +449,8 @@ export default class ChildProcessWorker
       if (
         this._childIdleMemoryUsageLimit !== null &&
         this._child.connected &&
-        hasRequest
+        hasRequest &&
+        !isEndRequest
       ) {
         if (this._childIdleMemoryUsageLimit === 0) {
           // Special case: `idleMemoryLimit` of `0` means always restart.
