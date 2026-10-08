@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-worker]` Don't check memory usage or restart a child process worker when it exits after being told to end, which printed `Unable to check memory usage Error: write EPIPE` when `workerIdleMemoryLimit` is set ([#16488](https://github.com/jestjs/jest/pull/16488))
+
 ### Chore & Maintenance
 
 ## 30.5.2
