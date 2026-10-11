@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-runtime]` Stop adding the `node` export condition to `require()` when the test environment declares its own `exportConditions()`, so `jest-environment-jsdom` resolves the `browser` entry of a package that lists `node` first ([#16476](https://github.com/jestjs/jest/issues/16476))
+
 ### Chore & Maintenance
 
 ## 30.5.2

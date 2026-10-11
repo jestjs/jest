@@ -28,7 +28,7 @@ export class Resolution {
 
   constructor(
     resolver: Resolver,
-    envExportConditions: ReadonlyArray<string>,
+    envExportConditions: ReadonlyArray<string> | undefined,
     extensionsToTreatAsEsm: ReadonlyArray<string>,
   ) {
     this.resolver = resolver;
@@ -39,13 +39,20 @@ export class Resolution {
         // that way. Claiming it otherwise resolves dual packages to their ESM
         // entry point, which we then cannot execute.
         ...(supportsSyncEvaluate ? ['module-sync'] : []),
-        'node',
+        // Environments that declare their own export conditions decide whether
+        // `node` applies (jest-environment-node does, jsdom does not).
+        ...(envExportConditions === undefined ? ['node'] : []),
         'default',
-        ...envExportConditions,
+        ...(envExportConditions ?? []),
       ]),
     ];
     this.esmConditions = [
-      ...new Set(['import', 'module-sync', 'default', ...envExportConditions]),
+      ...new Set([
+        'import',
+        'module-sync',
+        'default',
+        ...(envExportConditions ?? []),
+      ]),
     ];
     this.cjsResolveOptions = Object.freeze({conditions: this.cjsConditions});
     this.esmResolveOptions = Object.freeze({conditions: this.esmConditions});
