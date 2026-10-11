@@ -25,6 +25,7 @@ jest.mock('graceful-fs', () => ({
 const CJS = hasSyncEsm
   ? ['require', 'module-sync', 'node', 'default']
   : ['require', 'node', 'default'];
+const CJS_WITHOUT_NODE = CJS.filter(c => c !== 'node');
 const ESM = ['import', 'module-sync', 'default'];
 
 function makeResolver(overrides: Partial<Resolver> = {}): Resolver {
@@ -63,7 +64,7 @@ describe('Resolution', () => {
     );
 
     test('true for a .js file in a "type": "commonjs" package', () => {
-      const resolution = new Resolution(makeResolver(), [], []);
+      const resolution = new Resolution(makeResolver(), undefined, []);
       expect(
         resolution.isExplicitlyCommonjs(
           path.join(commonjsPackageDir, 'index.js'),
@@ -72,7 +73,7 @@ describe('Resolution', () => {
     });
 
     test('false for files whose extension already decides ESM', () => {
-      const resolution = new Resolution(makeResolver(), [], ['.mts']);
+      const resolution = new Resolution(makeResolver(), undefined, ['.mts']);
       expect(
         resolution.isExplicitlyCommonjs(
           path.join(commonjsPackageDir, 'entry.mjs'),
@@ -88,10 +89,10 @@ describe('Resolution', () => {
 
   describe('conditions', () => {
     testWithSyncEsm(
-      'with no env conditions, uses Node defaults including "module-sync"',
+      'with an environment that has no `exportConditions`, uses Node defaults including "module-sync"',
       () => {
         const resolver = makeResolver();
-        const r = new Resolution(resolver, [], []);
+        const r = new Resolution(resolver, undefined, []);
 
         r.resolveCjs('/a', 'foo');
         r.resolveEsm('/a', 'foo');
@@ -109,7 +110,7 @@ describe('Resolution', () => {
       'omits "module-sync" from the CJS conditions when require(esm) is unavailable',
       () => {
         const resolver = makeResolver();
-        const r = new Resolution(resolver, [], []);
+        const r = new Resolution(resolver, undefined, []);
 
         r.resolveCjs('/a', 'foo');
         r.resolveEsm('/a', 'foo');
@@ -123,6 +124,29 @@ describe('Resolution', () => {
       },
     );
 
+    test('does not add "node" when the environment provides its own conditions', () => {
+      const resolver = makeResolver();
+      const r = new Resolution(resolver, ['browser'], []);
+
+      r.resolveCjs('/a', 'foo');
+
+      const {conditions} = (resolver.resolveModule as jest.Mock).mock
+        .calls[0][2];
+      expect(conditions).toContain('browser');
+      expect(conditions).not.toContain('node');
+    });
+
+    test('does not add "node" when the environment provides no conditions', () => {
+      const resolver = makeResolver();
+      const r = new Resolution(resolver, [], []);
+
+      r.resolveCjs('/a', 'foo');
+
+      const {conditions} = (resolver.resolveModule as jest.Mock).mock
+        .calls[0][2];
+      expect(conditions).not.toContain('node');
+    });
+
     test('appends env-provided conditions and de-dupes', () => {
       const resolver = makeResolver();
       const r = new Resolution(resolver, ['default', 'browser'], []);
@@ -131,7 +155,7 @@ describe('Resolution', () => {
       r.resolveEsm('/a', 'foo');
 
       expect(resolver.resolveModule).toHaveBeenNthCalledWith(1, '/a', 'foo', {
-        conditions: [...CJS, 'browser'],
+        conditions: CJS_WITHOUT_NODE.concat('browser'),
       });
       expect(resolver.resolveModule).toHaveBeenNthCalledWith(2, '/a', 'foo', {
         conditions: [...ESM, 'browser'],
@@ -142,7 +166,7 @@ describe('Resolution', () => {
   describe('sync resolve cache', () => {
     test('caches by (from, to) and only calls underlying resolver once', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       expect(r.resolveCjs('/a', 'foo')).toBe('/resolved/foo');
       expect(r.resolveCjs('/a', 'foo')).toBe('/resolved/foo');
@@ -159,7 +183,7 @@ describe('Resolution', () => {
 
     test('cjs and esm caches are independent', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       r.resolveCjs('/a', 'foo');
       r.resolveEsm('/a', 'foo');
@@ -175,7 +199,7 @@ describe('Resolution', () => {
 
     test('falsy `to` short-circuits to `from` without consulting the resolver', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       expect(r.resolveCjs('/a', undefined)).toBe('/a');
       expect(r.resolveEsm('/a', undefined)).toBe('/a');
@@ -184,7 +208,7 @@ describe('Resolution', () => {
 
     test('clear() drops both caches', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       r.resolveCjs('/a', 'foo');
       r.resolveEsm('/a', 'foo');
@@ -200,7 +224,7 @@ describe('Resolution', () => {
   describe('async resolve', () => {
     test('does not cache (each call hits the resolver)', async () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       await r.resolveEsmAsync('/a', 'foo');
       await r.resolveEsmAsync('/a', 'foo');
@@ -213,7 +237,7 @@ describe('Resolution', () => {
 
     test('falsy `to` short-circuits to `from`', async () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       await expect(r.resolveEsmAsync('/a', undefined)).resolves.toBe('/a');
       expect(resolver.resolveModuleAsync).not.toHaveBeenCalled();
@@ -225,7 +249,7 @@ describe('Resolution', () => {
 
     test('getCjsModuleId uses cjs conditions', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       r.getCjsModuleId(virtualMocks, '/a', 'foo');
       expect(resolver.getModuleID).toHaveBeenCalledWith(
@@ -238,7 +262,7 @@ describe('Resolution', () => {
 
     test('getEsmModuleId uses esm conditions', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       r.getEsmModuleId(virtualMocks, '/a', 'foo');
       expect(resolver.getModuleID).toHaveBeenCalledWith(
@@ -251,7 +275,7 @@ describe('Resolution', () => {
 
     test('getEsmModuleIdAsync uses esm conditions', async () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       await r.getEsmModuleIdAsync(virtualMocks, '/a', 'foo');
       expect(resolver.getModuleIDAsync).toHaveBeenCalledWith(
@@ -264,7 +288,7 @@ describe('Resolution', () => {
 
     test('passes one long-lived options object across calls', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       r.getCjsModuleId(virtualMocks, '/a', 'foo');
       r.getCjsModuleId(virtualMocks, '/b', 'bar');
@@ -277,7 +301,7 @@ describe('Resolution', () => {
   describe('mock module lookups', () => {
     test('getCjsMockModule uses cjs conditions', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       expect(r.getCjsMockModule('/a', 'foo')).toBe('/mock');
       expect(resolver.getMockModule).toHaveBeenCalledWith('/a', 'foo', {
@@ -287,7 +311,7 @@ describe('Resolution', () => {
 
     test('getEsmMockModule uses esm conditions', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       expect(r.getEsmMockModule('/a', 'foo')).toBe('/mock');
       expect(resolver.getMockModule).toHaveBeenCalledWith('/a', 'foo', {
@@ -297,7 +321,7 @@ describe('Resolution', () => {
 
     test('getEsmMockModuleAsync uses esm conditions', async () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       await expect(r.getEsmMockModuleAsync('/a', 'foo')).resolves.toBe(
         '/mock-async',
@@ -309,7 +333,7 @@ describe('Resolution', () => {
 
     test('resolveCjsStub uses cjs conditions', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       expect(r.resolveCjsStub('/a', 'foo')).toBe('/stub');
       expect(resolver.resolveStubModuleName).toHaveBeenCalledWith('/a', 'foo', {
@@ -319,7 +343,7 @@ describe('Resolution', () => {
 
     test('resolveCjsFromDirIfExists forwards conditions and paths', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       r.resolveCjsFromDirIfExists('/dir', 'foo', ['/p1']);
       expect(resolver.resolveModuleFromDirIfExists).toHaveBeenCalledWith(
@@ -351,7 +375,7 @@ describe('Resolution', () => {
       const resolver = makeResolver({
         getMockModule: jest.fn(() => '/root-mock.js'),
       });
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
       expect(r.findManualMock('/from.js', 'lib')).toBe('/root-mock.js');
     });
 
@@ -361,7 +385,7 @@ describe('Resolution', () => {
         isCoreModule: jest.fn(() => true),
         normalizeCoreModuleSpecifier: jest.fn(() => 'fs'),
       });
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
       expect(r.findManualMock('/from.js', 'node:fs')).toBe('/core-mock.js');
       expect(resolver.normalizeCoreModuleSpecifier).toHaveBeenCalledWith(
         'node:fs',
@@ -377,7 +401,7 @@ describe('Resolution', () => {
         resolveModule: jest.fn(() => '/path/to/lib.js'),
       });
       existsSync.mockReturnValue(true);
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
       const expected = path.join('/path/to', '__mocks__', 'lib.js');
       expect(r.findManualMock('/from.js', 'lib')).toBe(expected);
       expect(existsSync).toHaveBeenCalledWith(expected);
@@ -388,7 +412,7 @@ describe('Resolution', () => {
         getMockModule: jest.fn(() => null),
         resolveModule: jest.fn(() => '/path/to/lib.js'),
       });
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
       expect(r.findManualMock('/from.js', 'lib')).toBeNull();
     });
 
@@ -397,7 +421,7 @@ describe('Resolution', () => {
         getMockModule: jest.fn(() => null),
         resolveModule: jest.fn(() => '/path/to/lib.js'),
       });
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
       r.findManualMock('/from.js', 'lib');
       r.findManualMock('/from.js', 'lib');
       r.findManualMock('/from.js', 'lib');
@@ -410,7 +434,7 @@ describe('Resolution', () => {
         getMockModule: jest.fn(() => null),
         resolveModule: jest.fn(() => '/path/to/lib.js'),
       });
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
       expect(r.findManualMock('/from.js', 'lib')).toBeNull();
       expect(r.findManualMock('/from.js', 'lib')).toBeNull();
       expect(existsSync).toHaveBeenCalledTimes(1);
@@ -424,7 +448,7 @@ describe('Resolution', () => {
           name.replace(/^node:/, ''),
         ),
       });
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
       r.findManualMock('/from.js', 'fs');
       r.findManualMock('/from.js', 'node:fs');
       // Both call sites should hit the same cache entry - only one underlying
@@ -437,7 +461,7 @@ describe('Resolution', () => {
         getMockModule: jest.fn(() => null),
         resolveModule: jest.fn(() => '/path/to/lib.js'),
       });
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
       r.findManualMock('/from.js', 'lib');
       r.clear();
       r.findManualMock('/from.js', 'lib');
@@ -448,7 +472,7 @@ describe('Resolution', () => {
   describe('pure pass-throughs', () => {
     test('forwards calls without options', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, [], []);
+      const r = new Resolution(resolver, undefined, []);
 
       expect(r.isCoreModule('fs')).toBe(false);
       expect(resolver.isCoreModule).toHaveBeenCalledWith('fs');

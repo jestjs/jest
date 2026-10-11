@@ -161,7 +161,7 @@ export default class Runtime {
     );
     this._resolution = new Resolution(
       resolver,
-      this._environment.exportConditions?.() ?? [],
+      this._environment.exportConditions?.(),
       config.extensionsToTreatAsEsm,
     );
     this.mockState = new MockState(this._resolution, config);
