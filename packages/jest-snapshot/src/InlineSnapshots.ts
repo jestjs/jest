@@ -11,8 +11,6 @@ import type {
   CustomParser as PrettierCustomParser,
   BuiltInParserName as PrettierParserName,
 } from 'prettier-v2';
-import * as semver from 'semver';
-import {createSyncFn} from 'synckit';
 import {isError} from 'jest-util';
 import type {InlineSnapshot} from './types';
 import {
@@ -30,6 +28,19 @@ type WorkerFn = (
 ) => string;
 
 const cachedPrettier = new Map<string, Prettier | WorkerFn>();
+
+// Required on demand: this module loads in every test process, but semver and
+// synckit are only needed when inline snapshots are written with prettier.
+// Resolving outside the VM keeps the require native, which also exempts it
+// from the runtime's between-tests require gate at snapshot-save time.
+function semverGte(version: string, other: string): boolean {
+  const semver = require(
+    require.resolve('semver', {
+      [Symbol.for('jest-resolve-outside-vm-option')]: true,
+    }),
+  ) as typeof import('semver');
+  return semver.gte(version, other);
+}
 
 export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
@@ -52,7 +63,12 @@ export function saveInlineSnapshots(
 
       cachedPrettier.set(`module|${prettierPath}`, prettier);
 
-      if (semver.gte(prettier.version, '3.0.0')) {
+      if (semverGte(prettier.version, '3.0.0')) {
+        const {createSyncFn} = require(
+          require.resolve('synckit', {
+            [Symbol.for('jest-resolve-outside-vm-option')]: true,
+          }),
+        ) as typeof import('synckit');
         workerFn = createSyncFn(
           require.resolve(/*webpackIgnore: true*/ './worker'),
         ) as WorkerFn;
@@ -88,7 +104,7 @@ export function saveInlineSnapshots(
         sourceFileWithSnapshots,
         snapshotMatcherNames,
       );
-    } else if (prettier && semver.gte(prettier.version, '1.5.0')) {
+    } else if (prettier && semverGte(prettier.version, '1.5.0')) {
       newSourceFile = runPrettier(
         prettier,
         sourceFilePath,

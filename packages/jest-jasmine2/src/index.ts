@@ -274,6 +274,8 @@ export default async function jasmine2(
     )
     .default({expand: globalConfig.expand});
 
+  jasmine.Spec.expand = globalConfig.expand;
+
   if (globalConfig.errorOnDeprecated) {
     installErrorOnPrivate(environment.global);
   } else {

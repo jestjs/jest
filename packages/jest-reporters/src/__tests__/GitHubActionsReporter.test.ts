@@ -739,11 +739,116 @@ describe('logs', () => {
       expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
     });
 
+    test('onTestResult last does not repeat console output for failed verbose test', () => {
+      const mockTest = {
+        context: {
+          config: {
+            rootDir: '/testDir',
+          },
+        },
+      };
+      const mockTestResult = {
+        console: [
+          {
+            message: 'bar',
+            origin:
+              '    at Object.log (/tmp/jest-test/a.test.js:2:13)\n    at Promise.finally.completed (/github.com/jestjs/jest/packages/jest-circus/build/jestAdapterInit.js:1557:28)',
+            type: 'log',
+          },
+        ],
+        failureMessage: 'Failure message',
+        perfStats: {
+          runtime: 20,
+          slow: false,
+        },
+        testFilePath: '/testDir/test1.js',
+        testResults: [
+          {
+            ancestorTitles: [],
+            duration: 10,
+            status: 'passed',
+            title: 'test1',
+          },
+        ],
+      };
+      const mockResults = {
+        numFailedTestSuites: 1,
+        numPassedTestSuites: 2,
+        numTotalTestSuites: 3,
+        testResults: [mockTestResult],
+      };
+      const gha = new GitHubActionsReporter(makeGlobalConfig({verbose: true}), {
+        silent: false,
+      });
+      gha.generateAnnotations = jest.fn();
+
+      gha.onTestResult(
+        mockTest as Test,
+        mockTestResult as unknown as TestResult,
+        mockResults as unknown as AggregatedResult,
+      );
+
+      expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
+    });
+
     test('onTestResult last with console output for success test', () => {
       const mockTest = {
         context: {
           config: {
             rootDir: '/testDir',
+            verbose: false,
+          },
+        },
+      };
+      const mockTestResult = {
+        console: [
+          {
+            message: 'bar',
+            origin:
+              '    at Object.log (/tmp/jest-test/a.test.js:2:13)\n    at Promise.finally.completed (/github.com/jestjs/jest/packages/jest-circus/build/jestAdapterInit.js:1557:28)',
+            type: 'log',
+          },
+        ],
+        perfStats: {
+          runtime: 20,
+          slow: false,
+        },
+        testFilePath: '/testDir/test1.js',
+        testResults: [
+          {
+            ancestorTitles: [],
+            duration: 10,
+            status: 'passed',
+            title: 'test1',
+          },
+        ],
+      };
+      const mockResults = {
+        numFailedTestSuites: 0,
+        numPassedTestSuites: 1,
+        numTotalTestSuites: 1,
+        testResults: [mockTestResult],
+      };
+      const gha = new GitHubActionsReporter(makeGlobalConfig({verbose: true}), {
+        silent: false,
+      });
+      gha.generateAnnotations = jest.fn();
+
+      gha.onTestResult(
+        mockTest as Test,
+        mockTestResult as unknown as TestResult,
+        mockResults as unknown as AggregatedResult,
+      );
+
+      expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
+    });
+
+    test('onTestResult last does not repeat console output for successful verbose test', () => {
+      const mockTest = {
+        context: {
+          config: {
+            rootDir: '/testDir',
+            verbose: true,
           },
         },
       };

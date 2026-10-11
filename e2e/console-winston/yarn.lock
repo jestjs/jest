@@ -5,21 +5,28 @@ __metadata:
   version: 10
   cacheKey: 10
 
-"@colors/colors@npm:1.6.0, @colors/colors@npm:^1.6.0":
+"@colors/colors@npm:1.6.0":
   version: 1.6.0
   resolution: "@colors/colors@npm:1.6.0"
   checksum: 10/66d00284a3a9a21e5e853b256942e17edbb295f4bd7b9aa7ef06bbb603568d5173eb41b0f64c1e51748bc29d382a23a67d99956e57e7431c64e47e74324182d9
   languageName: node
   linkType: hard
 
+"@colors/colors@npm:^1.6.0":
+  version: 1.6.1
+  resolution: "@colors/colors@npm:1.6.1"
+  checksum: 10/4970c737ff30ad13460a347b0286416e83d04638f77353adae128fbda1bd33612331701a37cbf815916c3d659f2106fe611d19521ad786b6d2ac9194241a4525
+  languageName: node
+  linkType: hard
+
 "@dabh/diagnostics@npm:^2.0.8":
-  version: 2.0.8
-  resolution: "@dabh/diagnostics@npm:2.0.8"
+  version: 2.0.9
+  resolution: "@dabh/diagnostics@npm:2.0.9"
   dependencies:
     "@so-ric/colorspace": "npm:^1.1.6"
     enabled: "npm:2.0.x"
     kuler: "npm:^2.0.0"
-  checksum: 10/ac2267a4ee1874f608493f21d386ea29f0acac6716124e26e3e48e01ce5706b095585a14adce1bee14b6567d3b8fdd0c5a0bbb7ab0e15c9a743d55eb02f093ce
+  checksum: 10/1530db45a3829ba5d663ecfffc75dbf8a405770b2dd4a4707f751b78cfb91328809d68c3fe0fccab40a607fc5e3d9146376a5e34c769bb23c8b437d218f0ba46
   languageName: node
   linkType: hard
 

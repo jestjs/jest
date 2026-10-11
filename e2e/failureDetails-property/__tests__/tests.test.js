@@ -26,6 +26,13 @@ describe('my test', () => {
       }
     `);
   });
+
+  test('an external snapshot failure', () => {
+    expect({
+      p1: 'hello',
+      p2: 'world',
+    }).toMatchSnapshot();
+  });
 });
 
 it('throws!', () => {

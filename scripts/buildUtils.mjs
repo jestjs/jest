@@ -264,7 +264,18 @@ export function createBuildConfigs() {
           ...separateChunks,
           ...extraEntryPoints,
         },
-        externals: nodeExternals(),
+        externals: [
+          nodeExternals(),
+          // Publishing bumps `package.json` after the build, so an inlined
+          // version would be one release behind. The bundle is emitted to
+          // `<packageDir>/build`, hence the relative path.
+          ({context, request}, callback) =>
+            request != null &&
+            path.resolve(context, request) ===
+              path.join(packageDir, 'package.json')
+              ? callback(null, 'commonjs ../package.json')
+              : callback(),
+        ],
         mode: 'production',
         module: {
           rules: [

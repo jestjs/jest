@@ -14,11 +14,34 @@ const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 const cachedFileLookups = new Map<string, boolean>();
 const cachedDirLookups = new Map<string, boolean>();
 const cachedChecks = new Map<string, boolean>();
+const cachedCommonjsChecks = new Map<string, boolean>();
 
 export function clearCachedLookups(): void {
   cachedFileLookups.clear();
   cachedDirLookups.clear();
   cachedChecks.clear();
+  cachedCommonjsChecks.clear();
+}
+
+export function isExplicitlyCommonjsPackage(modulePath: string): boolean {
+  const pkgPath = findClosestPackageJson(dirname(modulePath));
+  if (!pkgPath) {
+    return false;
+  }
+
+  let isCommonjs = cachedCommonjsChecks.get(pkgPath);
+  if (isCommonjs != null) {
+    return isCommonjs;
+  }
+
+  try {
+    isCommonjs = readPackageCached(pkgPath).type === 'commonjs';
+  } catch {
+    isCommonjs = false;
+  }
+
+  cachedCommonjsChecks.set(pkgPath, isCommonjs);
+  return isCommonjs;
 }
 
 export default function cachedShouldLoadAsEsm(
@@ -29,11 +52,16 @@ export default function cachedShouldLoadAsEsm(
     return false;
   }
 
-  let cachedLookup = cachedFileLookups.get(path);
+  // The answer depends on the extension list, and the cache is shared between
+  // projects in a process - key on both so projects with different
+  // `extensionsToTreatAsEsm` don't read each other's answers. JSON rather
+  // than a delimiter join, so no legal extension value can collide.
+  const cacheKey = `${JSON.stringify(extensionsToTreatAsEsm)}\0${path}`;
+  let cachedLookup = cachedFileLookups.get(cacheKey);
 
   if (cachedLookup === undefined) {
     cachedLookup = shouldLoadAsEsm(path, extensionsToTreatAsEsm);
-    cachedFileLookups.set(path, cachedLookup);
+    cachedFileLookups.set(cacheKey, cachedLookup);
   }
 
   return cachedLookup;
@@ -64,7 +92,7 @@ function shouldLoadAsEsm(
 
   if (cachedLookup === undefined) {
     cachedLookup = cachedPkgCheck(cwd);
-    cachedFileLookups.set(cwd, cachedLookup);
+    cachedDirLookups.set(cwd, cachedLookup);
   }
 
   return cachedLookup;

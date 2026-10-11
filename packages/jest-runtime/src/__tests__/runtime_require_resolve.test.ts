@@ -76,6 +76,20 @@ describe('Runtime require.resolve', () => {
     expect(resolved).toEqual(require.resolve(target, {paths: []}));
   });
 
+  it('resolves a builtin to the specifier it was asked for', async () => {
+    // Node echoes the spelling back rather than normalizing either way, so
+    // `require.resolve` must not canonicalize core specifiers.
+    const runtime = await createRuntime(__filename);
+    const resolved = runtime.requireModule<{bare: string; prefixed: string}>(
+      runtime.__mockRootPath,
+      './resolve_core.js',
+    );
+    expect(resolved.bare).toBe(require.resolve('fs'));
+    expect(resolved.prefixed).toBe(require.resolve('node:fs'));
+    expect(resolved.bare).toBe('fs');
+    expect(resolved.prefixed).toBe('node:fs');
+  });
+
   it('resolves a module path with moduleNameMapper', async () => {
     const runtime = await createRuntime(__filename, {
       moduleNameMapper: {

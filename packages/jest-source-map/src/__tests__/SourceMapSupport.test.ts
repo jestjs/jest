@@ -284,6 +284,57 @@ describe('install', () => {
     );
   });
 
+  // A stray timer can fire after the next test file's `install` has swapped in
+  // its own registry, from a file whose stack was never formatted before —
+  // there was no lazy remembering to fall back on.
+  test('remembers the outgoing registry, so a never-formatted file still maps', () => {
+    const neverFormatted = path.join(buildDir, 'never-formatted.js');
+    const neverFormattedMapPath = path.resolve(
+      path.sep,
+      'cache',
+      'never-formatted.js.map',
+    );
+
+    sourceMapSupport.install(
+      new Map([[neverFormatted, neverFormattedMapPath]]),
+    );
+    sourceMapSupport.install(new Map());
+
+    const frame = createCallSite({
+      columnNumber: 1,
+      fileName: neverFormatted,
+      isToplevel: true,
+      lineNumber: 2,
+    });
+
+    expect(frameOf(new Error('late'), frame)).toBe(
+      `toBeTruthy (${originalPath}:10:3)`,
+    );
+  });
+
+  test('declines when the outgoing registries disagree about a file', () => {
+    const twoWays = path.join(buildDir, 'two-ways.js');
+
+    sourceMapSupport.install(
+      new Map([[twoWays, path.resolve(path.sep, 'cache', 'two-ways.cjs.map')]]),
+    );
+    sourceMapSupport.install(
+      new Map([[twoWays, path.resolve(path.sep, 'cache', 'two-ways.esm.map')]]),
+    );
+    sourceMapSupport.install(new Map());
+
+    const frame = createCallSite({
+      columnNumber: 1,
+      fileName: twoWays,
+      isToplevel: true,
+      lineNumber: 2,
+    });
+
+    // Which of the two transforms produced the frame is unknowable, so the
+    // generated position stands.
+    expect(frameOf(new Error('late'), frame)).toBe(`${twoWays}:2:1`);
+  });
+
   // A stray timer or floating promise reports after teardown, and that stack
   // has to still be mapped.
   test('keeps the formatter in place so later stacks stay mapped', () => {

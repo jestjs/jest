@@ -151,7 +151,9 @@ describe('TransformCache', () => {
   });
 
   describe('clear semantics', () => {
-    test('clearForReset drops transforms + mutex but preserves source maps', () => {
+    // A stack formatted after a reset or a teardown has nowhere but the
+    // registry left to resolve from.
+    test('drops transforms and mutex but preserves source maps', () => {
       const {cache} = makeFixture(
         'orig',
         transformResult('transformed', '/maps/a.js.map'),
@@ -159,22 +161,10 @@ describe('TransformCache', () => {
       cache.transform('/a.js', userOptions);
       cache.setMutex('/key', Promise.resolve());
 
-      cache.clearForReset();
+      cache.clear();
       expect(cache.getCachedSource('/a.js')).toBeUndefined();
       expect(cache.hasMutex('/key')).toBe(false);
       expect(cache.getSourceMaps().get('/a.js')).toBe('/maps/a.js.map');
-    });
-
-    test('clear drops everything including source maps', () => {
-      const {cache} = makeFixture(
-        'orig',
-        transformResult('transformed', '/maps/a.js.map'),
-      );
-      cache.transform('/a.js', userOptions);
-
-      cache.clear();
-      expect(cache.getCachedSource('/a.js')).toBeUndefined();
-      expect(cache.getSourceMaps().get('/a.js')).toBeUndefined();
     });
   });
 

@@ -13,11 +13,14 @@ function mockHashContents(contents) {
   return crypto.createHash('sha1').update(contents).digest('hex');
 }
 
-const mockIsWatchmanInstalled = jest.fn().mockResolvedValue(true);
+const mockGetWatchmanAvailability = jest
+  .fn()
+  .mockResolvedValue({installed: true, sockname: undefined});
 
-jest.mock('../lib/isWatchmanInstalled', () => ({
+jest.mock('../lib/watchmanSockname', () => ({
   __esModule: true,
-  default: mockIsWatchmanInstalled,
+  connectClientToSockname: jest.fn(),
+  getWatchmanAvailability: mockGetWatchmanAvailability,
 }));
 
 jest.mock('jest-worker', () => ({
@@ -624,7 +627,7 @@ describe('HasteMap', () => {
         });
       });
 
-      mockIsWatchmanInstalled.mockClear();
+      mockGetWatchmanAvailability.mockClear();
 
       const hasteMap = await HasteMap.create({
         ...defaultConfig,
@@ -635,7 +638,7 @@ describe('HasteMap', () => {
 
       const data = (await hasteMap.build()).__hasteMapForTest;
 
-      expect(mockIsWatchmanInstalled).toHaveBeenCalledTimes(
+      expect(mockGetWatchmanAvailability).toHaveBeenCalledTimes(
         useWatchman ? 1 : 0,
       );
 
@@ -799,7 +802,7 @@ describe('HasteMap', () => {
       // module2 mock
     `;
 
-    await (
+    const {__hasteMapForTest: data} = await (
       await HasteMap.create({
         ...defaultConfig,
         hasteImplModulePath: undefined,
@@ -808,6 +811,12 @@ describe('HasteMap', () => {
     ).build();
 
     expect(console.warn).not.toHaveBeenCalled();
+    expect(data.mockDuplicates.get('index')).toEqual(
+      new Set([
+        path.join('fruits', 'module1', '__mocks__', 'index.js'),
+        path.join('fruits', 'module2', '__mocks__', 'index.js'),
+      ]),
+    );
   });
 
   it('warns on duplicate mocks when only one sits next to a module', async () => {

@@ -241,4 +241,62 @@ describe('CustomConsole', () => {
       expect(_console.Console).toBeDefined();
     });
   });
+
+  describe('getBuffer', () => {
+    test('should return undefined when no messages have been logged', () => {
+      expect(_console.getBuffer()).toBeUndefined();
+    });
+
+    test('should return buffer with log entries after logging', () => {
+      _console.log('Hello world!');
+
+      const buffer = _console.getBuffer();
+      expect(buffer).toBeDefined();
+      expect(buffer).toHaveLength(1);
+      expect(buffer![0].message).toBe('Hello world!');
+      expect(buffer![0].type).toBe('log');
+      expect(buffer![0].origin).toBeDefined();
+    });
+
+    test('should buffer error messages', () => {
+      _console.error('Some error');
+
+      const buffer = _console.getBuffer();
+      expect(buffer).toBeDefined();
+      expect(buffer).toHaveLength(1);
+      expect(buffer![0].message).toBe('Some error');
+      expect(buffer![0].type).toBe('error');
+    });
+
+    test('should buffer warn messages', () => {
+      _console.warn('Some warning');
+
+      const buffer = _console.getBuffer();
+      expect(buffer).toBeDefined();
+      expect(buffer).toHaveLength(1);
+      expect(buffer![0].message).toBe('Some warning');
+      expect(buffer![0].type).toBe('warn');
+    });
+
+    test('should accumulate multiple log entries', () => {
+      _console.log('first');
+      _console.error('second');
+      _console.warn('third');
+
+      const buffer = _console.getBuffer();
+      expect(buffer).toHaveLength(3);
+      expect(buffer![0].type).toBe('log');
+      expect(buffer![1].type).toBe('error');
+      expect(buffer![2].type).toBe('warn');
+    });
+
+    test('should still print to stdout/stderr while buffering', () => {
+      _console.log('to stdout');
+      _console.error('to stderr');
+
+      expect(_stdout).toBe('to stdout\n');
+      expect(_stderr).toBe('to stderr\n');
+      expect(_console.getBuffer()).toHaveLength(2);
+    });
+  });
 });

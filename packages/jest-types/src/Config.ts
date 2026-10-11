@@ -229,8 +229,8 @@ export type InitialOptionsWithRootDir = InitialOptions &
   Required<Pick<InitialOptions, 'rootDir'>>;
 
 export type InitialProjectOptions = Pick<
-  InitialOptions & {cwd?: string; runnerOptions?: Record<string, unknown>},
-  keyof ProjectConfig
+  InitialOptions,
+  Extract<keyof ProjectConfig, keyof InitialOptions>
 >;
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -344,7 +344,6 @@ export type ProjectConfig = {
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
   coverageProvider: CoverageProvider;
-  coverageReporters: CoverageReporters;
   cwd: string;
   dependencyExtractor?: string;
   detectLeaks: boolean;
@@ -369,7 +368,6 @@ export type ProjectConfig = {
   openHandlesTimeout: number;
   preset?: string;
   prettierPath: string;
-  reporters: Array<string | ReporterConfig>;
   resetMocks: boolean;
   resetModules: boolean;
   resolver?: string;
@@ -403,7 +401,6 @@ export type ProjectConfig = {
   unmockedModulePathPatterns?: Array<string>;
   verbose?: boolean;
   waitForUnhandledRejections: boolean;
-  workerIdleMemoryLimit?: number;
 };
 
 export type SetupAfterEnvPerfStats = {

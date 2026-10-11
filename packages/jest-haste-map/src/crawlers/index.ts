@@ -12,13 +12,12 @@ import {watchmanCrawl} from './watchman';
 export async function crawl(
   crawlerOptions: CrawlerOptions,
   useWatchman: boolean,
-  console: Console,
 ): ReturnType<typeof nodeCrawl> {
   const crawlFn = useWatchman ? watchmanCrawl : nodeCrawl;
 
   const retry = (retryError: Error) => {
     if (crawlFn === watchmanCrawl) {
-      console.warn(
+      crawlerOptions.console.warn(
         'jest-haste-map: Watchman crawl failed. Retrying once with node ' +
           'crawler.\n' +
           "  Usually this happens when watchman isn't running. Create an " +

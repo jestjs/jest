@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-declare module 'react-is-18' {
+declare module '@jest/react-is-18' {
   // eslint-disable-next-line import-x/no-extraneous-dependencies
   export * from 'react-is';
 }
 
-declare module 'react-is-19' {
+declare module '@jest/react-is-19' {
   // eslint-disable-next-line import-x/no-extraneous-dependencies
   export * from 'react-is';
 }

@@ -13,11 +13,11 @@ describe('Runtime', () => {
     createRuntime = require('createRuntime');
   });
 
-  describe('constructInjectedModuleParameters', () => {
+  describe('injectedModuleParameters', () => {
     it('generates the correct args', async () => {
       const runtime = await createRuntime(__filename);
 
-      expect(runtime.executor.constructInjectedModuleParameters()).toEqual([
+      expect(runtime.executor.injectedModuleParameters).toEqual([
         'module',
         'exports',
         'require',
@@ -32,7 +32,7 @@ describe('Runtime', () => {
         sandboxInjectedGlobals: ['Math'],
       });
 
-      expect(runtime.executor.constructInjectedModuleParameters()).toEqual([
+      expect(runtime.executor.injectedModuleParameters).toEqual([
         'module',
         'exports',
         'require',
@@ -48,7 +48,7 @@ describe('Runtime', () => {
         injectGlobals: false,
       });
 
-      expect(runtime.executor.constructInjectedModuleParameters()).toEqual([
+      expect(runtime.executor.injectedModuleParameters).toEqual([
         'module',
         'exports',
         'require',

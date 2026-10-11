@@ -60,7 +60,7 @@ export function testWithVmEsm(
   return fn(...args);
 }
 
-const hasSyncEsm =
+export const hasSyncEsm =
   // @ts-expect-error - hasAsyncGraph is in Node v24.9+, not yet typed
   typeof SourceTextModule?.prototype.hasAsyncGraph === 'function';
 

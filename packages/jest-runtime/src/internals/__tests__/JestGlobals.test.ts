@@ -20,6 +20,9 @@ import {evaluateSyntheticModule} from '../syntheticBuilders';
 import {TestState} from '../TestState';
 import type {EnvironmentGlobals} from '../types';
 
+const retryTimesSetterSymbol = Symbol.for('RETRY_TIMES_SETTER');
+const retryTimesSymbol = Symbol.for('RETRY_TIMES');
+
 type Stubs = {
   mockState: jest.Mocked<MockState>;
   moduleMocker: jest.Mocked<ModuleMocker>;
@@ -137,6 +140,38 @@ describe('JestGlobals.jestObjectFor', () => {
     jestGlobals.clearJestObjectCache();
     const after = jestGlobals.jestObjectFor('/a.js');
     expect(after).not.toBe(before);
+  });
+});
+
+describe('JestGlobals.retryTimes', () => {
+  test('delegates entire describe retries to the test framework', () => {
+    const {jestGlobals, stubs} = makeJestGlobals();
+    const retryTimesSetter = jest.fn();
+    stubs.environment.global[retryTimesSetterSymbol] = retryTimesSetter;
+
+    jestGlobals.jestObjectFor('/file.js').retryTimes(2, {
+      entireDescribe: true,
+      logErrorsBeforeRetry: true,
+      waitBeforeRetry: 100,
+    });
+
+    expect(retryTimesSetter).toHaveBeenCalledWith({
+      logErrorsBeforeRetry: true,
+      numRetries: 2,
+      waitBeforeRetry: 100,
+    });
+    expect(stubs.environment.global[retryTimesSymbol]).toBeUndefined();
+  });
+
+  test('uses the existing global path for per-test retries', () => {
+    const {jestGlobals, stubs} = makeJestGlobals();
+    const retryTimesSetter = jest.fn();
+    stubs.environment.global[retryTimesSetterSymbol] = retryTimesSetter;
+
+    jestGlobals.jestObjectFor('/file.js').retryTimes(2);
+
+    expect(retryTimesSetter).not.toHaveBeenCalled();
+    expect(stubs.environment.global[retryTimesSymbol]).toBe(2);
   });
 });
 

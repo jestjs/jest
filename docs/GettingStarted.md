@@ -163,6 +163,27 @@ module.exports = {
 
 However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats) to using TypeScript with Babel. Because TypeScript support in Babel is purely transpilation, Jest will not type-check your tests as they are run. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest) instead, or just run the TypeScript compiler [tsc](https://www.typescriptlang.org/docs/handbook/compiler-options.html) separately (or as part of your build process).
 
+#### Via Node's type stripping
+
+Node erases type annotations itself, and Jest uses that whenever no transformer claims a `.ts`, `.mts` or `.cts` file. Set an empty `transform` to take the default `babel-jest` entry out of the way:
+
+```json title="package.json"
+{
+  "jest": {
+    "transform": {}
+  }
+}
+```
+
+Node replaces types with whitespace, so positions line up with your source and no source map is involved. It requires Node.js `^22.13.0` or `>=23.2.0`.
+
+Jest reads the module format the same way it does for JavaScript, so an ESM `.ts` or `.mts` file needs its extension in [`extensionsToTreatAsEsm`](Configuration.md#extensionstotreatasesm-arraystring). Node infers ESM from `.mts` and CommonJS from `.cts` on the extension alone; Jest does not do that yet.
+
+What Node cannot do is compile TypeScript features that emit code. `enum`, `namespace` and parameter properties throw, and so does JSX, which means `.tsx` still needs Babel or `ts-jest`. Two more things to keep in mind:
+
+- `jest.mock()` calls are no longer hoisted above the imports of the module they mock, because `babel-plugin-jest-hoist` is not running. Move them above your `require` calls yourself, or use `jest.unstable_mockModule` with dynamic `import()`.
+- A type imported as a value (`import {SomeType} from 'pkg'`) survives the erasure and fails at link time. Write `import type` for anything that only exists in the type system.
+
 #### Via `ts-jest`
 
 [ts-jest](https://github.com/kulshekhar/ts-jest) is a TypeScript preprocessor with source map support for Jest that lets you use Jest to test projects written in TypeScript.

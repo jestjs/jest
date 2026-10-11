@@ -2055,8 +2055,29 @@ Test environment options that will be passed to the `testEnvironment`. The relev
 
 When using the `node` environment, you can configure various options that are passed to `runInContext`. These options include:
 
-- **`globalsCleanup`** (**'on'** | **'soft'** | **'off'**): Controls cleanup of global variables between tests. Default: `'soft'`.
+- **`globalsCleanup`** (**'on'** | **'soft'** | **'off'**): Controls cleanup of global variables between test files. Default: `'soft'`. See [Cleaning up globals](#cleaning-up-globals) below.
 - All the options listed in the [vm.runInContext](https://nodejs.org/api/vm.html#scriptrunincontextcontextifiedobject-options) documentation
+
+##### Cleaning up globals
+
+When a test file finishes, Jest deletes the properties of the objects that the file put on the global scope. This releases memory that a worker would otherwise hold until it exits.
+
+The `globalsCleanup` option controls that deletion:
+
+- `'on'`: the properties are deleted. Code that reads such a property after its test file finished gets `undefined`.
+- `'soft'` (default): the properties are kept, but reading or writing one emits a `JEST-01` deprecation warning. Nothing breaks, so this is a migration path towards `'on'`.
+- `'off'`: no cleanup and no warning.
+
+If you see a `JEST-01` warning, some code holds on to a global past the end of the test file that created it. Either release that reference, or turn the cleanup off:
+
+```js
+module.exports = {
+  testEnvironment: 'node',
+  testEnvironmentOptions: {
+    globalsCleanup: 'off',
+  },
+};
+```
 
 #### JSDOM Environment Options
 

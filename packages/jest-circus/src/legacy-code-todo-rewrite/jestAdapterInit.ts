@@ -30,15 +30,11 @@ import {
 } from 'jest-snapshot';
 import globals from '..';
 import run from '../run';
-import {
-  ROOT_DESCRIBE_BLOCK_NAME,
-  addEventHandler,
-  dispatch,
-  getState as getRunnerState,
-} from '../state';
+import {addEventHandler, dispatch, getState as getRunnerState} from '../state';
 import testCaseReportHandler from '../testCaseReportHandler';
+import {RETRY_TIMES_SETTER} from '../types';
 import {unhandledRejectionHandler} from '../unhandledRejectionHandler';
-import {getTestID} from '../utils';
+import {getTestID, parseSingleTestResult} from '../utils';
 
 interface RuntimeGlobals extends Global.TestFrameworkGlobals {
   expect: JestExpect;
@@ -84,6 +80,7 @@ export const initialize = async ({
     getRunnerState().testTimeout = globalConfig.testTimeout;
   }
   getRunnerState().maxConcurrency = globalConfig.maxConcurrency;
+  getRunnerState().expand = globalConfig.expand;
 
   getRunnerState().randomize = globalConfig.randomize;
   getRunnerState().seed = globalConfig.seed;
@@ -111,6 +108,17 @@ export const initialize = async ({
     expect: jestExpect,
   };
   setGlobalsForRuntime(runtimeGlobals);
+  environment.global[RETRY_TIMES_SETTER] = (
+    retryOptions: Circus.DescribeRetryOptions,
+  ) => {
+    const state = getRunnerState();
+    if (state.hasStarted) {
+      throw new Error(
+        'Cannot set retry options after tests have started running. Retry options must be set synchronously.',
+      );
+    }
+    state.describeRetryOptions.set(state.currentDescribeBlock, retryOptions);
+  };
 
   if (config.injectGlobals) {
     Object.assign(environment.global, runtimeGlobals);
@@ -270,44 +278,24 @@ export const runAndTransformResultsToJestFormat = async ({
 
   const assertionResults: Array<AssertionResult> = runResult.testResults.map(
     testResult => {
-      let status: Status;
-      if (testResult.status === 'skip') {
-        status = 'pending';
+      // `TestCaseResult` names the same instant `startedAt`, so the field has
+      // to be renamed rather than spread through.
+      const {startedAt, ...assertionResult} = parseSingleTestResult(
+        testResult,
+        formatRetryError,
+      );
+
+      if (assertionResult.status === 'pending') {
         numPendingTests += 1;
-      } else if (testResult.status === 'todo') {
-        status = 'todo';
+      } else if (assertionResult.status === 'todo') {
         numTodoTests += 1;
-      } else if (testResult.errors.length > 0) {
-        status = 'failed';
+      } else if (assertionResult.status === 'failed') {
         numFailingTests += 1;
       } else {
-        status = 'passed';
         numPassingTests += 1;
       }
 
-      const ancestorTitles = testResult.testPath.filter(
-        name => name !== ROOT_DESCRIBE_BLOCK_NAME,
-      );
-      const title = ancestorTitles.pop();
-
-      return {
-        ancestorTitles,
-        duration: testResult.duration,
-        failing: testResult.failing,
-        failureDetails: testResult.errorsDetailed,
-        failureMessages: testResult.errors,
-        fullName: title
-          ? [...ancestorTitles, title].join(' ')
-          : ancestorTitles.join(' '),
-        invocations: testResult.invocations,
-        location: testResult.location,
-        numPassingAsserts: testResult.numPassingAsserts,
-        retryMessages: testResult.retryReasonsDetailed.map(formatRetryError),
-        retryReasons: testResult.retryReasons,
-        startAt: testResult.startedAt,
-        status,
-        title: testResult.testPath.at(-1)!,
-      };
+      return {...assertionResult, startAt: startedAt};
     },
   );
 
@@ -357,7 +345,7 @@ const handleSnapshotStateAfterRetry =
     switch (event.name) {
       case 'test_retry': {
         // Clear any snapshot data that occurred in previous test run
-        snapshotState.clear();
+        snapshotState.clear(event.test);
       }
     }
   };

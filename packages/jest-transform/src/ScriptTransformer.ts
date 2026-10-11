@@ -33,7 +33,9 @@ import {
   makeInvalidTransformerError,
 } from './runtimeErrorsAndWarnings';
 import shouldInstrument from './shouldInstrument';
+import {canStripTypes, stripTypes} from './stripTypeScriptTypes';
 import type {
+  CallerTransformOptions,
   FixedRawSourceMap,
   Options,
   ReducedTransformOptions,
@@ -116,23 +118,40 @@ class ScriptTransformer {
     filename: string,
     transformOptions: TransformOptions,
     transformerCacheKey: string | undefined,
+    willStripTypes: boolean,
   ): string {
     if (transformerCacheKey != null) {
       return createHash('sha1')
         .update(transformerCacheKey)
+        .update('\0', 'utf8')
+        .update(callerSupport(transformOptions))
+        .update('\0', 'utf8')
         .update(CACHE_VERSION)
         .digest('hex')
         .slice(0, 32);
     }
 
-    return createHash('sha1')
-      .update(fileData)
-      .update(transformOptions.configString)
-      .update(transformOptions.instrument ? 'instrument' : '')
-      .update(filename)
-      .update(CACHE_VERSION)
-      .digest('hex')
-      .slice(0, 32);
+    return (
+      createHash('sha1')
+        .update(fileData)
+        .update('\0', 'utf8')
+        .update(transformOptions.configString)
+        .update('\0', 'utf8')
+        .update(transformOptions.instrument ? 'instrument' : '')
+        .update('\0', 'utf8')
+        .update(callerSupport(transformOptions))
+        .update('\0', 'utf8')
+        .update(filename)
+        .update('\0', 'utf8')
+        // Node makes no stability promise about stripped output across
+        // versions, and which syntax it rejects moves too. Same reasoning as
+        // babel-jest's own cache key.
+        .update(willStripTypes ? process.version : '')
+        .update('\0', 'utf8')
+        .update(CACHE_VERSION)
+        .digest('hex')
+        .slice(0, 32)
+    );
   }
 
   private _buildTransformCacheKey(pattern: string, filepath: string) {
@@ -170,6 +189,7 @@ class ScriptTransformer {
       filename,
       transformOptions,
       transformerCacheKey,
+      transformer == null && this._shouldStripTypes(filename),
     );
   }
 
@@ -209,6 +229,7 @@ class ScriptTransformer {
       filename,
       transformOptions,
       transformerCacheKey,
+      transformer == null && this._shouldStripTypes(filename),
     );
   }
 
@@ -406,6 +427,10 @@ class ScriptTransformer {
         invariant(transformPath);
         throw new Error(makeInvalidReturnValueError(transformPath));
       }
+    } else if (this._shouldStripTypes(filename)) {
+      // Strip-only replaces types with whitespace, so positions are preserved
+      // and no source map is needed.
+      transformed = {code: stripTypes(content, filename), map: null};
     }
 
     if (transformed.map == null || transformed.map === '') {
@@ -618,7 +643,9 @@ class ScriptTransformer {
 
     const willTransform =
       isInternalModule !== true &&
-      (transformOptions.instrument || this.shouldTransform(filename));
+      (transformOptions.instrument ||
+        this.shouldTransform(filename) ||
+        this._shouldStripTypes(filename));
 
     try {
       if (willTransform) {
@@ -664,7 +691,9 @@ class ScriptTransformer {
 
     const willTransform =
       isInternalModule !== true &&
-      (transformOptions.instrument || this.shouldTransform(filename));
+      (transformOptions.instrument ||
+        this.shouldTransform(filename) ||
+        this._shouldStripTypes(filename));
 
     try {
       if (willTransform) {
@@ -699,7 +728,7 @@ class ScriptTransformer {
     const instrument =
       options.coverageProvider === 'babel' &&
       shouldInstrument(filename, options, this._config);
-    const scriptCacheKey = getScriptCacheKey(filename, instrument);
+    const scriptCacheKey = getScriptCacheKey(filename, instrument, options);
     let result = this._cache.transformedFiles.get(scriptCacheKey);
     if (result) {
       return result;
@@ -727,7 +756,7 @@ class ScriptTransformer {
     const instrument =
       options.coverageProvider === 'babel' &&
       shouldInstrument(filename, options, this._config);
-    const scriptCacheKey = getScriptCacheKey(filename, instrument);
+    const scriptCacheKey = getScriptCacheKey(filename, instrument, options);
 
     let result = this._cache.transformedFiles.get(scriptCacheKey);
     if (result) {
@@ -842,6 +871,18 @@ class ScriptTransformer {
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
 
     return this._config.transform.length > 0 && !isIgnored;
+  }
+
+  // Mirrors what Node does for files no other transform claimed: erase the
+  // types so `vm` gets JavaScript. `transformIgnorePatterns` still applies,
+  // which reproduces Node's refusal to strip anything under `node_modules`.
+  private _shouldStripTypes(filename: string): boolean {
+    if (!canStripTypes(filename)) {
+      return false;
+    }
+    const ignoreRegexp = this._cache.ignorePatternsRegExp;
+
+    return ignoreRegexp ? !ignoreRegexp.test(filename) : true;
   }
 
   canTransformSync(filename: string): boolean {
@@ -997,10 +1038,36 @@ const readCacheFile = (cachePath: string): string | null => {
   return fileData;
 };
 
-const getScriptCacheKey = (filename: string, instrument: boolean) => {
+// A transformer can emit ESM or CJS for the same file depending on these, so
+// the two shapes must not share a cache entry. The `Record` makes a forgotten
+// flag a type error.
+function callerSupport(options: CallerTransformOptions): string {
+  const flags: Record<keyof CallerTransformOptions, boolean> = {
+    supportsDynamicImport: options.supportsDynamicImport,
+    supportsExportNamespaceFrom: options.supportsExportNamespaceFrom,
+    supportsStaticESM: options.supportsStaticESM,
+    supportsTopLevelAwait: options.supportsTopLevelAwait,
+  };
+
+  return JSON.stringify(flags);
+}
+
+function getScriptCacheKey(
+  filename: string,
+  instrument: boolean,
+  options: CallerTransformOptions,
+): string {
   const mtime = fs.statSync(filename).mtime;
-  return `${filename}_${mtime.getTime()}${instrument ? '_instrumented' : ''}`;
-};
+
+  return [
+    filename,
+    mtime.getTime().toString(),
+    instrument ? 'instrumented' : '',
+    callerSupport(options),
+  ]
+    .filter(Boolean)
+    .join('_');
+}
 
 const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
   if (

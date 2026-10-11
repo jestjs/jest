@@ -434,11 +434,18 @@ describe('SearchSource', () => {
       const filePath = path.join(rootDir, 'RegularModule.js');
       const file2Path = path.join(rootDir, 'RequireRegularModule.js');
       const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
+      const childrenParent = path.join(rootDir, 'ChildrenParentModule.js');
+      const childrenSecondParent = path.join(
+        rootDir,
+        'ChildrenSecondParentModule.js',
+      );
       const data = await searchSource.findRelatedTests(
         new Set([filePath]),
         false,
       );
       expect(toPaths(data.tests).sort()).toEqual([
+        childrenParent,
+        childrenSecondParent,
         parentDep,
         filePath,
         file2Path,

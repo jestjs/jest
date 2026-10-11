@@ -46,28 +46,22 @@ const _validate = (
       );
 
       hasDeprecationWarnings = hasDeprecationWarnings || isDeprecatedKey;
-    } else if (allowsMultipleTypes(key)) {
-      const value = config[key];
-
+    } else if (Object.hasOwnProperty.call(exampleConfig, key)) {
       if (
         typeof options.condition === 'function' &&
         typeof options.error === 'function'
       ) {
-        if (key === 'maxWorkers' && !isOfTypeStringOrNumber(value)) {
-          throw new ValidationError(
-            'Validation Error',
-            `${key} has to be of type string or number`,
-            'maxWorkers=50% or\nmaxWorkers=3',
-          );
+        if (allowsMultipleTypes(key)) {
+          if (!isOfTypeStringOrNumber(config[key])) {
+            throw new ValidationError(
+              'Validation Error',
+              `${key} has to be of type string or number`,
+              'maxWorkers=50% or\nmaxWorkers=3',
+            );
+          }
+        } else if (!options.condition(config[key], exampleConfig[key])) {
+          options.error(key, config[key], exampleConfig[key], options, path);
         }
-      }
-    } else if (Object.hasOwnProperty.call(exampleConfig, key)) {
-      if (
-        typeof options.condition === 'function' &&
-        typeof options.error === 'function' &&
-        !options.condition(config[key], exampleConfig[key])
-      ) {
-        options.error(key, config[key], exampleConfig[key], options, path);
       }
     } else if (
       shouldSkipValidationForPath(path, key, options.recursiveDenylist)

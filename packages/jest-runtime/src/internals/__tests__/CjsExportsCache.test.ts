@@ -106,6 +106,54 @@ describe('CjsExportsCache', () => {
     ]);
   });
 
+  test('terminates on circular re-exports', () => {
+    const {resolution} = makeResolution({
+      resolveCjs: ((_from: string, to: string) =>
+        to.replace('./', '/')) as Resolution['resolveCjs'],
+    });
+    const {fileCache} = makeFileCache({
+      '/a.js': "module.exports = require('./b.js');",
+      '/b.js': "module.exports = require('./a.js');\nmodule.exports.fromB = 1;",
+    });
+    const cache = new CjsExportsCache({
+      fileCache,
+      loadCoreReexport: jest.fn(),
+      loadNativeAddon: jest.fn(),
+      resolution,
+      transformCache: makeTransformCache(),
+    });
+
+    expect([...cache.getExportsOf('/from.js', '/a.js')]).toEqual(['fromB']);
+  });
+
+  test('does not memoize a partial export list when the walk throws', () => {
+    let resolveAttempts = 0;
+    const {resolution} = makeResolution({
+      resolveCjs: ((_from: string, to: string) => {
+        resolveAttempts++;
+        throw new Error(`cannot resolve ${to}`);
+      }) as Resolution['resolveCjs'],
+    });
+    const {fileCache} = makeFileCache({
+      '/a.js': "module.exports.own = 1; module.exports = require('./gone');",
+    });
+    const cache = new CjsExportsCache({
+      fileCache,
+      loadCoreReexport: jest.fn(),
+      loadNativeAddon: jest.fn(),
+      resolution,
+      transformCache: makeTransformCache(),
+    });
+
+    expect(() => cache.getExportsOf('/from.js', '/a.js')).toThrow(
+      'cannot resolve ./gone',
+    );
+    expect(() => cache.getExportsOf('/from.js', '/a.js')).toThrow(
+      'cannot resolve ./gone',
+    );
+    expect(resolveAttempts).toBe(2);
+  });
+
   test('loads core-module re-exports via the loadCoreReexport callback', () => {
     const {resolution, isCoreModule} = makeResolution();
     isCoreModule.mockImplementation((name: string) => name === 'fs');
@@ -147,6 +195,26 @@ describe('CjsExportsCache', () => {
     ]);
     expect(loadNativeAddon).toHaveBeenCalledWith('/from.js', '/addon.node');
     expect(readFile).not.toHaveBeenCalled();
+  });
+
+  test('skips a re-export that cannot be analysed as CJS', () => {
+    const {resolution} = makeResolution({
+      resolveCjs: ((_from: string, to: string) =>
+        to.replace('./', '/')) as Resolution['resolveCjs'],
+    });
+    const {fileCache} = makeFileCache({
+      '/a.js': "module.exports.own = 1; module.exports = require('./esm.mjs');",
+      '/esm.mjs': 'export default function thunk() {}',
+    });
+    const cache = new CjsExportsCache({
+      fileCache,
+      loadCoreReexport: jest.fn(),
+      loadNativeAddon: jest.fn(),
+      resolution,
+      transformCache: makeTransformCache(),
+    });
+
+    expect([...cache.getExportsOf('/from.js', '/a.js')]).toEqual(['own']);
   });
 
   test('throws CjsParseError when source contains ESM syntax', () => {

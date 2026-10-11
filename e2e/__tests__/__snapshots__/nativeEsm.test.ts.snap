@@ -32,6 +32,14 @@ Time:        <<REPLACED>>
 Ran all test suites matching native-esm-import-attributes.test.js."
 `;
 
+exports[`on node >=22.13.0 <23.0.0 || >=23.4.0 supports importing a builtin that only exists prefixed 1`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching native-esm-prefixed-builtin.test.js."
+`;
+
 exports[`properly handle re-exported native modules in ESM via CJS 1`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total

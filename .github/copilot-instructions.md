@@ -7,10 +7,10 @@ Large monorepo (55 packages, 200+ e2e fixtures) managed with Lerna-lite and Yarn
 ```bash
 corepack enable
 yarn install        # ~45 s. Python is required (node-gyp).
-yarn build:js       # ~5 s. Run this before tests — they import from build/, not src/.
+yarn build:js       # ~5 s. Required — e2e tests and cross-package imports load build/.
 ```
 
-Tests transform on the fly via `babel-jest`, but their `import {x} from '../'` resolves to each package's `build/`. `yarn build:js` is required after every checkout. Full `yarn build` (`build:js && build:ts && bundle:ts`) is 3–5 min and only needed when working on type declarations or API Extractor output.
+Unit tests MUST run the package under test from source: their `import {x} from '../'` resolves to the package's `src/`, transformed on the fly by `babel-jest`. E2E tests run against built output — their fixtures invoke `packages/jest-cli/bin/jest.js`, which loads every package from `build/`. Imports of _other_ workspace packages resolve through `main` to `build/` too, so `yarn build:js` is required after every checkout and after edits another package or an e2e fixture consumes. Full `yarn build` (`build:js && build:ts && bundle:ts`) is 3–5 min and needed when working on type declarations or API Extractor output — and before `yarn typecheck:tests`, which resolves cross-package types from `build/*.d.ts` and reports phantom errors (e.g. missing custom matchers) in a fresh checkout without them.
 
 Iterative: `yarn watch` (webpack), `yarn watch:ts` (declarations). Clean: `yarn build-clean`; full reset: `yarn clean-all`.
 
@@ -46,6 +46,8 @@ node ../../packages/jest-cli/bin/jest.js --no-cache
 ```
 
 CI runs the test matrix with `nick-fields/retry` (10-min timeout, up to 3 retries on flake) across Ubuntu/macOS/Windows × Node 18/20/22/24/25/26. If a test is consistently failing locally but green in CI, suspect a retry-masked flake.
+
+`codecov/patch` and `codecov/project` report before the four `Node LTS on Ubuntu with coverage (N/4)` shards have uploaded, so their numbers mean nothing until those jobs finish; both are advisory anyway (`require_ci_to_pass: false`, `target: auto`). Coverage is measured only in the process running the suite, so a line reachable only through an e2e fixture always reads as uncovered.
 
 ### Test gotchas worth memorizing
 
@@ -215,7 +217,7 @@ When adding a new dep, use `yarn workspace <pkg> add <dep>` — constraints will
 
 ## Common pitfalls
 
-- **"Module not found" inside the repo's own packages**: forgot `yarn build:js`. Tests resolve via `main`, which points to `build/`.
+- **"Module not found" inside the repo's own packages**: forgot `yarn build:js`. Cross-package imports resolve via `main`, which points to `build/`.
 - **Lockfile churn after `yarn install`**: commit it; CI uses `--immutable`.
 - **`typecheck:tests` errors for a `Console`/`Stats`/`__dirname` reference**: add `"node"` to the test directory's `tsconfig.json` `types` array.
 - **`execFile` mock typing**: heavily overloaded; the inner function won't satisfy `typeof execFile` directly. Use `((_file, _args, cb) => cb(null, ...)) as unknown as typeof execFile` on the impl cast.

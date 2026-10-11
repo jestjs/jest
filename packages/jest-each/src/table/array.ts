@@ -14,6 +14,7 @@ import {type Templates, interpolateVariables} from './interpolation';
 
 const SUPPORTED_PLACEHOLDERS = /%[#Odfijops]/g;
 const PRETTY_PLACEHOLDER = '%p';
+const JSON_PLACEHOLDER = '%j';
 const INDEX_PLACEHOLDER = '%#';
 const NUMBER_PLACEHOLDER = '%$';
 const PLACEHOLDER_PREFIX = '%';
@@ -70,6 +71,9 @@ const formatTitle = (
         if (placeholder === PRETTY_PLACEHOLDER)
           return interpolatePrettyPlaceholder(formattedTitle, normalisedValue);
 
+        if (placeholder === JSON_PLACEHOLDER)
+          return interpolateJsonPlaceholder(formattedTitle, normalisedValue);
+
         return util.format(formattedTitle, normalisedValue);
       },
       interpolateTitleIndexAndNumber(
@@ -95,5 +99,35 @@ const interpolateTitleIndexAndNumber = (title: string, index: number) =>
     .replace(INDEX_PLACEHOLDER, index.toString())
     .replace(NUMBER_PLACEHOLDER, (index + 1).toString());
 
-const interpolatePrettyPlaceholder = (title: string, value: unknown) =>
-  title.replace(PRETTY_PLACEHOLDER, pretty(value, {maxDepth: 1, min: true}));
+const interpolatePrettyPlaceholder = (title: string, value: unknown) => {
+  const prettyValue = pretty(value, {maxDepth: 1, min: true});
+  return title.replace(PRETTY_PLACEHOLDER, () => prettyValue);
+};
+
+const interpolateJsonPlaceholder = (title: string, value: unknown) => {
+  const json = stringifyJson(value);
+  return title.replace(JSON_PLACEHOLDER, () => json);
+};
+
+// `util.format('%j', …)` throws on a `bigint`, so serialize here instead and
+// render bigints the way a JavaScript literal reads. Cyclic values keep the
+// `[Circular]` output `util.format` gives them.
+function stringifyJson(value: unknown): string {
+  if (isCyclic(value)) {
+    return '[Circular]';
+  }
+  return `${JSON.stringify(value, (_, entry) =>
+    typeof entry === 'bigint' ? `${entry}n` : entry,
+  )}`;
+}
+
+function isCyclic(value: unknown, ancestors: Array<unknown> = []): boolean {
+  if (value === null || typeof value !== 'object') {
+    return false;
+  }
+  if (ancestors.includes(value)) {
+    return true;
+  }
+  const nested = [...ancestors, value];
+  return Object.values(value).some(entry => isCyclic(entry, nested));
+}

@@ -10,6 +10,7 @@ import * as watchman from 'fb-watchman';
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
 import normalizePathSep from '../lib/normalizePathSep';
+import {connectClientToSockname} from '../lib/watchmanSockname';
 import type {
   CrawlerOptions,
   FileData,
@@ -95,33 +96,22 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   hasteMap: InternalHasteMap;
 }> {
   const fields = ['name', 'exists', 'mtime_ms', 'size'];
-  const {data, extensions, ignore, rootDir, roots} = options;
+  const {console, data, extensions, ignore, rootDir, roots} = options;
   const defaultWatchExpression: Array<any> = ['allof', ['type', 'f']];
   const clocks = data.clocks;
   const client = new watchman.Client();
 
-  // https://facebook.github.io/watchman/docs/capabilities.html
-  // Check adds about ~28ms
-  const capabilities = await capabilityCheck(client, {
-    // If a required capability is missing then an error will be thrown,
-    // we don't need this assertion, so using optional instead.
-    optional: ['suffix-set'],
-  });
-
-  if (capabilities?.capabilities['suffix-set']) {
-    // If available, use the optimized `suffix-set` operation:
-    // https://facebook.github.io/watchman/docs/expr/suffix.html#suffix-set
-    defaultWatchExpression.push(['suffix', extensions]);
-  } else {
-    // Otherwise use the older and less optimal suffix tuple array
-    defaultWatchExpression.push([
-      'anyof',
-      ...extensions.map(extension => ['suffix', extension]),
-    ]);
-  }
-
+  // fb-watchman reports connection and daemon-startup failures as a client
+  // `error` event rather than through a command callback. Without a listener
+  // already attached, the first such failure is an unhandled `error` that
+  // takes the process down instead of letting the caller retry with the node
+  // crawler, so subscribe before issuing any command.
   let clientError;
   client.on('error', error => (clientError = watchmanError(error)));
+
+  if (options.watchmanSockname !== undefined) {
+    connectClientToSockname(client, options.watchmanSockname);
+  }
 
   const cmd = <T>(...args: Array<any>): Promise<T> =>
     new Promise((resolve, reject) =>
@@ -130,15 +120,6 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
         error ? reject(watchmanError(error)) : resolve(result),
       ),
     );
-
-  if (options.computeSha1) {
-    const {capabilities} =
-      await cmd<WatchmanListCapabilitiesResponse>('list-capabilities');
-
-    if (capabilities.includes('field-content.sha1hex')) {
-      fields.push('content.sha1hex');
-    }
-  }
 
   async function getWatchmanRoots(
     roots: Array<string>,
@@ -210,9 +191,9 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
 
         const query =
           since === undefined
-            ? // Use the `since` generator if we have a clock available
+            ? // Without a clock, enumerate everything matching the globs
               {expression, fields, glob, glob_includedotfiles: true}
-            : // Otherwise use the `glob` filter
+            : // With a clock available, ask only for the delta since then
               {expression, fields, since};
 
         const response = await cmd<WatchmanQueryResponse>('query', root, query);
@@ -247,6 +228,35 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   let results: Map<string, WatchmanQueryResponse>;
   let isFresh = false;
   try {
+    // https://facebook.github.io/watchman/docs/capabilities.html
+    // Check adds about ~28ms
+    const capabilities = await capabilityCheck(client, {
+      // If a required capability is missing then an error will be thrown,
+      // we don't need this assertion, so using optional instead.
+      optional: ['suffix-set'],
+    });
+
+    if (capabilities?.capabilities['suffix-set']) {
+      // If available, use the optimized `suffix-set` operation:
+      // https://facebook.github.io/watchman/docs/expr/suffix.html#suffix-set
+      defaultWatchExpression.push(['suffix', extensions]);
+    } else {
+      // Otherwise use the older and less optimal suffix tuple array
+      defaultWatchExpression.push([
+        'anyof',
+        ...extensions.map(extension => ['suffix', extension]),
+      ]);
+    }
+
+    if (options.computeSha1) {
+      const {capabilities: listedCapabilities} =
+        await cmd<WatchmanListCapabilitiesResponse>('list-capabilities');
+
+      if (listedCapabilities.includes('field-content.sha1hex')) {
+        fields.push('content.sha1hex');
+      }
+    }
+
     const watchmanRoots = await getWatchmanRoots(roots);
     const watchmanFileResults = await queryWatchmanForDirs(watchmanRoots);
 

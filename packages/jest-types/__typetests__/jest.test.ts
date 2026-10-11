@@ -679,6 +679,8 @@ expect(jest.setTimerTickMode({mode: 'nextAsync'})).type.toBe<typeof jest>();
 // Misc
 
 expect(jest.retryTimes(3)).type.toBe<typeof jest>();
+expect(jest.retryTimes(3, {entireDescribe: true})).type.toBe<typeof jest>();
+expect(jest.retryTimes(3, {entireDescribe: 'yes'})).type.toRaiseError();
 expect(jest.retryTimes(3, {logErrorsBeforeRetry: true})).type.toBe<
   typeof jest
 >();

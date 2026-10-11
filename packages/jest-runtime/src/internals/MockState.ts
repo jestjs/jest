@@ -8,6 +8,7 @@
 import * as path from 'node:path';
 import type {Config} from '@jest/types';
 import type {MockMetadata, ModuleMocker} from 'jest-mock';
+import Resolver from 'jest-resolve';
 import type {ModuleRegistries} from './ModuleRegistries';
 import type {Resolution} from './Resolution';
 
@@ -20,8 +21,24 @@ const transitiveCacheKey = (from: string, moduleID: string) =>
 
 export type MockDecision = {shouldMock: boolean; moduleID: string};
 
+// Spellings that serialize to one data URL are one module in the loader
+// (which keys by `new URL(...).href`), so the mock decision and its ID must
+// canonicalize the same way. Unparseable URIs stay raw - the loader's own
+// Invalid URL error surfaces later.
+function canonicalizeDataUri(moduleName: string): string {
+  if (!moduleName.startsWith('data:')) return moduleName;
+  try {
+    return new URL(moduleName).href;
+  } catch {
+    return moduleName;
+  }
+}
+
+const NO_MOCK: MockDecision = Object.freeze({moduleID: '', shouldMock: false});
+
 export class MockState {
   private readonly resolution: Resolution;
+  private readonly rootDir: string;
   private readonly unmockList: RegExp | undefined;
 
   private shouldAutoMock: boolean;
@@ -50,6 +67,7 @@ export class MockState {
 
   constructor(resolution: Resolution, config: Config.ProjectConfig) {
     this.resolution = resolution;
+    this.rootDir = config.rootDir;
     this.shouldAutoMock = config.automock;
 
     let unmock = unmockRegExpCache.get(config);
@@ -61,6 +79,10 @@ export class MockState {
   }
 
   shouldMockCjs(from: string, moduleName: string): MockDecision {
+    if (this.noMockCanApply(this.explicitCjsMock)) {
+      return NO_MOCK;
+    }
+
     const moduleID = this.resolution.getCjsModuleId(
       this.virtualCjsMocks,
       from,
@@ -73,6 +95,11 @@ export class MockState {
   }
 
   shouldMockEsmSync(from: string, moduleName: string): MockDecision {
+    if (this.noMockCanApply(this.explicitEsmMock)) {
+      return NO_MOCK;
+    }
+
+    moduleName = canonicalizeDataUri(moduleName);
     const moduleID = this.resolution.getEsmModuleId(
       this.virtualEsmMocks,
       from,
@@ -88,6 +115,11 @@ export class MockState {
     from: string,
     moduleName: string,
   ): Promise<MockDecision> {
+    if (this.noMockCanApply(this.explicitEsmMock)) {
+      return NO_MOCK;
+    }
+
+    moduleName = canonicalizeDataUri(moduleName);
     const moduleID = await this.resolution.getEsmModuleIdAsync(
       this.virtualEsmMocks,
       from,
@@ -99,6 +131,14 @@ export class MockState {
     };
   }
 
+  // Deriving a module ID resolves the specifier and runs every
+  // `moduleNameMapper` pattern, so the decision skips it when neither an
+  // explicit mock nor automocking can make the answer anything but false.
+  // Callers read `moduleID` only when `shouldMock` is true.
+  private noMockCanApply(explicitMocks: Map<string, boolean>): boolean {
+    return !this.shouldAutoMock && explicitMocks.size === 0;
+  }
+
   private async decideEsmAsync(
     from: string,
     moduleName: string,
@@ -107,17 +147,23 @@ export class MockState {
     const explicit = this.explicitEsmMock.get(moduleID);
     if (explicit !== undefined) return explicit;
 
+    if (!this.shouldAutoMock || this.resolution.isCoreModule(moduleName)) {
+      return false;
+    }
+
     const key = transitiveCacheKey(from, moduleID);
-    if (
-      !this.shouldAutoMock ||
-      this.resolution.isCoreModule(moduleName) ||
-      this.shouldUnmockTransitiveDepsCache.get(key)
-    ) {
+    if (this.shouldUnmockTransitiveDepsCache.get(key)) {
       return false;
     }
 
     const cached = this.shouldMockCache.get(moduleID);
     if (cached !== undefined) return cached;
+
+    // A data: URI is its own module - the filesystem resolver cannot
+    // resolve it, but the automock decision applies like any other ESM.
+    if (moduleName.startsWith('data:')) {
+      return this.applyEsmDataUriDecision(from, moduleName, moduleID);
+    }
 
     let modulePath: string;
     try {
@@ -164,17 +210,21 @@ export class MockState {
     const explicit = explicitMap.get(moduleID);
     if (explicit !== undefined) return explicit;
 
+    if (!this.shouldAutoMock || this.resolution.isCoreModule(moduleName)) {
+      return false;
+    }
+
     const key = transitiveCacheKey(from, moduleID);
-    if (
-      !this.shouldAutoMock ||
-      this.resolution.isCoreModule(moduleName) ||
-      this.shouldUnmockTransitiveDepsCache.get(key)
-    ) {
+    if (this.shouldUnmockTransitiveDepsCache.get(key)) {
       return false;
     }
 
     const cached = this.shouldMockCache.get(moduleID);
     if (cached !== undefined) return cached;
+
+    if (mode === 'esm' && moduleName.startsWith('data:')) {
+      return this.applyEsmDataUriDecision(from, moduleName, moduleID);
+    }
 
     let modulePath: string;
     try {
@@ -214,6 +264,31 @@ export class MockState {
     );
   }
 
+  // The URI stands in for the module path: the unmock list can match it,
+  // and the transitive rules see a location that is never in node_modules.
+  private applyEsmDataUriDecision(
+    from: string,
+    dataUri: string,
+    moduleID: string,
+  ): boolean {
+    if (this.unmockList?.test(dataUri)) {
+      this.shouldMockCache.set(moduleID, false);
+      return false;
+    }
+    const currentModuleID = this.resolution.getEsmModuleId(
+      this.virtualEsmMocks,
+      from,
+    );
+    return this.applyTransitive(
+      moduleID,
+      currentModuleID,
+      dataUri,
+      from,
+      transitiveCacheKey(from, moduleID),
+      this.explicitEsmMock,
+    );
+  }
+
   private applyTransitive(
     moduleID: string,
     currentModuleID: string,
@@ -249,10 +324,10 @@ export class MockState {
       const mockPath = this.resolution.getModulePath(from, moduleName);
       this.virtualCjsMocks.set(mockPath, true);
     }
-    const moduleID = this.resolution.getCjsModuleId(
-      this.virtualCjsMocks,
+    const moduleID = this.getModuleIdForMockRegistration(
       from,
       moduleName,
+      'cjs',
     );
     this.explicitCjsMock.set(moduleID, true);
     this.cjsFactories.set(moduleID, factory);
@@ -264,17 +339,46 @@ export class MockState {
     factory: () => Promise<unknown> | unknown,
     options?: {virtual?: boolean},
   ): void {
+    moduleName = canonicalizeDataUri(moduleName);
     if (options?.virtual) {
       const mockPath = this.resolution.getModulePath(from, moduleName);
       this.virtualEsmMocks.set(mockPath, true);
     }
-    const moduleID = this.resolution.getEsmModuleId(
-      this.virtualEsmMocks,
+    const moduleID = this.getModuleIdForMockRegistration(
       from,
       moduleName,
+      'esm',
     );
     this.explicitEsmMock.set(moduleID, true);
     this.esmFactories.set(moduleID, factory);
+  }
+
+  // Registering a factory mock resolves the mocked name, so mocking a module
+  // that does not exist on disk fails right here with a bare
+  // "Cannot find module" - point at the `virtual` option, which is the
+  // supported way to mock such a module.
+  private getModuleIdForMockRegistration(
+    from: string,
+    moduleName: string,
+    mode: 'cjs' | 'esm',
+  ): string {
+    try {
+      return mode === 'cjs'
+        ? this.resolution.getCjsModuleId(this.virtualCjsMocks, from, moduleName)
+        : this.resolution.getEsmModuleId(
+            this.virtualEsmMocks,
+            from,
+            moduleName,
+          );
+    } catch (error) {
+      const moduleNotFound = Resolver.tryCastModuleNotFoundError(error);
+      if (moduleNotFound) {
+        moduleNotFound.hint =
+          '\n\nTo mock a module that does not exist on disk, pass `{virtual: true}` in the mock options. See https://jestjs.io/docs/jest-object#jestmockmodulename-factory-options';
+        moduleNotFound.buildMessage(this.rootDir);
+      }
+      throw error;
+    }
   }
 
   disableAutomock(): void {
@@ -295,6 +399,7 @@ export class MockState {
   }
 
   unmockEsm(from: string, moduleName: string): void {
+    moduleName = canonicalizeDataUri(moduleName);
     const moduleID = this.resolution.getEsmModuleId(
       this.virtualEsmMocks,
       from,
@@ -337,15 +442,9 @@ export class MockState {
       moduleName,
     );
   }
+
   getEsmModuleId(from: string, moduleName?: string): string {
     return this.resolution.getEsmModuleId(
-      this.virtualEsmMocks,
-      from,
-      moduleName,
-    );
-  }
-  getEsmModuleIdAsync(from: string, moduleName?: string): Promise<string> {
-    return this.resolution.getEsmModuleIdAsync(
       this.virtualEsmMocks,
       from,
       moduleName,
@@ -356,16 +455,14 @@ export class MockState {
     return this.explicitCjsMock.get(moduleID) === false;
   }
 
-  hasCjsFactory(moduleID: string): boolean {
-    return this.cjsFactories.has(moduleID);
+  isTransitivelyUnmocked(moduleID: string): boolean {
+    return this.transitiveShouldMock.get(moduleID) === false;
   }
+
   getCjsFactory(moduleID: string): (() => unknown) | undefined {
     return this.cjsFactories.get(moduleID);
   }
 
-  hasEsmFactory(moduleID: string): boolean {
-    return this.esmFactories.has(moduleID);
-  }
   getEsmFactory(
     moduleID: string,
   ): (() => Promise<unknown> | unknown) | undefined {
@@ -384,6 +481,9 @@ export class MockState {
   }
   setMockMetadata(modulePath: string, metadata: MockMetadata<unknown>): void {
     this.mockMetaDataCache.set(modulePath, metadata);
+  }
+  deleteMockMetadata(modulePath: string): void {
+    this.mockMetaDataCache.delete(modulePath);
   }
 
   notifyMockGenerated<T>(moduleName: string, moduleMock: T): T {

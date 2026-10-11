@@ -34,17 +34,9 @@ export type TransformedSource = {
 
 export type TransformResult = TransformTypes.TransformResult;
 
-export interface CallerTransformOptions {
-  // names are copied from babel: https://babeljs.io/docs/en/options#caller
-  supportsDynamicImport: boolean;
-  supportsExportNamespaceFrom: boolean;
-  supportsStaticESM: boolean;
-  supportsTopLevelAwait: boolean;
-}
+export type CallerTransformOptions = TransformTypes.CallerTransformOptions;
 
-export interface ReducedTransformOptions extends CallerTransformOptions {
-  instrument: boolean;
-}
+export type ReducedTransformOptions = TransformTypes.ReducedTransformOptions;
 
 export interface RequireAndTranspileModuleOptions extends ReducedTransformOptions {
   applyInteropRequireDefault: boolean;
@@ -52,15 +44,10 @@ export interface RequireAndTranspileModuleOptions extends ReducedTransformOption
 
 export type StringMap = Map<string, string>;
 
-export interface TransformOptions<
-  TransformerConfig = unknown,
-> extends ReducedTransformOptions {
+export interface TransformOptions<TransformerConfig = unknown>
+  extends TransformTypes.CacheKeyOptions {
   /** Cached file system which is used by `jest-runtime` to improve performance. */
   cacheFS: StringMap;
-  /** Jest configuration of currently running project. */
-  config: Config.ProjectConfig;
-  /** Stringified version of the `config` - useful in cache busting. */
-  configString: string;
   /** Transformer configuration passed through `transform` option by the user. */
   transformerConfig: TransformerConfig;
 }
