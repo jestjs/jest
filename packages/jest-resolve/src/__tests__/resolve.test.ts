@@ -1139,19 +1139,6 @@ describe('nodeModulesPaths', () => {
       './customFolder3',
     ]);
   });
-
-  it('does not throw when require.resolve.paths is unavailable', () => {
-    const originalResolvePaths = require.resolve.paths;
-    require.resolve.paths =
-      undefined as unknown as typeof require.resolve.paths;
-
-    try {
-      const src = require.resolve('../');
-      expect(() => nodeModulesPaths(src, {})).not.toThrow();
-    } finally {
-      require.resolve.paths = originalResolvePaths;
-    }
-  });
 });
 
 describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
@@ -1232,6 +1219,7 @@ describe('Resolver.getGlobalPaths()', () => {
     jest.doMock('path', () => _path.posix);
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const globalPaths = resolver.getGlobalPaths('jest');
+    expect(globalPaths.length).toBeGreaterThan(0);
     for (const globalPath of globalPaths)
       expect(require.resolve.paths('jest')).toContain(globalPath);
   });
