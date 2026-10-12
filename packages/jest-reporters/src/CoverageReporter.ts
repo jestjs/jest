@@ -406,6 +406,13 @@ export default class CoverageReporter extends BaseReporter {
                   coverage,
                 ),
               ];
+            } else {
+              // No file made it into the coverage map at all, so there is
+              // nothing to compare against the threshold. Don't pass silently.
+              errors = [
+                ...errors,
+                `Jest: Coverage data for ${thresholdGroup} was not found.`,
+              ];
             }
             break;
           }

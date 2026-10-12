@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-reporters]` Fail when a `global` `coverageThreshold` is set but no files were covered, instead of passing silently ([#8562](https://github.com/jestjs/jest/issues/8562))
+
 ### Chore & Maintenance
 
 ## 30.5.2
