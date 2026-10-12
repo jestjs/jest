@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-resolve]` Include Node's global folders at the end of `require.resolve.paths()` again; they had been missing since 30.5.0 ([#16493](https://github.com/jestjs/jest/pull/16493))
+
 ### Chore & Maintenance
 
 ## 30.5.2

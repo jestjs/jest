@@ -76,10 +76,7 @@ export default function nodeModulesPaths(
 function findGlobalPaths(): Array<string> {
   const {root} = path.parse(process.cwd());
   const globalPath = path.join(root, 'node_modules');
-  const resolvePaths =
-    typeof require.resolve.paths === 'function'
-      ? require.resolve.paths('/')
-      : null;
+  const resolvePaths = require.resolve.paths?.('/');
 
   if (resolvePaths) {
     // the global paths start one after the root node_modules
