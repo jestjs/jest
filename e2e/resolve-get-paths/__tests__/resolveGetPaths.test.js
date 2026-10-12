@@ -18,6 +18,14 @@ test('returns the resolve paths for a node_module', () => {
   ]);
 });
 
+test('appends the global folders to the resolve paths of a node_module', () => {
+  const {globalPaths} = require('module');
+  expect(globalPaths.length).toBeGreaterThan(0);
+  expect(require.resolve.paths('mod').slice(-globalPaths.length)).toEqual(
+    globalPaths,
+  );
+});
+
 test('returns null for a native node module', () => {
   expect(require.resolve.paths('fs')).toBeNull();
 });
