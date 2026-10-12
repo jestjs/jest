@@ -282,6 +282,33 @@ describe('onRunComplete', () => {
     expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
   });
 
+  test('getLastError() returns an error when a global threshold is set but no files were covered', async () => {
+    libCoverage.createCoverageMap = jest.fn(() => ({
+      fileCoverageFor: () => undefined,
+      files: () => [],
+    }));
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        coverageThreshold: {
+          global: {
+            statements: 50,
+          },
+        },
+      },
+      {
+        maxWorkers: 2,
+      },
+    );
+    testReporter.log = jest.fn();
+
+    await testReporter.onRunComplete(new Set(), {}, mockAggResults);
+
+    expect(testReporter.getLastError().message).toBe(
+      'Jest: Coverage data for global was not found.',
+    );
+  });
+
   test('getLastError() returns undefined when global threshold group is empty because all files are matched by path/glob thresholds', async () => {
     const testReporter = new CoverageReporter(
       {
