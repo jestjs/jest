@@ -49,10 +49,10 @@
     "@types/istanbul-reports": "^3.0.4",
     "@types/node-notifier": "^8.0.5",
     "jest-resolve": "workspace:*",
-    "node-notifier": "^10.0.1"
+    "node-notifier": "^11.0.0"
   },
   "peerDependencies": {
-    "node-notifier": "^8.0.1 || ^9.0.0 || ^10.0.0"
+    "node-notifier": "^11.0.0"
   },
   "peerDependenciesMeta": {
     "node-notifier": {
