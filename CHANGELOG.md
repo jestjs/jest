@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-haste-map]` Stop reporting a duplicate manual mock when each mock sits next to the module it mocks, since both are found by path and neither should be deleted ([#16241](https://github.com/jestjs/jest/pull/16241))
+
 ### Chore & Maintenance
 
 ## 30.5.2
@@ -80,7 +82,6 @@
 - `[jest-environment-node, jest-util]` Only warn about a conflicting `globalsCleanup` mode when one was explicitly configured, and follow the mode that is actually in effect ([#16323](https://github.com/jestjs/jest/pull/16323))
 - `[jest-environment-node, jest-util]` Stop resolving lazy globals when setting up an environment, so Node 26's builtin module globals are no longer loaded (and no longer emit their deprecation warnings) for every test file ([#16324](https://github.com/jestjs/jest/pull/16324))
 - `[jest-haste-map]` Keep watch mode alive when an outside process briefly makes a file unreadable on Windows, instead of tearing the watcher down on `EPERM` ([#16295](https://github.com/jestjs/jest/pull/16295))
-- `[jest-haste-map]` Stop reporting a duplicate manual mock when each mock sits next to the module it mocks, since both are found by path and neither should be deleted ([#16241](https://github.com/jestjs/jest/pull/16241))
 - `[jest-haste-map]` Keep indexing when an outside process holds a file open on Windows, instead of failing the whole crawl on `EPERM` ([#16358](https://github.com/jestjs/jest/pull/16358))
 - `[jest-haste-map]` Keep a duplicated manual mock resolving when the file it pointed at is deleted in watch mode ([#16360](https://github.com/jestjs/jest/pull/16360))
 - `[jest-haste-map]` Shut the worker farm down when a duplicate manual mock aborts the build under `throwOnModuleCollision` ([#16354](https://github.com/jestjs/jest/pull/16354))
