@@ -8,7 +8,7 @@
 import * as path from 'node:path';
 import type {JestWorkerFarm} from 'jest-worker';
 import H from '../constants';
-import getMockName from '../getMockName';
+import getMockName, {getAdjacentModulePath} from '../getMockName';
 import type {
   FileData,
   InternalHasteMap,
@@ -219,22 +219,31 @@ export class FileProcessor {
       if (existingMockPath) {
         const secondMockPath = fastPath.relative(rootDir, filePath);
         if (existingMockPath !== secondMockPath) {
-          const method = this._options.throwOnModuleCollision
-            ? 'error'
-            : 'warn';
+          // Both mocks keep working, because each one is found through the
+          // module it sits next to. Asking for one of them to be deleted would
+          // be wrong.
+          const bothMocksAreAdjacent =
+            this._isAdjacentMock(hasteMap, existingMockPath) &&
+            this._isAdjacentMock(hasteMap, secondMockPath);
 
-          this._console[method](
-            [
-              `jest-haste-map: duplicate manual mock found: ${mockPath}`,
-              '  The following files share their name; please delete one of them:',
-              `    * <rootDir>${path.sep}${existingMockPath}`,
-              `    * <rootDir>${path.sep}${secondMockPath}`,
-              '',
-            ].join('\n'),
-          );
+          if (!bothMocksAreAdjacent) {
+            const method = this._options.throwOnModuleCollision
+              ? 'error'
+              : 'warn';
 
-          if (this._options.throwOnModuleCollision) {
-            throw new DuplicateError(existingMockPath, secondMockPath);
+            this._console[method](
+              [
+                `jest-haste-map: duplicate manual mock found: ${mockPath}`,
+                '  The following files share their name; please delete one of them:',
+                `    * <rootDir>${path.sep}${existingMockPath}`,
+                `    * <rootDir>${path.sep}${secondMockPath}`,
+                '',
+              ].join('\n'),
+            );
+
+            if (this._options.throwOnModuleCollision) {
+              throw new DuplicateError(existingMockPath, secondMockPath);
+            }
           }
 
           let duplicates = hasteMap.mockDuplicates.get(mockPath);
@@ -374,6 +383,14 @@ export class FileProcessor {
         throw error;
       },
     );
+  }
+
+  private _isAdjacentMock(
+    hasteMap: InternalHasteMap,
+    relativeMockPath: string,
+  ): boolean {
+    const relativeModulePath = getAdjacentModulePath(relativeMockPath);
+    return relativeModulePath != null && hasteMap.files.has(relativeModulePath);
   }
 
   private _getWorker(

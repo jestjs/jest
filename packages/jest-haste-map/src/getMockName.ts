@@ -7,7 +7,18 @@
 
 import * as path from 'node:path';
 
-const MOCKS_PATTERN = `${path.sep}__mocks__${path.sep}`;
+const MOCKS_DIRECTORY = '__mocks__';
+const MOCKS_PATTERN = `${path.sep}${MOCKS_DIRECTORY}${path.sep}`;
+
+// `dir/__mocks__/Module.js` mocks `dir/Module.js`, and jest-runtime finds it by
+// probing that path. A mock nested deeper — `dir/__mocks__/sub/Module.js` — has
+// no such module, so it is only ever reachable by its mock name.
+export const getAdjacentModulePath = (filePath: string): string | null => {
+  const mockDirectory = path.dirname(filePath);
+  return path.basename(mockDirectory) === MOCKS_DIRECTORY
+    ? path.join(path.dirname(mockDirectory), path.basename(filePath))
+    : null;
+};
 
 const getMockName = (filePath: string): string => {
   const mockPath = filePath.split(MOCKS_PATTERN)[1];

@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-haste-map]` Stop reporting a duplicate manual mock when each mock sits next to the module it mocks, since both are found by path and neither should be deleted ([#16241](https://github.com/jestjs/jest/pull/16241))
+
 ### Chore & Maintenance
 
 ## 30.5.2
