@@ -39,7 +39,7 @@
     "jest-util": "workspace:*",
     "pretty-format": "workspace:*",
     "semver": "^7.7.2",
-    "synckit": "^0.11.8"
+    "synckit": "^0.12.0"
   },
   "devDependencies": {
     "@babel/preset-flow": "^7.27.1",
