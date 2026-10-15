@@ -4439,7 +4439,7 @@ __metadata:
     ansi-styles: "npm:^5.2.0"
     babel-jest: "workspace:*"
     babel-loader: "npm:^9.2.1"
-    camelcase: "npm:^6.3.0"
+    camelcase: "npm:^10.0.0"
     chalk: "npm:^4.1.2"
     dedent: "npm:^1.6.0"
     eslint: "npm:^10.8.0"
@@ -9493,6 +9493,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"camelcase@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "camelcase@npm:10.0.0"
+  checksum: 10/cce80adfe9d5466636e985fbc089499a0ae6b8ffa89221f77cee97e1e6157af680ecbfc75b7ac914d848b58400bff9d3d1f40c4cfd52109f9a24e31cd1542315
+  languageName: node
+  linkType: hard
+
 "camelcase@npm:^5.3.1":
   version: 5.3.1
   resolution: "camelcase@npm:5.3.1"
@@ -9500,7 +9507,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camelcase@npm:^6.2.0, camelcase@npm:^6.3.0":
+"camelcase@npm:^6.2.0":
   version: 6.3.0
   resolution: "camelcase@npm:6.3.0"
   checksum: 10/8c96818a9076434998511251dcb2761a94817ea17dbdc37f47ac080bd088fc62c7369429a19e2178b993497132c8cbcf5cc1f44ba963e76782ba469c0474938d
@@ -15336,7 +15343,7 @@ __metadata:
     "@jest/get-type": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/yargs": "npm:^17.0.33"
-    camelcase: "npm:^6.3.0"
+    camelcase: "npm:^10.0.0"
     chalk: "npm:^4.1.2"
     leven: "npm:^3.1.0"
     pretty-format: "workspace:*"
