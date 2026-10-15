@@ -26,6 +26,11 @@ jest.useFakeTimers();
 
 jest.mock('child_process');
 
+// `supports-color` looks at `process.argv` (e.g. `--color`) and the terminal,
+// so control it here to keep the forked env independent of how Jest is run.
+const mockSupportsColor: {stdout: false | {level: number}} = {stdout: false};
+jest.mock('supports-color', () => mockSupportsColor);
+
 let Worker: typeof import('../ChildProcessWorker').default;
 let childProcess: typeof import('child_process');
 let forkInterface: ReturnType<typeof childProcess.fork>;
@@ -65,6 +70,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  mockSupportsColor.stdout = false;
   jest.resetModules();
   process.execArgv = originalExecArgv;
   process.env.FORCE_COLOR = originalForceColor;
@@ -94,6 +100,22 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
     execPath: 'hello', // Added option.
     serialization: 'advanced', // Default option.
     silent: true, // Default option.
+  });
+});
+
+it('sets FORCE_COLOR in the child env when stdout supports color', () => {
+  mockSupportsColor.stdout = {level: 1};
+
+  // eslint-disable-next-line no-new
+  new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerId: 0,
+    workerPath: '/tmp/foo',
+  } as WorkerOptions);
+
+  expect(jest.mocked(childProcess.fork).mock.calls[0][2]).toMatchObject({
+    env: {FORCE_COLOR: '1'},
   });
 });
 
