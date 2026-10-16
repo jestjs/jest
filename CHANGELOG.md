@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Drop the placeholder link on "config file" in the `rootDir` option ([#16501](https://github.com/jestjs/jest/pull/16501))
+
 ## 30.5.2
 
 ### Features
