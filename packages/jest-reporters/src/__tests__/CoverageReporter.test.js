@@ -15,6 +15,9 @@ jest
   .mock('istanbul-reports', () => ({
     ...jest.createMockFromModule('istanbul-reports'),
     create: jest.fn(() => ({execute: jest.fn()})),
+  }))
+  .mock('../CoverageWorker', () => ({
+    worker: jest.fn(),
   }));
 
 let libCoverage;
@@ -96,12 +99,20 @@ describe('onRunComplete', () => {
         return c;
       }, {});
 
+      const data = {};
       return {
+        addFileCoverage: jest.fn(cov => {
+          data[cov.path] = cov;
+          fileCoverage[cov.path] = cov;
+        }),
+        data,
         fileCoverageFor(path) {
           if (fileCoverage[path]) {
             return {
               toSummary() {
-                return fileCoverage[path];
+                return fileCoverage[path].toSummary
+                  ? fileCoverage[path].toSummary()
+                  : fileCoverage[path];
               },
             };
           } else {
@@ -452,6 +463,118 @@ describe('onRunComplete', () => {
       projectRoot: './',
     });
     expect(testReporter.getLastError()).toBeUndefined();
+  });
+
+  test('collects untested files from project-level collectCoverageFrom', async () => {
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        coverageReporters: ['json'],
+      },
+      {
+        maxWorkers: 2,
+      },
+    );
+    testReporter.log = jest.fn();
+
+    // Each project carries its own collectCoverageFrom/rootDir, and the global
+    // config has neither, so every project must be globbed on its own terms.
+    const makeContext = (rootDir, glob) => ({
+      config: {
+        collectCoverageFrom: [glob],
+        rootDir,
+      },
+      hasteFS: {matchFilesWithGlob: jest.fn(() => [])},
+    });
+
+    const first = makeContext('/path/to/project-a', '**/*.js');
+    const second = makeContext('/path/to/project-b', '**/*.ts');
+
+    await testReporter.onRunComplete(
+      new Set([first, second]),
+      {},
+      mockAggResults,
+    );
+
+    expect(first.hasteFS.matchFilesWithGlob).toHaveBeenCalledWith(
+      ['**/*.js'],
+      '/path/to/project-a',
+    );
+    expect(second.hasteFS.matchFilesWithGlob).toHaveBeenCalledWith(
+      ['**/*.ts'],
+      '/path/to/project-b',
+    );
+  });
+
+  test('evaluates candidate configs in order until coverage is produced for a shared path', async () => {
+    const coverageWorker = require('../CoverageWorker');
+    const sharedFile = path.resolve('/path/to/shared-file.js');
+
+    const firstConfig = {
+      collectCoverageFrom: ['**/*.js'],
+      coveragePathIgnorePatterns: ['shared-file\\.js'],
+      rootDir: '/path/to',
+    };
+    const secondConfig = {
+      collectCoverageFrom: ['**/*.js'],
+      rootDir: '/path/to',
+    };
+
+    coverageWorker.worker.mockImplementation(
+      async ({config, path: filePath}) => {
+        if (config === firstConfig) {
+          // First candidate config is ineligible and produces no coverage
+          return null;
+        }
+        return {
+          coverage: {
+            path: filePath,
+            toSummary: () => ({
+              branches: {covered: 0, pct: 0, skipped: 0, total: 0},
+              functions: {covered: 0, pct: 0, skipped: 0, total: 0},
+              lines: {covered: 1, pct: 100, skipped: 0, total: 1},
+              statements: {covered: 1, pct: 100, skipped: 0, total: 1},
+            }),
+          },
+        };
+      },
+    );
+
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        coverageReporters: ['json'],
+        maxWorkers: 1,
+      },
+      {},
+    );
+    testReporter.log = jest.fn();
+
+    const firstContext = {
+      config: firstConfig,
+      hasteFS: {matchFilesWithGlob: jest.fn(() => [sharedFile])},
+    };
+    const secondContext = {
+      config: secondConfig,
+      hasteFS: {matchFilesWithGlob: jest.fn(() => [sharedFile])},
+    };
+
+    await testReporter.onRunComplete(
+      new Set([firstContext, secondContext]),
+      mockAggResults,
+    );
+
+    expect(coverageWorker.worker).toHaveBeenCalledTimes(2);
+    expect(coverageWorker.worker).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({config: firstConfig, path: sharedFile}),
+    );
+    expect(coverageWorker.worker).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({config: secondConfig, path: sharedFile}),
+    );
+    expect(mockAggResults.coverageMap.files()).toContain(sharedFile);
+    expect(mockAggResults.coverageMap.data[sharedFile]).toBeDefined();
   });
 
   describe('maxCols fallback logic in CI', () => {
