@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {runInContext} from 'node:vm';
 import type {EnvironmentContext} from '@jest/environment';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import NodeEnvironment from '../';
@@ -172,4 +173,35 @@ describe('lazy globals', () => {
     expect(env.global[property]).toEqual({module: property});
     expect(resolutions).toBe(1);
   });
+});
+
+describe('native Temporal', () => {
+  const testWithNativeTemporal =
+    'Temporal' in globalThis && 'toTemporalInstant' in Date.prototype
+      ? test
+      : test.skip;
+
+  testWithNativeTemporal(
+    'Date.prototype.toTemporalInstant returns the sandbox Temporal.Instant',
+    async () => {
+      // Given a Node environment with native Temporal available
+      const env = new NodeEnvironment(
+        {globalConfig: makeGlobalConfig(), projectConfig: makeProjectConfig()},
+        context,
+      );
+
+      try {
+        // When a native Date is converted to an Instant inside the sandbox
+        const isSandboxInstant = runInContext(
+          'new Date().toTemporalInstant() instanceof Temporal.Instant',
+          env.getVmContext()!,
+        );
+
+        // Then the result uses the Temporal constructor visible in that sandbox
+        expect(isSandboxInstant).toBe(true);
+      } finally {
+        await env.teardown();
+      }
+    },
+  );
 });
