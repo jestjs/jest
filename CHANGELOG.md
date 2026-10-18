@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-runtime]` Copy the coverage collected in each test file with `structuredClone` instead of a deep copy in JS ([#16506](https://github.com/jestjs/jest/pull/16506))
+
 ### Chore & Maintenance
 
 ## 30.5.2
