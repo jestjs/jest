@@ -24,7 +24,7 @@ import type {ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
-import {createDirectory, deepCyclicCopy, invariant} from 'jest-util';
+import {createDirectory, invariant} from 'jest-util';
 import {
   decodePossibleOutsideJestVmPath,
   findSiblingsWithFileExtension,
@@ -672,7 +672,9 @@ export default class Runtime {
   }
 
   getAllCoverageInfoCopy(): JestEnvironment['global']['__coverage__'] {
-    return deepCyclicCopy(this._environment.global.__coverage__);
+    // Same algorithm as the worker IPC (`serialization: 'advanced'`) that carries
+    // coverage out of a worker, and far faster than a JS deep copy of the maps
+    return structuredClone(this._environment.global.__coverage__);
   }
 
   getAllV8CoverageInfoCopy(): V8CoverageResult {
