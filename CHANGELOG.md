@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[jest-environment-node]` Keep native `Temporal` constructors in the sandbox realm so `Date.prototype.toTemporalInstant()` returns instances of the sandbox's `Temporal.Instant`
+- `[jest-environment-node]` Keep native `Temporal` constructors in the sandbox realm so `Date.prototype.toTemporalInstant()` returns instances of the sandbox's `Temporal.Instant` ([#16504](https://github.com/jestjs/jest/pull/16504))
 
 ### Chore & Maintenance
 
