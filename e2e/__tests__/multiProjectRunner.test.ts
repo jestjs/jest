@@ -735,3 +735,26 @@ test('warns about global options in a project that lives next to the global conf
     'Option "testFailureExitCode" is not supported in an individual project configuration',
   );
 });
+
+test('runs with --config when cwd has no discoverable config', () => {
+  const customConfigDir = path.resolve(DIR, 'custom');
+  const emptyCwd = path.resolve(DIR, 'empty');
+  writeFiles(customConfigDir, {
+    'custom.config.js':
+      'module.exports = {rootDir: ".", testMatch: ["**/*.test.js"]};',
+    'some.test.js': "test('passes', () => expect(1).toBe(1));",
+  });
+  writeFiles(emptyCwd, {});
+
+  const {stderr, exitCode} = runJest(
+    emptyCwd,
+    [
+      '--no-watchman',
+      '--config',
+      path.resolve(customConfigDir, 'custom.config.js'),
+    ],
+    {skipPkgJsonCheck: true},
+  );
+
+  expect(exitCode).toBe(0);
+});

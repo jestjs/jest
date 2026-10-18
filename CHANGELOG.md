@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-config]` Allow passing `--config <file>` when cwd has no discoverable config file ([#16457](https://github.com/jestjs/jest/issues/16457))
+
 ### Chore & Maintenance
 
 ## 30.5.2
