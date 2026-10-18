@@ -72,7 +72,7 @@ function makeFixture(
 
 describe('TransformCache', () => {
   describe('transform', () => {
-    test('reads source, transforms, caches the result, returns transformed code', () => {
+    test('transforms, caches the result, returns transformed code', () => {
       const {cache, transform} = makeFixture(
         'orig',
         transformResult('TRANSFORMED'),
@@ -82,9 +82,17 @@ describe('TransformCache', () => {
       expect(cache.getCachedSource('/a.js')).toBe('TRANSFORMED');
     });
 
+    // ScriptTransformer reads the file only when its transform is not cached
+    test('leaves reading the source to the ScriptTransformer', () => {
+      const {cache, readFile} = makeFixture();
+      cache.transform('/a.js', userOptions);
+      expect(readFile).not.toHaveBeenCalled();
+    });
+
     test('skips transform for internal modules and returns raw source', () => {
-      const {cache, transform} = makeFixture('orig');
+      const {cache, readFile, transform} = makeFixture('orig');
       expect(cache.transform('/a.js', internalOptions)).toBe('orig');
+      expect(readFile).toHaveBeenCalledWith('/a.js');
       expect(transform).not.toHaveBeenCalled();
       expect(cache.getCachedSource('/a.js')).toBeUndefined();
     });
@@ -105,7 +113,6 @@ describe('TransformCache', () => {
       expect(transform).toHaveBeenCalledWith(
         '/a.js',
         expect.objectContaining({collectCoverage: false}),
-        'console.log("orig")',
       );
     });
   });
@@ -121,6 +128,12 @@ describe('TransformCache', () => {
       );
       expect(transformAsync).toHaveBeenCalledTimes(1);
       expect(cache.getCachedSource('/a.js')).toBe('ASYNC');
+    });
+
+    test('leaves reading the source to the ScriptTransformer', async () => {
+      const {cache, readFile} = makeFixture();
+      await cache.transformAsync('/a.js', userOptions);
+      expect(readFile).not.toHaveBeenCalled();
     });
 
     test('skips transform for internal modules', async () => {
