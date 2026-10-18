@@ -107,8 +107,12 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
 
     this._globalProxy = new GlobalProxy();
     this.context = createContext(this._globalProxy.proxy());
+    // V8 lazily initializes Temporal in the host realm if global cleanup protection
+    // inspects its descriptor first. This breaks instanceof checks in the test realm:
+    // Date.prototype.toTemporalInstant() returns a test-realm Instant, but Temporal.Instant
+    // is a host-realm constructor. Initialize Temporal inside the sandbox to keep them aligned.
     const global = runInContext(
-      'this',
+      'typeof Temporal; this',
       Object.assign(this.context, projectConfig.testEnvironmentOptions),
     ) as Global.Global;
     this.global = global;
