@@ -42,13 +42,14 @@ export class TransformCache {
   }
 
   transform(filename: string, options?: TransformOptions): string {
-    const source = this.fileCache.readFile(filename);
-    if (options?.isInternalModule) return source;
+    if (options?.isInternalModule) return this.fileCache.readFile(filename);
 
+    // ScriptTransformer reads the source itself, and only when the transform
+    // is not already cached for this process. Reading it here would hit the
+    // disk for every module in every test file.
     const transformedFile = this.scriptTransformer.transform(
       filename,
       this.getFullTransformationOptions(options),
-      source,
     );
     this.transforms.set(filename, transformedFile);
     if (transformedFile.sourceMapPath) {
@@ -61,13 +62,11 @@ export class TransformCache {
     filename: string,
     options?: TransformOptions,
   ): Promise<string> {
-    const source = this.fileCache.readFile(filename);
-    if (options?.isInternalModule) return source;
+    if (options?.isInternalModule) return this.fileCache.readFile(filename);
 
     const transformedFile = await this.scriptTransformer.transformAsync(
       filename,
       this.getFullTransformationOptions(options),
-      source,
     );
     this.transforms.set(filename, transformedFile);
     if (transformedFile.sourceMapPath) {
