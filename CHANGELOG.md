@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-runtime]` Don't read a module's source from disk when its transform is already cached, instead of reading every module again in every test file ([#16505](https://github.com/jestjs/jest/pull/16505))
+
 ### Chore & Maintenance
 
 ## 30.5.2
