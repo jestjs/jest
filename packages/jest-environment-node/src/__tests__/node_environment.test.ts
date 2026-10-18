@@ -204,4 +204,36 @@ describe('native Temporal', () => {
       }
     },
   );
+
+  testWithNativeTemporal(
+    'keeps Temporal.Instant constructors isolated between environments',
+    async () => {
+      // Given two Node environments with native Temporal available
+      const config = {
+        globalConfig: makeGlobalConfig(),
+        projectConfig: makeProjectConfig(),
+      };
+      const firstEnvironment = new NodeEnvironment(config, context);
+      // And a separate sandbox for another test file
+      const secondEnvironment = new NodeEnvironment(config, context);
+
+      try {
+        // When each sandbox exposes its native Instant constructor
+        const firstInstant = runInContext(
+          'Temporal.Instant',
+          firstEnvironment.getVmContext()!,
+        );
+        const secondInstant = runInContext(
+          'Temporal.Instant',
+          secondEnvironment.getVmContext()!,
+        );
+
+        // Then test files do not share the same mutable constructor
+        expect(firstInstant).not.toBe(secondInstant);
+      } finally {
+        await firstEnvironment.teardown();
+        await secondEnvironment.teardown();
+      }
+    },
+  );
 });
