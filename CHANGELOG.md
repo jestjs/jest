@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Note that `expect.objectContaining`, `expect.arrayContaining`, and `expect.arrayOf` don't compare the contents of `Set`, `Map`, and other iterables ([#16509](https://github.com/jestjs/jest/pull/16509))
+
 ## 30.5.2
 
 ### Features
