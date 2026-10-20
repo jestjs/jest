@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[jest-config]` Allow passing `--config <file>` when cwd has no discoverable config file ([#16457](https://github.com/jestjs/jest/issues/16457))
+- `[jest-config]` Allow passing `--config <file>` when cwd has no discoverable config file ([#16507](https://github.com/jestjs/jest/pull/16507))
 
 ### Chore & Maintenance
 
