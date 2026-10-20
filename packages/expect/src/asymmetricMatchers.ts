@@ -209,7 +209,10 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
       (Array.isArray(other) &&
         this.sample.every(item =>
           other.some(another =>
-            equals(item, another, matcherContext.customTesters),
+            equals(item, another, [
+              ...matcherContext.customTesters,
+              iterableEquality,
+            ]),
           ),
         ));
 
@@ -231,7 +234,10 @@ class ArrayOf extends AsymmetricMatcher<unknown> {
     const result =
       Array.isArray(other) &&
       other.every(item =>
-        equals(this.sample, item, matcherContext.customTesters),
+        equals(this.sample, item, [
+          ...matcherContext.customTesters,
+          iterableEquality,
+        ]),
       );
 
     return this.inverse ? !result : result;
@@ -278,7 +284,10 @@ class ObjectContaining extends AsymmetricMatcher<
     for (const key of objectKeys) {
       if (
         !hasProperty(other, key) ||
-        !equals(this.sample[key], other[key], matcherContext.customTesters)
+        !equals(this.sample[key], other[key], [
+          ...matcherContext.customTesters,
+          iterableEquality,
+        ])
       ) {
         result = false;
         break;
