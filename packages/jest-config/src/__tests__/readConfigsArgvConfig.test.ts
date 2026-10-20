@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {realpathSync} from 'graceful-fs';
 import {tmpdir} from 'os';
 import * as path from 'path';
+import {tryRealpath} from 'jest-util';
 import {cleanup, writeFiles} from '../../../../e2e/Utils';
 import {readConfigs} from '../';
 
@@ -30,8 +30,8 @@ test('readConfigs() does not throw when --config points elsewhere and cwd has no
     'empty/.gitkeep': '',
   });
 
-  const customDir = realpathSync(path.resolve(DIR, 'custom'));
-  const emptyDir = realpathSync(path.resolve(DIR, 'empty'));
+  const customDir = tryRealpath(path.resolve(DIR, 'custom'));
+  const emptyDir = tryRealpath(path.resolve(DIR, 'empty'));
   process.chdir(emptyDir);
 
   const {configs, globalConfig} = await readConfigs(
@@ -57,13 +57,13 @@ test('readConfigs() treats the project resolving to the --config file as the glo
     'other/jest.config.js': 'module.exports = {rootDir: "."};',
   });
 
-  const customDir = realpathSync(path.resolve(DIR, 'custom'));
-  const otherDir = realpathSync(path.resolve(DIR, 'other'));
-  process.chdir(realpathSync(DIR));
+  const customDir = tryRealpath(path.resolve(DIR, 'custom'));
+  const otherDir = tryRealpath(path.resolve(DIR, 'other'));
+  process.chdir(tryRealpath(DIR));
 
   const {configs} = await readConfigs(
     {$0: '', _: [], config: path.join(customDir, 'jest.config.js')},
-    [realpathSync(DIR)],
+    [tryRealpath(DIR)],
   );
 
   expect(configs).toHaveLength(2);
