@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- `[expect]` Include `iterableEquality` in `ArrayContaining`, `ArrayOf`, and `ObjectContaining` so that `Set`, `Map`, and other iterables inside these matchers are compared by content, not by reference ([#16508](https://github.com/jestjs/jest/issues/16508))
 - `[jest-resolve]` Bump `unrs-resolver` to 1.13.0, which locates its native binding at runtime instead of through a `postinstall` script, so installing Jest no longer reports a blocked build script on npm 12 ([#16527](https://github.com/jestjs/jest/pull/16527))
 
 ### Chore & Maintenance
