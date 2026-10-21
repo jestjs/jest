@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-circus, jest-jasmine2]` Apply `testTimeout` set in a project config, which was accepted but ignored in favour of the root config's value ([#XXXXX](https://github.com/jestjs/jest/pull/XXXXX))
+
 ### Chore & Maintenance
 
 ## 30.5.2

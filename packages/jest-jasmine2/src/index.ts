@@ -164,7 +164,7 @@ export default async function jasmine2(
   const jasmine = jasmineFactory.create({
     process,
     testPath,
-    testTimeout: globalConfig.testTimeout,
+    testTimeout: config.testTimeout || globalConfig.testTimeout,
   });
 
   const env = jasmine.getEnv();
