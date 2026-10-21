@@ -114,6 +114,73 @@ test('does not exceed the command line testTimeout', () => {
   expect(exitCode).toBe(0);
 });
 
+test('exceeds the testTimeout of a project config', () => {
+  writeFiles(DIR, {
+    'a/__tests__/a-banana.js': `
+
+      test('banana', () => {
+        return new Promise(resolve => {
+          setTimeout(resolve, 1000);
+        });
+      });
+    `,
+    'package.json': JSON.stringify({
+      jest: {
+        projects: [
+          {displayName: 'a', rootDir: '<rootDir>/a', testTimeout: 200},
+        ],
+      },
+    }),
+  });
+
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {rest, summary} = extractSummary(stderr);
+  const regexToMatch =
+    process.env.JEST_JASMINE === '1'
+      ? /(Async callback was not invoked within the 200 ms timeout specified by jest\.setTimeout\.)/
+      : /(Exceeded timeout of 200 ms for a test\.)/;
+  expect(rest).toMatch(regexToMatch);
+  expect(summary).toMatch('Tests:       1 failed, 1 total');
+  expect(exitCode).toBe(1);
+});
+
+test('falls back to the root testTimeout for a project that does not set one', () => {
+  writeFiles(DIR, {
+    'a/__tests__/a-banana.js': `
+
+      test('uses the project timeout', () => {
+        return new Promise(resolve => {
+          setTimeout(resolve, 500);
+        });
+      });
+    `,
+    'b/__tests__/b-banana.js': `
+
+      test('uses the root timeout', () => {
+        return new Promise(resolve => {
+          setTimeout(resolve, 500);
+        });
+      });
+    `,
+    'package.json': JSON.stringify({
+      jest: {
+        projects: [
+          {displayName: 'a', rootDir: '<rootDir>/a', testTimeout: 5000},
+          {displayName: 'b', rootDir: '<rootDir>/b'},
+        ],
+        testTimeout: 200,
+      },
+    }),
+  });
+
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {rest, summary} = extractSummary(stderr);
+  expect(rest).toMatch('● uses the root timeout');
+  expect(rest).not.toMatch('● uses the project timeout');
+  expect(summary).toMatch('Tests:       1 failed, 1 passed, 2 total');
+  expect(exitCode).toBe(1);
+});
+
 test('exceeds the timeout parameter', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `
