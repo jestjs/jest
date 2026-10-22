@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[expect]` Include `iterableEquality` in `ArrayContaining`, `ArrayOf`, and `ObjectContaining` so that `Set`, `Map`, and other iterables inside these matchers are compared by content, not by reference ([#16508](https://github.com/jestjs/jest/issues/16508))
+- `[expect]` Include `iterableEquality` in `ArrayContaining`, `ArrayOf`, and `ObjectContaining` so that `Set`, `Map`, and other iterables inside these matchers are compared by content, not by reference ([#16512](https://github.com/jestjs/jest/pull/16512))
 
 ### Chore & Maintenance
 
