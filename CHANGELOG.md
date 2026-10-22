@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-circus, jest-jasmine2]` Apply `testTimeout` configured on individual projects
+
 ### Chore & Maintenance
 
 ## 30.5.2

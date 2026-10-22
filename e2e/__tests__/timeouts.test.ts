@@ -114,6 +114,66 @@ test('does not exceed the command line testTimeout', () => {
   expect(exitCode).toBe(0);
 });
 
+test('exceeds the project config testTimeout', () => {
+  writeFiles(DIR, {
+    '__tests__/a-banana.js': `
+      test('banana', () => {
+        return new Promise(resolve => {
+          setTimeout(resolve, 1000);
+        });
+      });
+    `,
+    'jest.config.js': `
+      module.exports = {
+        projects: [
+          {
+            displayName: 'project-timeout',
+            rootDir: '<rootDir>',
+            testTimeout: 200,
+          },
+        ],
+      };
+    `,
+    'package.json': '{}',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {rest} = extractSummary(stderr);
+  const regexToMatch =
+    process.env.JEST_JASMINE === '1'
+      ? /(Async callback was not invoked within the 200 ms timeout specified by jest\.setTimeout\.)/
+      : /(Exceeded timeout of 200 ms for a test\.)/;
+  expect(rest).toMatch(regexToMatch);
+  expect(exitCode).toBe(1);
+});
+
+test('does not exceed the project config testTimeout', () => {
+  writeFiles(DIR, {
+    '__tests__/a-banana.js': `
+      test('banana', () => {
+        return new Promise(resolve => {
+          setTimeout(resolve, 200);
+        });
+      });
+    `,
+    'jest.config.js': `
+      module.exports = {
+        projects: [
+          {
+            displayName: 'project-timeout',
+            rootDir: '<rootDir>',
+            testTimeout: 1000,
+          },
+        ],
+      };
+    `,
+    'package.json': '{}',
+  });
+
+  const {exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  expect(exitCode).toBe(0);
+});
+
 test('exceeds the timeout parameter', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `
