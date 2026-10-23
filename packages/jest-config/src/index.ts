@@ -459,12 +459,19 @@ export async function readConfigs(
             : cwd;
           // The config that supplies the global config must not be validated
           // as a project config - its global options are in the right place.
+          const firstProjectSuppliesGlobalConfig =
+            globalConfig == null && projectIndex === 0;
           // `resolveConfigPath` throws when no config can be discovered for
           // the project root (e.g. an explicit `--config <file>` was passed
           // while the cwd has no config of its own). That simply means this
-          // project cannot supply the global config through discovery.
+          // project cannot supply the global config through discovery, so
+          // only run discovery when its result can still decide that.
           let discoveredConfigPath: string | null = null;
-          if (configPath != null && typeof root === 'string') {
+          if (
+            !firstProjectSuppliesGlobalConfig &&
+            configPath != null &&
+            typeof root === 'string'
+          ) {
             try {
               discoveredConfigPath = resolveConfigPath(root, cwd, projectIsCwd);
             } catch {
@@ -472,7 +479,7 @@ export async function readConfigs(
             }
           }
           const suppliesGlobalConfig =
-            (globalConfig == null && projectIndex === 0) ||
+            firstProjectSuppliesGlobalConfig ||
             (configPath != null && discoveredConfigPath === configPath);
 
           return readConfig(
