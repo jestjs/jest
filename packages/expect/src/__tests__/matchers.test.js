@@ -1843,6 +1843,17 @@ describe('.toMatch()', () => {
     jestExpect('F456').toMatch(regex);
     jestExpect(regex.lastIndex).toBe(0);
   });
+
+  it('does not move lastIndex when a negated match is reported', () => {
+    const regex = /f\d+/gi;
+    regex.lastIndex = 4;
+    expect(() => {
+      jestExpect('f123').not.toMatch(regex);
+    }).toThrowErrorMatchingSnapshot();
+    jestExpect(regex.lastIndex).toBe(4);
+    jestExpect('x F456').toMatch(regex);
+    jestExpect(regex.lastIndex).toBe(4);
+  });
 });
 
 describe('.toHaveLength', () => {

@@ -399,6 +399,36 @@ test('StringMatching returns false even if coerced non-string received value mat
   jestExpect(stringMatching('null').asymmetricMatch(null)).toBe(false);
 });
 
+test('StringMatching does not keep state from a global or sticky regexp', () => {
+  const global = stringMatching(/foo/g);
+  jestExpect(global.asymmetricMatch('foo')).toBe(true);
+  jestExpect(global.asymmetricMatch('foo')).toBe(true);
+  jestExpect(global.asymmetricMatch('a foo')).toBe(true);
+
+  const sticky = stringMatching(/^foo/y);
+  jestExpect(sticky.asymmetricMatch('foo')).toBe(true);
+  jestExpect(sticky.asymmetricMatch('foo')).toBe(true);
+  jestExpect(sticky.asymmetricMatch('a foo')).toBe(false);
+
+  const shared = stringMatching(/foo/g);
+  jestExpect(['foo', 'foo']).toEqual([shared, shared]);
+
+  const pattern = /foo/g;
+  pattern.lastIndex = 2;
+  const fromCaller = stringMatching(pattern);
+  jestExpect(fromCaller.asymmetricMatch('foo')).toBe(true);
+  jestExpect(fromCaller.asymmetricMatch('foo')).toBe(true);
+  jestExpect(pattern.lastIndex).toBe(2);
+});
+
+test('StringNotMatching does not keep state from a global regexp', () => {
+  const global = stringNotMatching(/foo/g);
+  jestExpect(global.asymmetricMatch('foo')).toBe(false);
+  jestExpect(global.asymmetricMatch('foo')).toBe(false);
+  jestExpect(global.asymmetricMatch('bar')).toBe(true);
+  jestExpect(global.asymmetricMatch('bar')).toBe(true);
+});
+
 test('StringNotMatching matches string against regexp', () => {
   jestExpect(stringNotMatching(/en/).asymmetricMatch('queen')).toBe(false);
   jestExpect(stringNotMatching(/en/).asymmetricMatch('queue')).toBe(true);

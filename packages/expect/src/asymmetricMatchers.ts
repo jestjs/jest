@@ -329,7 +329,11 @@ class StringMatching extends AsymmetricMatcher<RegExp> {
   }
 
   asymmetricMatch(other: unknown) {
-    const result = isA<string>('String', other) && this.sample.test(other);
+    // `test` stores the end of a global or sticky match in `lastIndex`.
+    // Searching a copy keeps the next match against this pattern independent
+    // of the previous one.
+    const result =
+      isA<string>('String', other) && new RegExp(this.sample).test(other);
 
     return this.inverse ? !result : result;
   }
