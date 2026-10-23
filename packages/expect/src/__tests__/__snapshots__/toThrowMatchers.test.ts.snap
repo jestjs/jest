@@ -232,6 +232,15 @@ Expected pattern: <g>/apple/</>
 Received function did not throw
 `;
 
+exports[`toThrow regexp does not keep state from a global or sticky regexp 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toThrow<d>(</><g>expected</><d>)</>
+
+Expected pattern: not <g>/array/g</>
+Received message:     <r>"Invalid <i>array</i> length"</>
+
+      <d>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<d>:24:74)</>
+`;
+
 exports[`toThrow regexp threw, but message did not match (error) 1`] = `
 <d>expect(</><r>received</><d>).</>toThrow<d>(</><g>expected</><d>)</>
 

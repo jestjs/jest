@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[expect]` Search a copy of the regular expression in `toThrow`, `toMatch` and `stringMatching`, so a global or sticky pattern does not fail the next match or move the caller's `lastIndex` ([#16515](https://github.com/jestjs/jest/pull/16515))
+
 ### Chore & Maintenance
 
 ## 30.5.2

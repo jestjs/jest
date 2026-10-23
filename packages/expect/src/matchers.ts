@@ -11,6 +11,7 @@ import {
   equals,
   getObjectSubset,
   getPath,
+  isA,
   iterableEquality,
   pathAsArray,
   sparseArrayEquality,
@@ -47,6 +48,20 @@ import {
   printReceivedStringContainExpectedSubstring,
 } from './print';
 import type {MatchersObject} from './types';
+
+// `exec` stores the end of a global or sticky match in `lastIndex`. Highlighting
+// against a copy reports the same match and leaves the caller's regexp alone.
+// An object that only implements `exec` keeps its own method.
+const execPattern = (
+  pattern: {exec?: (value: string) => RegExpExecArray | null},
+  received: string,
+): RegExpExecArray | null => {
+  if (isA<RegExp>('RegExp', pattern)) {
+    return new RegExp(pattern).exec(received);
+  }
+
+  return typeof pattern.exec === 'function' ? pattern.exec(received) : null;
+};
 
 // Omit colon and one or more spaces, so can call getLabelPrinter.
 const EXPECTED_LABEL = 'Expected';
@@ -868,9 +883,7 @@ const matchers: MatchersObject = {
               `Expected pattern: not ${printExpected(expected)}\n` +
               `Received string:      ${printReceivedStringContainExpectedResult(
                 received,
-                typeof expected.exec === 'function'
-                  ? expected.exec(received)
-                  : null,
+                execPattern(expected, received),
               )}`
       : () => {
           const labelExpected = `Expected ${

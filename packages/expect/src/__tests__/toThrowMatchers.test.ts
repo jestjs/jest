@@ -141,6 +141,52 @@ describe('toThrow', () => {
         }).not.toThrow(/^[1-9]\d*/);
       }).toThrowErrorMatchingSnapshot();
     });
+
+    it('uses a custom test function as given', () => {
+      let calls = 0;
+      const pattern = {
+        test(message: string) {
+          calls += 1;
+          return message === 'apple';
+        },
+      };
+      jestExpect(() => {
+        throw new CustomError('apple');
+      }).toThrow(pattern);
+      jestExpect(() => {
+        throw new CustomError('banana');
+      }).not.toThrow(pattern);
+      jestExpect(calls).toBe(2);
+    });
+
+    it('does not keep state from a global or sticky regexp', () => {
+      const global = /apple/g;
+      global.lastIndex = 4;
+      jestExpect(() => {
+        throw new CustomError('apple');
+      }).toThrow(global);
+      jestExpect(() => {
+        throw new CustomError('xx apple');
+      }).toThrow(global);
+      jestExpect(global.lastIndex).toBe(4);
+
+      const sticky = /^apple/y;
+      jestExpect(() => {
+        throw new CustomError('apple');
+      }).toThrow(sticky);
+      jestExpect(() => {
+        throw new CustomError('apple');
+      }).toThrow(sticky);
+      jestExpect(sticky.lastIndex).toBe(0);
+
+      const highlighted = /array/g;
+      expect(() => {
+        jestExpect(() => {
+          throw new CustomError('Invalid array length');
+        }).not.toThrow(highlighted);
+      }).toThrowErrorMatchingSnapshot();
+      jestExpect(highlighted.lastIndex).toBe(0);
+    });
   });
 
   describe('error class', () => {

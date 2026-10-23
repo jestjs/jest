@@ -3872,6 +3872,13 @@ Expected substring: not <g>"foo"</>
 Received string:        <r>"<i>foo</i>"</>
 `;
 
+exports[`.toMatch() does not move lastIndex when a negated match is reported 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toMatch<d>(</><g>expected</><d>)</>
+
+Expected pattern: not <g>/f\\d+/gi</>
+Received string:      <r>"<i>f123</i>"</>
+`;
+
 exports[`.toMatch() throws if non String actual value passed: [/foo/i, "foo"] 1`] = `
 <d>expect(</><r>received</><d>).</>toMatch<d>(</><g>expected</><d>)</>
 

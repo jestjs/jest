@@ -6,7 +6,7 @@
  *
  */
 
-import {isError} from '@jest/expect-utils';
+import {isA, isError} from '@jest/expect-utils';
 import {
   EXPECTED_COLOR,
   type MatcherHintOptions,
@@ -146,9 +146,16 @@ const toThrowExpectedRegExp = (
   matcherName: string,
   options: MatcherHintOptions,
   thrown: Thrown | null,
-  expected: RegExp,
+  expected: RegExp | {test: (message: string) => boolean},
 ): SyncExpectationResult => {
-  const pass = thrown !== null && expected.test(thrown.message);
+  // A global or sticky regexp records the match in `lastIndex`. Searching a
+  // copy leaves the caller's regexp where it was, and the next assertion
+  // starts at the beginning of the message again.
+  const pass =
+    thrown !== null &&
+    (isA<RegExp>('RegExp', expected)
+      ? new RegExp(expected).test(thrown.message)
+      : expected.test(thrown.message));
 
   const message = pass
     ? () =>
@@ -408,7 +415,7 @@ const formatReceived = (
   label: string,
   thrown: Thrown | null,
   key: string,
-  expected?: string | RegExp,
+  expected?: string | RegExp | {test: (message: string) => boolean},
 ) => {
   if (thrown === null) {
     return '';
@@ -429,12 +436,12 @@ const formatReceived = (
           )
         }\n`;
       }
-    } else if (expected instanceof RegExp) {
+    } else if (isA<RegExp>('RegExp', expected)) {
       return `${
         label +
         printReceivedStringContainExpectedResult(
           message,
-          typeof expected.exec === 'function' ? expected.exec(message) : null,
+          new RegExp(expected).exec(message),
         )
       }\n`;
     }
