@@ -15,7 +15,8 @@ const globalConfig = makeGlobalConfig();
 const rootDir = process.cwd();
 const config = makeProjectConfig({cwd: rootDir, rootDir});
 const inRoot = (...segments: Array<string>) => path.join(rootDir, ...segments);
-const shown = (name: string) => path.join('src', name);
+// RUNS lines show paths with forward slashes on every platform
+const shown = (name: string) => `src/${name}`;
 
 const makeTest = (path: string, projectConfig = config): Test => ({
   context: {
