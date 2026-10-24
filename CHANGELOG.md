@@ -2,7 +2,11 @@
 
 ### Features
 
+- `[@jest/reporters]` Show the number of finished tests next to each running file's `RUNS` line, so a slow or hanging file shows how far it got ([#16516](https://github.com/jestjs/jest/pull/16516))
+
 ### Fixes
+
+- `[@jest/reporters]` Keep the last character of a string that ends in a single plain character after an ANSI code in `wrapAnsiString` ([#16516](https://github.com/jestjs/jest/pull/16516))
 
 ### Chore & Maintenance
 
