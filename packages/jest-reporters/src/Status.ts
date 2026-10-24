@@ -65,6 +65,42 @@ type Cache = {
   clear: string;
 };
 
+function formatProgress(testCaseResults: Array<TestCaseResult>): string {
+  let failed = 0;
+  let passed = 0;
+  let skipped = 0;
+  let todo = 0;
+  for (const {status} of testCaseResults) {
+    switch (status) {
+      case 'failed': {
+        failed++;
+        break;
+      }
+      case 'passed': {
+        passed++;
+        break;
+      }
+      case 'skipped': {
+        skipped++;
+        break;
+      }
+      case 'todo': {
+        todo++;
+        break;
+      }
+    }
+  }
+
+  const counts = [
+    failed > 0 && chalk.bold.red(`${failed} failed`),
+    skipped > 0 && chalk.bold.yellow(`${skipped} skipped`),
+    todo > 0 && chalk.bold.magenta(`${todo} todo`),
+    passed > 0 && chalk.bold.green(`${passed} passed`),
+  ].filter(Boolean);
+
+  return counts.length > 0 ? ` (${counts.join(', ')})` : '';
+}
+
 /**
  * A class that generates the CLI status of currently running tests
  * and also provides an ANSI escape sequence to remove status lines
@@ -169,10 +205,24 @@ export default class Status {
           ? `${printDisplayName(config)} `
           : '';
         const prefix = RUNNING + projectDisplayName;
+        const progress = formatProgress(
+          this._currentTestCases
+            .filter(
+              ({test}) =>
+                test.path === testPath && test.context.config === config,
+            )
+            .map(({testCaseResult}) => testCaseResult),
+        );
 
         content += `${wrapAnsiString(
           prefix +
-            trimAndFormatPath(stringLength(prefix), config, testPath, width),
+            trimAndFormatPath(
+              stringLength(prefix) + stringLength(progress),
+              config,
+              testPath,
+              width,
+            ) +
+            progress,
           width,
         )}\n`;
       }
