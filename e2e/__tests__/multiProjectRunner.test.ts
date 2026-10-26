@@ -644,11 +644,7 @@ test('applies project-level testTimeout in multi-project runner', () => {
     'package.json': '{}',
   });
 
-  const {stdout, exitCode} = runJest(DIR, [
-    '--projects',
-    'p1',
-    '--showConfig',
-  ]);
+  const {stdout, exitCode} = runJest(DIR, ['--projects', 'p1', '--showConfig']);
 
   expect(exitCode).toBe(0);
   const {configs} = JSON.parse(stdout);
