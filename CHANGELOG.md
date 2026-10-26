@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-circus]` Apply `testTimeout` configured in project configuration ([#16518](https://github.com/jestjs/jest/pull/16518))
+
 ### Chore & Maintenance
 
 ## 30.5.2
