@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-worker]` Isolate ChildProcessWorker tests from ambient `FORCE_COLOR` environment ([#16521](https://github.com/jestjs/jest/pull/16521))
+
 ### Chore & Maintenance
 
 ## 30.5.2
