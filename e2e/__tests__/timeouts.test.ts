@@ -181,3 +181,58 @@ test('exceeds the timeout specifying that `done` has not been called', () => {
   expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
 });
+
+test('respects testTimeout defined in project config', () => {
+  writeFiles(DIR, {
+    '__tests__/a-banana.js': `
+      test('banana', () => {
+        return new Promise(resolve => {
+          setTimeout(resolve, 50);
+        });
+      });
+    `,
+    'jest.config.js': `
+      module.exports = {
+        projects: [
+          {
+            displayName: 'project-timeout',
+            rootDir: '<rootDir>',
+            testTimeout: 200,
+          },
+        ],
+      };
+    `,
+    'package.json': '{}',
+  });
+
+  const {exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  expect(exitCode).toBe(0);
+});
+
+test('exceeds testTimeout defined in project config', () => {
+  writeFiles(DIR, {
+    '__tests__/a-banana.js': `
+      test('banana', () => {
+        return new Promise(resolve => {
+          setTimeout(resolve, 200);
+        });
+      });
+    `,
+    'jest.config.js': `
+      module.exports = {
+        projects: [
+          {
+            displayName: 'project-timeout',
+            rootDir: '<rootDir>',
+            testTimeout: 80,
+          },
+        ],
+      };
+    `,
+    'package.json': '{}',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  expect(stderr).toMatch(/Exceeded timeout of 80 ms for a test\./);
+  expect(exitCode).toBe(1);
+});
