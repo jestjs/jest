@@ -5,7 +5,7 @@
 ### Fixes
 
 - `[jest-resolve]` Bump `unrs-resolver` to 1.13.0, which locates its native binding at runtime instead of through a `postinstall` script, so installing Jest no longer reports a blocked build script on npm 12 ([#16527](https://github.com/jestjs/jest/pull/16527))
-- `[jest-config]` Fix `--config` failing with "Could not find a config file" when cwd has no discoverable config ([#16457](https://github.com/jestjs/jest/issues/16457))
+- `[jest-config]` Fix `--config` failing with "Could not find a config file" when cwd has no discoverable config ([#16520](https://github.com/jestjs/jest/pull/16520))
 
 ### Chore & Maintenance
 

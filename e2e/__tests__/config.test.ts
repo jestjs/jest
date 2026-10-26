@@ -132,7 +132,7 @@ test('works with --config when cwd has no discoverable config file', () => {
   writeFiles(projDir, {
     'custom.config.js': 'module.exports = {testMatch: ["**/*.test.js"]};',
   });
-  writeFiles(emptyDir, {});
+  writeFiles(emptyDir, {'package.json': '{}'});
 
   const result = runJest(emptyDir, [
     `--config=${path.resolve(projDir, 'custom.config.js')}`,
