@@ -460,10 +460,19 @@ export async function readConfigs(
           // The config that supplies the global config must not be validated
           // as a project config - its global options are in the right place.
           const suppliesGlobalConfig =
+            !skipArgvConfigOption ||
             (globalConfig == null && projectIndex === 0) ||
             (configPath != null &&
               typeof root === 'string' &&
-              resolveConfigPath(root, cwd, projectIsCwd) === configPath);
+              (() => {
+                try {
+                  return (
+                    resolveConfigPath(root, cwd, projectIsCwd) === configPath
+                  );
+                } catch {
+                  return false;
+                }
+              })());
 
           return readConfig(
             argv,

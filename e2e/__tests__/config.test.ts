@@ -5,7 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as os from 'node:os';
+import * as path from 'node:path';
 import runJest, {getConfig} from '../runJest';
+import {cleanup, writeFiles} from '../Utils';
 
 test('config as JSON', () => {
   const result = runJest('verbose-reporter', [
@@ -119,4 +122,24 @@ test('should work with merged config as callback for define function config', ()
   ]);
 
   expect(result.exitCode).toBe(0);
+});
+
+test('works with --config when cwd has no discoverable config file', () => {
+  const emptyDir = path.resolve(os.tmpdir(), 'empty-cwd-config-test');
+  const projDir = path.resolve(os.tmpdir(), 'proj-cwd-config-test');
+  cleanup(emptyDir);
+  cleanup(projDir);
+  writeFiles(projDir, {
+    'custom.config.js': 'module.exports = {testMatch: ["**/*.test.js"]};',
+  });
+  writeFiles(emptyDir, {'package.json': '{}'});
+
+  const result = runJest(emptyDir, [
+    `--config=${path.resolve(projDir, 'custom.config.js')}`,
+    '--showConfig',
+  ]);
+
+  expect(result.exitCode).toBe(0);
+  cleanup(emptyDir);
+  cleanup(projDir);
 });
