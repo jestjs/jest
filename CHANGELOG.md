@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-circus, jest-jasmine2]` Apply `testTimeout` defined in project configuration ([#16510](https://github.com/jestjs/jest/issues/16510))
+
 ### Chore & Maintenance
 
 ## 30.5.2
