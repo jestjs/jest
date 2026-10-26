@@ -637,6 +637,20 @@ test('uses --config for the global config when multiple projects are specified',
   expect(globalConfig.testTimeout).toBe(30_000);
 });
 
+test('applies project-level testTimeout in multi-project runner', () => {
+  writeFiles(DIR, {
+    'p1/jest.config.js': 'module.exports = {testTimeout: 25000};',
+    'p1/some.test.js': "test('a', () => expect(1).toBe(1));",
+    'package.json': '{}',
+  });
+
+  const {stdout, exitCode} = runJest(DIR, ['--projects', 'p1', '--showConfig']);
+
+  expect(exitCode).toBe(0);
+  const {configs} = JSON.parse(stdout);
+  expect(configs[0].testTimeout).toBe(25_000);
+});
+
 test('errors on a missing --config when multiple projects are specified', () => {
   writeFiles(DIR, {
     'p1/jest.config.js': 'module.exports = {};',
