@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-config]` Correct the `maxWorkers` description formula ([#16517](https://github.com/jestjs/jest/pull/16517))
+
 ### Chore & Maintenance
 
 ## 30.5.2
