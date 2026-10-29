@@ -13,6 +13,13 @@
  * start cold, as they do in a fresh worker. Every module also requires
  * `node:path`, so the core-module path is exercised too.
  *
+ * `files` mode loads the same CJS tree once from each of that many test files
+ * instead, all in one worker. Every test file gets a fresh `cacheFS`, while
+ * `ScriptTransformer` keeps transformed code for the whole worker, so this is
+ * what a module graph costs each test file after the one that transformed it.
+ * Its modules are padded to `MODULE_BYTES`, since reading their source is part
+ * of what is measured.
+ *
  * `transform: {}` keeps Babel out of the measurement.
  *
  * Needs `yarn build:js` first — this spawns the built CLI rather than reaching
@@ -22,6 +29,7 @@
  * To start the test, run:
  *   node test.js
  *   node test.js 30 cjs
+ *   node test.js 40 files
  *
  * A single number here means nothing: absolute timings move with the machine,
  * the Node version and whatever else is running. To compare two revisions,
@@ -40,6 +48,11 @@
  * about 5-6% of CJS module-loading time and 2-3% of ESM's. Re-runs of the same
  * pair minutes apart moved by more than that gap, which is why two
  * alternations are the minimum worth reporting.
+ *
+ * `files` mode, measured the same way on Node v24.12.0 with 40 test files,
+ * against `TransformCache` reading the source before every transform:
+ *
+ *     3259 ms -> 1042 ms   and   3043 ms -> 1036 ms
  */
 
 'use strict';
@@ -50,6 +63,7 @@ const path = require('node:path');
 const fs = require('graceful-fs');
 
 const NODE_COUNT = 2047; // a complete binary tree, 11 deep
+const MODULE_BYTES = 15 * 1024; // `files` mode only
 const RUNS = 5;
 
 const JEST_BIN = path.resolve(__dirname, '../../jest-cli/bin/jest.js');
@@ -97,10 +111,31 @@ function writeFixture(root, mode) {
             ),
             `module.exports = ${index} + path.sep.length${sum};`,
           ];
+    const code = `${lines.join('\n')}\n`;
     fs.writeFileSync(
       path.join(root, 'modules', `m${index}${extension}`),
-      `${lines.join('\n')}\n`,
+      mode === 'files'
+        ? `// ${'x'.repeat(MODULE_BYTES - code.length)}\n${code}`
+        : code,
     );
+  }
+
+  if (mode === 'files') {
+    for (let file = 0; file < iterations; file++) {
+      const test = [
+        'const rounds = Number(process.env.BENCHMARK_ROUNDS);',
+        "test('loads the tree', () => {",
+        `  if (${file} < rounds) {`,
+        "    expect(typeof require('../modules/m0.js')).toBe('number');",
+        '  }',
+        '});',
+      ];
+      fs.writeFileSync(
+        path.join(root, '__tests__', `benchmark${file}.test.js`),
+        `${test.join('\n')}\n`,
+      );
+    }
+    return;
   }
 
   const test =
@@ -166,7 +201,7 @@ function median(cwd, mode, rounds) {
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'jest-runtime-benchmark-'));
 
 try {
-  for (const mode of ['cjs', 'esm']) {
+  for (const mode of ['cjs', 'esm', 'files']) {
     if (onlyMode && mode !== onlyMode) continue;
 
     const cwd = path.join(root, mode);
