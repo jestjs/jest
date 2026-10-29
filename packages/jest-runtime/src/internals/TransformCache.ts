@@ -42,13 +42,11 @@ export class TransformCache {
   }
 
   transform(filename: string, options?: TransformOptions): string {
-    const source = this.fileCache.readFile(filename);
-    if (options?.isInternalModule) return source;
+    if (options?.isInternalModule) return this.fileCache.readFile(filename);
 
     const transformedFile = this.scriptTransformer.transform(
       filename,
       this.getFullTransformationOptions(options),
-      source,
     );
     this.transforms.set(filename, transformedFile);
     if (transformedFile.sourceMapPath) {
@@ -61,13 +59,11 @@ export class TransformCache {
     filename: string,
     options?: TransformOptions,
   ): Promise<string> {
-    const source = this.fileCache.readFile(filename);
-    if (options?.isInternalModule) return source;
+    if (options?.isInternalModule) return this.fileCache.readFile(filename);
 
     const transformedFile = await this.scriptTransformer.transformAsync(
       filename,
       this.getFullTransformationOptions(options),
-      source,
     );
     this.transforms.set(filename, transformedFile);
     if (transformedFile.sourceMapPath) {

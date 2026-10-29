@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-runtime]` Read a module's source only when its transform isn't already cached in the worker, instead of re-reading every module in every test file ([#16524](https://github.com/jestjs/jest/pull/16524))
+
 ## 30.5.2
 
 ### Features
