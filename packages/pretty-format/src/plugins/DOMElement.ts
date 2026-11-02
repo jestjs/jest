@@ -52,7 +52,9 @@ const testNode = (val: any) => {
 };
 
 export const test: NewPlugin['test'] = (val: any) =>
-  (val?.constructor?.name || isCustomElement(val)) && testNode(val);
+  val != null &&
+  (val.constructor?.name || isCustomElement(val)) &&
+  testNode(val);
 
 type HandledType = Element | Text | Comment | DocumentFragment;
 
