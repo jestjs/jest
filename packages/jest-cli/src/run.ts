@@ -57,6 +57,11 @@ export async function buildArgv(
     .epilogue(args.docs)
     .check(args.check).argv;
 
+  // maxWorkers is a scalar option, so repeated values should use the last one.
+  if (Array.isArray(argv.maxWorkers)) {
+    argv.maxWorkers = argv.maxWorkers.at(-1) as string;
+  }
+
   validateCLIOptions(
     argv,
     {...args.options, deprecationEntries},
