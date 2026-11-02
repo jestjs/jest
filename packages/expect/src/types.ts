@@ -12,12 +12,15 @@ import type {
   FunctionParameters,
   Tester,
 } from '@jest/expect-utils';
+import type {TestResult} from '@jest/types';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 import type {MockInstance} from 'jest-mock';
 import type {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
 
-export type SyncExpectationResult = {
-  pass: boolean;
+export type SyncExpectationResult = Omit<
+  TestResult.MatcherResult,
+  'message'
+> & {
   message(): string;
 };
 

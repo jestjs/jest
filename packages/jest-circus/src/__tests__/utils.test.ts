@@ -17,7 +17,7 @@ import {
   parseSingleTestResult,
 } from '../utils';
 
-const makeFailedTestResult = (error: Error) => {
+const makeFailedTestResult = (errors: Error | Array<Error>) => {
   const rootDescribe = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
   const test = makeTest(
     () => {},
@@ -30,7 +30,7 @@ const makeFailedTestResult = (error: Error) => {
     false,
   );
 
-  test.errors.push(error);
+  test.errors.push(...(Array.isArray(errors) ? errors : [errors]));
   test.status = 'done';
 
   return makeSingleTestResult(test);
@@ -161,6 +161,64 @@ test('makeSingleTestResult keeps primitive retry errors independent', () => {
   expect(result.retryReasonsDetailed[0]).toMatchObject({cause: asyncError});
   expect(result.errorsDetailed[0]).toMatchObject({cause: asyncError});
   expect(asyncError.message).toBe('hook location');
+});
+
+test('parseSingleTestResult exposes all valid failed matcher metadata', () => {
+  const createMatcherError = (diffPath: string) => {
+    const error = new Error('matcher failed') as Error & {
+      matcherResult: unknown;
+    };
+    error.matcherResult = {
+      actual: 'actual',
+      expected: 'expected',
+      message: 'matcher failed',
+      metadata: {diffPath},
+      name: 'toMatchImageSnapshot',
+      pass: false,
+    };
+
+    return error;
+  };
+
+  const firstMatcherError = createMatcherError('first/path.png');
+  const invalidMatcherError = new Error('invalid matcher') as Error & {
+    matcherResult: unknown;
+  };
+  invalidMatcherError.matcherResult = {
+    message: () => 'not materialized',
+    pass: false,
+  };
+  const secondMatcherError = createMatcherError('second/path.png');
+
+  const result = parseSingleTestResult(
+    makeFailedTestResult([
+      firstMatcherError,
+      new Error('not a matcher'),
+      invalidMatcherError,
+      secondMatcherError,
+    ]),
+  );
+
+  expect(result.matcherResults).toEqual([
+    {
+      message: 'matcher failed',
+      metadata: {diffPath: 'first/path.png'},
+      pass: false,
+    },
+    {
+      message: 'matcher failed',
+      metadata: {diffPath: 'second/path.png'},
+      pass: false,
+    },
+  ]);
+});
+
+test('parseSingleTestResult omits matcherResults for ordinary errors', () => {
+  const result = parseSingleTestResult(
+    makeFailedTestResult([new Error('not a matcher')]),
+  );
+
+  expect(result).not.toHaveProperty('matcherResults');
 });
 
 test('makeRunResult keeps the unserialized unhandled errors', () => {

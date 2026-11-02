@@ -44,7 +44,13 @@ export type AssertionResult = TestResult.AssertionResult;
 
 export type FormattedAssertionResult = Pick<
   AssertionResult,
-  'ancestorTitles' | 'fullName' | 'location' | 'status' | 'title' | 'duration'
+  | 'ancestorTitles'
+  | 'fullName'
+  | 'location'
+  | 'matcherResults'
+  | 'status'
+  | 'title'
+  | 'duration'
 > & {
   failureMessages: AssertionResult['failureMessages'] | null;
 };
