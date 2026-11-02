@@ -25,7 +25,7 @@
     "jest-util": "workspace:*",
     "jest-validate": "workspace:*",
     "slash": "^3.0.0",
-    "unrs-resolver": "^1.12.1"
+    "unrs-resolver": "^1.13.0"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.9",
