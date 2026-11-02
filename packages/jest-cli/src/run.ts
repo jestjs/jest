@@ -50,6 +50,7 @@ export async function buildArgv(
 
   const rawArgv: Array<string> = maybeArgv || process.argv.slice(2);
   const argv: Config.Argv = await yargs(rawArgv)
+    .parserConfiguration({'duplicate-arguments-array': false})
     .usage(args.usage)
     .version(version)
     .alias('help', 'h')
