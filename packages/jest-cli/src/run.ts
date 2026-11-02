@@ -50,13 +50,17 @@ export async function buildArgv(
 
   const rawArgv: Array<string> = maybeArgv || process.argv.slice(2);
   const argv: Config.Argv = await yargs(rawArgv)
-    .parserConfiguration({'duplicate-arguments-array': false})
     .usage(args.usage)
     .version(version)
     .alias('help', 'h')
     .options(args.options)
     .epilogue(args.docs)
     .check(args.check).argv;
+
+  // maxWorkers is a scalar option, so repeated values should use the last one.
+  if (Array.isArray(argv.maxWorkers)) {
+    argv.maxWorkers = argv.maxWorkers[argv.maxWorkers.length - 1] as string;
+  }
 
   validateCLIOptions(
     argv,
