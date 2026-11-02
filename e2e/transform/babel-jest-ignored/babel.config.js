@@ -12,6 +12,7 @@ module.exports = {
     /jest-each/,
     /jest-environment-node/,
     /jest-jasmine2/,
+    /jest-message-util/,
     /jest-source-map/,
   ],
 };
