@@ -940,6 +940,12 @@ describe('Beware of a misunderstanding! A sequence of dice rolls', () => {
 });
 ```
 
+:::note
+
+`expect.arrayContaining` doesn't compare the contents of a `Set`, `Map`, or other iterable that isn't an `Array` or a typed array, wherever it appears in the expected array. A `Set` matches any other `Set`, and a `Map` matches any other `Map`. To check their contents, use [`.toEqual`](#toequalvalue) on the value itself.
+
+:::
+
 ### `expect.not.arrayContaining(array)`
 
 `expect.not.arrayContaining(array)` matches a received array which does not contain all of the elements in the expected array. That is, the expected array **is not a subset** of the received array.
@@ -989,6 +995,12 @@ test('array of objects with specific properties', () => {
   );
 });
 ```
+
+:::note
+
+`expect.arrayOf` doesn't compare the contents of a `Set`, `Map`, or other iterable that isn't an `Array` or a typed array, wherever it appears in the expected value. A `Set` matches any other `Set`, and a `Map` matches any other `Map`. To check their contents, use [`.toEqual`](#toequalvalue) on the value itself.
+
+:::
 
 ### `expect.not.arrayOf(value)`
 
@@ -1044,6 +1056,12 @@ test('onPress gets called with the right thing', () => {
   );
 });
 ```
+
+:::note
+
+`expect.objectContaining` doesn't compare the contents of a `Set`, `Map`, or other iterable that isn't an `Array` or a typed array, wherever it appears in the expected object. A `Set` matches any other `Set`, and a `Map` matches any other `Map`. To check their contents, use [`.toEqual`](#toequalvalue) on the value itself.
+
+:::
 
 ### `expect.not.objectContaining(object)`
 
