@@ -59,7 +59,7 @@ export async function buildArgv(
 
   // maxWorkers is a scalar option, so repeated values should use the last one.
   if (Array.isArray(argv.maxWorkers)) {
-    argv.maxWorkers = argv.maxWorkers[argv.maxWorkers.length - 1] as string;
+    argv.maxWorkers = argv.maxWorkers.at(-1) as string;
   }
 
   validateCLIOptions(
