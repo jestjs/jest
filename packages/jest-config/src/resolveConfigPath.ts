@@ -27,6 +27,24 @@ export default function resolveConfigPath(
   cwd: string,
   skipMultipleConfigError = false,
 ): string {
+  const configPath = findConfigPath(
+    pathToResolve,
+    cwd,
+    skipMultipleConfigError,
+  );
+
+  if (configPath == null) {
+    throw new Error(makeResolutionErrorMessage(pathToResolve, cwd));
+  }
+
+  return configPath;
+}
+
+export function findConfigPath(
+  pathToResolve: string,
+  cwd: string,
+  skipMultipleConfigError = false,
+): string | undefined {
   if (!path.isAbsolute(cwd)) {
     throw new Error(`"cwd" must be an absolute path. cwd: ${cwd}`);
   }
@@ -56,20 +74,13 @@ export default function resolveConfigPath(
     );
   }
 
-  return resolveConfigPathByTraversing(
-    absolutePath,
-    pathToResolve,
-    cwd,
-    skipMultipleConfigError,
-  );
+  return resolveConfigPathByTraversing(absolutePath, skipMultipleConfigError);
 }
 
 const resolveConfigPathByTraversing = (
   pathToResolve: string,
-  initialPath: string,
-  cwd: string,
   skipMultipleConfigError: boolean,
-): string => {
+): string | undefined => {
   const configFiles = JEST_CONFIG_EXT_ORDER.map(ext =>
     path.resolve(pathToResolve, getConfigFilename(ext)),
   ).filter(isFile);
@@ -115,14 +126,12 @@ const resolveConfigPathByTraversing = (
   // This is the system root.
   // We tried everything, config is nowhere to be found ¯\_(ツ)_/¯
   if (pathToResolve === path.dirname(pathToResolve)) {
-    throw new Error(makeResolutionErrorMessage(initialPath, cwd));
+    return undefined;
   }
 
   // go up a level and try it again
   return resolveConfigPathByTraversing(
     path.dirname(pathToResolve),
-    initialPath,
-    cwd,
     skipMultipleConfigError,
   );
 };
