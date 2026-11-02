@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[jest-resolve]` Bump `unrs-resolver` to 1.13.0, which locates its native binding at runtime instead of through a `postinstall` script, so installing Jest no longer reports a blocked build script on npm 12 ([#16527](https://github.com/jestjs/jest/pull/16527))
+- `[pretty-format]` Stop the `DOMElement` plugin from throwing and catching a `TypeError` for every `null` or `undefined` value it tests, which made printing objects with many `null` fields slow ([#16531](https://github.com/jestjs/jest/pull/16531))
 
 ### Chore & Maintenance
 

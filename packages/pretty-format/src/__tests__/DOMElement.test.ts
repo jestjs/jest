@@ -11,6 +11,7 @@
 
 /* global document */
 
+import {Session} from 'node:inspector';
 import prettyFormat, {plugins} from '../';
 import setPrettyPrint from './setPrettyPrint';
 
@@ -609,5 +610,41 @@ Testing.`;
   it('handles jsdom attributes properly', () => {
     const attributes = require('jsdom/lib/jsdom/living/attributes');
     expect(DOMElement.test(attributes)).toBe(false);
+  });
+
+  it('does not throw internally for null or undefined', () => {
+    // A caught exception is invisible to the caller but costs a stack capture
+    // for every null value printed, so count them through the inspector.
+    const session = new Session();
+    let caughtExceptions = 0;
+    let results;
+    session.connect();
+    session.on('Debugger.paused', ({params}) => {
+      if (params.reason === 'exception') {
+        caughtExceptions++;
+      }
+      session.post('Debugger.resume');
+    });
+    session.post('Debugger.enable');
+    session.post('Debugger.setPauseOnExceptions', {state: 'all'});
+    try {
+      results = [
+        DOMElement.test(null),
+        DOMElement.test(undefined),
+        prettyFormat(
+          {empty: null, missing: undefined},
+          {plugins: [DOMElement]},
+        ),
+      ];
+    } finally {
+      session.disconnect();
+    }
+
+    expect(results).toEqual([
+      false,
+      false,
+      'Object {\n  "empty": null,\n  "missing": undefined,\n}',
+    ]);
+    expect(caughtExceptions).toBe(0);
   });
 });
