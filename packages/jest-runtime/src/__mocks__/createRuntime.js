@@ -124,6 +124,7 @@ module.exports = async function createRuntime(filename, projectConfig) {
     }
   }
 
+  runtime.__cacheFS = cacheFS;
   runtime.__mockRootPath = path.join(projectConfig.rootDir, 'root.js');
   runtime.__mockSubdirPath = path.join(
     projectConfig.rootDir,
