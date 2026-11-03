@@ -108,7 +108,14 @@ function reportSuccess(result: unknown) {
     ) {
       // Apply specific serialization only in error cases
       // to avoid affecting performance in regular cases.
-      process.send([PARENT_MESSAGE_OK, packMessage(result)]);
+      try {
+        process.send([PARENT_MESSAGE_OK, packMessage(result)]);
+      } catch (secondTryError) {
+        // Report it as the error of the call: thrown, it crashes the child
+        // (and the retry fails the same way) or is swallowed by an
+        // `unhandledRejection` listener, and the call never settles
+        reportClientError(secondTryError as Error);
+      }
     } else {
       throw error;
     }
