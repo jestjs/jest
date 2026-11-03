@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-circus]` Add `test.step()`/`it.step()` for named step reporting ([#16473](https://github.com/jestjs/jest/pull/16473))
+
 ### Fixes
 
 - `[jest-resolve]` Bump `unrs-resolver` to 1.13.0, which locates its native binding at runtime instead of through a `postinstall` script, so installing Jest no longer reports a blocked build script on npm 12 ([#16527](https://github.com/jestjs/jest/pull/16527))
