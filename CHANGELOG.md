@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-fake-timers, jest-runtime]` Run `node:timers/promises` timers on the fake clock while fake timers are installed, so `setTimeout`, `setImmediate`, `setInterval` and `scheduler.wait` from that module can be advanced with `jest.advanceTimersByTimeAsync()` and friends ([#16460](https://github.com/jestjs/jest/pull/16460))
+
 ### Fixes
 
 - `[jest-resolve]` Bump `unrs-resolver` to 1.13.0, which locates its native binding at runtime instead of through a `postinstall` script, so installing Jest no longer reports a blocked build script on npm 12 ([#16527](https://github.com/jestjs/jest/pull/16527))
