@@ -258,6 +258,7 @@ const getCommonAndChangedSubstrings = (
   diffs: Array<Diff>,
   op: number,
   hasCommonDiff: boolean,
+  changeColor: (text: string) => string = INVERTED_COLOR,
 ): string =>
   diffs.reduce(
     (reduced: string, diff: Diff): string =>
@@ -266,7 +267,7 @@ const getCommonAndChangedSubstrings = (
         ? diff[1]
         : diff[0] === op
           ? hasCommonDiff
-            ? INVERTED_COLOR(diff[1])
+            ? changeColor(diff[1])
             : diff[1]
           : ''),
     '',
@@ -323,7 +324,18 @@ export const printDiffOrStringify = (
   expectedLabel: string,
   receivedLabel: string,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
+  diffOptions?: DiffOptions,
 ): string => {
+  const mergedDiffOptions = {
+    aAnnotation: expectedLabel,
+    aIndicator: '-',
+    bAnnotation: receivedLabel,
+    bIndicator: '+',
+    expand,
+    includeChangeCounts: true,
+    ...diffOptions,
+  };
+
   if (
     typeof expected === 'string' &&
     typeof received === 'string' &&
@@ -335,29 +347,37 @@ export const printDiffOrStringify = (
   ) {
     if (expected.includes('\n') || received.includes('\n')) {
       return diffStringsUnified(expected, received, {
-        aAnnotation: expectedLabel,
-        bAnnotation: receivedLabel,
         changeLineTrailingSpaceColor: chalk.bgYellow,
         commonLineTrailingSpaceColor: chalk.bgYellow,
         emptyFirstOrLastLinePlaceholder: '↵', // U+21B5
-        expand,
-        includeChangeCounts: true,
+        ...mergedDiffOptions,
       });
     }
 
     const diffs = diffStringsRaw(expected, received, true);
     const hasCommonDiff = diffs.some(diff => diff[0] === DIFF_EQUAL);
+    const changeColor = diffOptions?.changeColor ?? INVERTED_COLOR;
 
     const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
     const expectedLine =
       printLabel(expectedLabel) +
       printExpected(
-        getCommonAndChangedSubstrings(diffs, DIFF_DELETE, hasCommonDiff),
+        getCommonAndChangedSubstrings(
+          diffs,
+          DIFF_DELETE,
+          hasCommonDiff,
+          changeColor,
+        ),
       );
     const receivedLine =
       printLabel(receivedLabel) +
       printReceived(
-        getCommonAndChangedSubstrings(diffs, DIFF_INSERT, hasCommonDiff),
+        getCommonAndChangedSubstrings(
+          diffs,
+          DIFF_INSERT,
+          hasCommonDiff,
+          changeColor,
+        ),
       );
 
     return `${expectedLine}\n${receivedLine}`;
@@ -366,17 +386,19 @@ export const printDiffOrStringify = (
   if (isLineDiffable(expected, received)) {
     const {replacedExpected, replacedReceived} =
       replaceMatchedToAsymmetricMatcher(expected, received, [], []);
-    const difference = diffDefault(replacedExpected, replacedReceived, {
-      aAnnotation: expectedLabel,
-      bAnnotation: receivedLabel,
-      expand,
-      includeChangeCounts: true,
-    });
+    const difference = diffDefault(
+      replacedExpected,
+      replacedReceived,
+      mergedDiffOptions,
+    );
+
+    const expectedHeader = `${mergedDiffOptions.aIndicator} ${mergedDiffOptions.aAnnotation}`;
+    const receivedHeader = `${mergedDiffOptions.bIndicator} ${mergedDiffOptions.bAnnotation}`;
 
     if (
       typeof difference === 'string' &&
-      difference.includes(`- ${expectedLabel}`) &&
-      difference.includes(`+ ${receivedLabel}`)
+      difference.includes(expectedHeader) &&
+      difference.includes(receivedHeader)
     ) {
       return difference;
     }
