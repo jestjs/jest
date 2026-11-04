@@ -11,8 +11,7 @@ import type {TestPathPatternsExecutor} from '@jest/pattern';
 import type {Test, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {ChangedFiles} from 'jest-changed-files';
-import {replaceRootDirInPath} from 'jest-config';
-import {escapePathForRegex} from 'jest-regex-util';
+import {getTestPathMatcher, replaceRootDirInPath} from 'jest-config';
 import {DependencyResolver} from 'jest-resolve-dependencies';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {globsToMatcher} from 'jest-util';
@@ -24,20 +23,6 @@ export type SearchResult = {
   collectCoverageFrom?: Set<string>;
   tests: Array<Test>;
   total?: number;
-};
-
-const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => {
-  const regexes = testRegex.map(testRegex => new RegExp(testRegex));
-
-  return (path: string) =>
-    regexes.some(regex => {
-      const result = regex.test(path);
-
-      // prevent stateful regexes from breaking, just in case
-      regex.lastIndex = 0;
-
-      return result;
-    });
 };
 
 const toTests = (context: TestContext, tests: Array<string>) =>
@@ -61,44 +46,16 @@ function normalizePosix(filePath: string) {
 export default class SearchSource {
   private readonly _context: TestContext;
   private _dependencyResolver: DependencyResolver | null;
-  private readonly _testPathCases: TestPathCases = [];
+  private readonly _testPathCases: TestPathCases;
 
   constructor(context: TestContext) {
     const {config} = context;
     this._context = context;
     this._dependencyResolver = null;
 
-    const rootPattern = new RegExp(
-      config.roots.map(dir => escapePathForRegex(dir + path.sep)).join('|'),
-    );
-    this._testPathCases.push({
-      isMatch: path => rootPattern.test(path),
-      stat: 'roots',
-    });
-
-    if (config.testMatch.length > 0) {
-      this._testPathCases.push({
-        isMatch: globsToMatcher(config.testMatch),
-        stat: 'testMatch',
-      });
-    }
-
-    if (config.testPathIgnorePatterns.length > 0) {
-      const testIgnorePatternsRegex = new RegExp(
-        config.testPathIgnorePatterns.join('|'),
-      );
-      this._testPathCases.push({
-        isMatch: path => !testIgnorePatternsRegex.test(path),
-        stat: 'testPathIgnorePatterns',
-      });
-    }
-
-    if (config.testRegex.length > 0) {
-      this._testPathCases.push({
-        isMatch: regexToMatcher(config.testRegex),
-        stat: 'testRegex',
-      });
-    }
+    // The matching rules only depend on the project config, so they are built
+    // by `jest-config` and can be reused outside of Jest.
+    this._testPathCases = [...getTestPathMatcher(config).cases];
   }
 
   private async _getOrBuildDependencyResolver(): Promise<DependencyResolver> {
