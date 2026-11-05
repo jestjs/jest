@@ -1021,7 +1021,7 @@ const readCacheFile = (cachePath: string): string | null => {
     }
     // on windows write-file-atomic is not atomic which can
     // result in ENOENT or EPERM when reading during another worker's rename
-    if (cacheReadErrorSafeToIgnore(error as NodeJS.ErrnoException)) {
+    if (cacheReadErrorSafeToIgnore(error)) {
       return null;
     }
 
