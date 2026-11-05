@@ -181,3 +181,55 @@ test('exceeds the timeout specifying that `done` has not been called', () => {
   expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
 });
+
+test('respects project testTimeout in project config', () => {
+  writeFiles(DIR, {
+    'jest.config.js': `
+      module.exports = {
+        projects: [
+          {
+            displayName: 'slow-project',
+            rootDir: '<rootDir>/slow',
+            testTimeout: 2000,
+          },
+        ],
+      };
+    `,
+    'package.json': '{}',
+    'slow/__tests__/slow.test.js': `
+      test('waits 300 ms', () => new Promise(resolve => setTimeout(resolve, 300)));
+    `,
+  });
+
+  const {exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  expect(exitCode).toBe(0);
+});
+
+test('exceeds project testTimeout in project config', () => {
+  writeFiles(DIR, {
+    'fast/__tests__/fast.test.js': `
+      test('waits 500 ms', () => new Promise(resolve => setTimeout(resolve, 500)));
+    `,
+    'jest.config.js': `
+      module.exports = {
+        projects: [
+          {
+            displayName: 'fast-project',
+            rootDir: '<rootDir>/fast',
+            testTimeout: 200,
+          },
+        ],
+      };
+    `,
+    'package.json': '{}',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {rest} = extractSummary(stderr);
+  const regexToMatch =
+    process.env.JEST_JASMINE === '1'
+      ? /(Async callback was not invoked within the 200 ms timeout specified by jest\.setTimeout\.)/
+      : /(Exceeded timeout of 200 ms for a test\.)/;
+  expect(rest).toMatch(regexToMatch);
+  expect(exitCode).toBe(1);
+});
