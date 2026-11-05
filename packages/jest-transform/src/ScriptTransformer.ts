@@ -1004,6 +1004,9 @@ const writeCacheFile = (cachePath: string, fileData: string) => {
 const cacheWriteErrorSafeToIgnore = (e: NodeJS.ErrnoException) =>
   process.platform === 'win32' && e.code === 'EPERM';
 
+const cacheReadErrorSafeToIgnore = (e: NodeJS.ErrnoException) =>
+  process.platform === 'win32' && (e.code === 'ENOENT' || e.code === 'EPERM');
+
 const readCacheFile = (cachePath: string): string | null => {
   if (!fs.existsSync(cachePath)) {
     return null;
@@ -1017,11 +1020,8 @@ const readCacheFile = (cachePath: string): string | null => {
       throw error;
     }
     // on windows write-file-atomic is not atomic which can
-    // result in this error
-    if (
-      (error as NodeJS.ErrnoException).code === 'ENOENT' &&
-      process.platform === 'win32'
-    ) {
+    // result in ENOENT or EPERM when reading during another worker's rename
+    if (cacheReadErrorSafeToIgnore(error)) {
       return null;
     }
 

@@ -1668,6 +1668,75 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toHaveBeenCalled();
   });
 
+  it('treats EPERM and ENOENT during cache read as a cache miss on Windows', async () => {
+    const transformConfig: Config.ProjectConfig = {
+      ...config,
+      transform: [['\\.js$', 'test_preprocessor', {}]],
+    };
+    let scriptTransformer = await createScriptTransformer(transformConfig);
+    scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
+
+    const cachePath = getCachePath(mockFs, config);
+    expect(writeFileAtomic.sync).toHaveBeenCalled();
+
+    const mockFsCopy = mockFs;
+    const originalPlatform = process.platform;
+
+    try {
+      Object.defineProperty(process, 'platform', {
+        value: 'win32',
+      });
+
+      // 1. Simulate a worker race where reading the cache file encounters EPERM on Windows
+      const originalReadFileSync = fs.readFileSync;
+      jest.mocked(fs.readFileSync).mockImplementation((path, options) => {
+        if (path === cachePath) {
+          const err = new Error(
+            `EPERM: operation not permitted, open '${path}'`,
+          ) as NodeJS.ErrnoException;
+          err.code = 'EPERM';
+          throw err;
+        }
+        return originalReadFileSync(path, options);
+      });
+
+      jest.resetModules();
+      reset();
+      mockFs = mockFsCopy;
+
+      scriptTransformer = await createScriptTransformer(transformConfig);
+      // Must not throw, should re-transform the file as a cache miss
+      expect(() => {
+        scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
+      }).not.toThrow();
+
+      // 2. Simulate ENOENT race on Windows
+      jest.mocked(fs.readFileSync).mockImplementation((path, options) => {
+        if (path === cachePath) {
+          const err = new Error(
+            `ENOENT: no such file or directory, open '${path}'`,
+          ) as NodeJS.ErrnoException;
+          err.code = 'ENOENT';
+          throw err;
+        }
+        return originalReadFileSync(path, options);
+      });
+
+      jest.resetModules();
+      reset();
+      mockFs = mockFsCopy;
+
+      scriptTransformer = await createScriptTransformer(transformConfig);
+      expect(() => {
+        scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
+      }).not.toThrow();
+    } finally {
+      Object.defineProperty(process, 'platform', {
+        value: originalPlatform,
+      });
+    }
+  });
+
   it('in async mode, reads values from the cache', async () => {
     const transformConfig: Config.ProjectConfig = {
       ...config,
