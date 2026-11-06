@@ -120,7 +120,7 @@ const printReceivedCallsNegative = (
 
   const label = 'Received:     ';
   if (isOnlyCall) {
-    return `${label + printReceivedArgs(indexedCalls[0], expected)}\n`;
+    return `${label + printReceivedArgs(indexedCalls[0][1], expected)}\n`;
   }
 
   const printAligned = getRightAlignedPrinter(label);
