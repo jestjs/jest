@@ -211,6 +211,31 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     },
   );
 
+  testWithSyncEsm(
+    'sync-required mode throws ERR_REQUIRE_ASYNC_MODULE for a linked TLA graph',
+    () => {
+      // Committing a top-level-await graph opened this branch up: the registry
+      // can now hold such a graph `'linked'`, which is where it sits between
+      // the `'sync-preferred'` walk that linked it and the async path
+      // evaluating it. A `require()` landing in that window reaches
+      // `evaluateLinkedModule`, whose async-graph check throws - not the throw
+      // in the walk that the other require-of-TLA tests reach.
+      const {esmRegistry, loader, stubs} = makeLoader();
+      stubs.transformCache.transform.mockReturnValue(
+        'export const x = await Promise.resolve(1);',
+      );
+
+      expect(loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred')).toBe(
+        LOAD_ASYNC,
+      );
+      expect(esmRegistry.get(M_KEY)).toMatchObject({status: 'linked'});
+
+      expect(() =>
+        loader.tryLoadGraphSync('/m.mjs', '', 'sync-required'),
+      ).toThrow(expect.objectContaining({code: 'ERR_REQUIRE_ASYNC_MODULE'}));
+    },
+  );
+
   testWithLinkedSyntheticModule(
     'rethrows when tryCommitSynthetic finds an errored entry (CJS-as-ESM)',
     async () => {
