@@ -385,6 +385,8 @@ exports[`works with async failures 1`] = `
   ✕ reject, but fail
   ✕ expect reject
   ✕ expect resolve
+  ✕ expect resolve, but reject with an error
+  ✕ expect reject, but resolve with an error
   ✕ timeout
 
   ● resolve, but fail
@@ -460,24 +462,84 @@ exports[`works with async failures 1`] = `
     > 20 |   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
          |   ^
       21 |
-      22 | test('timeout', done => {
-      23 |   setTimeout(done, 50);
+      22 | test('expect resolve, but reject with an error', () =>
+      23 |   expect(Promise.reject(new Error('rejection reason'))).resolves.toEqual({
 
       at Object.expect (__tests__/asyncFailures.test.js:20:3)
+
+  ● expect resolve, but reject with an error
+
+    expect(received).resolves.toEqual()
+
+    Received promise rejected instead of resolved
+    Rejected to value: [Error: rejection reason]
+
+      21 |
+      22 | test('expect resolve, but reject with an error', () =>
+    > 23 |   expect(Promise.reject(new Error('rejection reason'))).resolves.toEqual({
+         |   ^
+      24 |     foo: 'bar',
+      25 |   }));
+      26 |
+
+      at Object.expect (__tests__/asyncFailures.test.js:23:3)
+
+    Cause:
+        rejection reason
+
+          21 |
+          22 | test('expect resolve, but reject with an error', () =>
+        > 23 |   expect(Promise.reject(new Error('rejection reason'))).resolves.toEqual({
+             |                         ^
+          24 |     foo: 'bar',
+          25 |   }));
+          26 |
+
+          at Object.<anonymous> (__tests__/asyncFailures.test.js:23:25)
+
+  ● expect reject, but resolve with an error
+
+    expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: [Error: resolved value]
+
+      26 |
+      27 | test('expect reject, but resolve with an error', () =>
+    > 28 |   expect(Promise.resolve(new Error('resolved value'))).rejects.toThrow(
+         |   ^
+      29 |     'another reason',
+      30 |   ));
+      31 |
+
+      at Object.expect (__tests__/asyncFailures.test.js:28:3)
+
+    Cause:
+        resolved value
+
+          26 |
+          27 | test('expect reject, but resolve with an error', () =>
+        > 28 |   expect(Promise.resolve(new Error('resolved value'))).rejects.toThrow(
+             |                          ^
+          29 |     'another reason',
+          30 |   ));
+          31 |
+
+          at Object.<anonymous> (__tests__/asyncFailures.test.js:28:26)
 
   ● timeout
 
 <REPLACED>
 
-      20 |   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
-      21 |
-    > 22 | test('timeout', done => {
+      30 |   ));
+      31 |
+    > 32 | test('timeout', done => {
          | ^
-      23 |   setTimeout(done, 50);
-      24 | }, 5);
-      25 |
+      33 |   setTimeout(done, 50);
+      34 | }, 5);
+      35 |
 
-      at Object.test (__tests__/asyncFailures.test.js:22:1)"
+      at Object.test (__tests__/asyncFailures.test.js:32:1)"
 `;
 
 exports[`works with error with cause 1`] = `
