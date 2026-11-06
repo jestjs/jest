@@ -26,14 +26,20 @@ import styles from './index.module.css';
 
 import GitHubButton from 'react-github-btn';
 
-function TwitterButton() {
+function XFollowButton() {
   return (
     <a
-      href="https://twitter.com/intent/follow?screen_name=jestjs_&region=follow_link"
+      href="https://x.com/intent/follow?screen_name=jestjs_&region=follow_link"
       target="_blank"
-      className={styles['twitter-follow-button']}
+      className={styles['x-follow-button']}
     >
-      <div className={styles['twitter-follow-button--icon']} />
+      <svg
+        className={styles['x-follow-button--icon']}
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path d="M18.9 1.2h3.7l-8.1 9.2L24 22.8h-7.4l-5.8-7.6-6.6 7.6H.5l8.6-9.8L0 1.2h7.6l5.2 6.9 6.1-6.9Zm-1.3 19.4h2L6.5 3.2H4.3l13.3 17.4Z" />
+      </svg>
       Follow @jestjs_
     </a>
   );
@@ -273,7 +279,7 @@ const HeroInteractive = () => (
   <div className="wrapperV1">
     <div className="jest-hero-interactive">
       <div className={styles.socialLinks}>
-        <TwitterButton />
+        <XFollowButton />
         <GitHubStarButton />
       </div>
       <Hand />
