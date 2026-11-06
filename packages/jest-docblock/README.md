@@ -33,6 +33,7 @@ Pragmas can also take arguments:
 `jest-docblock` can:
 
 - extract the docblock from some code as a string
+- extract every docblock that precedes the first statement, as an array of strings
 - parse a docblock string's pragmas into an object
 - print an object and some comments back to a string
 
@@ -90,6 +91,27 @@ console.log(print({pragmas, comments: 'hi!'})); // /**\n * hi!\n *\n * @everythi
 ### `extract(contents: string): string`
 
 Extracts a docblock from some file contents. Returns the docblock contained in `contents`. If `contents` did not contain a docblock, it will return the empty string (`""`).
+
+### `extractAll(contents: string): string[]`
+
+Extracts every docblock that appears before the first statement of a file, in source order, and returns them as an array. Line comments between docblocks are skipped, and scanning stops at the first line that is not a comment. Returns an empty array when `contents` starts with something other than a comment.
+
+Use this instead of `extract` when a pragma may be written below another comment, such as a license header:
+
+```js
+const code = `
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ */
+/**
+ * @jest-environment jsdom
+ */
+export const everything = Object.create(null);
+`;
+
+const pragmas = Object.assign({}, ...extractAll(code).map(parse));
+console.log(pragmas); // { "jest-environment": "jsdom" }
+```
 
 ### `strip(contents: string): string`
 

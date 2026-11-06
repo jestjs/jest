@@ -2017,7 +2017,7 @@ Default: `node`
 
 The test environment that will be used for testing. The default environment in Jest is a Node.js environment. If you are building a web app, you can use a browser-like environment through [`jsdom`](https://github.com/jsdom/jsdom) instead.
 
-By adding a `@jest-environment` docblock at the top of the file, you can specify another environment to be used for all tests in that file:
+By adding a `@jest-environment` docblock above the first statement of the file, you can specify another environment to be used for all tests in that file. The docblock does not have to be the first comment - it may follow a license header or a line comment:
 
 - With built-in environments:
 
