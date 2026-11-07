@@ -1545,7 +1545,7 @@ expect.extend({
 
 :::note
 
-When the asymmetric form of a custom matcher fails, for example `expect.toBeWithinRange(1, 10)` in `toEqual`, the diff shows the message of the matcher on one line, next to the matcher.
+When the asymmetric form of a custom matcher fails as a property of an object or an item of an array, for example `{count: expect.toBeWithinRange(1, 10)}` in `toEqual`, the diff shows the message of the matcher on one line, next to the matcher.
 
 :::
 
