@@ -248,11 +248,8 @@ export const iterableEquality = (
       // Match identical values first, as the b.has fast path did before.
       for (const aValue of a) {
         let identicalIndex = -1;
-        for (let index = 0; index < bValues.length; index++) {
-          if (
-            !matchedBIndexes.has(index) &&
-            bValues[index] === aValue
-          ) {
+        for (const [index, bValue] of bValues.entries()) {
+          if (!matchedBIndexes.has(index) && bValue === aValue) {
             identicalIndex = index;
             break;
           }
@@ -265,15 +262,11 @@ export const iterableEquality = (
       }
       for (const aValue of unmatchedAValues) {
         let has = false;
-        for (let index = 0; index < bValues.length; index++) {
+        for (const [index, bValue] of bValues.entries()) {
           if (matchedBIndexes.has(index)) {
             continue;
           }
-          const isEqual = equals(
-            aValue,
-            bValues[index],
-            filteredCustomTesters,
-          );
+          const isEqual = equals(aValue, bValue, filteredCustomTesters);
           if (isEqual === true) {
             matchedBIndexes.add(index);
             has = true;
@@ -305,11 +298,11 @@ export const iterableEquality = (
       // path did before.
       for (const aEntry of a) {
         let identicalIndex = -1;
-        for (let index = 0; index < bEntries.length; index++) {
+        for (const [index, bEntry] of bEntries.entries()) {
           if (
             !matchedBIndexes.has(index) &&
-            bEntries[index][0] === aEntry[0] &&
-            equals(aEntry[1], bEntries[index][1], filteredCustomTesters)
+            bEntry[0] === aEntry[0] &&
+            equals(aEntry[1], bEntry[1], filteredCustomTesters)
           ) {
             identicalIndex = index;
             break;
@@ -323,11 +316,10 @@ export const iterableEquality = (
       }
       for (const aEntry of unmatchedAEntries) {
         let has = false;
-        for (let index = 0; index < bEntries.length; index++) {
+        for (const [index, bEntry] of bEntries.entries()) {
           if (matchedBIndexes.has(index)) {
             continue;
           }
-          const bEntry = bEntries[index];
           const matchedKey = equals(
             aEntry[0],
             bEntry[0],
@@ -336,11 +328,7 @@ export const iterableEquality = (
 
           let matchedValue = false;
           if (matchedKey === true) {
-            matchedValue = equals(
-              aEntry[1],
-              bEntry[1],
-              filteredCustomTesters,
-            );
+            matchedValue = equals(aEntry[1], bEntry[1], filteredCustomTesters);
           }
           if (matchedValue === true) {
             matchedBIndexes.add(index);

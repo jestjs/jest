@@ -491,20 +491,38 @@ describe('iterableEquality', () => {
   test('returns false when one Map entry would have to match two deep-equal duplicate keys', () => {
     expect(
       iterableEquality(
-        new Map([[{k: 1}, 1], [{k: 1}, 1]]),
-        new Map([[{k: 1}, 1], [{k: 1}, 2]]),
+        new Map([
+          [{k: 1}, 1],
+          [{k: 1}, 1],
+        ]),
+        new Map([
+          [{k: 1}, 1],
+          [{k: 1}, 2],
+        ]),
       ),
     ).toBe(false);
     expect(
       iterableEquality(
-        new Map([[{k: 1}, 1], [{k: 1}, 2]]),
-        new Map([[{k: 1}, 1], [{k: 1}, 1]]),
+        new Map([
+          [{k: 1}, 1],
+          [{k: 1}, 2],
+        ]),
+        new Map([
+          [{k: 1}, 1],
+          [{k: 1}, 1],
+        ]),
       ),
     ).toBe(false);
     expect(
       iterableEquality(
-        new Map([[{k: 1}, 1], [{k: 1}, 1]]),
-        new Map([[{k: 1}, 1], [{k: 1}, 1]]),
+        new Map([
+          [{k: 1}, 1],
+          [{k: 1}, 1],
+        ]),
+        new Map([
+          [{k: 1}, 1],
+          [{k: 1}, 1],
+        ]),
       ),
     ).toBe(true);
   });
