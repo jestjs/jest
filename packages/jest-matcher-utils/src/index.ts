@@ -496,7 +496,7 @@ type AsymmetricMatcher = {
 const ANSI_REGEX = ansiRegex();
 const ASYMMETRIC_MATCHER = Symbol.for('jest.asymmetricMatcher');
 
-// A copy for each field: one matcher can fail on more fields, with other messages
+// One object for each failed field: a reused matcher has a different message on each field
 function withMismatchMessage(
   matcher: AsymmetricMatcher,
   other: unknown,
