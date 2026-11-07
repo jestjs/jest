@@ -859,6 +859,27 @@ describe('printPropertiesAndReceived', () => {
       printPropertiesAndReceived(properties, received, false),
     ).toMatchSnapshot();
   });
+
+  test('show the mismatch message of an asymmetric matcher', () => {
+    const received = {
+      count: 15,
+      name: 'some string',
+    };
+    const properties = {
+      count: {
+        $$typeof: Symbol.for('jest.asymmetricMatcher'),
+        asymmetricMatch: (other: unknown) =>
+          typeof other === 'number' && other >= 1 && other <= 10,
+        getMismatchMessage: (other: unknown) =>
+          `expected ${String(other)} to be within range 1 - 10`,
+        toAsymmetricMatcher: () => 'isWithinRange<1, 10>',
+        toString: () => 'isWithinRange',
+      },
+    };
+    expect(
+      printPropertiesAndReceived(properties, received, false),
+    ).toMatchSnapshot();
+  });
 });
 
 describe('printSnapshotAndReceived', () => {
