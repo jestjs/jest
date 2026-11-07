@@ -286,3 +286,45 @@ function _getJestObj() {
 }
 
 `;
+
+exports[`babel 7 babel-plugin-jest-hoist 13. braceless if statement is not hoisted: 13. braceless if statement is not hoisted 1`] = `
+
+const useMock = true;
+if (useMock) jest.mock('./dep');
+
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+const useMock = true;
+if (useMock) _getJestObj().mock('./dep');
+
+`;
+
+exports[`babel 7 babel-plugin-jest-hoist 14. braced if statement hoists within its block: 14. braced if statement hoists within its block 1`] = `
+
+const useMock = true;
+if (useMock) {
+  require('x');
+  jest.mock('./dep');
+}
+
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+const useMock = true;
+if (useMock) {
+  _getJestObj().mock('./dep');
+  require('x');
+}
+
+`;
