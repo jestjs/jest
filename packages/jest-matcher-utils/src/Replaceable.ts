@@ -6,6 +6,7 @@
  */
 
 import {getType} from '@jest/get-type';
+import {isOpaqueObject} from './deepCyclicCopyReplaceable';
 
 const supportTypes = new Set(['map', 'array', 'object']);
 
@@ -31,7 +32,12 @@ export default class Replaceable {
   static isReplaceable(obj1: unknown, obj2: unknown): boolean {
     const obj1Type = getType(obj1);
     const obj2Type = getType(obj2);
-    return obj1Type === obj2Type && supportTypes.has(obj1Type);
+    return (
+      obj1Type === obj2Type &&
+      supportTypes.has(obj1Type) &&
+      !isOpaqueObject(obj1) &&
+      !isOpaqueObject(obj2)
+    );
   }
 
   forEach(cb: ReplaceableForEachCallBack): void {

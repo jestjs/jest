@@ -42,6 +42,25 @@ const isBuiltInObject = (object: any) =>
 const isMap = (value: any): value is Map<unknown, unknown> =>
   value.constructor === Map;
 
+const opaqueObjectTags = new Set([
+  '[object ArrayBuffer]',
+  '[object DataView]',
+  '[object Boolean]',
+  '[object Number]',
+  '[object String]',
+  '[object BigInt]',
+  '[object Symbol]',
+  '[object Generator]',
+  '[object AsyncGenerator]',
+]);
+
+// Prototype shells cannot preserve these objects' internal state. They must
+// remain opaque during replacement too, so their own properties aren't mutated.
+export const isOpaqueObject = (value: unknown): boolean =>
+  value !== null &&
+  typeof value === 'object' &&
+  opaqueObjectTags.has(Object.prototype.toString.call(value));
+
 export default function deepCyclicCopyReplaceable<T>(
   value: T,
   cycles = new WeakMap<any, any>(),
@@ -54,7 +73,7 @@ export default function deepCyclicCopyReplaceable<T>(
     return deepCyclicCopyArray(value, cycles);
   } else if (isMap(value)) {
     return deepCyclicCopyMap(value, cycles);
-  } else if (isBuiltInObject(value)) {
+  } else if (isBuiltInObject(value) || isOpaqueObject(value)) {
     return value;
   } else if (plugins.DOMElement.test(value)) {
     return (value as unknown as Element).cloneNode(true) as unknown as T;
