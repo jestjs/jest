@@ -118,6 +118,10 @@ export class ModuleRegistries {
     return this.isolation?.mock ?? this.mockRegistry;
   }
 
+  getActiveModuleMockRegistry(): Map<string, JestModule> {
+    return this.isolation?.moduleMock ?? this.moduleMockRegistry;
+  }
+
   private isIsolated(): boolean {
     return this.isolation !== null;
   }
