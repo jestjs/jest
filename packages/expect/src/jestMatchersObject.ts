@@ -85,22 +85,17 @@ export const setMatchers = (
         }
 
         asymmetricMatch(other: unknown) {
-          const {pass} = matcher.call(
-            this.getMatcherContext(),
-            other,
-            ...this.sample,
-          ) as SyncExpectationResult;
+          const {pass} = this.callMatcher(other) as SyncExpectationResult;
 
           return this.inverse ? !pass : pass;
         }
 
         override getMismatchMessage(other: unknown): string | undefined {
-          const result = matcher.call(
-            this.getMatcherContext(),
-            other,
-            ...this.sample,
-          );
+          const result = this.callMatcher(other);
           if (isPromise(result)) {
+            // The diff does not wait for this promise: a rejection must not be unhandled
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            result.catch(() => {});
             return undefined;
           }
 
@@ -109,6 +104,10 @@ export const setMatchers = (
             return undefined;
           }
           return message();
+        }
+
+        private callMatcher(other: unknown) {
+          return matcher.call(this.getMatcherContext(), other, ...this.sample);
         }
 
         toString() {
