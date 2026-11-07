@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- `[@jest/expect-utils]` Fix `iterableEquality` so each Set value or Map entry can only match once, so `toEqual` no longer passes when one side holds deep-equal duplicates that the other side cannot match ([#16546](https://github.com/jestjs/jest/issues/16546))
 - `[jest-resolve]` Bump `unrs-resolver` to 1.13.0, which locates its native binding at runtime instead of through a `postinstall` script, so installing Jest no longer reports a blocked build script on npm 12 ([#16527](https://github.com/jestjs/jest/pull/16527))
 
 ### Chore & Maintenance
