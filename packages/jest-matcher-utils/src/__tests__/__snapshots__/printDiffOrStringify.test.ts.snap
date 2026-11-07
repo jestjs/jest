@@ -80,6 +80,21 @@ exports[`printDiffOrStringify asymmetricMatcher custom asymmetricMatcher 1`] = `
 <d>  }</>
 `;
 
+exports[`printDiffOrStringify asymmetricMatcher getMismatchMessage of an object without $$typeof 1`] = `
+<g>- Expected  - 6</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "a": Object {</>
+<g>-     "asymmetricMatch": [Function asymmetricMatch],</>
+<g>-     "getMismatchMessage": [Function getMismatchMessage],</>
+<g>-     "sample": 5,</>
+<g>-     "toAsymmetricMatcher": [Function toAsymmetricMatcher],</>
+<g>-   },</>
+<r>+   "a": 4,</>
+<d>  }</>
+`;
+
 exports[`printDiffOrStringify asymmetricMatcher jest asymmetricMatcher 1`] = `
 <g>- Expected  - 1</>
 <r>+ Received  + 1</>

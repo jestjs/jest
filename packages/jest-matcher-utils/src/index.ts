@@ -487,16 +487,25 @@ function _replaceMatchedToAsymmetricMatcher(
 }
 
 type AsymmetricMatcher = {
+  $$typeof?: symbol;
   asymmetricMatch: Function;
   getMismatchMessage?: (other: unknown) => unknown;
   toAsymmetricMatcher?: () => string;
 };
+
+const ANSI_REGEX = ansiRegex();
+const ASYMMETRIC_MATCHER = Symbol.for('jest.asymmetricMatcher');
 
 // A copy for each field: one matcher can fail on more fields, with other messages
 function withMismatchMessage(
   matcher: AsymmetricMatcher,
   other: unknown,
 ): AsymmetricMatcher {
+  // pretty-format prints an object without this type as a plain object, from its own properties
+  if (matcher.$$typeof !== ASYMMETRIC_MATCHER) {
+    return matcher;
+  }
+
   let message: unknown;
   try {
     message = matcher.getMismatchMessage?.(other);
@@ -508,7 +517,7 @@ function withMismatchMessage(
   }
 
   const oneLine = message
-    .replaceAll(ansiRegex(), '')
+    .replaceAll(ANSI_REGEX, '')
     .split('\n')
     .map(line => line.trim())
     .filter(Boolean)

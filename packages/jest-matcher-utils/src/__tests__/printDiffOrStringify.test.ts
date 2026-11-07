@@ -188,6 +188,18 @@ describe('printDiffOrStringify', () => {
       expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
     });
 
+    test('getMismatchMessage of an object without $$typeof', () => {
+      const isFive = {
+        asymmetricMatch: (other: unknown) => other === 5,
+        getMismatchMessage: (other: unknown) =>
+          `expected ${String(other)} to be 5`,
+        sample: 5,
+        toAsymmetricMatcher: () => 'isFive<>',
+      };
+
+      expect(testDiffOrStringify({a: isFive}, {a: 4})).toMatchSnapshot();
+    });
+
     test('nested object', () => {
       const expected = {
         a: 1,
