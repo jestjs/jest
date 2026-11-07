@@ -300,7 +300,7 @@ export const iterableEquality = (
       // already matched so that deep-equal duplicate keys in a cannot all
       // collapse onto a single entry of b.
       const matchedBIndexes = new Set<number>();
-      const unmatchedAEntries: Array<unknown> = [];
+      const unmatchedAEntries: Array<[unknown, unknown]> = [];
       // Match entries with identical keys first, as the b.has/b.get fast
       // path did before.
       for (const aEntry of a) {
