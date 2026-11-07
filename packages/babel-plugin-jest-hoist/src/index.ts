@@ -374,7 +374,10 @@ export default function jestHoist(
           if (hoistedJestGetters.has(callExpr.node)) {
             const mockStmt = callExpr.getStatementParent();
 
-            if (mockStmt?.parentPath.isBlock()) {
+            if (
+              mockStmt?.isExpressionStatement() &&
+              mockStmt.parentPath.isBlock()
+            ) {
               stack.at(-1)!.calls.push(mockStmt.node);
               mockStmt.remove();
             }

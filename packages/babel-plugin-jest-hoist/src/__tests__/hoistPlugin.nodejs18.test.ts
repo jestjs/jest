@@ -192,6 +192,25 @@ export function defineTests({
         formatResult,
         snapshot: true,
       },
+      'braceless if statement is not hoisted': {
+        code: formatResult(`
+          const useMock = true;
+          if (useMock) jest.mock('./dep');
+        `),
+        formatResult,
+        snapshot: true,
+      },
+      'braced if statement hoists within its block': {
+        code: formatResult(`
+          const useMock = true;
+          if (useMock) {
+            require('x');
+            jest.mock('./dep');
+          }
+        `),
+        formatResult,
+        snapshot: true,
+      },
     },
     /* eslint-enable */
   });

@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- `[babel-plugin-jest-hoist]` Do not hoist a braceless `if` statement containing a `jest.mock()` call above the declaration of the variable its condition depends on ([#16545](https://github.com/jestjs/jest/pull/16545))
 - `[jest-resolve]` Bump `unrs-resolver` to 1.13.0, which locates its native binding at runtime instead of through a `postinstall` script, so installing Jest no longer reports a blocked build script on npm 12 ([#16527](https://github.com/jestjs/jest/pull/16527))
 
 ### Chore & Maintenance
