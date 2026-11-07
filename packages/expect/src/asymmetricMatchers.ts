@@ -81,6 +81,7 @@ export abstract class AsymmetricMatcher<
   abstract asymmetricMatch(other: unknown): boolean;
   abstract toString(): string;
   getExpectedType?(): string;
+  getMismatchMessage?(other: unknown): string | undefined;
   toAsymmetricMatcher?(): string;
 }
 

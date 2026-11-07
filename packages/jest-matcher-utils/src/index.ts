@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import ansiRegex from 'ansi-regex';
 import chalk, {type Chalk} from 'chalk';
 import {getType, isPrimitive} from '@jest/get-type';
 import {
@@ -452,10 +453,20 @@ function _replaceMatchedToAsymmetricMatcher(
     if (isAsymmetricMatcher(expectedValue)) {
       if (expectedValue.asymmetricMatch(receivedValue)) {
         receivedReplaceable.set(key, expectedValue);
+      } else {
+        expectedReplaceable.set(
+          key,
+          withMismatchMessage(expectedValue, receivedValue),
+        );
       }
     } else if (isAsymmetricMatcher(receivedValue)) {
       if (receivedValue.asymmetricMatch(expectedValue)) {
         expectedReplaceable.set(key, receivedValue);
+      } else {
+        receivedReplaceable.set(
+          key,
+          withMismatchMessage(receivedValue, expectedValue),
+        );
       }
     } else if (Replaceable.isReplaceable(expectedValue, receivedValue)) {
       const replaced = _replaceMatchedToAsymmetricMatcher(
@@ -476,8 +487,51 @@ function _replaceMatchedToAsymmetricMatcher(
 }
 
 type AsymmetricMatcher = {
+  $$typeof?: symbol;
   asymmetricMatch: Function;
+  getMismatchMessage?: (other: unknown) => unknown;
+  toAsymmetricMatcher?: () => string;
 };
+
+const ANSI_REGEX = ansiRegex();
+const ASYMMETRIC_MATCHER = Symbol.for('jest.asymmetricMatcher');
+
+// One object for each failed field: a reused matcher has a different message on each field
+function withMismatchMessage(
+  matcher: AsymmetricMatcher,
+  other: unknown,
+): AsymmetricMatcher {
+  // pretty-format prints an object without this type as a plain object, from its own properties
+  if (matcher.$$typeof !== ASYMMETRIC_MATCHER) {
+    return matcher;
+  }
+
+  let message: unknown;
+  try {
+    message = matcher.getMismatchMessage?.(other);
+  } catch {
+    return matcher;
+  }
+  if (typeof message !== 'string') {
+    return matcher;
+  }
+
+  const oneLine = message
+    .replaceAll(ANSI_REGEX, '')
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean)
+    .join(' ');
+  const name = matcher.toAsymmetricMatcher?.();
+  if (oneLine === '' || name === undefined) {
+    return matcher;
+  }
+
+  const printed = `${name} (${oneLine})`;
+  return Object.create(matcher, {
+    toAsymmetricMatcher: {value: () => printed},
+  });
+}
 
 function isAsymmetricMatcher(data: any): data is AsymmetricMatcher {
   const type = getType(data);

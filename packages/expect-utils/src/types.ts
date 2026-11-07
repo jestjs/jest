@@ -28,6 +28,7 @@ export type AsymmetricMatcher = {
   asymmetricMatch(other: unknown): boolean;
   toString(): string;
   getExpectedType?(): string;
+  getMismatchMessage?(other: unknown): string | undefined;
   toAsymmetricMatcher?(): string;
 };
 
