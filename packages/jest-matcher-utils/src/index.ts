@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import ansiRegex from 'ansi-regex';
 import chalk, {type Chalk} from 'chalk';
 import {getType, isPrimitive} from '@jest/get-type';
 import {
@@ -491,24 +492,14 @@ type AsymmetricMatcher = {
   toAsymmetricMatcher?: () => string;
 };
 
-const ANSI_REGEXP = /[\u001B\u009B]\[[\d;]*m/gu;
-
 // A copy for each field: one matcher can fail on more fields, with other messages
 function withMismatchMessage(
   matcher: AsymmetricMatcher,
   other: unknown,
 ): AsymmetricMatcher {
-  const {getMismatchMessage, toAsymmetricMatcher} = matcher;
-  if (
-    typeof getMismatchMessage !== 'function' ||
-    typeof toAsymmetricMatcher !== 'function'
-  ) {
-    return matcher;
-  }
-
   let message: unknown;
   try {
-    message = getMismatchMessage.call(matcher, other);
+    message = matcher.getMismatchMessage?.(other);
   } catch {
     return matcher;
   }
@@ -517,16 +508,17 @@ function withMismatchMessage(
   }
 
   const oneLine = message
-    .replaceAll(ANSI_REGEXP, '')
+    .replaceAll(ansiRegex(), '')
     .split('\n')
     .map(line => line.trim())
     .filter(Boolean)
     .join(' ');
-  if (oneLine === '') {
+  const name = matcher.toAsymmetricMatcher?.();
+  if (oneLine === '' || name === undefined) {
     return matcher;
   }
 
-  const printed = `${toAsymmetricMatcher.call(matcher)} (${oneLine})`;
+  const printed = `${name} (${oneLine})`;
   return Object.create(matcher, {
     toAsymmetricMatcher: {value: () => printed},
   });

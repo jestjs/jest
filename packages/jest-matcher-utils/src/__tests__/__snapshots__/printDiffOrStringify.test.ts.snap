@@ -17,11 +17,11 @@ exports[`printDiffOrStringify asymmetricMatcher asymmetricMatcher with getMismat
 <r>+ Received  + 2</>
 
 <d>  Object {</>
-<g>-   "a": isFive<> (expected 4 to be 5),</>
+<g>-   "a": isFive<> (expected 4 to be 5 (see docs)),</>
 <r>+   "a": 4,</>
 <d>    "b": isFive<>,</>
 <g>-   "c": 6,</>
-<r>+   "c": isFive<> (expected 6 to be 5),</>
+<r>+   "c": isFive<> (expected 6 to be 5 (see docs)),</>
 <d>  }</>
 `;
 

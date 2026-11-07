@@ -178,7 +178,7 @@ describe('printDiffOrStringify', () => {
         $$typeof: Symbol.for('jest.asymmetricMatcher'),
         asymmetricMatch: (other: unknown) => other === 5,
         getMismatchMessage: (other: unknown) =>
-          `expected ${String(other)}\n  to be \u001B[1m5\u001B[22m`,
+          `expected ${String(other)}\n  to be \u001B[1m5\u001B[22m \u009B31m(see \u001B]8;;https://jestjs.io\u0007docs\u001B]8;;\u0007)\u009B39m`,
         toAsymmetricMatcher: () => 'isFive<>',
         toString: () => 'isFive',
       };
