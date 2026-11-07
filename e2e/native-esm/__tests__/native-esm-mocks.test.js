@@ -21,6 +21,29 @@ test('can mock module', async () => {
   expect(importedMock.foo).toBe('bar');
 });
 
+test.each([false, true])(
+  'concurrent imports share a mock instance (async factory: %s)',
+  async asyncFactory => {
+    const factory = jestObject.fn(() => {
+      const exports = {token: {}};
+      return asyncFactory ? Promise.resolve(exports) : exports;
+    });
+    jestObject.unstable_mockModule('../mockedModule.mjs', factory, {
+      virtual: true,
+    });
+
+    const [first, second] = await Promise.all([
+      import('../mockedModule.mjs'),
+      import('../mockedModule.mjs'),
+    ]);
+
+    expect(factory).toHaveBeenCalledTimes(1);
+    expect(first).toBe(second);
+    expect(first.token).toBe(second.token);
+    expect(await import('../mockedModule.mjs')).toBe(first);
+  },
+);
+
 test('can statically import a virtual mocked module', async () => {
   jestObject.unstable_mockModule('../mockedModule.mjs', () => ({foo: 'bar'}), {
     virtual: true,
