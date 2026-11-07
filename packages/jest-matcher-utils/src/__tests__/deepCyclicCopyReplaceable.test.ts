@@ -6,6 +6,8 @@
  *
  */
 
+import {runInNewContext} from 'vm';
+import {format} from 'pretty-format';
 import deepCyclicCopyReplaceable, {
   SERIALIZABLE_PROPERTIES,
 } from '../deepCyclicCopyReplaceable';
@@ -133,6 +135,45 @@ test('return same value for built-in object type except array, map and object', 
   expect(deepCyclicCopyReplaceable(numberArray)).toBe(numberArray);
   expect(deepCyclicCopyReplaceable(regexp)).toBe(regexp);
   expect(deepCyclicCopyReplaceable(set)).toBe(set);
+});
+
+test.each([
+  ['ArrayBuffer', new Uint8Array([1, 2]).buffer],
+  ['DataView', new DataView(new Uint8Array([1, 2]).buffer)],
+  // eslint-disable-next-line no-new-wrappers, unicorn/new-for-builtins
+  ['boxed Number', new Number(42)],
+  // eslint-disable-next-line no-new-wrappers, unicorn/new-for-builtins
+  ['boxed String', new String('jest')],
+  // eslint-disable-next-line no-new-wrappers, unicorn/new-for-builtins
+  ['boxed Boolean', new Boolean(true)],
+  // eslint-disable-next-line no-new-object
+  ['boxed BigInt', new Object(BigInt(42))],
+  ['generator', (function* () {})()],
+  ['async generator', (async function* () {})()],
+  ['ArrayBuffer subclass', new (class extends ArrayBuffer {})(2)],
+  ['DataView subclass', new (class extends DataView {})(new ArrayBuffer(2))],
+  ['boxed Number subclass', new (class extends Number {})(42)],
+  ['cross-realm ArrayBuffer', runInNewContext('new Uint8Array([1, 2]).buffer')],
+  [
+    'cross-realm DataView',
+    runInNewContext('new DataView(new Uint8Array([1, 2]).buffer)'),
+  ],
+  ['cross-realm boxed Number', runInNewContext('Object(42)')],
+  ['cross-realm generator', runInNewContext('(function* () {})()')],
+])('preserves internal state when copying %s', (_name, value) => {
+  const copy = deepCyclicCopyReplaceable(value);
+
+  expect(copy).toBe(value);
+  expect(format(copy)).toBe(format(value));
+});
+
+test('preserves boxed Symbol internal state', () => {
+  // eslint-disable-next-line no-new-object
+  const value = new Object(Symbol('jest'));
+  const copy = deepCyclicCopyReplaceable(value);
+
+  expect(copy).toBe(value);
+  expect(copy.valueOf()).toBe(value.valueOf());
 });
 
 test('should copy object symbol key property', () => {

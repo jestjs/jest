@@ -6,7 +6,11 @@
  */
 
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
-import {INVERTED_COLOR, printDiffOrStringify} from '../index';
+import {
+  INVERTED_COLOR,
+  printDiffOrStringify,
+  replaceMatchedToAsymmetricMatcher,
+} from '../index';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
@@ -111,6 +115,45 @@ describe('printDiffOrStringify', () => {
   });
 
   describe('asymmetricMatcher', () => {
+    test.each([
+      ['ArrayBuffer', () => new Uint8Array([1]).buffer],
+      ['DataView', () => new DataView(new Uint8Array([1]).buffer)],
+      // eslint-disable-next-line no-new-wrappers, unicorn/new-for-builtins
+      ['Number', () => new Number(0)],
+      ['Generator', () => (function* () {})()],
+    ])('preserves nested %s values and inputs', (name, createValue) => {
+      const symbol = Symbol('matched');
+      const expectedValue = Object.assign(createValue(), {matched: 1});
+      const receivedValue = Object.assign(createValue(), {
+        matched: expect.any(Number),
+      });
+      const expected = {
+        different: 1,
+        nested: [new Map([['value', expectedValue]])],
+        [symbol]: expect.any(Number),
+      };
+      const received = {
+        different: 2,
+        nested: [new Map([['value', receivedValue]])],
+        [symbol]: 42,
+      };
+
+      const {replacedExpected, replacedReceived} =
+        replaceMatchedToAsymmetricMatcher(expected, received, [], []);
+
+      expect(replacedExpected).not.toBe(expected);
+      expect(replacedReceived).not.toBe(received);
+      expect(replacedReceived).toHaveProperty([symbol], expected[symbol]);
+      expect(expectedValue.matched).toBe(1);
+      expect(receivedValue.matched).toBeInstanceOf(Object);
+      expect(received[symbol]).toBe(42);
+      const difference = testDiffOrStringify(expected, received);
+      expect(difference).toContain(name === 'Generator' ? 'Object' : name);
+      expect(difference).toContain('Any<Number>');
+      expect(expectedValue.matched).toBe(1);
+      expect(received[symbol]).toBe(42);
+    });
+
     test('minimal test', () => {
       const expected = {a: expect.any(Number), b: 2};
       const received = {a: 1, b: 1};
