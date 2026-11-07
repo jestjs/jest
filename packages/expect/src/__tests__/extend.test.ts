@@ -59,6 +59,7 @@ declare module '../types' {
     toBeMultiLine(): void;
     toHaveAMessageThatThrows(): void;
     toHaveAnEmptyMessage(): void;
+    toBeResolvedLater(): void;
   }
   interface Matchers<R> {
     toBeDivisibleBy(expected: number): R;
@@ -221,6 +222,18 @@ it('prints an asymmetric matcher without a message as before', () => {
       a: jestExpect.toHaveAnEmptyMessage(),
       b: jestExpect.toHaveAMessageThatThrows(),
     }),
+  ).toThrowErrorMatchingSnapshot();
+});
+
+it('prints an async asymmetric matcher as before', () => {
+  jestExpect.extend({
+    async toBeResolvedLater() {
+      return {message: () => 'resolved later', pass: false};
+    },
+  });
+
+  expect(() =>
+    jestExpect({value: 1}).toEqual({value: jestExpect.toBeResolvedLater()}),
   ).toThrowErrorMatchingSnapshot();
 });
 

@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[expect, jest-matcher-utils]` Show the message of a custom matcher next to its asymmetric form in the diff, with the message of each failed field ([#16543](https://github.com/jestjs/jest/pull/16543))
+- `[expect, @jest/expect-utils, jest-matcher-utils]` Show the message of a custom matcher next to its asymmetric form in the diff, with the message of each failed field ([#16543](https://github.com/jestjs/jest/pull/16543))
 
 ### Fixes
 

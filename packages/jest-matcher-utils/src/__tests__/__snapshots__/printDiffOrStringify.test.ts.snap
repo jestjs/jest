@@ -12,6 +12,19 @@ exports[`printDiffOrStringify asymmetricMatcher array 1`] = `
 <d>  ]</>
 `;
 
+exports[`printDiffOrStringify asymmetricMatcher asymmetricMatcher with getMismatchMessage 1`] = `
+<g>- Expected  - 2</>
+<r>+ Received  + 2</>
+
+<d>  Object {</>
+<g>-   "a": isFive<> (expected 4 to be 5),</>
+<r>+   "a": 4,</>
+<d>    "b": isFive<>,</>
+<g>-   "c": 6,</>
+<r>+   "c": isFive<> (expected 6 to be 5),</>
+<d>  }</>
+`;
+
 exports[`printDiffOrStringify asymmetricMatcher circular array 1`] = `
 <g>- Expected  - 1</>
 <r>+ Received  + 1</>

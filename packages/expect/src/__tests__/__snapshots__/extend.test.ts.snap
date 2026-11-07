@@ -68,6 +68,18 @@ exports[`prints an asymmetric matcher without a message as before 1`] = `
 <d>  }</>
 `;
 
+exports[`prints an async asymmetric matcher as before 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "value": toBeResolvedLater<>,</>
+<r>+   "value": 1,</>
+<d>  }</>
+`;
+
 exports[`prints the Symbol into the error message 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 

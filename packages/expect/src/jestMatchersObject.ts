@@ -94,7 +94,7 @@ export const setMatchers = (
           return this.inverse ? !pass : pass;
         }
 
-        getMismatchMessage(other: unknown): string | undefined {
+        override getMismatchMessage(other: unknown): string | undefined {
           const result = matcher.call(
             this.getMatcherContext(),
             other,

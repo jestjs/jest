@@ -173,6 +173,21 @@ describe('printDiffOrStringify', () => {
       expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
     });
 
+    test('asymmetricMatcher with getMismatchMessage', () => {
+      const isFive = {
+        $$typeof: Symbol.for('jest.asymmetricMatcher'),
+        asymmetricMatch: (other: unknown) => other === 5,
+        getMismatchMessage: (other: unknown) =>
+          `expected ${String(other)}\n  to be \u001B[1m5\u001B[22m`,
+        toAsymmetricMatcher: () => 'isFive<>',
+        toString: () => 'isFive',
+      };
+      const expected = {a: isFive, b: isFive, c: 6};
+      const received = {a: 4, b: 5, c: isFive};
+
+      expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
+    });
+
     test('nested object', () => {
       const expected = {
         a: 1,
