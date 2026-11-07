@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))
+- `[jest-message-util]` Keep the whole path of a stack frame whose directory contains parentheses (such as `project (1)` or `C:\Users\Jane (Work)`) instead of printing it as `<dir>../../../file.js`, and render the code frame for an anonymous top frame in such a directory ([#16549](https://github.com/jestjs/jest/pull/16549))
 - `[jest-resolve]` Bump `unrs-resolver` to 1.13.0, which locates its native binding at runtime instead of through a `postinstall` script, so installing Jest no longer reports a blocked build script on npm 12 ([#16527](https://github.com/jestjs/jest/pull/16527))
 
 ### Chore & Maintenance
