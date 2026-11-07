@@ -239,20 +239,44 @@ export const iterableEquality = (
       return false;
     } else if (isA<Set<unknown>>('Set', a) || isImmutableUnorderedSet(a)) {
       let allFound = true;
+      const bValues = [...b];
+      // Each value of b can satisfy only one value of a. Track the indexes
+      // already matched so that deep-equal duplicates in a cannot all
+      // collapse onto a single value of b.
+      const matchedBIndexes = new Set<number>();
+      const unmatchedAValues: Array<unknown> = [];
+      // Match identical values first, as the b.has fast path did before.
       for (const aValue of a) {
-        if (!b.has(aValue)) {
-          let has = false;
-          for (const bValue of b) {
-            const isEqual = equals(aValue, bValue, filteredCustomTesters);
-            if (isEqual === true) {
-              has = true;
-            }
-          }
-
-          if (has === false) {
-            allFound = false;
+        let identicalIndex = -1;
+        for (const [index, bValue] of bValues.entries()) {
+          if (!matchedBIndexes.has(index) && bValue === aValue) {
+            identicalIndex = index;
             break;
           }
+        }
+        if (identicalIndex === -1) {
+          unmatchedAValues.push(aValue);
+        } else {
+          matchedBIndexes.add(identicalIndex);
+        }
+      }
+      for (const aValue of unmatchedAValues) {
+        let has = false;
+        for (const [index, bValue] of bValues.entries()) {
+          if (matchedBIndexes.has(index)) {
+            continue;
+          }
+          const isEqual = equals(aValue, bValue, filteredCustomTesters);
+          if (isEqual === true) {
+            matchedBIndexes.add(index);
+            has = true;
+            break;
+          }
+        }
+
+        if (has === false) {
+          allFound = false;
+          break;
         }
       }
       // Remove the first value from the stack of traversed values.
@@ -264,36 +288,58 @@ export const iterableEquality = (
       isImmutableUnorderedKeyed(a)
     ) {
       let allFound = true;
+      const bEntries = [...b];
+      // Each entry of b can satisfy only one entry of a. Track the indexes
+      // already matched so that deep-equal duplicate keys in a cannot all
+      // collapse onto a single entry of b.
+      const matchedBIndexes = new Set<number>();
+      const unmatchedAEntries: Array<[unknown, unknown]> = [];
+      // Match entries with identical keys first, as the b.has/b.get fast
+      // path did before.
       for (const aEntry of a) {
-        if (
-          !b.has(aEntry[0]) ||
-          !equals(aEntry[1], b.get(aEntry[0]), filteredCustomTesters)
-        ) {
-          let has = false;
-          for (const bEntry of b) {
-            const matchedKey = equals(
-              aEntry[0],
-              bEntry[0],
-              filteredCustomTesters,
-            );
-
-            let matchedValue = false;
-            if (matchedKey === true) {
-              matchedValue = equals(
-                aEntry[1],
-                bEntry[1],
-                filteredCustomTesters,
-              );
-            }
-            if (matchedValue === true) {
-              has = true;
-            }
-          }
-
-          if (has === false) {
-            allFound = false;
+        let identicalIndex = -1;
+        for (const [index, bEntry] of bEntries.entries()) {
+          if (
+            !matchedBIndexes.has(index) &&
+            bEntry[0] === aEntry[0] &&
+            equals(aEntry[1], bEntry[1], filteredCustomTesters)
+          ) {
+            identicalIndex = index;
             break;
           }
+        }
+        if (identicalIndex === -1) {
+          unmatchedAEntries.push(aEntry);
+        } else {
+          matchedBIndexes.add(identicalIndex);
+        }
+      }
+      for (const aEntry of unmatchedAEntries) {
+        let has = false;
+        for (const [index, bEntry] of bEntries.entries()) {
+          if (matchedBIndexes.has(index)) {
+            continue;
+          }
+          const matchedKey = equals(
+            aEntry[0],
+            bEntry[0],
+            filteredCustomTesters,
+          );
+
+          let matchedValue = false;
+          if (matchedKey === true) {
+            matchedValue = equals(aEntry[1], bEntry[1], filteredCustomTesters);
+          }
+          if (matchedValue === true) {
+            matchedBIndexes.add(index);
+            has = true;
+            break;
+          }
+        }
+
+        if (has === false) {
+          allFound = false;
+          break;
         }
       }
       // Remove the first value from the stack of traversed values.

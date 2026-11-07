@@ -472,6 +472,61 @@ describe('iterableEquality', () => {
     ).toBe(false);
   });
 
+  test('returns false when one Set value would have to match two deep-equal duplicates', () => {
+    expect(
+      iterableEquality(new Set([{a: 1}, {a: 1}]), new Set([{a: 1}, {a: 2}])),
+    ).toBe(false);
+    expect(
+      iterableEquality(new Set([{a: 1}, {a: 2}]), new Set([{a: 1}, {a: 1}])),
+    ).toBe(false);
+    // The same deep-equal duplicates on both sides are equal, in any order.
+    expect(
+      iterableEquality(
+        new Set([{a: 1}, {a: 1}, {a: 2}]),
+        new Set([{a: 2}, {a: 1}, {a: 1}]),
+      ),
+    ).toBe(true);
+  });
+
+  test('returns false when one Map entry would have to match two deep-equal duplicate keys', () => {
+    expect(
+      iterableEquality(
+        new Map([
+          [{k: 1}, 1],
+          [{k: 1}, 1],
+        ]),
+        new Map([
+          [{k: 1}, 1],
+          [{k: 1}, 2],
+        ]),
+      ),
+    ).toBe(false);
+    expect(
+      iterableEquality(
+        new Map([
+          [{k: 1}, 1],
+          [{k: 1}, 2],
+        ]),
+        new Map([
+          [{k: 1}, 1],
+          [{k: 1}, 1],
+        ]),
+      ),
+    ).toBe(false);
+    expect(
+      iterableEquality(
+        new Map([
+          [{k: 1}, 1],
+          [{k: 1}, 1],
+        ]),
+        new Map([
+          [{k: 1}, 1],
+          [{k: 1}, 1],
+        ]),
+      ),
+    ).toBe(true);
+  });
+
   test('returns false when given inequal set within a set', () => {
     expect(
       iterableEquality(new Set([new Set([2])]), new Set([new Set([1, 2])])),
