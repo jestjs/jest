@@ -56,6 +56,9 @@ declare module '../types' {
     toBeDivisibleBy(expected: number): void;
     toBeSymbol(expected: symbol): void;
     toBeWithinRange(floor: number, ceiling: number): void;
+    toBeMultiLine(): void;
+    toHaveAMessageThatThrows(): void;
+    toHaveAnEmptyMessage(): void;
   }
   interface Matchers<R> {
     toBeDivisibleBy(expected: number): R;
@@ -172,6 +175,53 @@ it('defines asymmetric variadic matchers that can be prefixed by not', () => {
       value: jestExpect.not.toBeWithinRange(5, 7),
     }),
   ).not.toThrow();
+});
+
+it('prints the message of each field of a reused asymmetric matcher', () => {
+  const range = jestExpect.toBeWithinRange(1, 10);
+
+  expect(() =>
+    jestExpect({a: 15, b: 20, c: 5}).toEqual({a: range, b: range, c: range}),
+  ).toThrowErrorMatchingSnapshot();
+});
+
+it('prints the message of an asymmetric matcher on one line', () => {
+  jestExpect.extend({
+    toBeMultiLine(actual: unknown) {
+      return {
+        message: () =>
+          `${this.utils.matcherHint('toBeMultiLine')}\n\nReceived: ${this.utils.printReceived(actual)}`,
+        pass: false,
+      };
+    },
+  });
+
+  expect(() =>
+    jestExpect({value: 1}).toEqual({value: jestExpect.toBeMultiLine()}),
+  ).toThrowErrorMatchingSnapshot();
+});
+
+it('prints an asymmetric matcher without a message as before', () => {
+  jestExpect.extend({
+    toHaveAMessageThatThrows() {
+      return {
+        message: () => {
+          throw new Error('broken message');
+        },
+        pass: false,
+      };
+    },
+    toHaveAnEmptyMessage() {
+      return {message: () => '', pass: false};
+    },
+  });
+
+  expect(() =>
+    jestExpect({a: 1, b: 2}).toEqual({
+      a: jestExpect.toHaveAnEmptyMessage(),
+      b: jestExpect.toHaveAMessageThatThrows(),
+    }),
+  ).toThrowErrorMatchingSnapshot();
 });
 
 it('prints the Symbol into the error message', () => {

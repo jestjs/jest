@@ -452,10 +452,20 @@ function _replaceMatchedToAsymmetricMatcher(
     if (isAsymmetricMatcher(expectedValue)) {
       if (expectedValue.asymmetricMatch(receivedValue)) {
         receivedReplaceable.set(key, expectedValue);
+      } else {
+        expectedReplaceable.set(
+          key,
+          withMismatchMessage(expectedValue, receivedValue),
+        );
       }
     } else if (isAsymmetricMatcher(receivedValue)) {
       if (receivedValue.asymmetricMatch(expectedValue)) {
         expectedReplaceable.set(key, receivedValue);
+      } else {
+        receivedReplaceable.set(
+          key,
+          withMismatchMessage(receivedValue, expectedValue),
+        );
       }
     } else if (Replaceable.isReplaceable(expectedValue, receivedValue)) {
       const replaced = _replaceMatchedToAsymmetricMatcher(
@@ -477,7 +487,50 @@ function _replaceMatchedToAsymmetricMatcher(
 
 type AsymmetricMatcher = {
   asymmetricMatch: Function;
+  getMismatchMessage?: (other: unknown) => unknown;
+  toAsymmetricMatcher?: () => string;
 };
+
+const ANSI_REGEXP = /[\u001B\u009B]\[[\d;]*m/gu;
+
+// A copy for each field: one matcher can fail on more fields, with other messages
+function withMismatchMessage(
+  matcher: AsymmetricMatcher,
+  other: unknown,
+): AsymmetricMatcher {
+  const {getMismatchMessage, toAsymmetricMatcher} = matcher;
+  if (
+    typeof getMismatchMessage !== 'function' ||
+    typeof toAsymmetricMatcher !== 'function'
+  ) {
+    return matcher;
+  }
+
+  let message: unknown;
+  try {
+    message = getMismatchMessage.call(matcher, other);
+  } catch {
+    return matcher;
+  }
+  if (typeof message !== 'string') {
+    return matcher;
+  }
+
+  const oneLine = message
+    .replaceAll(ANSI_REGEXP, '')
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean)
+    .join(' ');
+  if (oneLine === '') {
+    return matcher;
+  }
+
+  const printed = `${toAsymmetricMatcher.call(matcher)} (${oneLine})`;
+  return Object.create(matcher, {
+    toAsymmetricMatcher: {value: () => printed},
+  });
+}
 
 function isAsymmetricMatcher(data: any): data is AsymmetricMatcher {
   const type = getType(data);

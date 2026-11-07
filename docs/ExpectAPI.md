@@ -1543,6 +1543,12 @@ expect.extend({
 
 :::
 
+:::note
+
+When the asymmetric form of a custom matcher fails, for example `expect.toBeWithinRange(1, 10)` in `toEqual`, the diff shows the message of the matcher on one line, next to the matcher.
+
+:::
+
 #### Async Matchers
 
 `expect.extend` also supports async matchers. Async matchers return a Promise so you will need to await the returned value. Let's use an example matcher to illustrate the usage of them. We are going to implement a matcher called `toBeDivisibleByExternalValue`, where the divisible number is going to be pulled from an external source.

@@ -8,6 +8,7 @@
 
 import type {Tester} from '@jest/expect-utils';
 import {getType} from '@jest/get-type';
+import {isPromise} from 'jest-util';
 import {AsymmetricMatcher} from './asymmetricMatchers';
 import type {
   Expect,
@@ -91,6 +92,23 @@ export const setMatchers = (
           ) as SyncExpectationResult;
 
           return this.inverse ? !pass : pass;
+        }
+
+        getMismatchMessage(other: unknown): string | undefined {
+          const result = matcher.call(
+            this.getMatcherContext(),
+            other,
+            ...this.sample,
+          );
+          if (isPromise(result)) {
+            return undefined;
+          }
+
+          const {message, pass} = result as SyncExpectationResult;
+          if ((this.inverse ? !pass : pass) || typeof message !== 'function') {
+            return undefined;
+          }
+          return message();
         }
 
         toString() {
