@@ -121,19 +121,37 @@ test('Copy cyclic Map', () => {
   expect(deepCyclicCopyReplaceable(map)).toEqual(map);
 });
 
+/* eslint-disable no-new-wrappers, unicorn/new-for-builtins */
 test('return same value for built-in object type except array, map and object', () => {
   const date = new Date();
   const buffer = Buffer.from('jest');
   const numberArray = new Uint8Array([1, 2, 3]);
   const regexp = /jest/;
   const set = new Set(['foo', 'bar']);
+  const arrayBuffer = new ArrayBuffer(1);
+  const dataView = new DataView(arrayBuffer);
+  const boxedBoolean = new Boolean(true);
+  const boxedNumber = new Number(42);
+  const boxedString = new String('jest');
+  const boxedSymbol = Object(Symbol('jest'));
+  const generator = (function* () {})();
+  const asyncGenerator = (async function* () {})();
 
   expect(deepCyclicCopyReplaceable(date)).toBe(date);
   expect(deepCyclicCopyReplaceable(buffer)).toBe(buffer);
   expect(deepCyclicCopyReplaceable(numberArray)).toBe(numberArray);
   expect(deepCyclicCopyReplaceable(regexp)).toBe(regexp);
   expect(deepCyclicCopyReplaceable(set)).toBe(set);
+  expect(deepCyclicCopyReplaceable(arrayBuffer)).toBe(arrayBuffer);
+  expect(deepCyclicCopyReplaceable(dataView)).toBe(dataView);
+  expect(deepCyclicCopyReplaceable(boxedBoolean)).toBe(boxedBoolean);
+  expect(deepCyclicCopyReplaceable(boxedNumber)).toBe(boxedNumber);
+  expect(deepCyclicCopyReplaceable(boxedString)).toBe(boxedString);
+  expect(deepCyclicCopyReplaceable(boxedSymbol)).toBe(boxedSymbol);
+  expect(deepCyclicCopyReplaceable(generator)).toBe(generator);
+  expect(deepCyclicCopyReplaceable(asyncGenerator)).toBe(asyncGenerator);
 });
+/* eslint-enable no-new-wrappers, unicorn/new-for-builtins */
 
 test('should copy object symbol key property', () => {
   const symbolKey = Symbol.for('key');

@@ -286,4 +286,44 @@ describe('printDiffOrStringify', () => {
       expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
     });
   });
+
+  describe('built-in objects with internal slots', () => {
+    /* eslint-disable no-new-wrappers, unicorn/new-for-builtins */
+    test('does not throw on ArrayBuffer', () => {
+      expect(() =>
+        testDiffOrStringify(
+          new Uint8Array([1]).buffer,
+          new Uint8Array([2]).buffer,
+        ),
+      ).not.toThrow();
+    });
+
+    test('does not throw on DataView', () => {
+      expect(() =>
+        testDiffOrStringify({x: 1}, new DataView(new ArrayBuffer(1))),
+      ).not.toThrow();
+    });
+
+    test('does not throw on generator', () => {
+      expect(() =>
+        testDiffOrStringify({x: 1}, (function* () {})()),
+      ).not.toThrow();
+    });
+
+    test('does not throw on Map with boxed Number', () => {
+      expect(() =>
+        testDiffOrStringify(
+          new Map([
+            ['n', new Number(0)],
+            ['k', 1],
+          ]),
+          new Map([
+            ['n', new Number(0)],
+            ['k', 2],
+          ]),
+        ),
+      ).not.toThrow();
+    });
+    /* eslint-enable no-new-wrappers, unicorn/new-for-builtins */
+  });
 });

@@ -9,6 +9,9 @@ import {plugins} from 'pretty-format';
 
 const builtInObject: Array<unknown> = [
   Array,
+  ArrayBuffer,
+  Boolean,
+  DataView,
   Date,
   Float32Array,
   Float64Array,
@@ -16,13 +19,35 @@ const builtInObject: Array<unknown> = [
   Int32Array,
   Int8Array,
   Map,
+  Number,
   Set,
   RegExp,
+  String,
+  Symbol,
   Uint16Array,
   Uint32Array,
   Uint8Array,
   Uint8ClampedArray,
+  WeakMap,
+  WeakSet,
+  Promise,
 ];
+
+if (typeof BigInt !== 'undefined') {
+  builtInObject.push(BigInt);
+}
+
+if (typeof BigInt64Array !== 'undefined') {
+  builtInObject.push(BigInt64Array);
+}
+
+if (typeof BigUint64Array !== 'undefined') {
+  builtInObject.push(BigUint64Array);
+}
+
+if (typeof SharedArrayBuffer !== 'undefined') {
+  builtInObject.push(SharedArrayBuffer);
+}
 
 if (typeof Buffer !== 'undefined') {
   builtInObject.push(Buffer);
@@ -30,6 +55,26 @@ if (typeof Buffer !== 'undefined') {
 
 if (typeof Window !== 'undefined') {
   builtInObject.push(Window);
+}
+
+try {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const Generator = (function* () {})().constructor;
+  if (Generator) {
+    builtInObject.push(Generator);
+  }
+} catch {
+  // Ignored in environments where generators are unsupported
+}
+
+try {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const AsyncGenerator = (async function* () {})().constructor;
+  if (AsyncGenerator) {
+    builtInObject.push(AsyncGenerator);
+  }
+} catch {
+  // Ignored in environments where async generators are unsupported
 }
 
 export const SERIALIZABLE_PROPERTIES = Symbol.for(
