@@ -6,6 +6,7 @@
  */
 
 import {
+  Script,
   type Context as VMContext,
   type Module as VMModule,
   compileFunction,
@@ -31,7 +32,10 @@ import type {
   InitialModule,
   ModuleRegistry,
 } from './moduleTypes';
-import {runtimeSupportsVmModules} from './nodeCapabilities';
+import {
+  compileFunctionUsesIsolateCache,
+  runtimeSupportsVmModules,
+} from './nodeCapabilities';
 
 export type ExecResult = 'loaded' | 'env-disposed';
 
@@ -65,6 +69,8 @@ export interface ModuleExecutorOptions {
 
 export class ModuleExecutor {
   readonly injectedModuleParameters: ReadonlyArray<string>;
+  private readonly wrapperStart: string;
+  private readonly wrappedFiles = new Set<string>();
 
   private readonly resolution: Resolution;
   private readonly transformCache: TransformCache;
@@ -96,6 +102,16 @@ export class ModuleExecutor {
       this.config.injectGlobals ? 'jest' : undefined,
       ...this.config.sandboxInjectedGlobals,
     ].filter(isNonNullable);
+    // The wrapper sits on its own line, and the script is compiled with
+    // `lineOffset: -1`, so line and column numbers match `compileFunction`.
+    this.wrapperStart = compileFunctionUsesIsolateCache
+      ? ''
+      : `(function (${this.injectedModuleParameters.join(', ')}) {\n`;
+  }
+
+  // V8 coverage offsets for a wrapped file include the wrapper.
+  wrapperLengthFor(filename: string): number {
+    return this.wrappedFiles.has(filename) ? this.wrapperStart.length : 0;
   }
 
   getCurrentlyExecutingManualMock(): string | null {
@@ -207,28 +223,38 @@ export class ModuleExecutor {
       const scriptFilename = this.resolution.isCoreModule(filename)
         ? `jest-nodejs-core-${filename}`
         : filename;
+      // The fourth argument (the import phase) is missing from
+      // @types/node@18's callback type - hence the rest parameter.
+      const importModuleDynamically = async (
+        specifier: string,
+        _referrer: unknown,
+        importAttributes: unknown,
+        ...rest: Array<unknown>
+      ) => {
+        invariant(
+          runtimeSupportsVmModules,
+          'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
+        );
+        return this.dynamicImport(
+          specifier,
+          scriptFilename,
+          vmContext,
+          importAttributes as ImportAttributes | undefined,
+          rest[0] as string | undefined,
+        );
+      };
+      if (this.wrapperStart) {
+        const script = new Script(`${this.wrapperStart}${scriptSource}\n})`, {
+          filename: scriptFilename,
+          importModuleDynamically,
+          lineOffset: -1,
+        });
+        this.wrappedFiles.add(filename);
+        return script.runInContext(vmContext) as ModuleWrapper;
+      }
       return compileFunction(scriptSource, this.injectedModuleParameters, {
         filename: scriptFilename,
-        // The fourth argument (the import phase) is missing from
-        // @types/node@18's callback type - hence the rest parameter.
-        importModuleDynamically: async (
-          specifier,
-          _function,
-          importAttributes,
-          ...rest: Array<unknown>
-        ) => {
-          invariant(
-            runtimeSupportsVmModules,
-            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-          );
-          return this.dynamicImport(
-            specifier,
-            scriptFilename,
-            vmContext,
-            importAttributes as ImportAttributes | undefined,
-            rest[0] as string | undefined,
-          );
-        },
+        importModuleDynamically,
         parsingContext: vmContext,
       }) as ModuleWrapper;
     } catch (error: any) {

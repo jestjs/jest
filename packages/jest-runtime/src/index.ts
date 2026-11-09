@@ -676,7 +676,9 @@ export default class Runtime {
   }
 
   getAllV8CoverageInfoCopy(): V8CoverageResult {
-    return this.v8Coverage.getResult();
+    return this.v8Coverage.getResult(filename =>
+      this.executor.wrapperLengthFor(filename),
+    );
   }
 
   getSourceMaps(): SourceMapRegistry {

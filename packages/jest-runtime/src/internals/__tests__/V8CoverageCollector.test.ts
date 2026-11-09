@@ -134,6 +134,38 @@ describe('V8CoverageCollector', () => {
     expect(result[0].codeTransformResult).toBe(inside);
   });
 
+  test('getResult() reports wrapped modules like ones compiled with compileFunction', async () => {
+    const scriptTopLevel = {
+      functionName: '',
+      isBlockCoverage: true,
+      ranges: [{count: 1, endOffset: 100, startOffset: 0}],
+    };
+    const moduleWrapper = {
+      functionName: '',
+      isBlockCoverage: true,
+      ranges: [{count: 1, endOffset: 98, startOffset: 1}],
+    };
+    mockStopInstrumenting.mockResolvedValue([
+      {
+        functions: [scriptTopLevel, moduleWrapper],
+        scriptId: '3',
+        url: insideUrl,
+      },
+    ]);
+    const {cache, entries} = makeTransformCache();
+    const inside = transform('a');
+    entries.set(insidePath, inside);
+    const collector = new V8CoverageCollector(v8Options, config, cache);
+    await collector.start();
+    await collector.stop();
+
+    const [{codeTransformResult, result}] = collector.getResult(filename =>
+      filename === insidePath ? 42 : 0,
+    );
+    expect(codeTransformResult).toEqual({...inside, wrapperLength: 42});
+    expect(result.functions).toEqual([moduleWrapper]);
+  });
+
   test('snapshotTransforms() preserves entries across a TransformCache reset', async () => {
     mockStopInstrumenting.mockResolvedValue([
       {functions: [], scriptId: '3', url: insideUrl},
