@@ -67,7 +67,9 @@ export class V8CoverageCollector {
     ]);
   }
 
-  getResult(): V8CoverageResult {
+  getResult(
+    wrapperLengthFor: (filename: string) => number = () => 0,
+  ): V8CoverageResult {
     if (!this.result || !this.sources) {
       throw new Error('You need to call `stopCollectingV8Coverage` first.');
     }
@@ -89,10 +91,24 @@ export class V8CoverageCollector {
             loadedFilenames,
           ),
       )
-      .map(result => ({
-        codeTransformResult: sources.get(result.url),
-        result,
-      }));
+      .map(result => {
+        const transform = sources.get(result.url);
+        const wrapperLength = wrapperLengthFor(result.url);
+        if (!transform || wrapperLength === 0) {
+          return {codeTransformResult: transform, result};
+        }
+        return {
+          codeTransformResult: {...transform, wrapperLength},
+          // V8 reports the script around the wrapper as an extra function
+          // spanning the whole file. `compileFunction` has none, so drop it.
+          result: {
+            ...result,
+            functions: result.functions.filter(
+              fn => fn.functionName !== '' || fn.ranges[0]?.startOffset !== 0,
+            ),
+          },
+        };
+      });
   }
 
   reset(): void {
