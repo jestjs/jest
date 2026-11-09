@@ -12,6 +12,7 @@ import {
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
 import {
+  disableTestExecutionContext,
   getTestExecutionContext,
   hasActiveDescribeRetryAttempt,
 } from './testExecutionContext';
@@ -267,6 +268,7 @@ const eventHandler: Circus.EventHandler = (event, state) => {
         state.parentProcess,
         state.originalGlobalErrorHandlers,
       );
+      disableTestExecutionContext();
       break;
     }
     case 'error': {
