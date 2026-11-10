@@ -8,6 +8,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-config, jest-runtime, jest-reporters]` Upgrade `glob` to `^14.0.3` (resolving `14.0.4`), which is not affected by [GHSA-3g3m-2fjr-6pw4](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4) and only depends on patched `minimatch` releases, resolving [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249) for the copies it pulls in ([#16556](https://github.com/jestjs/jest/pull/16556))
+
 ## 30.5.2
 
 ### Features
