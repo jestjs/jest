@@ -8,6 +8,8 @@
 
 ### Chore & Maintenance
 
+- Scope a `test-exclude` → `minimatch` resolution to `^11.0.1` (resolving `11.0.5`), removing the last `minimatch` copy affected by [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249) from coverage runs ([#16557](https://github.com/jestjs/jest/pull/16557))
+
 ## 30.5.2
 
 ### Features
