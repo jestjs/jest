@@ -6,6 +6,7 @@
 
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))
 - `[jest-resolve]` Bump `unrs-resolver` to 1.13.0, which locates its native binding at runtime instead of through a `postinstall` script, so installing Jest no longer reports a blocked build script on npm 12 ([#16527](https://github.com/jestjs/jest/pull/16527))
+- `[jest-worker]` Fail the call when the child process cannot send its result, instead of crashing the child or leaving the call pending ([#16481](https://github.com/jestjs/jest/pull/16481))
 
 ### Chore & Maintenance
 
