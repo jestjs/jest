@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[expect, jest-circus, jest-test-result, jest-types]` expose failed matcher metadata ([#16380](https://github.com/jestjs/jest/pull/16380))
+
 ### Fixes
 
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))

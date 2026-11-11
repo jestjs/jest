@@ -13,6 +13,23 @@ type Callsite = {
   line: number;
 };
 
+export type MatcherMetadataValue =
+  | null
+  | boolean
+  | number
+  | string
+  | Array<MatcherMetadataValue>
+  | MatcherMetadata;
+
+/** JSON-compatible custom matcher data for reporters. */
+export type MatcherMetadata = {[key: string]: MatcherMetadataValue};
+
+export type MatcherResult = {
+  message: string;
+  metadata?: MatcherMetadata;
+  pass: boolean;
+};
+
 // this is here to make it possible to avoid huge dependency trees just for types
 export type AssertionResult = {
   ancestorTitles: Array<string>;
@@ -33,6 +50,8 @@ export type AssertionResult = {
   fullName: string;
   invocations?: number;
   location?: Callsite | null;
+  /** Failed matcher results in failure order. Available with jest-circus. */
+  matcherResults?: Array<MatcherResult>;
   numPassingAsserts: number;
   /**
    * Human-readable render of `retryReasons`, formatted where the errors are

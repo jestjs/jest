@@ -12,6 +12,7 @@ import {
   type MatcherFunction,
   type MatcherFunctionWithContext,
   type Matchers,
+  type SyncExpectationResult,
   type Tester,
   type TesterContext,
   expect as jestExpect,
@@ -143,6 +144,26 @@ describe('Expect', () => {
 });
 
 describe('MatcherFunction', () => {
+  test('allows interfaces with custom result metadata', () => {
+    interface ImageMatcherResult {
+      diffPath: string;
+      message(): string;
+      pass: boolean;
+    }
+
+    const result: ImageMatcherResult = {
+      diffPath: 'image-diff.png',
+      message: () => 'images differ',
+      pass: false,
+    };
+
+    const expectationResult: SyncExpectationResult = result;
+    const matcher: MatcherFunction = (): ImageMatcherResult => result;
+
+    expect(expectationResult).type.toBe<SyncExpectationResult>();
+    expect(matcher).type.toBe<MatcherFunction>();
+  });
+
   test('models typings of a matcher function', () => {
     type ToBeWithinRange = (
       this: MatcherContext,

@@ -9,6 +9,7 @@
 /* eslint-disable local/prefer-spread-eventually */
 
 import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
+import type {TestResult} from '@jest/types';
 import * as matcherUtils from 'jest-matcher-utils';
 import {ErrorWithStack, isPromise} from 'jest-util';
 import {
@@ -38,6 +39,7 @@ import {
   setState,
 } from './jestMatchersObject';
 import matchers from './matchers';
+import normalizeMatcherMetadata from './normalizeMatcherMetadata';
 import spyMatchers from './spyMatchers';
 import toThrowMatchers, {
   createMatcher as createThrowMatcher,
@@ -74,7 +76,7 @@ export type {
 } from './types';
 
 export class JestAssertionError extends Error {
-  matcherResult?: Omit<SyncExpectationResult, 'message'> & {message: string};
+  matcherResult?: TestResult.MatcherResult;
 }
 
 const createToThrowErrorMatchingSnapshotMatcher = function (
@@ -338,7 +340,13 @@ const makeThrowingMatcher = (
         // Passing the result of the matcher with the error so that a custom
         // reporter could access the actual and expected objects of the result
         // for example in order to display a custom visual diff
-        error.matcherResult = {...result, message};
+        const {metadata: rawMetadata, ...matcherResult} = result;
+        const metadata = normalizeMatcherMetadata(rawMetadata);
+        error.matcherResult = {
+          ...matcherResult,
+          message,
+          ...(metadata === undefined ? {} : {metadata}),
+        };
 
         if (throws) {
           throw error;
