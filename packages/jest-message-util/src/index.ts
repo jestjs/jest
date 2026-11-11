@@ -335,13 +335,31 @@ const removeInternalStackEntries = (
   });
 };
 
+// A frame whose location is an absolute path (POSIX, Windows drive or UNC) or
+// a file URL running to the end of the line: `at fn (/a (b)/c.js:1:2)` or the
+// anonymous `at /a (b)/c.js:1:2`. Unlike the generic pattern below, the path
+// may contain parentheses, so directories like `project (1)` or
+// `C:\Users\Jane (Work)` keep their full path. The path may not contain a
+// `:line:column)` of its own, which leaves `eval` frames
+// (`at eval (eval at fn (/a.js:1:2), <anonymous>:1:1)`) to the generic pattern.
+const ABSOLUTE_LOCATION = String.raw`(?:file:\/\/|\/|[A-Za-z]:[\\/]|\\\\)(?:(?!:\d+:\d+\)).)*?`;
+const PARENTHESIZED_FRAME_REGEXP = new RegExp(
+  String.raw`^(\s*at .*?\()(${ABSOLUTE_LOCATION})(:\d+:\d+\)\s*)$`,
+);
+const ANONYMOUS_FRAME_REGEXP = new RegExp(
+  String.raw`^(\s*at )(${ABSOLUTE_LOCATION})(:(\d+):(\d+)\s*)$`,
+);
+
 export const formatPath = (
   line: string,
   config: StackTraceConfig,
   relativeTestPath: string | null = null,
 ): string => {
   // Extract the file path from the trace line.
-  const match = line.match(/(^\s*at .*?\(?)([^()]+)(:\d+:\d+\)?.*$)/);
+  const match =
+    line.match(PARENTHESIZED_FRAME_REGEXP) ??
+    line.match(ANONYMOUS_FRAME_REGEXP) ??
+    line.match(/(^\s*at .*?\(?)([^()]+)(:\d+:\d+\)?.*$)/);
   if (!match) {
     return line;
   }
@@ -373,7 +391,16 @@ export function getTopFrame(lines: Array<string>): Frame | null {
       continue;
     }
 
-    const parsedFrame = stackUtils.parseLine(line.trim());
+    // stack-utils splits an anonymous frame at the first parenthesis, so
+    // `at /a (b)/c.js:1:2` would become function `/a` in file `b)/c.js`.
+    const anonymous = line.trimEnd().match(ANONYMOUS_FRAME_REGEXP);
+    const parsedFrame = anonymous
+      ? {
+          column: Number(anonymous[5]),
+          file: slash(anonymous[2]),
+          line: Number(anonymous[4]),
+        }
+      : stackUtils.parseLine(line.trim());
 
     if (parsedFrame && parsedFrame.file) {
       if (parsedFrame.file.startsWith('file://')) {

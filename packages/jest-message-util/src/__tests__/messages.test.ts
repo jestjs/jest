@@ -15,6 +15,7 @@ import {
   flattenErrorStack,
   formatErrorStack,
   formatExecError,
+  formatPath,
   formatResultsErrors,
   formatStackTrace,
   getStackTraceLines,
@@ -1034,5 +1035,92 @@ describe('frame classification', () => {
 
   it.each(externalFiles)('renders the code frame of %s', (_label, file) => {
     expect(format(file, testFile)).toContain(`source of ${file}`);
+  });
+});
+
+describe('paths containing parentheses', () => {
+  const config = {rootDir: '/home/me/jest (copy)', testMatch: []};
+  const format = (line: string) =>
+    stripVTControlCharacters(formatPath(line, config));
+
+  it.each([
+    [
+      'a named frame',
+      '  at toBe (/home/me/jest (copy)/sum.test.js:3:15)',
+      '  at toBe (sum.test.js:3:15)',
+    ],
+    [
+      'an anonymous frame',
+      '  at /home/me/jest (copy)/sum.test.js:3:15',
+      '  at sum.test.js:3:15',
+    ],
+    [
+      'a frame with an alias',
+      '  at Object.fn [as run] (/home/me/jest (copy)/a (1).js:2:7)',
+      '  at Object.fn [as run] (a (1).js:2:7)',
+    ],
+    [
+      'a frame outside rootDir',
+      '  at fn (/home/me/other (2)/lib.js:9:1)',
+      '  at fn (../other (2)/lib.js:9:1)',
+    ],
+  ])('formatPath keeps the whole path of %s', (_label, line, expected) => {
+    expect(format(line)).toBe(expected);
+  });
+
+  it('formatPath still makes the first location of an eval frame relative', () => {
+    expect(
+      stripVTControlCharacters(
+        formatPath(
+          '  at eval (eval at <anonymous> (/root/a.js:1:2), <anonymous>:1:1)',
+          {rootDir: '/root', testMatch: []},
+        ),
+      ),
+    ).toBe('  at eval (eval at <anonymous> (a.js:1:2), <anonymous>:1:1)');
+  });
+
+  it('formatPath keeps a native path with parentheses relative', () => {
+    const dir = path.join(rootDir, 'project (1)');
+    const file = path.join(dir, 'sum.test.js');
+    expect(
+      stripVTControlCharacters(
+        formatPath(`  at Object.<anonymous> (${file}:1:7)`, {
+          rootDir: dir,
+          testMatch: [],
+        }),
+      ),
+    ).toBe('  at Object.<anonymous> (sum.test.js:1:7)');
+  });
+
+  it.each([
+    [
+      '  at /home/me/jest (copy)/sum.test.js:3:15',
+      '/home/me/jest (copy)/sum.test.js',
+    ],
+    [
+      String.raw`  at C:\Users\Jane (Work)\p\x.test.js:3:15`,
+      'C:/Users/Jane (Work)/p/x.test.js',
+    ],
+  ])('getTopFrame parses the anonymous frame %s', (line, file) => {
+    expect(getTopFrame([line])).toEqual(
+      expect.objectContaining({column: 15, file, line: 3}),
+    );
+  });
+
+  it('formatStackTrace renders the code frame of an anonymous frame', () => {
+    jest
+      .mocked(readFileSync)
+      .mockImplementationOnce(() => 'throw new Error("Whoops!");');
+    const dir = path.join(rootDir, 'jest (copy)');
+    const message = stripVTControlCharacters(
+      formatStackTrace(
+        `Error: Whoops!\n    at ${path.join(dir, 'file.js')}:1:7`,
+        {rootDir: dir, testMatch: []},
+        {noCodeFrame: false, noStackTrace: false},
+      ),
+    );
+
+    expect(message).toContain('> 1 | throw new Error("Whoops!");');
+    expect(message).toContain('at file.js:1:7');
   });
 });
