@@ -364,7 +364,7 @@ test('saveInlineSnapshots() throws if frame does not match', () => {
   expect(save).toThrow(/Couldn't locate all inline snapshots./);
 });
 
-test('saveInlineSnapshots() throws if multiple calls to to the same location', () => {
+test('saveInlineSnapshots() throws if multiple calls to the same location', () => {
   const filename = path.join(dir, 'my.test.js');
   fs.writeFileSync(filename, 'expect(1).toMatchInlineSnapshot();\n');
 
