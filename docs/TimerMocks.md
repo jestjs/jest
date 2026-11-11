@@ -209,3 +209,25 @@ test('allows mocking `performance.mark()`', () => {
   expect(window.performance.mark).toBe(mockPerformanceMark);
 });
 ```
+
+## `node:timers/promises`
+
+The timers of [`node:timers/promises`](https://nodejs.org/api/timers.html#timerspromisessettimeoutdelay-value-options) are built on Node's internal timers, so they never go through the timer globals that fake timers replace. Jest therefore replaces the module itself while fake timers are installed, so its timers run on the fake clock:
+
+```js
+const timersPromises = require('node:timers/promises');
+
+jest.useFakeTimers();
+
+test('resolves once the fake clock has advanced', async () => {
+  const promise = timersPromises.setTimeout(1000, 'value');
+
+  await jest.advanceTimersByTimeAsync(1000);
+
+  await expect(promise).resolves.toBe('value');
+});
+```
+
+`setTimeout`, `setImmediate`, `setInterval` and `scheduler.wait` are driven by the fake clock, including their `signal` and `ref` options, and `jest.getTimerCount()` counts the timers they create. `scheduler.yield()` is not faked, because it does not schedule a Node timer.
+
+While fake timers are installed the object returned by `require('timers/promises')` is not the same object as the built-in module; `jest.requireActual('timers/promises')` returns the real one. With fake timers uninstalled the built-in module is handed out unchanged.

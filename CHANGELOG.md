@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-fake-timers, jest-runtime]` Run `node:timers/promises` timers on the fake clock while fake timers are installed, so `setTimeout`, `setImmediate`, `setInterval` and `scheduler.wait` from that module can be advanced with `jest.advanceTimersByTimeAsync()` and friends ([#16460](https://github.com/jestjs/jest/pull/16460))
+
 ### Fixes
 
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))
