@@ -9,6 +9,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-config, jest-reporters, jest-runtime]` Upgrade `glob` to v14 ([#16530](https://github.com/jestjs/jest/pull/16530))
+
 ## 30.5.2
 
 ### Features
