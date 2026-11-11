@@ -740,6 +740,23 @@ describe('jest-each', () => {
           undefined,
         );
       });
+
+      test('calls global with title without interpolating placeholders inside a printed value', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          [{format: '%d/%m'}, ['%s'], {format: '%j'}, {format: '%p'}, 'done'],
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected string: %p %j %o %s %s', () => {});
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(1);
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected string: {"format": "%d/%m"} ["%s"] { format: \'%j\' } { format: \'%p\' } done',
+          expectFunction,
+          undefined,
+        );
+      });
     });
   }
 });
