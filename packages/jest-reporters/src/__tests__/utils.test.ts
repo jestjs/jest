@@ -25,6 +25,11 @@ describe('wrapAnsiString()', () => {
     expect(stripAnsi(wrapAnsiString(string, 10))).toMatchSnapshot();
   });
 
+  it('keeps a single character after the last ansi code', () => {
+    const string = `(${chalk.green('1 passed')})`;
+    expect(stripAnsi(wrapAnsiString(string, 80))).toBe('(1 passed)');
+  });
+
   it('returns the string unaltered if given a terminal width of zero', () => {
     const string = "This string shouldn't cause you any trouble";
     expect(wrapAnsiString(string, 0)).toMatchSnapshot();

@@ -2,8 +2,11 @@
 
 ### Features
 
+- `[@jest/reporters]` Show the number of finished tests next to each running file's `RUNS` line, so a slow or hanging file shows how far it got ([#16516](https://github.com/jestjs/jest/pull/16516))
+
 ### Fixes
 
+- `[@jest/reporters]` Keep the last character of a string that ends in a single plain character after an ANSI code in `wrapAnsiString` ([#16516](https://github.com/jestjs/jest/pull/16516))
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))
 - `[jest-resolve]` Bump `unrs-resolver` to 1.13.0, which locates its native binding at runtime instead of through a `postinstall` script, so installing Jest no longer reports a blocked build script on npm 12 ([#16527](https://github.com/jestjs/jest/pull/16527))
 

@@ -31,7 +31,7 @@ export default function wrapAnsiString(
     lastIndex = index + ansi.length;
   }
 
-  if (lastIndex !== string.length - 1) {
+  if (lastIndex < string.length) {
     tokens.push(['string', string.slice(lastIndex)]);
   }
 
