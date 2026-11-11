@@ -155,20 +155,12 @@ export function buildCjsAsEsmSyntheticModule(
   );
 }
 
-// On Node v22.21+ / v24.8+ a SyntheticModule starts in `'linked'` and the
-// body runs synchronously even though `evaluate()` returns a Promise -
-// return it sync so callers can store the actual module rather than a
-// Promise that can poison the registry if microtask draining stalls. On
-// older Node it starts `'unlinked'` and link/evaluate are genuinely async;
-// fall back to the async path there (the async-only legacy ESM code paths
-// handle the Promise return fine, and sync `require(esm)` doesn't exist on
-// those versions anyway).
+// A SyntheticModule starts `'linked'` and `evaluate()` runs its body
+// synchronously, even though it returns a Promise. Return the module itself:
+// a stored Promise can poison the registry if microtask draining stalls.
 export function evaluateSyntheticModule(
   module: SyntheticModule,
-): SyntheticModule | Promise<SyntheticModule> {
-  if (module.status === 'unlinked') {
-    return evaluateSyntheticModuleAsync(module);
-  }
+): SyntheticModule {
   module.evaluate().catch(noop);
   if (module.status === 'errored') {
     throw module.error;
@@ -177,17 +169,5 @@ export function evaluateSyntheticModule(
     module.status === 'evaluated',
     `Synthetic module ${module.identifier} did not evaluate synchronously (status="${module.status}"). This is a bug in Jest, please report it!`,
   );
-  return module;
-}
-
-async function evaluateSyntheticModuleAsync(
-  module: SyntheticModule,
-): Promise<SyntheticModule> {
-  await module.link(() => {
-    throw new Error('This should never happen');
-  });
-
-  await module.evaluate();
-
   return module;
 }

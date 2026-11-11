@@ -7,11 +7,7 @@
 
 import {pathToFileURL} from 'node:url';
 import {SourceTextModule, SyntheticModule, createContext} from 'node:vm';
-import {
-  testWithLinkedSyntheticModule,
-  testWithSyncEsm,
-  testWithVmEsm,
-} from '@jest/test-utils';
+import {testWithSyncEsm, testWithVmEsm} from '@jest/test-utils';
 import type {JestEnvironment} from '@jest/environment';
 import {invariant} from 'jest-util';
 import type {CjsExportsCache} from '../CjsExportsCache';
@@ -211,7 +207,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     },
   );
 
-  testWithLinkedSyntheticModule(
+  testWithVmEsm(
     'rethrows when tryCommitSynthetic finds an errored entry (CJS-as-ESM)',
     async () => {
       // `resolveSpecifierForSyncGraph`'s CJS-as-ESM branch goes through
@@ -277,7 +273,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     },
   );
 
-  testWithLinkedSyntheticModule(
+  testWithVmEsm(
     'rethrows when an existing module mock is errored (importMockSync)',
     async () => {
       const {context, esmRegistry, loader, stubs} = makeLoader({
@@ -336,7 +332,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     expect(stubs.transformCache.hasMutex).toHaveBeenCalledWith(M_KEY);
   });
 
-  testWithLinkedSyntheticModule(
+  testWithVmEsm(
     'routes core-module specifiers through coreModule.require',
     () => {
       const {loader, stubs} = makeLoader({
@@ -357,42 +353,35 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     },
   );
 
-  testWithLinkedSyntheticModule(
-    'gives `fs` and `node:fs` the same namespace object',
-    () => {
-      const {esmRegistry, loader, stubs} = makeLoader({
-        resolution: {
-          isCoreModule: jest.fn(
-            (name: string) => name === 'fs' || name === 'node:fs',
-          ),
-          resolveEsm: jest.fn(),
-        } as unknown as jest.Mocked<Resolution>,
-      });
-      stubs.coreModule.require.mockReturnValue({readFileSync: () => 'x'});
-      stubs.transformCache.transform.mockReturnValue(
-        [
-          "import * as bare from 'fs';",
-          "import * as prefixed from 'node:fs';",
-          'export const same = bare === prefixed;',
-        ].join('\n'),
-      );
+  testWithVmEsm('gives `fs` and `node:fs` the same namespace object', () => {
+    const {esmRegistry, loader, stubs} = makeLoader({
+      resolution: {
+        isCoreModule: jest.fn(
+          (name: string) => name === 'fs' || name === 'node:fs',
+        ),
+        resolveEsm: jest.fn(),
+      } as unknown as jest.Mocked<Resolution>,
+    });
+    stubs.coreModule.require.mockReturnValue({readFileSync: () => 'x'});
+    stubs.transformCache.transform.mockReturnValue(
+      [
+        "import * as bare from 'fs';",
+        "import * as prefixed from 'node:fs';",
+        'export const same = bare === prefixed;',
+      ].join('\n'),
+    );
 
-      const result = loader.tryLoadGraphSync(
-        '/entry.mjs',
-        '',
-        'sync-preferred',
-      );
+    const result = loader.tryLoadGraphSync('/entry.mjs', '', 'sync-preferred');
 
-      expect(result).not.toBe(LOAD_ASYNC);
-      invariant(result !== LOAD_ASYNC, 'Asserted above by the expect');
-      expect((result.namespace as {same: boolean}).same).toBe(true);
-      expect(stubs.coreModule.require).toHaveBeenCalledTimes(1);
-      expect([...esmRegistry.keys()]).toContain('node:fs');
-      expect([...esmRegistry.keys()]).not.toContain('fs');
-    },
-  );
+    expect(result).not.toBe(LOAD_ASYNC);
+    invariant(result !== LOAD_ASYNC, 'Asserted above by the expect');
+    expect((result.namespace as {same: boolean}).same).toBe(true);
+    expect(stubs.coreModule.require).toHaveBeenCalledTimes(1);
+    expect([...esmRegistry.keys()]).toContain('node:fs');
+    expect([...esmRegistry.keys()]).not.toContain('fs');
+  });
 
-  testWithLinkedSyntheticModule(
+  testWithVmEsm(
     'keeps the prefix for builtins that only exist as `node:`',
     () => {
       // `node:sqlite` has no bare counterpart, so stripping the prefix would
@@ -422,7 +411,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     },
   );
 
-  testWithLinkedSyntheticModule(
+  testWithVmEsm(
     'import.meta.resolve answers with `node:` for a specifier that maps to a builtin',
     () => {
       // Pins the order: the builtin check has to run on the *resolved* name.
@@ -546,7 +535,7 @@ describe('EsmLoader bridges', () => {
 });
 
 describe('EsmLoader mock dispatch', () => {
-  testWithLinkedSyntheticModule(
+  testWithVmEsm(
     'sync-required mode rejects async mock factory with ERR_REQUIRE_ASYNC_MODULE',
     () => {
       const {loader, stubs} = makeLoader({
@@ -569,7 +558,7 @@ describe('EsmLoader mock dispatch', () => {
     },
   );
 
-  testWithLinkedSyntheticModule(
+  testWithVmEsm(
     "sync-preferred mode bails on async mock factory ('load-async')",
     () => {
       const {loader, stubs} = makeLoader({

@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// TODO: replace with `util.getCallSites()`, whose `columnNumber` landed in
-// Node 22.14 — the floor is still 18.
+// TODO: replace with `util.getCallSites()`.
 import callsites from 'callsites';
 import {SourceMapCache} from './SourceMapCache';
 import {addSourceMapConsumer} from './SourceMapSupport';

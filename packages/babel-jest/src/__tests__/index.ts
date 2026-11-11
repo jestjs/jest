@@ -9,7 +9,7 @@ import type {
   BabelFileResult,
   TransformOptions as BabelTransformOptions,
 } from '@babel/core';
-import {makeProjectConfig, onNodeVersions} from '@jest/test-utils';
+import {makeProjectConfig} from '@jest/test-utils';
 import type {SyncTransformer, TransformOptions} from '@jest/transform';
 import babelJest, {createTransformer} from '../index';
 
@@ -65,10 +65,8 @@ describe('babel 7', () => {
 });
 
 describe('babel 8', () => {
-  onNodeVersions('>=20', () => {
-    defineTests({
-      getBabel: () => originalNodeRequire('@babel-8/core'),
-    });
+  defineTests({
+    getBabel: () => originalNodeRequire('@babel-8/core'),
   });
 });
 

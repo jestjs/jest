@@ -210,7 +210,7 @@ export class ModuleExecutor {
       return compileFunction(scriptSource, this.injectedModuleParameters, {
         filename: scriptFilename,
         // The fourth argument (the import phase) is missing from
-        // @types/node@18's callback type - hence the rest parameter.
+        // @types/node@22's callback type - hence the rest parameter.
         importModuleDynamically: async (
           specifier,
           _function,

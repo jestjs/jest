@@ -8,11 +8,7 @@
 import * as path from 'path';
 import {pathToFileURL} from 'url';
 
-import {
-  testWithLinkedSyntheticModule,
-  testWithSyncEsm,
-  testWithVmEsm,
-} from '@jest/test-utils';
+import {testWithSyncEsm, testWithVmEsm} from '@jest/test-utils';
 
 const ROOT_DIR = path.join(__dirname, 'test_esm_sync_graph_root');
 const FROM = path.join(ROOT_DIR, 'test.js');
@@ -1031,7 +1027,7 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     },
   );
 
-  testWithLinkedSyntheticModule(
+  testWithVmEsm(
     'dynamic import of a CJS dep stores the actual module in the ESM registry, not a Promise',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});

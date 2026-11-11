@@ -14,7 +14,6 @@ import babelJest from '../index';
 // written in ESM and we don't support require(esm) yet.
 import Module from 'node:module';
 import {pathToFileURL} from 'node:url';
-import {onNodeVersions} from '@jest/test-utils';
 const createOriginalNodeRequire = Object.getPrototypeOf(Module).createRequire;
 const originalNodeRequire = createOriginalNodeRequire(
   pathToFileURL(__filename),
@@ -49,10 +48,8 @@ describe('babel 7', () => {
 });
 
 describe('babel 8', () => {
-  onNodeVersions('>=20', () => {
-    defineTests({
-      getBabel: () => originalNodeRequire('@babel-8/core'),
-    });
+  defineTests({
+    getBabel: () => originalNodeRequire('@babel-8/core'),
   });
 });
 

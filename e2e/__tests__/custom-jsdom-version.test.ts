@@ -6,7 +6,6 @@
  */
 
 import path from 'node:path';
-import {onNodeVersions} from '@jest/test-utils';
 import runJest, {type RunJestResult} from '../runJest';
 import {runYarnInstall} from '../Utils';
 
@@ -18,10 +17,8 @@ beforeEach(() => {
   runYarnInstall(dir);
 });
 
-onNodeVersions('>=20.4.0', () => {
-  it('should work with custom jsdom version', () => {
-    const result = runJest(dir, ['env.test.js']);
-    expect(result.exitCode).toBe(0);
-    expect(getLog(result)).toBe('WINDOW');
-  });
+it('should work with custom jsdom version', () => {
+  const result = runJest(dir, ['env.test.js']);
+  expect(result.exitCode).toBe(0);
+  expect(getLog(result)).toBe('WINDOW');
 });

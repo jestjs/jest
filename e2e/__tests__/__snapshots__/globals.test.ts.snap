@@ -1,5 +1,18 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`Symbol's \`dispose\` are available 1`] = `
+"PASS __tests__/symbolDispose.test.js
+  ✓ test"
+`;
+
+exports[`Symbol's \`dispose\` are available 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
 exports[`basic test constructs 1`] = `
 "PASS __tests__/basic.testConstructs.test.js
   ✓ it
@@ -119,19 +132,6 @@ exports[`interleaved describe and test children order 1`] = `
 exports[`interleaved describe and test children order 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       3 passed, 3 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites."
-`;
-
-exports[`on node ^18.18.0 || >=20.4.0 Symbol's \`dispose\` are available 1`] = `
-"PASS __tests__/symbolDispose.test.js
-  ✓ test"
-`;
-
-exports[`on node ^18.18.0 || >=20.4.0 Symbol's \`dispose\` are available 2`] = `
-"Test Suites: 1 passed, 1 total
-Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites."

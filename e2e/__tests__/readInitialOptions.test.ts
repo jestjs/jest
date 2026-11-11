@@ -6,7 +6,6 @@
  */
 import path from 'path';
 import execa from 'execa';
-import {onNodeVersions} from '@jest/test-utils';
 import type {ReadJestConfigOptions, readInitialOptions} from 'jest-config';
 
 function resolveFixture(...pathSegments: Array<string>) {
@@ -69,25 +68,14 @@ describe('readInitialOptions', () => {
     },
   );
 
-  onNodeVersions('^22.18 || >=23.6', () => {
-    test('should read mts-config/jest.config.mts file', async () => {
-      const configFile = resolveFixture('mts-config', 'jest.config.mts');
-      const rootDir = resolveFixture('mts-config');
-      const {config, configPath} = await proxyReadInitialOptions(undefined, {
-        cwd: rootDir,
-      });
-      expect(config).toEqual({jestConfig: 'jest.config.mts', rootDir});
-      expect(configPath).toEqual(configFile);
+  test('should read mts-config/jest.config.mts file', async () => {
+    const configFile = resolveFixture('mts-config', 'jest.config.mts');
+    const rootDir = resolveFixture('mts-config');
+    const {config, configPath} = await proxyReadInitialOptions(undefined, {
+      cwd: rootDir,
     });
-  });
-
-  onNodeVersions('<22.18', () => {
-    test('should fail to read mts-config/jest.config.mts with a clear error', async () => {
-      const rootDir = resolveFixture('mts-config');
-      await expect(
-        proxyReadInitialOptions(undefined, {cwd: rootDir}),
-      ).rejects.toThrow(/jest\.config\.mts requires native TypeScript support/);
-    });
+    expect(config).toEqual({jestConfig: 'jest.config.mts', rootDir});
+    expect(configPath).toEqual(configFile);
   });
 
   test('should be able to skip config reading, instead read from cwd', async () => {
@@ -108,18 +96,6 @@ describe('readInitialOptions', () => {
       rootDir: path.dirname(expectedConfigFile),
     });
     expect(configPath).toEqual(expectedConfigFile);
-  });
-
-  onNodeVersions('<22.6', () => {
-    test('should give an error when using unsupported loader', async () => {
-      const cwd = resolveFixture('ts-loader-config');
-      const error: Error = await proxyReadInitialOptions(undefined, {
-        cwd,
-      }).catch(error => error);
-      expect(error.message).toContain(
-        "Jest: 'ts-loader' is not a valid TypeScript configuration loader.",
-      );
-    });
   });
 
   test('should give an error when there are multiple config files', async () => {

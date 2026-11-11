@@ -152,58 +152,9 @@ onNodeVersions('<23.6', () => {
   });
 });
 
-onNodeVersions('^23.6', () => {
-  test('invalid JS in jest.config.ts (node with native TS support)', () => {
-    writeFiles(DIR, {
-      '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
-      'jest.config.ts': "export default i'll break this file yo",
-      'package.json': '{}',
-    });
-
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false'], {
-      nodeOptions: '--no-warnings',
-    });
-    expect(
-      stderr
-        // Remove the stack trace from the error message
-        .slice(0, Math.max(0, stderr.indexOf('at readConfigFileAndSetRootDir')))
-        .trim()
-        // Replace the path to the config file with a placeholder
-        .replace(
-          /(Error: Jest: Failed to parse the TypeScript config file).*$/m,
-          '$1 <<REPLACED>>',
-        ),
-    ).toMatchSnapshot();
-    expect(exitCode).toBe(1);
-  });
-
-  test('load typed jest.config.ts with TS loader specified in docblock pragma', () => {
-    writeFiles(DIR, {
-      '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
-      'foo.ts': 'export const a = () => {};',
-      'jest.config.ts': `
-        /** @jest-config-loader ts-node */
-        import { a } from './foo'
-        a();
-        import type {Config} from 'jest';
-        const config: Config = { testTimeout: 10000 };
-        export default config;
-      `,
-      'package.json': '{}',
-    });
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false'], {
-      nodeOptions: '--no-warnings',
-    });
-    const {rest, summary} = extractSummary(stderr);
-    expect(exitCode).toBe(0);
-    expect(rest).toMatchSnapshot();
-    expect(summary).toMatchSnapshot();
-  });
-});
-
 onNodeVersions('>=24', () => {
   // todo fixme
-  // eslint-disable-next-line jest/no-identical-title
+
   test('invalid JS in jest.config.ts (node with native TS support)', () => {
     writeFiles(DIR, {
       '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",

@@ -1,6 +1,6 @@
 # Jest Repository — Coding Agent Instructions
 
-Large monorepo (55 packages, 200+ e2e fixtures) managed with Lerna-lite and Yarn 4 (Berry, `node-modules` linker, not PnP). TypeScript everywhere, compiled with Webpack per package. Node engines `^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0`.
+Large monorepo (55 packages, 200+ e2e fixtures) managed with Lerna-lite and Yarn 4 (Berry, `node-modules` linker, not PnP). TypeScript everywhere, compiled with Webpack per package. Node engines `^22.21.0 || ^24.8.0 || >=26.0.0`.
 
 ## Setup
 
@@ -45,7 +45,7 @@ cd e2e/<test-directory>
 node ../../packages/jest-cli/bin/jest.js --no-cache
 ```
 
-CI runs the test matrix with `nick-fields/retry` (10-min timeout, up to 3 retries on flake) across Ubuntu/macOS/Windows × Node 18/20/22/24/25/26. If a test is consistently failing locally but green in CI, suspect a retry-masked flake.
+CI runs the test matrix with `nick-fields/retry` (10-min timeout, up to 3 retries on flake) across Ubuntu/macOS/Windows × Node 22/24/26. If a test is consistently failing locally but green in CI, suspect a retry-masked flake.
 
 `codecov/patch` and `codecov/project` report before the four `Node LTS on Ubuntu with coverage (N/4)` shards have uploaded, so their numbers mean nothing until those jobs finish; both are advisory anyway (`require_ci_to_pass: false`, `target: auto`). Coverage is measured only in the process running the suite, so a line reachable only through an e2e fixture always reads as uncovered.
 
@@ -54,7 +54,7 @@ CI runs the test matrix with `nick-fields/retry` (10-min timeout, up to 3 retrie
 - **Snapshot updates with ANSI colors**: many snapshots contain chalk-rendered ANSI escape sequences. Always update snapshots with `FORCE_COLOR=1 yarn jest <path> -u` so the color output is preserved. Running without `FORCE_COLOR=1` strips the sequences and produces wrong snapshots.
 - **Windows CI on path-shaped assertions**: when comparing against a value built via `path.join`/`path.dirname`/`path.basename`, build the expected value with `path.join` too. Hardcoded POSIX strings (`'/path/to/x'`) fail on Windows.
 - **Throwing-getter regression on `globalThis` scans**: iterating `Object.keys(scope)` and reading `scope[key]` crashes if a user installed a throwing getter. Use `'key' in scope` (the `has` trap, not `get`) as the gate.
-- **ESM helpers from `@jest/test-utils`**: `testWithVmEsm` (Node 18+ with `--experimental-vm-modules`), `testWithLinkedSyntheticModule` (Node 22.21+/24.8+, gates on `linkRequests`), and `testWithSyncEsm` (Node 24.9+, gates on `hasAsyncGraph`). `yarn jest packages/jest-runtime` does **not** include the ESM suite — use `yarn jest-runtime-vm-modules`.
+- **ESM helpers from `@jest/test-utils`**: `testWithVmEsm` (with `--experimental-vm-modules`) and `testWithSyncEsm` (Node 24.9+, gates on `hasAsyncGraph`). `yarn jest packages/jest-runtime` does **not** include the ESM suite — use `yarn jest-runtime-vm-modules`.
 
 ## Linting
 
@@ -211,7 +211,7 @@ yarn verify-pnp
 
 ## Yarn constraints
 
-`yarn.config.cjs` defines workspace constraints — same version of any dep across workspaces (except `@types/node`, pinned to `18.x` via `resolutions`), no dep in both `dependencies` and `devDependencies`, public packages need `license`/`repository`/`publishConfig`/`engines`, `main`/`types` start with `./`. Run `yarn constraints` to check, `yarn constraints --fix` to repair, `yarn dedupe --check` to catch duplicate versions.
+`yarn.config.cjs` defines workspace constraints — same version of any dep across workspaces (except `@types/node`, pinned to `22.x` via `resolutions`), no dep in both `dependencies` and `devDependencies`, public packages need `license`/`repository`/`publishConfig`/`engines`, `main`/`types` start with `./`. Run `yarn constraints` to check, `yarn constraints --fix` to repair, `yarn dedupe --check` to catch duplicate versions.
 
 When adding a new dep, use `yarn workspace <pkg> add <dep>` — constraints will reject mismatched versions across the monorepo.
 

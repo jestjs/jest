@@ -107,15 +107,6 @@ type ResolvedSyncSpecifier = {
   modulePath: string;
 };
 
-// Shape of the third arg Node passes to the `module.link` callback. TC39 final
-// is `{attributes}`; legacy was `{assert}`. `@types/node@18` only types the
-// legacy field, so we declare both ourselves.
-// TODO(jest next major): drop `assert` once we require Node 22+.
-type ModuleLinkExtra = {
-  assert?: ImportAttributes;
-  attributes?: ImportAttributes;
-};
-
 // Source-text entries carry their dep cacheKeys (used for `linkRequests`).
 // `'prelinked'` covers everything that arrives already linked - mocks, core,
 // JSON, wasm, @jest/globals, plus modules adopted from the registry, which
@@ -890,15 +881,12 @@ export class EsmLoader {
         initializeImportMeta: meta => {
           const metaUrl = cacheKey;
           meta.url = metaUrl;
-          // @ts-expect-error Jest uses @types/node@18.
           meta.filename = modulePath;
-          // @ts-expect-error Jest uses @types/node@18.
           meta.dirname = path.dirname(modulePath);
           meta.resolve = (specifier, parent: string | URL = metaUrl) => {
             const parentPath = fileURLToPath(parent);
             return this.resolveForImportMeta(parentPath, specifier);
           };
-          // @ts-expect-error Jest uses @types/node@18.
           meta.main = modulePath === this.testPath;
           (meta as JestImportMeta).jest =
             this.jestGlobals.jestObjectFor(modulePath);
@@ -1459,9 +1447,7 @@ export class EsmLoader {
           this.requireModule,
           this.cjsExportsCache,
         );
-        const evaluated = evaluateSyntheticModule(synthetic);
-        if (isPromise(evaluated)) return LOAD_ASYNC;
-        return evaluated;
+        return evaluateSyntheticModule(synthetic);
       } catch (error) {
         if (!(error instanceof CjsParseError)) throw error;
         if (this.resolution.isExplicitlyCommonjs(modulePath)) throw error.cause;
@@ -1677,7 +1663,6 @@ export class EsmLoader {
       identifier: specifier,
       initializeImportMeta: meta => {
         meta.url = specifier;
-        // @ts-expect-error Jest uses @types/node@18.
         meta.main = false;
         meta.resolve = this.dataUriMetaResolve(specifier);
         (meta as JestImportMeta).jest =
@@ -1843,8 +1828,8 @@ export class EsmLoader {
     suffix = '',
   ): Promise<ESModule> {
     // Three gates here. `supportsSyncEvaluate` is a Node-version check: the
-    // sync core relies on `SyntheticModule` starting `'linked'` and on
-    // `evaluate()` completing sync, both of which need v22.21+ / v24.8+.
+    // sync core needs `hasAsyncGraph` (v24.9+) to tell whether a graph can
+    // evaluate synchronously.
     // `canResolveSync` is a configured-resolver check: with an async-only
     // user resolver `findNodeModule` silently falls back to the default
     // resolver and would silently miss user mappings. A resolver with a
@@ -1948,15 +1933,12 @@ export class EsmLoader {
             initializeImportMeta: meta => {
               const metaUrl = cacheKey;
               meta.url = metaUrl;
-              // @ts-expect-error Jest uses @types/node@18.
               meta.filename = modulePath;
-              // @ts-expect-error Jest uses @types/node@18.
               meta.dirname = path.dirname(modulePath);
               meta.resolve = (specifier, parent: string | URL = metaUrl) => {
                 const parentPath = fileURLToPath(parent);
                 return this.resolveForImportMeta(parentPath, specifier);
               };
-              // @ts-expect-error Jest uses @types/node@18.
               meta.main = modulePath === this.testPath;
               (meta as JestImportMeta).jest =
                 this.jestGlobals.jestObjectFor(modulePath);
@@ -2058,7 +2040,6 @@ export class EsmLoader {
           importModuleDynamically: this.dynamicImport,
           initializeImportMeta: meta => {
             meta.url = specifier;
-            // @ts-expect-error Jest uses @types/node@18.
             meta.main = false;
             meta.resolve = this.dataUriMetaResolve(specifier);
             (meta as JestImportMeta).jest =
@@ -2135,10 +2116,9 @@ export class EsmLoader {
             referencingModule.identifier,
             referencingModule.context,
           );
-          const extraAttrs = extra as ModuleLinkExtra | undefined;
           this.importAttributeValidator.validate(
             resolved.identifier,
-            extraAttrs?.attributes ?? extraAttrs?.assert ?? {},
+            extra.attributes,
             referencingModule.identifier,
           );
           return resolved;
@@ -2172,8 +2152,8 @@ export class EsmLoader {
         // `evaluate()` fulfills synchronously when the graph has no top-level
         // await, so we don't need to yield. Errors land on `module.status`,
         // not as a Promise rejection. Gated on `supportsSyncEvaluate` because
-        // pre-v22.21 / pre-v24.8 Node returns a genuinely-async Promise here
-        // and the status invariant below would fire on `'evaluating'`.
+        // without `hasAsyncGraph` (v24.9+) a graph with top-level await looks
+        // sync and the status invariant below would fire on `'evaluating'`.
         void module.evaluate().catch(noop);
         const status = module.status as VMModule['status'];
         if (status === 'errored') {
@@ -2184,8 +2164,8 @@ export class EsmLoader {
           `Expected synchronous evaluation to complete for ${module.identifier}, but module status is "${status}". This is a bug in Jest, please report it!`,
         );
       } else {
-        // Async path: TLA somewhere in the graph, or Node lacks the v22.21+ /
-        // v24.8+ sync-evaluate semantics. Store the promise so concurrent
+        // Async path: TLA somewhere in the graph, or Node lacks
+        // `hasAsyncGraph` to rule it out. Store the promise so concurrent
         // callers finding the module in `'evaluating'` await the same one.
         this.evaluatingMap.set(module, module.evaluate());
       }

@@ -44,7 +44,6 @@ export default async function readConfigFileAndSetRootDir(
   try {
     if (isTS) {
       // .mts is always ESM, so attempt import-based loading first.
-      // @ts-expect-error: Type assertion can be removed once @types/node is updated to 23 https://nodejs.org/api/process.html#processfeaturestypescript
       if (isMTS || process.features.typescript) {
         try {
           // Try native node TypeScript support first.
@@ -53,7 +52,7 @@ export default async function readConfigFileAndSetRootDir(
           if (isMTS) {
             // .mts is always ESM and cannot be loaded via require()/ts-node.
             throw new Error(
-              'jest.config.mts requires native TypeScript support. Ensure you are using Node.js 22.18+ or 23.6+.',
+              'jest.config.mts requires native TypeScript support. Make sure Node.js is not running with `--no-experimental-strip-types`.',
               {cause: requireOrImportModuleError},
             );
           }

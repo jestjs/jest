@@ -133,7 +133,7 @@ it('lazily requires the file', () => {
       true, // Not really used here, but for type purity.
       './my-fancy-worker',
     ],
-    null,
+    undefined,
   );
 
   expect(mockCount).toBe(0);
@@ -147,7 +147,7 @@ it('lazily requires the file', () => {
       'fooWorks',
       [],
     ],
-    null,
+    undefined,
   );
 
   expect(mockCount).toBe(1);
@@ -157,7 +157,7 @@ it('lazily requires the file', () => {
 it('should return memory usage', () => {
   expect(mockCount).toBe(0);
 
-  process.emit('message', [CHILD_MESSAGE_MEM_USAGE], null);
+  process.emit('message', [CHILD_MESSAGE_MEM_USAGE], undefined);
 
   expect(spyProcessSend.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_MEM_USAGE,
@@ -176,7 +176,7 @@ it('calls initialize with the correct arguments', () => {
       './my-fancy-worker',
       ['foo'], // Pass empty initialize params so the initialize method is called.
     ],
-    null,
+    undefined,
   );
 
   process.emit(
@@ -187,7 +187,7 @@ it('calls initialize with the correct arguments', () => {
       'fooWorks',
       [],
     ],
-    null,
+    undefined,
   );
 
   expect(initializeParm).toBe('foo');
@@ -201,7 +201,7 @@ it('returns results immediately when function is synchronous', () => {
       true, // Not really used here, but for type purity.
       './my-fancy-worker',
     ],
-    null,
+    undefined,
   );
 
   process.emit(
@@ -212,7 +212,7 @@ it('returns results immediately when function is synchronous', () => {
       'fooWorks',
       [],
     ],
-    null,
+    undefined,
   );
 
   expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 1989]);
@@ -225,7 +225,7 @@ it('returns results immediately when function is synchronous', () => {
       'fooThrows',
       [],
     ],
-    null,
+    undefined,
   );
 
   expect(spyProcessSend.mock.calls[1][0]).toEqual([
@@ -244,7 +244,7 @@ it('returns results immediately when function is synchronous', () => {
       'fooThrowsANumber',
       [],
     ],
-    null,
+    undefined,
   );
 
   expect(spyProcessSend.mock.calls[2][0]).toEqual([
@@ -263,7 +263,7 @@ it('returns results immediately when function is synchronous', () => {
       'fooThrowsAnErrorWithExtraProperties',
       [],
     ],
-    null,
+    undefined,
   );
 
   expect(spyProcessSend.mock.calls[3][0]).toEqual([
@@ -282,7 +282,7 @@ it('returns results immediately when function is synchronous', () => {
       'fooThrowsNull',
       [],
     ],
-    null,
+    undefined,
   );
 
   expect(spyProcessSend.mock.calls[4][0][0]).toBe(PARENT_MESSAGE_CLIENT_ERROR);
@@ -302,7 +302,7 @@ it('returns results when it gets resolved if function is asynchronous', async ()
       true, // Not really used here, but for type purity.
       './my-fancy-worker',
     ],
-    null,
+    undefined,
   );
 
   process.emit(
@@ -313,7 +313,7 @@ it('returns results when it gets resolved if function is asynchronous', async ()
       'fooPromiseWorks',
       [],
     ],
-    null,
+    undefined,
   );
 
   await sleep(10);
@@ -328,7 +328,7 @@ it('returns results when it gets resolved if function is asynchronous', async ()
       'fooPromiseThrows',
       [],
     ],
-    null,
+    undefined,
   );
 
   await sleep(10);
@@ -352,7 +352,7 @@ it('returns results with circular references', () => {
       true, // Not really used here, but for type purity.
       './my-fancy-worker',
     ],
-    null,
+    undefined,
   );
 
   process.emit(
@@ -363,7 +363,7 @@ it('returns results with circular references', () => {
       'fooCircularResult',
       [],
     ],
-    null,
+    undefined,
   );
 
   const processCallError = spyProcessSend.mock.calls[0][0][1].error;
@@ -378,7 +378,7 @@ it('calls the main module if the method call is "default"', () => {
       true, // Not really used here, but for type purity.
       './my-fancy-standalone-worker',
     ],
-    null,
+    undefined,
   );
 
   process.emit(
@@ -389,7 +389,7 @@ it('calls the main module if the method call is "default"', () => {
       'default',
       [],
     ],
-    null,
+    undefined,
   );
 
   expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 12_345]);
@@ -403,7 +403,7 @@ it('calls the main export if the method call is "default" and it is a Babel tran
       true, // Not really used here, but for type purity.
       './my-fancy-babel-worker',
     ],
-    null,
+    undefined,
   );
 
   process.emit(
@@ -414,7 +414,7 @@ it('calls the main export if the method call is "default" and it is a Babel tran
       'default',
       [],
     ],
-    null,
+    undefined,
   );
 
   expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 67_890]);
@@ -429,10 +429,10 @@ it('removes the message listener on END message', () => {
       true, // Not really used here, but for type purity.
       './my-fancy-worker',
     ],
-    null,
+    undefined,
   );
 
-  process.emit('message', [CHILD_MESSAGE_END], null);
+  process.emit('message', [CHILD_MESSAGE_END], undefined);
 
   expect(process.listenerCount('message')).toBe(0);
 });
@@ -445,7 +445,7 @@ it('calls the teardown method ', () => {
       true, // Not really used here, but for type purity.
       './my-fancy-worker',
     ],
-    null,
+    undefined,
   );
 
   process.emit(
@@ -454,7 +454,7 @@ it('calls the teardown method ', () => {
       CHILD_MESSAGE_END,
       true, // Not really used here, but for type purity.
     ],
-    null,
+    undefined,
   );
 
   expect(ended).toBe(true);
@@ -463,7 +463,7 @@ it('calls the teardown method ', () => {
 it('throws if an invalid message is detected', () => {
   // Type 27 does not exist.
   expect(() => {
-    process.emit('message', [27], null);
+    process.emit('message', [27], undefined);
   }).toThrow(TypeError);
 });
 
@@ -477,7 +477,7 @@ it('throws if child is not forked', () => {
       true, // Not really used here, but for type purity.
       './my-fancy-worker',
     ],
-    null,
+    undefined,
   );
 
   expect(() => {
@@ -489,7 +489,7 @@ it('throws if child is not forked', () => {
         'fooWorks',
         [],
       ],
-      null,
+      undefined,
     );
   }).toThrow('Child can only be used on a forked process');
 
@@ -502,7 +502,7 @@ it('throws if child is not forked', () => {
         'fooThrows',
         [],
       ],
-      null,
+      undefined,
     );
   }).toThrow('Child can only be used on a forked process');
 });

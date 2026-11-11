@@ -10,5 +10,5 @@ import {SourceTextModule, SyntheticModule} from 'node:vm';
 export const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
 export const supportsSyncEvaluate =
-  // @ts-expect-error - `hasAsyncGraph` is in Node v24.9+, not yet typed in @types/node@18
+  // @ts-expect-error - `hasAsyncGraph` is in Node v24.9+, not yet typed in @types/node@22
   typeof SourceTextModule?.prototype.hasAsyncGraph === 'function';
