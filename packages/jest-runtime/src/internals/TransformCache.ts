@@ -41,14 +41,16 @@ export class TransformCache {
     this.getFullTransformationOptions = getFullTransformationOptions;
   }
 
+  // The source is not read up front: the transformer memoizes its results for
+  // the life of the worker (keyed on the file's mtime) and ignores the source
+  // on a hit, and on a miss reads it into the same `cacheFS` this runtime
+  // shares with it. Reading it here re-read every module once per test file.
   transform(filename: string, options?: TransformOptions): string {
-    const source = this.fileCache.readFile(filename);
-    if (options?.isInternalModule) return source;
+    if (options?.isInternalModule) return this.fileCache.readFile(filename);
 
     const transformedFile = this.scriptTransformer.transform(
       filename,
       this.getFullTransformationOptions(options),
-      source,
     );
     this.transforms.set(filename, transformedFile);
     if (transformedFile.sourceMapPath) {
@@ -61,13 +63,11 @@ export class TransformCache {
     filename: string,
     options?: TransformOptions,
   ): Promise<string> {
-    const source = this.fileCache.readFile(filename);
-    if (options?.isInternalModule) return source;
+    if (options?.isInternalModule) return this.fileCache.readFile(filename);
 
     const transformedFile = await this.scriptTransformer.transformAsync(
       filename,
       this.getFullTransformationOptions(options),
-      source,
     );
     this.transforms.set(filename, transformedFile);
     if (transformedFile.sourceMapPath) {
