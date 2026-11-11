@@ -25,6 +25,9 @@ import {
 jest.useFakeTimers();
 
 jest.mock('child_process');
+jest.mock('supports-color', () => ({
+  stdout: false,
+}));
 
 let Worker: typeof import('../ChildProcessWorker').default;
 let childProcess: typeof import('child_process');
@@ -109,6 +112,25 @@ it('passes workerId to the child process and assign it to 1-indexed env.JEST_WOR
   expect(jest.mocked(childProcess.fork).mock.calls[0][2]).toMatchObject({
     env: {JEST_WORKER_ID: '3'},
   });
+});
+
+it('passes FORCE_COLOR: "1" to child process when stdout supports color', () => {
+  const supportsColor = require('supports-color');
+  supportsColor.stdout = {hasBasic: true};
+
+  // eslint-disable-next-line no-new
+  new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerId: 0,
+    workerPath: '/tmp/foo/bar/baz.js',
+  } as WorkerOptions);
+
+  expect(jest.mocked(childProcess.fork).mock.calls[0][2]).toMatchObject({
+    env: {FORCE_COLOR: '1'},
+  });
+
+  supportsColor.stdout = false;
 });
 
 it('initializes the child process with the given workerPath', () => {
