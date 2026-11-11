@@ -7,14 +7,9 @@
 
 import * as nodeModule from 'node:module';
 import * as path from 'node:path';
-import {invariant, isError} from 'jest-util';
+import {isError} from 'jest-util';
 
-const nodeStripTypeScriptTypes = (
-  nodeModule as {
-    // `stripTypeScriptTypes` is in Node v22.13+/v23.2+, not yet typed in @types/node@18
-    stripTypeScriptTypes?: (code: string, options: {mode: 'strip'}) => string;
-  }
-).stripTypeScriptTypes;
+const nodeStripTypeScriptTypes = nodeModule.stripTypeScriptTypes;
 
 export const supportsTypeStripping =
   typeof nodeStripTypeScriptTypes === 'function';
@@ -52,8 +47,6 @@ export function canStripTypes(filename: string): boolean {
 }
 
 export function stripTypes(code: string, filename: string): string {
-  invariant(nodeStripTypeScriptTypes, 'Node.js cannot strip TypeScript types');
-
   if (!warningBurnt) {
     burnExperimentalWarning(nodeStripTypeScriptTypes);
   }

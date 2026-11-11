@@ -6,8 +6,7 @@
  */
 
 import {type TraceMap, originalPositionFor} from '@jridgewell/trace-mapping';
-// TODO: replace with `util.getCallSites()`, whose `columnNumber` landed in
-// Node 22.14 — the floor is still 18.
+// TODO: replace with `util.getCallSites()`.
 import callsites from 'callsites';
 import {SourceMapCache, mapSourcePosition} from './SourceMapCache';
 import {nodeFileReader} from './nodeFileReader';

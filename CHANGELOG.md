@@ -9,6 +9,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` [**BREAKING**] Drop support for Node.js versions 18, 20 and 25, and require Node.js 22.21+ or 24.8+ ([#16558](https://github.com/jestjs/jest/pull/16558))
+
 ## 30.5.2
 
 ### Features

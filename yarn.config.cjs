@@ -12,7 +12,7 @@
 const {defineConfig} = require('@yarnpkg/types');
 
 const EXCEPTIONS = new Set([
-  // root needs to stay on 18.x
+  // root needs to stay on 22.x
   '@types/node',
 ]);
 
@@ -89,10 +89,7 @@ module.exports = defineConfig({
     // 6. Enforce engines.node for public workspaces
     for (const workspace of Yarn.workspaces()) {
       if (workspace.manifest.private !== true) {
-        workspace.set(
-          ['engines', 'node'],
-          '^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0',
-        );
+        workspace.set(['engines', 'node'], '^22.21.0 || ^24.8.0 || >=26.0.0');
       }
     }
 

@@ -16,7 +16,6 @@ export {
   skipSuiteOnJestCircus,
   skipSuiteOnWindows,
   skipSuiteWithoutWatchman,
-  testWithLinkedSyntheticModule,
   testWithSyncEsm,
   testWithVmEsm,
   testWithoutSyncEsm,

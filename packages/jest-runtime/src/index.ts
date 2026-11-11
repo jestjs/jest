@@ -507,22 +507,17 @@ export default class Runtime {
   // mocks and transforms. Route it through the same provider a `require()` of
   // a core module uses.
   private installGetBuiltinModule(): void {
-    // `getBuiltinModule` is Node 22.3+ and not in @types/node@18.
-    const sandboxProcess = this._environment.global?.process as
-      | (NodeJS.Process & {getBuiltinModule?: (id: string) => unknown})
-      | undefined;
-    if (
-      sandboxProcess === undefined ||
-      typeof sandboxProcess.getBuiltinModule !== 'function'
-    ) {
+    // Custom environments can omit `process.getBuiltinModule`.
+    const sandboxProcess = this._environment.global?.process;
+    if (typeof sandboxProcess?.getBuiltinModule !== 'function') {
       return;
     }
     // Dispatch through the public seam so subclasses that override
     // `requireModule` see builtin loads from `getBuiltinModule` too.
-    sandboxProcess.getBuiltinModule = (id: string) =>
+    sandboxProcess.getBuiltinModule = ((id: string) =>
       nativeModule.isBuiltin(id)
         ? this.requireModule(this._testPath, id)
-        : undefined;
+        : undefined) as NodeJS.Process['getBuiltinModule'];
   }
 
   // The CJS-resolved path travels with the mock request: a conditional

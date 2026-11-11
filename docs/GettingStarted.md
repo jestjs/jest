@@ -175,7 +175,7 @@ Node erases type annotations itself, and Jest uses that whenever no transformer 
 }
 ```
 
-Node replaces types with whitespace, so positions line up with your source and no source map is involved. It requires Node.js `^22.13.0` or `>=23.2.0`.
+Node replaces types with whitespace, so positions line up with your source and no source map is involved.
 
 Jest reads the module format the same way it does for JavaScript, so an ESM `.ts` or `.mts` file needs its extension in [`extensionsToTreatAsEsm`](Configuration.md#extensionstotreatasesm-arraystring). Node infers ESM from `.mts` and CommonJS from `.cts` on the extension alone; Jest does not do that yet.
 

@@ -76,17 +76,6 @@ export function testWithoutSyncEsm(
   return (hasSyncEsm ? test.skip : test)(...args);
 }
 
-export function testWithLinkedSyntheticModule(
-  ...args: Parameters<typeof test>
-): ReturnType<typeof test> {
-  const fn =
-    // @ts-expect-error - linkRequests is in Node v22.21+/v24.8+, not yet typed
-    typeof SourceTextModule?.prototype.linkRequests === 'function'
-      ? test
-      : test.skip;
-  return fn(...args);
-}
-
 export function onNodeVersions(
   versionRange: string,
   testBody: () => void,

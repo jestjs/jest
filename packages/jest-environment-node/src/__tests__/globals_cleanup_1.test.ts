@@ -7,7 +7,6 @@
 
 import {AsyncLocalStorage, createHook} from 'async_hooks';
 import {clsx} from 'clsx';
-import {onNodeVersions} from '@jest/test-utils';
 
 describe('Globals Cleanup 1', () => {
   test('dispatch event', () => {
@@ -27,10 +26,8 @@ describe('Globals Cleanup 1', () => {
     expect(clsx()).toBeDefined();
   });
 
-  onNodeVersions('>=19.8.0', () => {
-    test('use static function from core module set on global', () => {
-      expect(AsyncLocalStorage.snapshot).toBeDefined();
-      expect(AsyncLocalStorage.snapshot()).toBeDefined();
-    });
+  test('use static function from core module set on global', () => {
+    expect(AsyncLocalStorage.snapshot).toBeDefined();
+    expect(AsyncLocalStorage.snapshot()).toBeDefined();
   });
 });

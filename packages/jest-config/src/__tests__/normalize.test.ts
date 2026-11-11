@@ -8,7 +8,6 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import * as semver from 'semver';
 import type {Config} from '@jest/types';
 import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';
@@ -1261,9 +1260,8 @@ describe('preset', () => {
       jest.requireActual('./jest-preset.json'),
     );
 
-    const errorMessage = semver.satisfies(process.versions.node, '<19.0.0')
-      ? /Unexpected token } in JSON at position (104|110)[\S\s]* at /
-      : 'SyntaxError: Expected double-quoted property name in JSON at position 104';
+    const errorMessage =
+      'SyntaxError: Expected double-quoted property name in JSON at position 104';
 
     await expect(
       normalize(

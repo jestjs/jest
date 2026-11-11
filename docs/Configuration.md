@@ -2472,7 +2472,7 @@ Jest runs the code of your project as JavaScript, hence a transformer is needed 
 
 See the [Code Transformation](CodeTransformation.md) section for more details and instructions on building your own transformer.
 
-When no transformer matches a `.ts`, `.mts` or `.cts` file, Jest erases its type annotations with [`module.stripTypeScriptTypes()`](https://nodejs.org/api/module.html#modulestriptypescripttypescode-options), the same way Node does. This needs Node.js `^22.13.0` or `>=23.2.0`, and it only erases types — see [Using TypeScript](GettingStarted.md#via-nodes-type-stripping) for the limits. `transformIgnorePatterns` applies, so files under `node_modules` are left alone.
+When no transformer matches a `.ts`, `.mts` or `.cts` file, Jest erases its type annotations with [`module.stripTypeScriptTypes()`](https://nodejs.org/api/module.html#modulestriptypescripttypescode-options), the same way Node does. It only erases types — see [Using TypeScript](GettingStarted.md#via-nodes-type-stripping) for the limits. `transformIgnorePatterns` applies, so files under `node_modules` are left alone.
 
 :::tip
 
