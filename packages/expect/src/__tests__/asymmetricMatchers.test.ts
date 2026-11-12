@@ -145,6 +145,10 @@ test('ArrayContaining matches', () => {
     arrayContaining(['foo']).asymmetricMatch(['foo']),
     arrayContaining(['foo']).asymmetricMatch(['foo', 'bar']),
     arrayContaining([]).asymmetricMatch({}),
+    arrayContaining([new Set([1, 2])]).asymmetricMatch([new Set([1, 2])]),
+    arrayContaining([new Map([['a', 1]])]).asymmetricMatch([
+      new Map([['a', 1]]),
+    ]),
   ]) {
     jestExpect(test).toEqual(true);
   }
@@ -152,6 +156,14 @@ test('ArrayContaining matches', () => {
 
 test('ArrayContaining does not match', () => {
   jestExpect(arrayContaining(['foo']).asymmetricMatch(['bar'])).toBe(false);
+  jestExpect(
+    arrayContaining([new Set([1, 2])]).asymmetricMatch([new Set([1, 3])]),
+  ).toBe(false);
+  jestExpect(
+    arrayContaining([new Map([['a', 1]])]).asymmetricMatch([
+      new Map([['a', 2]]),
+    ]),
+  ).toBe(false);
 });
 
 test('ArrayContaining throws for non-arrays', () => {
@@ -196,6 +208,12 @@ test('ObjectContaining matches', () => {
       jest: 'jest',
     }),
     objectContaining({[foo]: 'foo'}).asymmetricMatch({[foo]: 'foo'}),
+    objectContaining({set: new Set([1, 2])}).asymmetricMatch({
+      set: new Set([1, 2]),
+    }),
+    objectContaining({map: new Map([['a', 1]])}).asymmetricMatch({
+      map: new Map([['a', 1]]),
+    }),
   ]) {
     jestExpect(test).toEqual(true);
   }
@@ -213,6 +231,12 @@ test('ObjectContaining does not match', () => {
       foo: {bar: 'baz', foobar: 'qux'},
     }).asymmetricMatch({foo: {bar: 'baz'}}),
     objectContaining({[foo]: 'foo'}).asymmetricMatch({[bar]: 'bar'}),
+    objectContaining({set: new Set([1, 2])}).asymmetricMatch({
+      set: new Set([1, 3]),
+    }),
+    objectContaining({map: new Map([['a', 1]])}).asymmetricMatch({
+      map: new Map([['a', 2]]),
+    }),
   ]) {
     jestExpect(test).toEqual(false);
   }
@@ -535,6 +559,11 @@ test('ArrayOf matches', () => {
     arrayOf(null).asymmetricMatch([null]),
     arrayOf([]).asymmetricMatch([[], []]),
     arrayOf(any(String)).asymmetricMatch(['a', 'b', 'c']),
+    arrayOf(new Set([1])).asymmetricMatch([new Set([1]), new Set([1])]),
+    arrayOf(new Map([['a', 1]])).asymmetricMatch([
+      new Map([['a', 1]]),
+      new Map([['a', 1]]),
+    ]),
   ]) {
     jestExpect(test).toEqual(true);
   }
@@ -552,6 +581,8 @@ test('ArrayOf does not match', () => {
     arrayOf(1).asymmetricMatch('not an array'),
     arrayOf(1).asymmetricMatch({}),
     arrayOf(any(String)).asymmetricMatch([1, 2]),
+    arrayOf(new Set([1])).asymmetricMatch([new Set([2])]),
+    arrayOf(new Map([['a', 1]])).asymmetricMatch([new Map([['a', 2]])]),
   ]) {
     jestExpect(test).toEqual(false);
   }

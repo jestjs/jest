@@ -68,7 +68,7 @@ export abstract class AsymmetricMatcher<
 
   protected getMatcherContext(): MatcherContext {
     return {
-      customTesters: getCustomEqualityTesters(),
+      customTesters: [...getCustomEqualityTesters(), iterableEquality],
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       dontThrow: () => {},
       ...getState<MatcherState>(),

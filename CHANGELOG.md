@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))
+- `[expect]` Pass `iterableEquality` to asymmetric matchers (`objectContaining`, `arrayContaining`, `arrayOf`) so `Set`s, `Map`s, and iterables have their contents compared ([#16552](https://github.com/jestjs/jest/pull/16552))
 - `[jest-resolve]` Bump `unrs-resolver` to 1.13.0, which locates its native binding at runtime instead of through a `postinstall` script, so installing Jest no longer reports a blocked build script on npm 12 ([#16527](https://github.com/jestjs/jest/pull/16527))
 
 ### Chore & Maintenance
