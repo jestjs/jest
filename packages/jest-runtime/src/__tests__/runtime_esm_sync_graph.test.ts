@@ -75,6 +75,25 @@ describe('Runtime sync ESM graph', () => {
     },
   );
 
+  // `testWithSyncEsm`, not `testWithVmEsm`: the fix is in the sync walk, and
+  // Node only exposes that from v24.9. Older versions take the legacy async
+  // path, where each concurrent `import()` drives `link()` over the shared
+  // dependency itself and the second one still fails to instantiate.
+  testWithSyncEsm(
+    'links a shared top-level-await dependency once across concurrent imports',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const [a, b] = (await Promise.all([
+        runtime.unstable_importModule(FROM, './concurrent-tla-a.mjs'),
+        runtime.unstable_importModule(FROM, './concurrent-tla-b.mjs'),
+      ])) as Array<any>;
+      expect(a.namespace.fromA).toBe('a');
+      expect(b.namespace.fromB).toBe('b');
+      expect(a.namespace.value).toBe('tla-value');
+      expect(b.namespace.value).toBe('tla-value');
+    },
+  );
+
   testWithVmEsm('resolves data: URI specifiers in the sync graph', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
