@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` Add `getTestPathMatcher()` to expose the rules that decide whether a path is a test file of a project, so third-party tools can resolve project ownership from a normalized project config alone ([#16450](https://github.com/jestjs/jest/pull/16450))
+
 ### Fixes
 
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))

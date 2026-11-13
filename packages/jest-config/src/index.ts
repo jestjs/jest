@@ -24,6 +24,12 @@ export {replaceRootDirInPath} from './utils';
 export {default as defaults} from './Defaults';
 export {default as descriptions} from './Descriptions';
 export {constants};
+export {getTestPathMatcher} from './getTestPathMatcher';
+export type {
+  TestPathCase,
+  TestPathMatcher,
+  TestPathMatcherConfig,
+} from './getTestPathMatcher';
 
 type ReadConfig = {
   configPath: string | null | undefined;
