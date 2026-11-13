@@ -6,6 +6,7 @@
  *
  */
 
+import * as path from 'path';
 import chalk from 'chalk';
 import {TestPathPatterns} from '@jest/pattern';
 import {JestHook, KEYS, TestWatcher} from 'jest-watcher';
@@ -47,7 +48,11 @@ jest.doMock(
     function () {
       const args = [...arguments];
       const [{onComplete}] = args;
-      runJestMock.apply(null, args);
+      const pendingRun = runJestMock.apply(null, args);
+
+      if (pendingRun instanceof Promise) {
+        return pendingRun.then(() => onComplete(results));
+      }
 
       // Call the callback
       onComplete(results);
@@ -880,6 +885,70 @@ describe('Watch mode flows', () => {
     expect(runJestMock).toHaveBeenCalledTimes(1);
     stdin.emit(KEYS.ENTER);
     expect(runJestMock).toHaveBeenCalledTimes(2);
+  });
+
+  describe('a file change during a run', () => {
+    let emitChange;
+    let finishRun;
+
+    beforeEach(() => {
+      contexts = [
+        {
+          config: {
+            ...contexts[0].config,
+            haste: {},
+            moduleDirectories: ['node_modules'],
+            moduleFileExtensions: ['js'],
+          },
+        },
+      ];
+      hasteMapInstances = [
+        {
+          on: (event, listener) => {
+            if (event === 'change') {
+              emitChange = (filePath, hasteFS) =>
+                listener({
+                  eventsQueue: [{filePath}],
+                  hasteFS,
+                  moduleMap: {},
+                });
+            }
+          },
+        },
+      ];
+      runJestMock.mockImplementationOnce(
+        () =>
+          new Promise(resolve => {
+            finishRun = resolve;
+          }),
+      );
+    });
+
+    it('reruns the tests once that run ends', async () => {
+      await watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+      expect(runJestMock).toHaveBeenCalledTimes(1);
+
+      const latestHasteFS = {};
+      emitChange(path.join(__dirname, 'file1-test.js'), {});
+      emitChange(path.join(__dirname, 'file2-test.js'), latestHasteFS);
+      expect(runJestMock).toHaveBeenCalledTimes(1);
+
+      finishRun();
+      await nextTick();
+      await nextTick();
+      expect(runJestMock).toHaveBeenCalledTimes(2);
+      expect(runJestMock.mock.calls[1][0].contexts[0].hasteFS).toBe(
+        latestHasteFS,
+      );
+    });
+
+    it('does not rerun the tests when nothing changed during that run', async () => {
+      await watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+      finishRun();
+      await nextTick();
+      await nextTick();
+      expect(runJestMock).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('Pressing "t" reruns the tests in "test name pattern" mode', async () => {
