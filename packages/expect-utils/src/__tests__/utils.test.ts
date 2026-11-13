@@ -280,6 +280,14 @@ describe('subsetEquality()', () => {
     expect(subsetEquality('foo', {foo: 'baz'})).toBe(false);
   });
 
+  test('a regular expression is not an object with keys', () => {
+    expect(subsetEquality(/a/, /b/)).toBeUndefined();
+    expect(subsetEquality({foo: /a/}, {foo: /b/})).toBe(false);
+    expect(subsetEquality({foo: /a/}, {foo: /a/i})).toBe(false);
+    expect(subsetEquality({foo: 'a'}, {foo: /a/})).toBe(false);
+    expect(subsetEquality({bar: 1, foo: /a/i}, {foo: /a/i})).toBe(true);
+  });
+
   test('null does not return errors', () => {
     expect(subsetEquality(null, {foo: 'bar'})).not.toBeTruthy();
   });
