@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config, jest-matcher-utils, jest-circus]` Add a `diffOptions` config option to configure how diffs are rendered - annotations, indicators, context lines and change counts ([#16451](https://github.com/jestjs/jest/pull/16451))
+
 ### Fixes
 
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))
