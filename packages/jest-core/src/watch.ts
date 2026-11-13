@@ -224,6 +224,8 @@ export default async function watch(
     searchSource: new SearchSource(context),
   }));
   let isRunning = false;
+  // A file changed while a run was in progress, so that run did not see it.
+  let hasChangesDuringRun = false;
   let testWatcher: TestWatcher;
   let shouldDisplayWatchUsage = true;
   let isWatchUsageDisplayed = false;
@@ -266,10 +268,19 @@ export default async function watch(
           searchSource: new SearchSource(context),
         };
         emitFileChange();
+        if (isRunning) {
+          hasChangesDuringRun = true;
+        }
         startRun(globalConfig);
       }
     });
   }
+
+  const startRunForChangesDuringRun = () => {
+    if (hasChangesDuringRun && !isRunning) {
+      startRun(globalConfig);
+    }
+  };
 
   if (!hasExitListener) {
     hasExitListener = true;
@@ -292,6 +303,7 @@ export default async function watch(
     }
     preRunMessagePrint(outputStream);
     isRunning = true;
+    hasChangesDuringRun = false;
     const configs = contexts.map(context => context.config);
     const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
 
@@ -344,6 +356,8 @@ export default async function watch(
         })}`,
       );
     }
+
+    startRunForChangesDuringRun();
   };
 
   const onKeypress = (key: string) => {
