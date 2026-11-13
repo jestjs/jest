@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[expect]` Attach the rejection reason to the error `.resolves` throws for a rejected promise, and the fulfilled value to the error `.rejects` throws for a fulfilled promise, as its `cause` when the value is an error, so the failure report prints its stack trace ([#16484](https://github.com/jestjs/jest/pull/16484))
+
 ### Fixes
 
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))

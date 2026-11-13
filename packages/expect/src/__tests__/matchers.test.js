@@ -121,6 +121,22 @@ describe('.rejects', () => {
     }
     expect(error).toBeDefined();
     expect(error.message).toMatchSnapshot();
+    expect('cause' in error).toBe(false);
+  });
+
+  it('exposes the resolved value as cause when it is an error', async () => {
+    const resolvedError = new Error('resolved instead');
+    let error;
+    try {
+      await jestExpect(Promise.resolve(resolvedError)).rejects.toThrow(
+        'rejected',
+      );
+    } catch (error_) {
+      error = error_;
+    }
+    expect(error).toBeDefined();
+    expect(error.message).toMatchSnapshot();
+    expect(error.cause).toBe(resolvedError);
   });
 });
 
@@ -207,6 +223,20 @@ describe('.resolves', () => {
     }
     expect(error).toBeDefined();
     expect(error.message).toMatchSnapshot();
+    expect('cause' in error).toBe(false);
+  });
+
+  it('exposes the rejection reason as cause when it is an error', async () => {
+    const rejectionReason = new Error('rejected instead');
+    let error;
+    try {
+      await jestExpect(Promise.reject(rejectionReason)).resolves.toBe(4);
+    } catch (error_) {
+      error = error_;
+    }
+    expect(error).toBeDefined();
+    expect(error.message).toMatchSnapshot();
+    expect(error.cause).toBe(rejectionReason);
   });
 });
 
