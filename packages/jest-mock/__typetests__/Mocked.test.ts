@@ -48,9 +48,11 @@ describe('Mocked', () => {
       [a: string, b?: number]
     >();
 
-    const mockSomeInstance = new MockSomeClass('a') as Mocked<
-      InstanceType<typeof MockSomeClass>
-    >;
+    const mockSomeInstance = new MockSomeClass('a');
+
+    expect(mockSomeInstance).type.toBe<
+      Mocked<InstanceType<typeof MockSomeClass>>
+    >();
 
     expect(mockSomeInstance.methodA.mock.calls[0]).type.toBe<[]>();
     expect(mockSomeInstance.methodB.mock.calls[0]).type.toBe<
