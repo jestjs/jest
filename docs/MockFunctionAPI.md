@@ -946,3 +946,39 @@ test('renders correctly with a given date', () => {
 Types of a class or function can be passed as type argument to `jest.Spied<Source>`. If you prefer to constrain the input type, use: `jest.SpiedClass<Source>` or `jest.SpiedFunction<Source>`.
 
 Use `jest.SpiedGetter<Source>` or `jest.SpiedSetter<Source>` to create the type of a spied getter or setter respectively.
+
+## Unused stubs
+
+Stubs left over from a test file are a common source of noise: a mock is configured, the code under test stops using it, and nothing fails. A file can ask Jest to report them by adding a `@jest-report-unused-stubs` docblock at the top:
+
+```js
+/**
+ * @jest-report-unused-stubs
+ */
+
+test('adds numbers', () => {
+  const add = jest.fn().mockName('add').mockReturnValue(3);
+
+  expect(add(1, 2)).toBe(3);
+});
+
+test('multiplies numbers', () => {
+  const multiply = jest.fn().mockName('multiply').mockReturnValue(6);
+
+  expect(typeof multiply).toBe('function');
+});
+```
+
+After the file has run, the stubs that were never used are listed through the file's `console`:
+
+```
+PASS __tests__/math.test.js
+  ● Console
+
+    console.warn
+      Warning: 1 unused stub detected in this test file:
+
+        - multiply
+```
+
+A mock is reported when it was never called and never inspected during the run of the file. Reading anything on `mock` — as assertions such as `expect(mock).toHaveBeenCalled()` do — counts as an inspection, so a mock that any test touches is never reported. The report is advice only: it is printed at the end of the file and never fails the run, and it is skipped when the file's console is silenced. Implementations passed to `mockFn.withImplementation(fn, callback)` or `jest.fn(implementation)` are not tracked, and a stub stays reported across `mockFn.mockClear()` and `mockFn.mockReset()`.

@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-mock, jest-runner]` Add `ModuleMocker.getUnusedStubs()` and report the stubs of a test file that were never used when it opts in with the `@jest-report-unused-stubs` docblock pragma ([#16462](https://github.com/jestjs/jest/pull/16462))
+
 ### Fixes
 
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))
