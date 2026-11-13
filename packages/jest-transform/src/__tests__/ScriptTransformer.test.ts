@@ -152,6 +152,34 @@ jest.mock(
 );
 
 jest.mock(
+  'cache_key_of_other_files_preprocessor',
+  () => {
+    const syncTransformer: SyncTransformer = {
+      cacheKeyDependsOnOtherFiles: true,
+      // Stands in for a transformer whose cache key folds in the contents of
+      // other files, e.g. one that expands a glob import.
+      getCacheKey: jest.fn(() => 'ab'),
+      process: jest.fn(() => ({code: 'expanded: [a]'})),
+    };
+    return syncTransformer;
+  },
+  {virtual: true},
+);
+
+jest.mock(
+  'cache_key_of_other_files_async_preprocessor',
+  () => {
+    const asyncTransformer: AsyncTransformer = {
+      cacheKeyDependsOnOtherFiles: true,
+      getCacheKeyAsync: jest.fn(() => Promise.resolve('ab')),
+      processAsync: jest.fn(() => Promise.resolve({code: 'expanded: [a]'})),
+    };
+    return asyncTransformer;
+  },
+  {virtual: true},
+);
+
+jest.mock(
   'preprocessor-with-sourcemaps',
   () => ({
     getCacheKey: jest.fn(() => 'ab'),
@@ -1973,6 +2001,87 @@ describe('ScriptTransformer', () => {
     ).toBeDefined();
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     expect(fs.readFileSync).toHaveBeenCalledWith(fileName1, 'utf8');
+  });
+
+  it('does not reuse the in-memory cache if the transformer declares that its cache key depends on other files', async () => {
+    const testPreprocessor =
+      require('cache_key_of_other_files_preprocessor') as SyncTransformer;
+    const scriptTransformer = await createScriptTransformer({
+      ...config,
+      transform: [['\\.js$', 'cache_key_of_other_files_preprocessor', {}]],
+    });
+    const fileName = '/fruits/banana.js';
+
+    mockInvariant(testPreprocessor.getCacheKey != null);
+    mockInvariant(testPreprocessor.process != null);
+
+    expect(
+      scriptTransformer.transform(fileName, getCoverageOptions()).code,
+    ).toBe('expanded: [a]');
+
+    // A file other than `fileName` changed, which the transformer folds into
+    // the cache key it returns.
+    jest.mocked(testPreprocessor.getCacheKey).mockReturnValue('cd');
+    jest.mocked(testPreprocessor.process).mockReturnValue({
+      code: 'expanded: [a, b]',
+    });
+
+    expect(
+      scriptTransformer.transform(fileName, getCoverageOptions()).code,
+    ).toBe('expanded: [a, b]');
+    expect(testPreprocessor.getCacheKey).toHaveBeenCalledTimes(2);
+
+    // The cache key is asked for again on every transform, but a key that was
+    // already computed is still served from the on-disk cache.
+    expect(
+      scriptTransformer.transform(fileName, getCoverageOptions()).code,
+    ).toBe('expanded: [a, b]');
+    expect(testPreprocessor.getCacheKey).toHaveBeenCalledTimes(3);
+    expect(testPreprocessor.process).toHaveBeenCalledTimes(2);
+  });
+
+  it('in async mode, does not reuse the in-memory cache if the transformer declares that its cache key depends on other files', async () => {
+    const testPreprocessor =
+      require('cache_key_of_other_files_async_preprocessor') as AsyncTransformer;
+    const scriptTransformer = await createScriptTransformer({
+      ...config,
+      transform: [
+        ['\\.js$', 'cache_key_of_other_files_async_preprocessor', {}],
+      ],
+    });
+    const fileName = '/fruits/banana.js';
+
+    mockInvariant(testPreprocessor.getCacheKeyAsync != null);
+    mockInvariant(testPreprocessor.processAsync != null);
+
+    expect(
+      (await scriptTransformer.transformAsync(fileName, getCoverageOptions()))
+        .code,
+    ).toBe('expanded: [a]');
+
+    // A file other than `fileName` changed, which the transformer folds into
+    // the cache key it returns.
+    jest
+      .mocked(testPreprocessor.getCacheKeyAsync)
+      .mockReturnValue(Promise.resolve('cd'));
+    jest
+      .mocked(testPreprocessor.processAsync)
+      .mockReturnValue(Promise.resolve({code: 'expanded: [a, b]'}));
+
+    expect(
+      (await scriptTransformer.transformAsync(fileName, getCoverageOptions()))
+        .code,
+    ).toBe('expanded: [a, b]');
+    expect(testPreprocessor.getCacheKeyAsync).toHaveBeenCalledTimes(2);
+
+    // The cache key is asked for again on every transform, but a key that was
+    // already computed is still served from the on-disk cache.
+    expect(
+      (await scriptTransformer.transformAsync(fileName, getCoverageOptions()))
+        .code,
+    ).toBe('expanded: [a, b]');
+    expect(testPreprocessor.getCacheKeyAsync).toHaveBeenCalledTimes(3);
+    expect(testPreprocessor.processAsync).toHaveBeenCalledTimes(2);
   });
 
   it('does not reuse the in-memory cache between different projects', async () => {
