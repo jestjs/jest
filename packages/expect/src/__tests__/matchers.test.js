@@ -2372,6 +2372,16 @@ describe('toMatchObject()', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
+  it('compares regular expressions by source and flags', () => {
+    jestExpect({a: /foo/}).not.toMatchObject({a: /bar/});
+    jestExpect({a: /foo/g}).not.toMatchObject({a: /foo/i});
+    jestExpect({a: 'foo'}).not.toMatchObject({a: /foo/});
+    jestExpect([{a: /foo/}]).not.toMatchObject([{a: /bar/}]);
+    jestExpect(/foo/).not.toMatchObject(/bar/);
+    jestExpect({a: /foo/i, b: 1}).toMatchObject({a: /foo/i});
+    jestExpect(/foo/).toMatchObject(/foo/);
+  });
+
   it('toMatchObject ignores symbol key properties', () => {
     // issue 13638
     const sym = Symbol('foo');
