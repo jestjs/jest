@@ -261,6 +261,16 @@ exports[`printPropertiesAndReceived only highlight non passing properties 1`] = 
 <d>  }</>
 `;
 
+exports[`printPropertiesAndReceived show the mismatch message of an asymmetric matcher 1`] = `
+<g>- Expected properties  - 1</>
+<r>+ Received value       + 1</>
+
+<d>  Object {</>
+<g>-   "count": isWithinRange<1, 10> (expected 15 to be within range 1 - 10),</>
+<r>+   "count": 15,</>
+<d>  }</>
+`;
+
 exports[`printSnapshotAndReceived backtick single line expected and received 1`] = `
 Snapshot: <m>"var foo = \`backtick\`;"</>
 Received: <t>"var foo = <i>tag</i>\`backtick\`;"</>

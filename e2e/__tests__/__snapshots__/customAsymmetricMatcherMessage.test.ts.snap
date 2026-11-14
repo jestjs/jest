@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`shows the message of a custom asymmetric matcher in the diff 1`] = `
+"FAIL __tests__/message.test.js
+  ✕ shows the message of each failed field
+
+  ● shows the message of each failed field
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   "a": toBeWithinRange<1, 10> (expected 15 to be within range 1 - 10),
+    -   "b": toBeWithinRange<1, 10> (expected 20 to be within range 1 - 10),
+    +   "a": 15,
+    +   "b": 20,
+        "c": toBeWithinRange<1, 10>,
+      }
+
+      22 |   const range = expect.toBeWithinRange(1, 10);
+      23 |
+    > 24 |   expect({a: 15, b: 20, c: 5}).toEqual({a: range, b: range, c: range});
+         |                                ^
+      25 | });
+      26 |
+
+      at Object.toEqual (__tests__/message.test.js:24:32)"
+`;

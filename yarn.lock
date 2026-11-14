@@ -14976,6 +14976,7 @@ __metadata:
     "@jest/get-type": "workspace:*"
     "@jest/test-utils": "workspace:*"
     "@types/node": "npm:*"
+    ansi-regex: "npm:^5.0.1"
     chalk: "npm:^4.1.2"
     jest-diff: "workspace:*"
     pretty-format: "workspace:*"

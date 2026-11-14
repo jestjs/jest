@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[expect, @jest/expect-utils, jest-matcher-utils]` Show the message of a custom matcher next to its asymmetric form in the diff, with the message of each failed field ([#16543](https://github.com/jestjs/jest/pull/16543))
+
 ### Fixes
 
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))

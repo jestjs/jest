@@ -6,11 +6,27 @@
  */
 
 import {expect} from 'tstyche';
-import type {EqualsFunction, Tester} from '@jest/expect-utils';
+import type {
+  AsymmetricMatcher,
+  EqualsFunction,
+  Tester,
+} from '@jest/expect-utils';
 import {jest, expect as jestExpect} from '@jest/globals';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 
 // asymmetric matchers
+
+expect<AsymmetricMatcher>().type.toBeAssignableFrom({
+  asymmetricMatch: (other: unknown) => other === 5,
+  getMismatchMessage: (other: unknown) =>
+    other === 5 ? undefined : `expected ${String(other)} to be 5`,
+  toString: () => 'isFive',
+});
+expect<AsymmetricMatcher>().type.not.toBeAssignableFrom({
+  asymmetricMatch: (other: unknown) => other === 5,
+  getMismatchMessage: () => 5,
+  toString: () => 'isFive',
+});
 
 expect(jestExpect('value').toEqual(jestExpect.any(String))).type.toBe<void>();
 expect(jestExpect(123).toEqual(jestExpect.any())).type.toRaiseError();
