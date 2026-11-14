@@ -73,12 +73,13 @@ function makeFixture(
 describe('TransformCache', () => {
   describe('transform', () => {
     test('reads source, transforms, caches the result, returns transformed code', () => {
-      const {cache, transform} = makeFixture(
+      const {cache, readFile, transform} = makeFixture(
         'orig',
         transformResult('TRANSFORMED'),
       );
       expect(cache.transform('/a.js', userOptions)).toBe('TRANSFORMED');
       expect(transform).toHaveBeenCalledTimes(1);
+      expect(readFile).not.toHaveBeenCalled();
       expect(cache.getCachedSource('/a.js')).toBe('TRANSFORMED');
     });
 
@@ -105,14 +106,13 @@ describe('TransformCache', () => {
       expect(transform).toHaveBeenCalledWith(
         '/a.js',
         expect.objectContaining({collectCoverage: false}),
-        'console.log("orig")',
       );
     });
   });
 
   describe('transformAsync', () => {
     test('caches transformed code and exposes it via getCachedSource', async () => {
-      const {cache, transformAsync} = makeFixture(
+      const {cache, readFile, transformAsync} = makeFixture(
         'orig',
         transformResult('ASYNC'),
       );
@@ -120,6 +120,7 @@ describe('TransformCache', () => {
         'ASYNC',
       );
       expect(transformAsync).toHaveBeenCalledTimes(1);
+      expect(readFile).not.toHaveBeenCalled();
       expect(cache.getCachedSource('/a.js')).toBe('ASYNC');
     });
 
