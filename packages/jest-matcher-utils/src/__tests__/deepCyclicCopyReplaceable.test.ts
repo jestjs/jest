@@ -258,3 +258,19 @@ test('handles getters returning primitive values', () => {
   expect(copy.value).toBe('hello');
   expect(copy.upperCase).toBe('HELLO');
 });
+
+test('returns built-in objects with internal slots as-is without breaking slots (#16541)', () => {
+  const buffer = new ArrayBuffer(8);
+  const dataView = new DataView(buffer);
+  const boxedNum = new Number(42);
+  const boxedBool = new Boolean(true);
+  const boxedStr = new String('hello');
+  const gen = (function* () {})();
+
+  expect(deepCyclicCopyReplaceable(buffer)).toBe(buffer);
+  expect(deepCyclicCopyReplaceable(dataView)).toBe(dataView);
+  expect(deepCyclicCopyReplaceable(boxedNum)).toBe(boxedNum);
+  expect(deepCyclicCopyReplaceable(boxedBool)).toBe(boxedBool);
+  expect(deepCyclicCopyReplaceable(boxedStr)).toBe(boxedStr);
+  expect(deepCyclicCopyReplaceable(gen)).toBe(gen);
+});
