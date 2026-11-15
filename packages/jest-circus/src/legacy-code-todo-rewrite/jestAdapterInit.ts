@@ -76,8 +76,9 @@ export const initialize = async ({
   globals: Global.TestFrameworkGlobals;
   snapshotState: SnapshotState;
 }> => {
-  if (globalConfig.testTimeout) {
-    getRunnerState().testTimeout = globalConfig.testTimeout;
+  const testTimeout = config.testTimeout ?? globalConfig.testTimeout;
+  if (testTimeout) {
+    getRunnerState().testTimeout = testTimeout;
   }
   getRunnerState().maxConcurrency = globalConfig.maxConcurrency;
   getRunnerState().expand = globalConfig.expand;
