@@ -1254,6 +1254,40 @@ export class EsmLoader {
     };
   }
 
+  private cacheAsyncMock(
+    moduleName: string,
+    moduleID: string,
+    context: VMContext,
+    exports: Promise<unknown>,
+  ): Promise<VMModule> {
+    const registry = this.registries.getActiveModuleMockRegistry();
+    const pending = exports
+      .then(exports =>
+        evaluateSyntheticModule(
+          syntheticFromExports(
+            moduleName,
+            context,
+            exports as Record<string, unknown>,
+          ),
+        ),
+      )
+      .then(
+        module => {
+          // A reset or isolation exit can clear this entry while the factory waits.
+          if (registry.get(moduleID) === pending)
+            registry.set(moduleID, module);
+          return module;
+        },
+        error => {
+          if (registry.get(moduleID) === pending) registry.delete(moduleID);
+          throw error;
+        },
+      );
+    registry.set(moduleID, pending);
+    pending.catch(noop);
+    return pending;
+  }
+
   private importMockSync(
     from: string,
     moduleName: string,
@@ -1306,17 +1340,12 @@ export class EsmLoader {
       // a second time on the legacy retry and turn a rejection into an
       // unhandled rejection that kills the worker. Register the in-flight
       // module instead so the retry (or a later import) adopts it.
-      const pending = Promise.resolve(result).then(exports =>
-        evaluateSyntheticModule(
-          syntheticFromExports(
-            moduleName,
-            context,
-            exports as Record<string, unknown>,
-          ),
-        ),
+      this.cacheAsyncMock(
+        moduleName,
+        moduleID,
+        context,
+        Promise.resolve(result),
       );
-      pending.catch(noop);
-      this.registries.setModuleMock(moduleID, pending);
       if (mode === 'sync-required') {
         throw makeRequireAsyncError(moduleName, 'mock factory is async');
       }
@@ -2251,10 +2280,12 @@ export class EsmLoader {
 
     const factory = this.mockState.getEsmFactory(moduleID);
     if (factory) {
-      const invokedFactory = (await factory()) as Record<string, unknown>;
-      const module = syntheticFromExports(moduleName, context, invokedFactory);
-      this.registries.setModuleMock(moduleID, module);
-      return evaluateSyntheticModule(module) as T;
+      return this.cacheAsyncMock(
+        moduleName,
+        moduleID,
+        context,
+        Promise.resolve().then(factory),
+      ) as T;
     }
 
     // Factory-less decision (automock or manual mock). The generated-mock

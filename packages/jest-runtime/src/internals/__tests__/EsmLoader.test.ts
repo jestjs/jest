@@ -20,7 +20,7 @@ import {CjsParseError} from '../ModuleExecutor';
 import type {FileCache} from '../FileCache';
 import type {JestGlobals} from '../JestGlobals';
 import type {MockState} from '../MockState';
-import type {ModuleRegistries} from '../ModuleRegistries';
+import {ModuleRegistries} from '../ModuleRegistries';
 import type {Resolution} from '../Resolution';
 import {TestState} from '../TestState';
 import type {TransformCache} from '../TransformCache';
@@ -82,6 +82,7 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
     } as unknown as jest.Mocked<MockState>,
     registries: {
       getActiveEsmRegistry: jest.fn(() => esmRegistry),
+      getActiveModuleMockRegistry: jest.fn(() => new Map()),
       getModuleMock: jest.fn(),
       setModuleMock: jest.fn(),
     } as unknown as jest.Mocked<ModuleRegistries>,
@@ -726,6 +727,190 @@ describe('EsmLoader.dynamicImportFromCjs (legacy linkAndEvaluate)', () => {
       await expect(
         loader.dynamicImportFromCjs('@jest/globals', 'from.mjs', context),
       ).rejects.toThrow('original eval error');
+    },
+  );
+});
+
+function makeMockLoader(factory: () => unknown) {
+  const registries = new ModuleRegistries(module => module.namespace);
+  const {context, loader} = makeLoader({
+    mockState: {
+      getEsmFactory: jest.fn(() => factory),
+      shouldMockEsmAsync: jest.fn(async () => ({
+        moduleID: 'mock-id',
+        shouldMock: true,
+      })),
+    } as unknown as jest.Mocked<MockState>,
+    registries: registries as jest.Mocked<ModuleRegistries>,
+  });
+  return {
+    importMock: () =>
+      loader.dynamicImportFromCjs('./mock.mjs', '/test.js', context),
+    registries,
+  };
+}
+
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  let reject!: (error: Error) => void;
+  const promise = new Promise<T>((_resolve, _reject) => {
+    resolve = _resolve;
+    reject = _reject;
+  });
+  return {promise, reject, resolve};
+}
+
+describe('EsmLoader async mock cache', () => {
+  for (const asyncFactory of [false, true]) {
+    testWithVmEsm(
+      `shares concurrent imports with a ${asyncFactory ? 'async' : 'sync'} factory`,
+      async () => {
+        const factory = jest.fn(() => {
+          const exports = {token: {}};
+          return asyncFactory ? Promise.resolve(exports) : exports;
+        });
+        const {importMock, registries} = makeMockLoader(factory);
+        const [first, second] = await Promise.all([importMock(), importMock()]);
+
+        expect(factory).toHaveBeenCalledTimes(1);
+        expect(first).toBe(second);
+        expect(first.namespace).toBe(second.namespace);
+        expect(await importMock()).toBe(first);
+        expect(registries.getModuleMock('mock-id')).toBe(first);
+      },
+    );
+  }
+
+  testWithVmEsm(
+    'shares factory rejection and allows a later retry',
+    async () => {
+      const exports = deferred<{token: object}>();
+      const started = deferred<void>();
+      const failure = new Error('factory failed');
+      const factory = jest
+        .fn<() => Promise<{token: object}>>()
+        .mockImplementationOnce(() => {
+          started.resolve();
+          return exports.promise;
+        })
+        .mockResolvedValue({token: {}});
+      const {importMock, registries} = makeMockLoader(factory);
+      const imports = Promise.allSettled([importMock(), importMock()]);
+      await started.promise;
+      exports.reject(failure);
+
+      const results = await imports;
+      expect(results.map(result => result.status)).toEqual([
+        'rejected',
+        'rejected',
+      ]);
+      for (const result of results) {
+        if (result.status === 'rejected') expect(result.reason).toBe(failure);
+      }
+      expect(factory).toHaveBeenCalledTimes(1);
+      expect(registries.hasModuleMock('mock-id')).toBe(false);
+      const retried = await importMock();
+      expect(retried.namespace).toHaveProperty('token', {});
+      expect(factory).toHaveBeenCalledTimes(2);
+    },
+  );
+
+  for (const rejectOldFactory of [false, true]) {
+    testWithVmEsm(
+      `does not ${rejectOldFactory ? 'delete' : 'overwrite'} a newer mock after reset`,
+      async () => {
+        const exports = deferred<{generation: number}>();
+        const started = deferred<void>();
+        const factory = jest
+          .fn<() => Promise<{generation: number}>>()
+          .mockImplementationOnce(() => {
+            started.resolve();
+            return exports.promise;
+          })
+          .mockResolvedValue({generation: 2});
+        const {importMock, registries} = makeMockLoader(factory);
+        const old = importMock();
+        const oldResult = Promise.allSettled([old]);
+        await started.promise;
+        registries.clearForReset();
+        const current = await importMock();
+
+        if (rejectOldFactory) {
+          exports.reject(new Error('old factory failed'));
+        } else {
+          exports.resolve({generation: 1});
+        }
+        await oldResult;
+
+        const latest = await importMock();
+        expect(latest.namespace).toHaveProperty('generation', 2);
+        expect(latest).toBe(current);
+        expect(factory).toHaveBeenCalledTimes(2);
+      },
+    );
+  }
+
+  testWithVmEsm(
+    'keeps a pending isolated mock in its original registry',
+    async () => {
+      const exports = deferred<{generation: number}>();
+      const started = deferred<void>();
+      const factory = jest
+        .fn<() => Promise<{generation: number}>>()
+        .mockImplementationOnce(() => {
+          started.resolve();
+          return exports.promise;
+        })
+        .mockResolvedValue({generation: 2});
+      const {importMock, registries} = makeMockLoader(factory);
+      registries.enterIsolated('isolateModulesAsync');
+      const isolated = importMock();
+      await started.promise;
+      registries.exitIsolated();
+      exports.resolve({generation: 1});
+      const isolatedModule = await isolated;
+
+      expect(registries.hasModuleMock('mock-id')).toBe(false);
+      const outer = await importMock();
+      expect(outer).not.toBe(isolatedModule);
+      expect(outer.namespace).toHaveProperty('generation', 2);
+      expect(factory).toHaveBeenCalledTimes(2);
+    },
+  );
+
+  testWithLinkedSyntheticModule(
+    'promotes an async factory started by the sync graph after it settles',
+    async () => {
+      const registries = new ModuleRegistries(module => module.namespace);
+      const factory = jest.fn(async () => ({token: {}}));
+      const {loader, stubs} = makeLoader({
+        mockState: {
+          getEsmFactory: jest.fn(() => factory),
+          getEsmModuleId: jest.fn(() => 'mid'),
+          shouldMockEsmSync: jest.fn(() => ({
+            moduleID: 'mid',
+            shouldMock: true,
+          })),
+        } as unknown as jest.Mocked<MockState>,
+        registries: registries as jest.Mocked<ModuleRegistries>,
+      });
+      stubs.transformCache.transform.mockReturnValue(
+        "import './dep.mjs'; globalThis.__loaded = true;",
+      );
+      expect(loader.tryLoadGraphSync('/entry.mjs', '', 'sync-preferred')).toBe(
+        LOAD_ASYNC,
+      );
+      const pending = registries.getModuleMock('mid');
+      expect(pending).toBeInstanceOf(Promise);
+      const resolved = await pending;
+      expect(registries.getModuleMock('mid')).not.toBeInstanceOf(Promise);
+      expect(registries.getModuleMock('mid')).toBe(resolved);
+      invariant(resolved, 'mock should have resolved');
+      expect(resolved.status).toBe('evaluated');
+      expect(loader.requireEsmMock('/test.js', './dep.mjs', './dep.mjs')).toBe(
+        resolved.namespace,
+      );
+      expect(factory).toHaveBeenCalledTimes(1);
     },
   );
 });
