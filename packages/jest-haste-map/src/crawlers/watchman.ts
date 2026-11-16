@@ -64,32 +64,6 @@ function watchmanError(error: Error): Error {
   return error;
 }
 
-/**
- * Wrap watchman capabilityCheck method as a promise.
- *
- * @param client watchman client
- * @param caps capabilities to verify
- * @returns a promise resolving to a list of verified capabilities
- */
-async function capabilityCheck(
-  client: watchman.Client,
-  caps: Partial<watchman.Capabilities>,
-): Promise<WatchmanCapabilityCheckResponse> {
-  return new Promise((resolve, reject) => {
-    client.capabilityCheck(
-      // @ts-expect-error: incorrectly typed
-      caps,
-      (error, response) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(response);
-        }
-      },
-    );
-  });
-}
-
 export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   changedFiles?: FileData;
   removedFiles: FileData;
@@ -102,19 +76,69 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   const client = new watchman.Client();
 
   // fb-watchman reports connection and daemon-startup failures as a client
-  // `error` event rather than through a command callback. Without a listener
-  // already attached, the first such failure is an unhandled `error` that
-  // takes the process down instead of letting the caller retry with the node
-  // crawler, so subscribe before issuing any command.
-  let clientError;
-  client.on('error', error => (clientError = watchmanError(error)));
+  // `error` event rather than through a command callback, and it never
+  // invokes the callback of a request that is still pending when such a
+  // failure happens. Reject every pending request from this listener so the
+  // crawl fails and the caller can retry with the node crawler; without a
+  // listener already attached, the first such failure is an unhandled
+  // `error` that takes the process down instead.
+  let clientError: Error | undefined;
+  const pendingRejections = new Set<(error: Error) => void>();
+  client.on('error', error => {
+    clientError = watchmanError(error);
+    for (const rejectPending of pendingRejections) {
+      rejectPending(clientError);
+    }
+    pendingRejections.clear();
+  });
 
   if (options.watchmanSockname !== undefined) {
     connectClientToSockname(client, options.watchmanSockname);
   }
 
+  const request = <T>(
+    start: (
+      resolve: (result: T) => void,
+      reject: (error: Error) => void,
+    ) => void,
+  ): Promise<T> => {
+    if (clientError) {
+      return Promise.reject(clientError);
+    }
+    return new Promise<T>((resolve, reject) => {
+      pendingRejections.add(reject);
+      start(
+        result => {
+          pendingRejections.delete(reject);
+          resolve(result);
+        },
+        error => {
+          pendingRejections.delete(reject);
+          reject(error);
+        },
+      );
+    });
+  };
+
+  const capabilityCheck = (
+    caps: Partial<watchman.Capabilities>,
+  ): Promise<WatchmanCapabilityCheckResponse> =>
+    request((resolve, reject) => {
+      client.capabilityCheck(
+        // @ts-expect-error: incorrectly typed
+        caps,
+        (error, response) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(response);
+          }
+        },
+      );
+    });
+
   const cmd = <T>(...args: Array<any>): Promise<T> =>
-    new Promise((resolve, reject) =>
+    request((resolve, reject) =>
       // @ts-expect-error: client is typed strictly, but incomplete
       client.command(args, (error, result) =>
         error ? reject(watchmanError(error)) : resolve(result),
@@ -230,7 +254,7 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   try {
     // https://facebook.github.io/watchman/docs/capabilities.html
     // Check adds about ~28ms
-    const capabilities = await capabilityCheck(client, {
+    const capabilities = await capabilityCheck({
       // If a required capability is missing then an error will be thrown,
       // we don't need this assertion, so using optional instead.
       optional: ['suffix-set'],
