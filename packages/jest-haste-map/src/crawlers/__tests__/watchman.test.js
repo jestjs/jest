@@ -726,4 +726,49 @@ describe('watchman watch', () => {
     const client = watchman.Client.mock.instances[0];
     expect(client.connect).not.toHaveBeenCalled();
   });
+
+  describe('when the client fails without calling back', () => {
+    // fb-watchman emits `error` on the client (e.g. when `watchman
+    // get-sockname` fails) and never calls the queued command's callback.
+    const failClient = () => {
+      const [, onError] = watchman.Client.prototype.on.mock.calls.findLast(
+        ([event]) => event === 'error',
+      );
+      onError(new Error('get-sockname returned with exit code=1'));
+    };
+
+    const crawl = () =>
+      watchmanCrawl({
+        data: {
+          clocks: new Map(),
+          files: new Map(),
+        },
+        extensions: ['js', 'json'],
+        ignore: pearMatcher,
+        rootDir: ROOT_MOCK,
+        roots: ROOTS,
+      });
+
+    test('rejects a pending capability check', async () => {
+      watchman.Client.prototype.capabilityCheck.mockImplementationOnce(() =>
+        setImmediate(failClient),
+      );
+
+      await expect(crawl()).rejects.toThrow(
+        'Watchman error: get-sockname returned with exit code=1.',
+      );
+      expect(watchman.Client.mock.instances.at(-1).end).toHaveBeenCalled();
+    });
+
+    test('rejects a pending command', async () => {
+      watchman.Client.prototype.command.mockImplementationOnce(() =>
+        setImmediate(failClient),
+      );
+
+      await expect(crawl()).rejects.toThrow(
+        'Watchman error: get-sockname returned with exit code=1.',
+      );
+      expect(watchman.Client.mock.instances.at(-1).end).toHaveBeenCalled();
+    });
+  });
 });
