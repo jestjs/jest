@@ -103,6 +103,27 @@ describe('check', () => {
 });
 
 describe('buildArgv', () => {
+  it('uses the last value when maxWorkers is specified multiple times', async () => {
+    const actual = await buildArgv(['--maxWorkers=50%', '--maxWorkers=7']);
+
+    expect(actual.maxWorkers).toBe('7');
+  });
+
+  it('preserves repeated values for array options', async () => {
+    const actual = await buildArgv([
+      '--reporters=default',
+      '--reporters=summary',
+    ]);
+
+    expect(actual.reporters).toEqual(['default', 'summary']);
+  });
+
+  it('uses the last value when maxWorkers is specified with its alias', async () => {
+    const actual = await buildArgv(['--maxWorkers=50%', '-w', '7']);
+
+    expect(actual.maxWorkers).toBe('7');
+  });
+
   it('should return only camelcased args ', async () => {
     const mockProcessArgv = jest
       .spyOn(process.argv, 'slice')
