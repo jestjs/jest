@@ -742,9 +742,9 @@ describe('watchman watch', () => {
     });
 
     const client = watchman.Client.mock.instances.at(-1);
-    const errorHandler = client.on.mock.calls
-      .filter(([event]) => event === 'error')
-      .at(-1)[1];
+    const errorHandler = client.on.mock.calls.findLast(
+      ([event]) => event === 'error',
+    )[1];
     errorHandler(new Error('watchman is not running'));
 
     await expect(crawlPromise).rejects.toThrow(
@@ -771,9 +771,9 @@ describe('watchman watch', () => {
     await new Promise(resolve => setImmediate(resolve));
 
     const client = watchman.Client.mock.instances.at(-1);
-    const errorHandler = client.on.mock.calls
-      .filter(([event]) => event === 'error')
-      .at(-1)[1];
+    const errorHandler = client.on.mock.calls.findLast(
+      ([event]) => event === 'error',
+    )[1];
     errorHandler(new Error('watchman is not running'));
 
     await expect(crawlPromise).rejects.toThrow(
