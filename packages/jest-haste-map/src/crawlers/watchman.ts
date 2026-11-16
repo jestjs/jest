@@ -106,18 +106,36 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   // already attached, the first such failure is an unhandled `error` that
   // takes the process down instead of letting the caller retry with the node
   // crawler, so subscribe before issuing any command.
-  let clientError;
-  client.on('error', error => (clientError = watchmanError(error)));
+  // The callbacks of commands that are still queued when the client fails are
+  // never called either, so every request also rejects on the client error.
+  // Otherwise the crawl never settles, and Jest can exit with code 0 without
+  // running any tests.
+  let clientError: Error | undefined;
+  let rejectOnClientError!: (error: Error) => void;
+  const clientFailed = new Promise<never>((_resolve, reject) => {
+    rejectOnClientError = reject;
+  });
+  // A failure with no request waiting is rethrown after the crawl instead, so
+  // don't let it become an unhandled rejection.
+  clientFailed.catch(() => undefined);
+  client.on('error', error => {
+    clientError = watchmanError(error);
+    rejectOnClientError(clientError);
+  });
+  const unlessClientFails = <T>(request: Promise<T>): Promise<T> =>
+    Promise.race([request, clientFailed]);
 
   if (options.watchmanSockname !== undefined) {
     connectClientToSockname(client, options.watchmanSockname);
   }
 
   const cmd = <T>(...args: Array<any>): Promise<T> =>
-    new Promise((resolve, reject) =>
-      // @ts-expect-error: client is typed strictly, but incomplete
-      client.command(args, (error, result) =>
-        error ? reject(watchmanError(error)) : resolve(result),
+    unlessClientFails(
+      new Promise((resolve, reject) =>
+        // @ts-expect-error: client is typed strictly, but incomplete
+        client.command(args, (error, result) =>
+          error ? reject(watchmanError(error)) : resolve(result),
+        ),
       ),
     );
 
@@ -230,11 +248,13 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   try {
     // https://facebook.github.io/watchman/docs/capabilities.html
     // Check adds about ~28ms
-    const capabilities = await capabilityCheck(client, {
-      // If a required capability is missing then an error will be thrown,
-      // we don't need this assertion, so using optional instead.
-      optional: ['suffix-set'],
-    });
+    const capabilities = await unlessClientFails(
+      capabilityCheck(client, {
+        // If a required capability is missing then an error will be thrown,
+        // we don't need this assertion, so using optional instead.
+        optional: ['suffix-set'],
+      }),
+    );
 
     if (capabilities?.capabilities['suffix-set']) {
       // If available, use the optimized `suffix-set` operation:
