@@ -2622,7 +2622,7 @@ Default: `false`
 
 Whether to use [worker threads](https://nodejs.org/dist/latest/docs/api/worker_threads.html) for parallelization. [Child processes](https://nodejs.org/dist/latest/docs/api/child_process.html) are used by default.
 
-Using worker threads may help to improve [performance](https://github.com/nodejs/node/discussions/44264).
+Using worker threads may help to improve [performance](https://web.archive.org/web/20220819080006/https://github.com/nodejs/node/discussions/44264).
 
 :::caution
 
