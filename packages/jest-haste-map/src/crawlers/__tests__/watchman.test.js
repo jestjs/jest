@@ -726,4 +726,59 @@ describe('watchman watch', () => {
     const client = watchman.Client.mock.instances[0];
     expect(client.connect).not.toHaveBeenCalled();
   });
+
+  test('rejects the crawl when the client errors during the capability check', async () => {
+    watchman.Client.prototype.capabilityCheck.mockImplementationOnce(() => {});
+
+    const crawlPromise = watchmanCrawl({
+      data: {
+        clocks: new Map(),
+        files: new Map(),
+      },
+      extensions: ['js', 'json'],
+      ignore: pearMatcher,
+      rootDir: ROOT_MOCK,
+      roots: ROOTS,
+    });
+
+    const client = watchman.Client.mock.instances.at(-1);
+    const errorHandler = client.on.mock.calls
+      .filter(([event]) => event === 'error')
+      .at(-1)[1];
+    errorHandler(new Error('watchman is not running'));
+
+    await expect(crawlPromise).rejects.toThrow(
+      'Watchman error: watchman is not running.',
+    );
+    expect(client.end).toHaveBeenCalled();
+  });
+
+  test('rejects the crawl when the client errors during a command', async () => {
+    watchman.Client.prototype.command.mockImplementationOnce(() => {});
+
+    const crawlPromise = watchmanCrawl({
+      data: {
+        clocks: new Map(),
+        files: new Map(),
+      },
+      extensions: ['js', 'json'],
+      ignore: pearMatcher,
+      rootDir: ROOT_MOCK,
+      roots: [ROOT_MOCK],
+    });
+
+    await new Promise(resolve => setImmediate(resolve));
+    await new Promise(resolve => setImmediate(resolve));
+
+    const client = watchman.Client.mock.instances.at(-1);
+    const errorHandler = client.on.mock.calls
+      .filter(([event]) => event === 'error')
+      .at(-1)[1];
+    errorHandler(new Error('watchman is not running'));
+
+    await expect(crawlPromise).rejects.toThrow(
+      'Watchman error: watchman is not running.',
+    );
+    expect(client.end).toHaveBeenCalled();
+  });
 });
