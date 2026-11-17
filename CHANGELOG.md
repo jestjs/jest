@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-circus]` Add `test.step()`/`it.step()` for named step reporting ([#16473](https://github.com/jestjs/jest/pull/16473))
+
 ### Fixes
 
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))
