@@ -27,10 +27,6 @@ module.exports = defineConfig({
 ```
 
 ```ts tab title="jest.config.ts"
-/** @jest-config-loader ts-node */
-// or
-/** @jest-config-loader esbuild-register */
-
 import {defineConfig} from 'jest';
 
 export default defineConfig({
@@ -50,18 +46,12 @@ module.exports = defineConfig({
 ```
 
 ```ts tab title="jest.config.ts"
-/** @jest-config-loader ts-node */
-// or
-/** @jest-config-loader esbuild-register */
-
 import {defineConfig} from 'jest';
 import {defaults} from 'jest-config';
 
 export default defineConfig({
   moduleDirectories: [...defaults.moduleDirectories, 'bower_components'],
 });
-
-export default config;
 ```
 
 - When using a separate Jest config, you can also extend Jest's options from another config file if needed using `mergeConfig` from `jest`:
@@ -79,10 +69,6 @@ module.exports = mergeConfig(
 ```
 
 ```ts tab title="jest.config.ts"
-/** @jest-config-loader ts-node */
-// or
-/** @jest-config-loader esbuild-register */
-
 import {defineConfig, mergeConfig} from 'jest';
 import jestConfig from './jest.config';
 
@@ -111,10 +97,6 @@ module.exports = defineConfig(() =>
 ```
 
 ```ts tab title="jest.config.ts"
-/** @jest-config-loader ts-node */
-// or
-/** @jest-config-loader esbuild-register */
-
 import {defineConfig, mergeConfig} from 'jest';
 import jestConfig from './jest.config';
 
@@ -161,12 +143,35 @@ export default defineConfig(() =>
 
 :::tip
 
-To read TypeScript configuration files Jest by default requires [`ts-node`](https://npmjs.com/package/ts-node). You can override this behavior by adding a `@jest-config-loader` docblock at the top of the file. Currently, [`ts-node`](https://npmjs.com/package/ts-node) and [`esbuild-register`](https://npmjs.com/package/esbuild-register) is supported. Make sure `ts-node` or the loader you specify is installed.
+Jest tries to load `jest.config.ts`, `.cts`, and `.mts` using Node's built-in TypeScript support first. Type stripping is enabled by default in Node.js 22.18+ (22.x) and 23.6+ (23.x and newer), so configs using syntax Node can execute do not need a separate config loader. Node strips erasable types but does not type-check, read `tsconfig.json` for path aliases, or compile TypeScript features that generate code.
+
+Match the config's module syntax to its file type: `.mts` is ESM, `.cts` is CommonJS, and `.ts` follows the package's module type. The `jest.config.ts` examples above use ESM syntax and can run natively in a package with `"type": "module"`. To use ESM regardless of package type, use `jest.config.mts`:
+
+```ts title="jest.config.mts"
+import {defineConfig} from 'jest';
+
+export default defineConfig({
+  verbose: true,
+});
+```
+
+For CommonJS, use `jest.config.cts`:
+
+```ts title="jest.config.cts"
+const {defineConfig} = require('jest');
+
+module.exports = defineConfig({
+  verbose: true,
+});
+```
+
+If native loading is unavailable for a `.ts` or `.cts` config, Jest uses [`ts-node`](https://npmjs.com/package/ts-node) by default. It also retries with a loader if native loading fails with a syntax error; for other errors, it retries only when a loader is explicitly selected. Use a `@jest-config-loader` docblock to select [`esbuild-register`](https://npmjs.com/package/esbuild-register) instead. Install whichever loader the fallback uses. The docblock selects the fallback loader; it does not prevent native loading when that succeeds. `.mts` requires native TypeScript support and has no loader fallback.
+
+For example, to configure the `ts-node` fallback and enable `transpileOnly`:
 
 ```ts title="jest.config.ts"
 /** @jest-config-loader ts-node */
-// or
-/** @jest-config-loader esbuild-register */
+/** @jest-config-loader-options {"transpileOnly": true} */
 
 import {defineConfig} from 'jest';
 
@@ -175,18 +180,7 @@ export default defineConfig({
 });
 ```
 
-You can also pass options to the loader, for instance to enable `transpileOnly`.
-
-```ts title="jest.config.ts"
-/** @jest-config-loader ts-node */
-/** @jest-config-loader-options {"transpileOnly": true} */
-
-import type {defineConfig} from 'jest';
-
-export default defineConfig({
-  verbose: true,
-});
-```
+Loading a TypeScript config is separate from transforming TypeScript tests and source files. See [Using TypeScript](GettingStarted.md#using-typescript) for test-file setup.
 
 :::
 
