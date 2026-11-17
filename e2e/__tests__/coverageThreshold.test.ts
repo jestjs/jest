@@ -347,3 +347,93 @@ test('file is matched by all path and glob threshold groups', () => {
   expect(summary).toMatchSnapshot();
   expect(stdout).toMatchSnapshot('stdout');
 });
+
+describe('shard', () => {
+  // A shard runs a subset of the test files, so it only ever covers part of
+  // the project. Checking a `global` threshold against that fails for every
+  // shard no matter how well covered the code is (#12751).
+  const pkgJson = {
+    jest: {
+      collectCoverage: true,
+      collectCoverageFrom: ['**/*.js'],
+      coverageThreshold: {
+        global: {
+          lines: 90,
+        },
+      },
+    },
+  };
+
+  const files = {
+    '__tests__/a.test.js': `
+      const a = require('../a.js');
+      test('a', () => expect(a()).toBe(1));
+    `,
+    '__tests__/b.test.js': `
+      const b = require('../b.js');
+      test('b', () => expect(b()).toBe(2));
+    `,
+    'a.js': 'module.exports = () => 1;',
+    'b.js': 'module.exports = () => 2;',
+    'package.json': JSON.stringify(pkgJson, null, 2),
+  };
+
+  test('does not check the threshold when running one shard of several', () => {
+    writeFiles(DIR, files);
+
+    const {stderr, exitCode} = runJest(
+      DIR,
+      ['--coverage', '--ci=false', '--shard=1/2'],
+      {stripAnsi: true},
+    );
+
+    // Every file the shard did not run is reported at zero, so the threshold
+    // would otherwise be judged against coverage the run never set out to
+    // collect.
+    expect(exitCode).toBe(0);
+    expect(stderr).toContain(
+      'Coverage thresholds are not checked when running a shard',
+    );
+    expect(stderr).toContain('shard 1/2');
+    expect(stderr).not.toContain('does not meet "global" threshold');
+  });
+
+  test('checks the threshold when the run is a single shard', () => {
+    writeFiles(DIR, files);
+
+    // `--shard=1/1` runs every test file, so the coverage is the whole
+    // project's and the threshold means what it usually means.
+    const {stderr, exitCode} = runJest(
+      DIR,
+      ['--coverage', '--ci=false', '--shard=1/1'],
+      {stripAnsi: true},
+    );
+
+    expect(exitCode).toBe(0);
+    expect(stderr).not.toContain(
+      'Coverage thresholds are not checked when running a shard',
+    );
+  });
+
+  test('checks the threshold on a single shard that misses it', () => {
+    writeFiles(DIR, {
+      ...files,
+      // Nothing requires this, so a complete run is under the threshold and
+      // must still fail - the skip is about sharding, not about coverage.
+      'uncovered.js': `
+        module.exports = () => {
+          return 1 + 2;
+        };
+      `,
+    });
+
+    const {stderr, exitCode} = runJest(
+      DIR,
+      ['--coverage', '--ci=false', '--shard=1/1'],
+      {stripAnsi: true},
+    );
+
+    expect(exitCode).toBe(1);
+    expect(stderr).toContain('threshold');
+  });
+});
