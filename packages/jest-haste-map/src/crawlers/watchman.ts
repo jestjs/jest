@@ -64,32 +64,6 @@ function watchmanError(error: Error): Error {
   return error;
 }
 
-/**
- * Wrap watchman capabilityCheck method as a promise.
- *
- * @param client watchman client
- * @param caps capabilities to verify
- * @returns a promise resolving to a list of verified capabilities
- */
-async function capabilityCheck(
-  client: watchman.Client,
-  caps: Partial<watchman.Capabilities>,
-): Promise<WatchmanCapabilityCheckResponse> {
-  return new Promise((resolve, reject) => {
-    client.capabilityCheck(
-      // @ts-expect-error: incorrectly typed
-      caps,
-      (error, response) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(response);
-        }
-      },
-    );
-  });
-}
-
 export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   changedFiles?: FileData;
   removedFiles: FileData;
@@ -102,23 +76,62 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   const client = new watchman.Client();
 
   // fb-watchman reports connection and daemon-startup failures as a client
-  // `error` event rather than through a command callback. Without a listener
-  // already attached, the first such failure is an unhandled `error` that
-  // takes the process down instead of letting the caller retry with the node
-  // crawler, so subscribe before issuing any command.
-  let clientError;
-  client.on('error', error => (clientError = watchmanError(error)));
+  // `error` event rather than through a command callback, and leaves queued
+  // command callbacks uninvoked. Subscribe before issuing any command and
+  // reject any pending client operation when `error` fires so the caller can
+  // clean up and fall back to the node crawler instead of hanging on an
+  // unsettled promise.
+  let clientError: Error | undefined;
+  const pendingRejects = new Set<(error: Error) => void>();
+  client.on('error', error => {
+    clientError ??= watchmanError(error);
+    for (const reject of pendingRejects) {
+      reject(clientError);
+    }
+    pendingRejects.clear();
+  });
 
   if (options.watchmanSockname !== undefined) {
     connectClientToSockname(client, options.watchmanSockname);
   }
 
+  function runClientCall<T>(
+    invoke: (callback: watchman.CommandCallback<T>) => void,
+  ): Promise<T> {
+    if (clientError) {
+      return Promise.reject(clientError);
+    }
+    return new Promise<T>((resolve, reject) => {
+      const onError = (error: Error) => {
+        pendingRejects.delete(onError);
+        reject(error);
+      };
+      pendingRejects.add(onError);
+      invoke((error, result) => {
+        pendingRejects.delete(onError);
+        if (clientError) {
+          reject(clientError);
+        } else if (error) {
+          reject(watchmanError(error));
+        } else {
+          resolve(result as T);
+        }
+      });
+    });
+  }
+
+  const capabilityCheck = (
+    caps: Partial<watchman.Capabilities>,
+  ): Promise<WatchmanCapabilityCheckResponse> =>
+    runClientCall(callback =>
+      // @ts-expect-error: incorrectly typed
+      client.capabilityCheck(caps, callback),
+    );
+
   const cmd = <T>(...args: Array<any>): Promise<T> =>
-    new Promise((resolve, reject) =>
+    runClientCall(callback =>
       // @ts-expect-error: client is typed strictly, but incomplete
-      client.command(args, (error, result) =>
-        error ? reject(watchmanError(error)) : resolve(result),
-      ),
+      client.command(args, callback),
     );
 
   async function getWatchmanRoots(
@@ -230,7 +243,7 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   try {
     // https://facebook.github.io/watchman/docs/capabilities.html
     // Check adds about ~28ms
-    const capabilities = await capabilityCheck(client, {
+    const capabilities = await capabilityCheck({
       // If a required capability is missing then an error will be thrown,
       // we don't need this assertion, so using optional instead.
       optional: ['suffix-set'],
