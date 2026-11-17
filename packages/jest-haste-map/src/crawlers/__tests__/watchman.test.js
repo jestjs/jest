@@ -125,6 +125,9 @@ describe('watchman watch', () => {
   afterEach(() => {
     watchman.Client.mock.instances[0].command.mockClear();
     watchman.Client.prototype.connect.mockClear();
+    watchman.Client.prototype.end.mockClear();
+    watchman.Client.prototype.on.mockClear();
+    watchman.Client.prototype.capabilityCheck.mockClear();
   });
 
   test('returns a list of all files when there are no clocks', async () => {
@@ -725,5 +728,126 @@ describe('watchman watch', () => {
 
     const client = watchman.Client.mock.instances[0];
     expect(client.connect).not.toHaveBeenCalled();
+  });
+
+  test('rejects and ends the client when the client emits an error during capabilityCheck without calling the callback', async () => {
+    watchman.Client.prototype.capabilityCheck.mockImplementationOnce(() => {
+      const onError = watchman.Client.prototype.on.mock.calls.find(
+        ([event]) => event === 'error',
+      )[1];
+      setImmediate(() => {
+        onError(
+          new Error(
+            'watchman --no-pretty get-sockname returned with exit code=1, signal=null, stderr= ',
+          ),
+        );
+      });
+    });
+
+    await expect(
+      watchmanCrawl({
+        data: {
+          clocks: new Map(),
+          files: new Map(),
+        },
+        extensions: ['js', 'json'],
+        ignore: pearMatcher,
+        rootDir: ROOT_MOCK,
+        roots: ROOTS,
+        watchmanSockname: undefined,
+      }),
+    ).rejects.toThrow(
+      'Watchman error: watchman --no-pretty get-sockname returned with exit code=1, signal=null, stderr=. Make sure watchman is running for this project. See https://facebook.github.io/watchman/docs/troubleshooting.',
+    );
+
+    expect(watchman.Client.prototype.end).toHaveBeenCalledTimes(1);
+  });
+
+  test('rejects and ends the client when the client emits an error during a command without calling the callback', async () => {
+    watchman.Client.prototype.command.mockImplementationOnce(() => {
+      const onError = watchman.Client.prototype.on.mock.calls.find(
+        ([event]) => event === 'error',
+      )[1];
+      setImmediate(() => {
+        onError(new Error('socket hang up'));
+      });
+    });
+
+    await expect(
+      watchmanCrawl({
+        data: {
+          clocks: new Map(),
+          files: new Map(),
+        },
+        extensions: ['js', 'json'],
+        ignore: pearMatcher,
+        rootDir: ROOT_MOCK,
+        roots: [FRUITS],
+        watchmanSockname: '/known/sock',
+      }),
+    ).rejects.toThrow(
+      'Watchman error: socket hang up. Make sure watchman is running for this project. See https://facebook.github.io/watchman/docs/troubleshooting.',
+    );
+
+    expect(watchman.Client.prototype.end).toHaveBeenCalledTimes(1);
+  });
+
+  test('rejects and ends the client when an error is emitted during connect', async () => {
+    watchman.Client.prototype.connect.mockImplementationOnce(() => {
+      const onError = watchman.Client.prototype.on.mock.calls.find(
+        ([event]) => event === 'error',
+      )[1];
+      onError(new Error('connect EACCES'));
+    });
+
+    await expect(
+      watchmanCrawl({
+        data: {
+          clocks: new Map(),
+          files: new Map(),
+        },
+        extensions: ['js', 'json'],
+        ignore: pearMatcher,
+        rootDir: ROOT_MOCK,
+        roots: ROOTS,
+        watchmanSockname: '/known/sock',
+      }),
+    ).rejects.toThrow(
+      'Watchman error: connect EACCES. Make sure watchman is running for this project. See https://facebook.github.io/watchman/docs/troubleshooting.',
+    );
+
+    expect(watchman.Client.prototype.end).toHaveBeenCalledTimes(1);
+  });
+
+  test('prefers the client error over a subsequent command cancellation error', async () => {
+    watchman.Client.prototype.capabilityCheck.mockImplementationOnce(
+      (_args, callback) => {
+        const onError = watchman.Client.prototype.on.mock.calls.find(
+          ([event]) => event === 'error',
+        )[1];
+        setImmediate(() => {
+          onError(new Error('connect ECONNREFUSED'));
+          callback(new Error('The client was ended'));
+        });
+      },
+    );
+
+    await expect(
+      watchmanCrawl({
+        data: {
+          clocks: new Map(),
+          files: new Map(),
+        },
+        extensions: ['js', 'json'],
+        ignore: pearMatcher,
+        rootDir: ROOT_MOCK,
+        roots: ROOTS,
+        watchmanSockname: '/known/sock',
+      }),
+    ).rejects.toThrow(
+      'Watchman error: connect ECONNREFUSED. Make sure watchman is running for this project. See https://facebook.github.io/watchman/docs/troubleshooting.',
+    );
+
+    expect(watchman.Client.prototype.end).toHaveBeenCalledTimes(1);
   });
 });
