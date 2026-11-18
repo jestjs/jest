@@ -29,6 +29,13 @@ export const runInTestExecutionContext = <T>(
     callback,
   );
 
+// This module is evaluated once per test file. Before Node 24, an enabled
+// `AsyncLocalStorage` adds work to every promise created afterwards until
+// `disable()` is called, so a worker would get slower with every file.
+export const disableTestExecutionContext = (): void => {
+  testExecutionContext.disable();
+};
+
 export const startDescribeRetryAttempt = (): void => {
   activeDescribeRetryAttempts++;
 };
