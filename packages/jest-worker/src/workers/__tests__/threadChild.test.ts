@@ -14,6 +14,14 @@ import {
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_OK,
 } from '../../types';
+import {unpackMessage} from '../safeMessageTransferring';
+
+// `parentPort.postMessage` throws this for values the structured clone
+// algorithm cannot serialize, e.g. `function` and `symbol`.
+const dataCloneError = Object.assign(new Error('could not be cloned.'), {
+  code: 25,
+  name: 'DataCloneError',
+});
 
 class MockedParentPort extends EventEmitter {
   postMessage = jest.fn();
@@ -64,6 +72,17 @@ beforeEach(() => {
           });
         },
 
+        fooReturnsFunctions() {
+          return {
+            matcherResult: {
+              actual: () => {},
+              expected: function bar() {},
+              name: 'toBe',
+              pass: false,
+            },
+          };
+        },
+
         fooThrows() {
           throw mockError;
         },
@@ -71,6 +90,16 @@ beforeEach(() => {
         fooThrowsANumber() {
           // eslint-disable-next-line no-throw-literal
           throw 412;
+        },
+
+        fooThrowsAnErrorWithAFunctionProperty() {
+          const error = new Error('Boo with a function') as Error & {
+            handler: () => void;
+          };
+
+          error.handler = function doThing() {};
+
+          throw error;
         },
 
         fooThrowsAnErrorWithExtraProperties() {
@@ -398,5 +427,65 @@ it('handle error if `postMessage` throws an error', () => {
     'Boo',
     mockError.stack,
     {},
+  ]);
+});
+
+it('sends a result with functions in it when it cannot be cloned', () => {
+  messagePort.emit('message', [
+    CHILD_MESSAGE_INITIALIZE,
+    true,
+    './my-fancy-worker',
+  ]);
+
+  // `worker_threads` throws a `DataCloneError` for values it cannot clone,
+  // such as the functions a failed matcher reports as `actual`/`expected`.
+  jest.mocked(messagePort.postMessage).mockImplementationOnce(() => {
+    throw dataCloneError;
+  });
+
+  messagePort.emit('message', [
+    CHILD_MESSAGE_CALL,
+    true,
+    'fooReturnsFunctions',
+    [],
+  ]);
+
+  const [message, packed] = jest.mocked(messagePort.postMessage).mock
+    .calls[1][0] as [
+    number,
+    {__STRUCTURED_CLONE_SERIALIZED__: true; data: unknown},
+  ];
+
+  expect(message).toBe(PARENT_MESSAGE_OK);
+  expect(unpackMessage(packed)).toEqual({
+    matcherResult: {
+      actual: '[Function actual]',
+      expected: '[Function bar]',
+      name: 'toBe',
+      pass: false,
+    },
+  });
+});
+
+it('reports client errors carrying functions', () => {
+  messagePort.emit('message', [
+    CHILD_MESSAGE_INITIALIZE,
+    true,
+    './my-fancy-worker',
+  ]);
+
+  messagePort.emit('message', [
+    CHILD_MESSAGE_CALL,
+    true,
+    'fooThrowsAnErrorWithAFunctionProperty',
+    [],
+  ]);
+
+  expect(jest.mocked(messagePort.postMessage).mock.calls[0][0]).toEqual([
+    PARENT_MESSAGE_CLIENT_ERROR,
+    'Error',
+    'Boo with a function',
+    expect.any(String),
+    {handler: '[Function doThing]'},
   ]);
 });

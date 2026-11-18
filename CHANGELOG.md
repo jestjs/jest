@@ -6,6 +6,8 @@
 
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))
 - `[jest-resolve]` Bump `unrs-resolver` to 1.13.0, which locates its native binding at runtime instead of through a `postinstall` script, so installing Jest no longer reports a blocked build script on npm 12 ([#16527](https://github.com/jestjs/jest/pull/16527))
+- `[jest-worker]` Preserve functions crossing the worker boundary as string references (e.g. `[Function foo]`) instead of dropping them silently, so values such as a failed matcher's `actual` and `expected` survive a run with `workerThreads: true` ([#16445](https://github.com/jestjs/jest/pull/16445))
+- `[jest-worker]` Serialize the extra properties of worker errors, so a worker throwing an error carrying a function no longer crashes the run with an uncaught `DataCloneError` ([#16445](https://github.com/jestjs/jest/pull/16445))
 
 ### Chore & Maintenance
 
