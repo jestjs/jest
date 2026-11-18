@@ -9,6 +9,7 @@ import nativeModule from 'node:module';
 import * as path from 'node:path';
 import slash from 'slash';
 import type {JestEnvironment} from '@jest/environment';
+import {EXTENSION as SnapshotExtension} from '@jest/snapshot-utils';
 import type {SourceMapRegistry} from '@jest/source-map';
 import type {TestContext, V8CoverageResult} from '@jest/test-result';
 import {
@@ -23,7 +24,6 @@ import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import type {ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver from 'jest-resolve';
-import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
 import {createDirectory, deepCyclicCopy, invariant} from 'jest-util';
 import {
   decodePossibleOutsideJestVmPath,

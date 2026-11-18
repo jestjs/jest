@@ -21,6 +21,12 @@ export const SNAPSHOT_VERSION_WARNING = chalk.yellow(
     'to ensure that you do not store invalid state.',
 );
 
+// Extension of snapshot files. Kept here (instead of `jest-snapshot`) so that
+// consumers which only need the extension don't pull in the babel-heavy
+// `jest-snapshot` package, see https://github.com/jestjs/jest/issues/13842.
+export const EXTENSION = 'snap';
+export const DOT_EXTENSION = `.${EXTENSION}`;
+
 const writeSnapshotVersion = () =>
   `// Jest Snapshot v${SNAPSHOT_VERSION}, ${SNAPSHOT_GUIDE_LINK}`;
 

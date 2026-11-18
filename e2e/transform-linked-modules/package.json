@@ -10,6 +10,7 @@
       "jest-source-map",
       "jest-environment-node",
       "jest-jasmine2",
+      "jest-message-util",
       "jest-runner"
     ],
     "transform": {
