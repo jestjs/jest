@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` [**BREAKING**] Read the global config from the current working directory when several projects are passed without `--config`, instead of taking it from the first project ([#16412](https://github.com/jestjs/jest/pull/16412))
+
 ### Fixes
 
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))

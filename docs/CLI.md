@@ -342,6 +342,12 @@ If configuration files are found in the specified paths, _all_ projects specifie
 
 :::
 
+:::note
+
+When more than one path is given, the root (global) configuration is read from `--config` if it is passed, and from the current working directory otherwise. Global-only options set in the projects themselves are ignored — see [`projects`](configuration#projects-arraystring--projectconfig) for the list.
+
+:::
+
 ### `--randomize`
 
 Shuffle the order of the tests within a file. The shuffling is based on the seed. See [`--seed=<num>`](#--seednum) for more info.
