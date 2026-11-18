@@ -43,7 +43,7 @@ class Help extends React.Component {
         content: (
           <Translate>
             {`Find out what's new with Jest.
-- Follow [Jest](https://twitter.com/jestjs_) on Twitter.
+- Follow [Jest](https://x.com/jestjs_) on X.
 - Subscribe to the [Jest blog](/blog/).
 - Look at the [changelog](https://github.com/jestjs/jest/blob/main/CHANGELOG.md).`}
           </Translate>

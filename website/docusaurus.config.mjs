@@ -257,8 +257,8 @@ const config = {
                 href: 'https://www.reactiflux.com',
               },
               {
-                label: 'Twitter',
-                href: 'https://twitter.com/jestjs_',
+                label: 'X',
+                href: 'https://x.com/jestjs_',
               },
             ],
           },
@@ -274,8 +274,8 @@ const config = {
                 href: 'https://github.com/jestjs/jest',
               },
               {
-                label: 'Twitter',
-                href: 'https://twitter.com/jestjs_',
+                label: 'X',
+                href: 'https://x.com/jestjs_',
               },
             ],
           },
