@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` Add support for `tsx` as a config loader via `/* @jest-config-loader tsx */` docblock ([#16406](https://github.com/jestjs/jest/pull/16406))
+
 ### Fixes
 
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))
