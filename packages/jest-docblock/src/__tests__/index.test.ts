@@ -346,3 +346,80 @@ describe('docblock', () => {
     expect(formatted).toBe('/**\n * hello\n * world\n */');
   });
 });
+
+describe('extractAll', () => {
+  it('extracts a lone docblock', () => {
+    const code = `/**${EOL} * @team foo${EOL} */${EOL}const x = foo;`;
+    expect(docblock.extractAll(code)).toEqual([
+      `/**${EOL} * @team foo${EOL} */`,
+    ]);
+  });
+
+  it('returns an empty array when there is no docblock', () => {
+    expect(docblock.extractAll(`const x = foo;${EOL}`)).toEqual([]);
+  });
+
+  it('extracts a pragma docblock that follows a license docblock', () => {
+    const code =
+      `/**${EOL} * Copyright (c) Meta Platforms, Inc. and affiliates.${EOL} */${EOL}` +
+      `/**${EOL} * @jest-environment jsdom${EOL} */${EOL}` +
+      'const x = foo;';
+    expect(docblock.extractAll(code)).toEqual([
+      `/**${EOL} * Copyright (c) Meta Platforms, Inc. and affiliates.${EOL} */`,
+      `/**${EOL} * @jest-environment jsdom${EOL} */`,
+    ]);
+  });
+
+  it('extracts docblocks separated by blank lines', () => {
+    const code =
+      `/**${EOL} * @team foo${EOL} */${EOL}${EOL}` +
+      `/**${EOL} * @jest-environment jsdom${EOL} */${EOL}` +
+      'const x = foo;';
+    expect(docblock.extractAll(code)).toEqual([
+      `/**${EOL} * @team foo${EOL} */`,
+      `/**${EOL} * @jest-environment jsdom${EOL} */`,
+    ]);
+  });
+
+  it('skips leading line comments', () => {
+    const code =
+      `// eslint-disable-next-line no-undef${EOL}` +
+      `/**${EOL} * @jest-environment jsdom${EOL} */${EOL}` +
+      'const x = foo;';
+    expect(docblock.extractAll(code)).toEqual([
+      `/**${EOL} * @jest-environment jsdom${EOL} */`,
+    ]);
+  });
+
+  it('stops at the first non-comment', () => {
+    const code =
+      `/**${EOL} * @team foo${EOL} */${EOL}` +
+      `const x = foo;${EOL}` +
+      `/**${EOL} * @jest-environment jsdom${EOL} */`;
+    expect(docblock.extractAll(code)).toEqual([
+      `/**${EOL} * @team foo${EOL} */`,
+    ]);
+  });
+
+  it('collects pragmas across every leading docblock', () => {
+    const code =
+      `/**${EOL} * Copyright (c) Meta Platforms, Inc. and affiliates.${EOL} */${EOL}` +
+      `/**${EOL} * @jest-environment jsdom${EOL} */${EOL}` +
+      'const x = foo;';
+    const pragmas = Object.assign(
+      {},
+      ...docblock.extractAll(code).map(block => docblock.parse(block)),
+    );
+    expect(pragmas).toEqual({'jest-environment': 'jsdom'});
+  });
+
+  it('leaves extract() looking at the first docblock only', () => {
+    const code =
+      `/**${EOL} * Copyright (c) Meta Platforms, Inc. and affiliates.${EOL} */${EOL}` +
+      `/**${EOL} * @jest-environment jsdom${EOL} */${EOL}` +
+      'const x = foo;';
+    expect(docblock.extract(code)).toBe(
+      `/**${EOL} * Copyright (c) Meta Platforms, Inc. and affiliates.${EOL} */`,
+    );
+  });
+});

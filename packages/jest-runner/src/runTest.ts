@@ -88,7 +88,10 @@ async function runTestInternal(
   sendMessageToJest?: TestFileEvent,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
-  const docblockPragmas = docblock.parse(docblock.extract(testSource));
+  const docblockPragmas: docblock.Pragmas = Object.assign(
+    {},
+    ...docblock.extractAll(testSource).map(block => docblock.parse(block)),
+  );
   const customEnvironment = docblockPragmas['jest-environment'];
 
   const loadTestEnvironmentStart = Date.now();
