@@ -13,7 +13,7 @@ import hg from './hg';
 import sl from './sl';
 import type {ChangedFilesPromise, Options, Repos} from './types';
 
-export type {ChangedFiles, ChangedFilesPromise} from './types';
+export type {ChangedFiles, ChangedFilesPromise, Repos} from './types';
 
 // This is an arbitrary number. The main goal is to prevent projects with
 // many roots (50+) from spawning too many processes at once.
@@ -23,12 +23,11 @@ const findGitRoot = (dir: string) => mutex(() => git.getRoot(dir));
 const findHgRoot = (dir: string) => mutex(() => hg.getRoot(dir));
 const findSlRoot = (dir: string) => mutex(() => sl.getRoot(dir));
 
-export const getChangedFilesForRoots = async (
+export const getChangedFilesForRepos = async (
+  repos: Repos,
   roots: Array<string>,
   options: Options,
 ): ChangedFilesPromise => {
-  const repos = await findRepos(roots);
-
   const changedFilesOptions = {includePaths: roots, ...options};
 
   const gitPromises = Array.from(repos.git, repo =>
@@ -57,6 +56,15 @@ export const getChangedFilesForRoots = async (
   }, new Set<string>());
 
   return {changedFiles, repos};
+};
+
+export const getChangedFilesForRoots = async (
+  roots: Array<string>,
+  options: Options,
+): ChangedFilesPromise => {
+  const repos = await findRepos(roots);
+
+  return getChangedFilesForRepos(repos, roots, options);
 };
 
 export const findRepos = async (roots: Array<string>): Promise<Repos> => {
