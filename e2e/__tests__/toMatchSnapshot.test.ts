@@ -87,7 +87,7 @@ test('error thrown before snapshot', () => {
       [filename]: template(['false', '{a: "original"}']),
     });
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).not.toMatch('1 obsolete snapshot found');
+    expect(stderr).toMatch('Snapshots:   0 total');
     expect(exitCode).toBe(1);
   }
 });
@@ -113,7 +113,7 @@ test('first snapshot fails, second passes', () => {
     // Match lines separately because empty line has been replaced with space:
     expect(stderr).toMatch('Snapshot: "apple"');
     expect(stderr).toMatch('Received: "kiwi"');
-    expect(stderr).not.toMatch('1 obsolete snapshot found');
+    expect(stderr).toMatch('Snapshots:   1 failed, 1 passed, 2 total');
     expect(exitCode).toBe(1);
   }
 });
@@ -139,7 +139,7 @@ test('does not mark snapshots as obsolete in skipped tests', () => {
   {
     writeFiles(TESTS_DIR, {[filename]: template(['test.skip'])});
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).not.toMatch('1 obsolete snapshot found');
+    expect(stderr).toMatch('Snapshots:   0 total');
     expect(exitCode).toBe(0);
   }
 });
