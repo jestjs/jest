@@ -9,6 +9,9 @@ import {plugins} from 'pretty-format';
 
 const builtInObject: Array<unknown> = [
   Array,
+  ArrayBuffer,
+  Boolean,
+  DataView,
   Date,
   Float32Array,
   Float64Array,
@@ -16,13 +19,28 @@ const builtInObject: Array<unknown> = [
   Int32Array,
   Int8Array,
   Map,
+  Number,
   Set,
+  String,
   RegExp,
+  Symbol,
   Uint16Array,
   Uint32Array,
   Uint8Array,
   Uint8ClampedArray,
 ];
+
+if (typeof BigInt64Array !== 'undefined') {
+  builtInObject.push(BigInt64Array);
+}
+
+if (typeof BigUint64Array !== 'undefined') {
+  builtInObject.push(BigUint64Array);
+}
+
+if (typeof SharedArrayBuffer !== 'undefined') {
+  builtInObject.push(SharedArrayBuffer);
+}
 
 if (typeof Buffer !== 'undefined') {
   builtInObject.push(Buffer);
@@ -30,6 +48,20 @@ if (typeof Buffer !== 'undefined') {
 
 if (typeof Window !== 'undefined') {
   builtInObject.push(Window);
+}
+
+const GeneratorFunction = (function* () {
+  yield undefined;
+})().constructor;
+if (GeneratorFunction !== undefined) {
+  builtInObject.push(GeneratorFunction);
+}
+
+const AsyncGeneratorFunction = (async function* () {
+  yield undefined;
+})().constructor;
+if (AsyncGeneratorFunction !== undefined) {
+  builtInObject.push(AsyncGeneratorFunction);
 }
 
 export const SERIALIZABLE_PROPERTIES = Symbol.for(
