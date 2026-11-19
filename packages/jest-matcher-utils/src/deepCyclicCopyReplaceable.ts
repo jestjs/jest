@@ -50,13 +50,17 @@ if (typeof Window !== 'undefined') {
   builtInObject.push(Window);
 }
 
-const GeneratorFunction = (function* () {})().constructor;
-if (typeof GeneratorFunction !== 'undefined') {
+const GeneratorFunction = (function* () {
+  yield undefined;
+})().constructor;
+if (GeneratorFunction !== undefined) {
   builtInObject.push(GeneratorFunction);
 }
 
-const AsyncGeneratorFunction = (async function* () {})().constructor;
-if (typeof AsyncGeneratorFunction !== 'undefined') {
+const AsyncGeneratorFunction = (async function* () {
+  yield undefined;
+})().constructor;
+if (AsyncGeneratorFunction !== undefined) {
   builtInObject.push(AsyncGeneratorFunction);
 }
 

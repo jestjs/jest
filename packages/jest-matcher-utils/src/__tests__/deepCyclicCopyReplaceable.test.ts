@@ -262,10 +262,14 @@ test('handles getters returning primitive values', () => {
 test('returns built-in objects with internal slots as-is without breaking slots (#16541)', () => {
   const buffer = new ArrayBuffer(8);
   const dataView = new DataView(buffer);
+  /* eslint-disable unicorn/new-for-builtins, no-new-wrappers */
   const boxedNum = new Number(42);
   const boxedBool = new Boolean(true);
   const boxedStr = new String('hello');
-  const gen = (function* () {})();
+  /* eslint-enable unicorn/new-for-builtins, no-new-wrappers */
+  const gen = (function* () {
+    yield undefined;
+  })();
 
   expect(deepCyclicCopyReplaceable(buffer)).toBe(buffer);
   expect(deepCyclicCopyReplaceable(dataView)).toBe(dataView);
