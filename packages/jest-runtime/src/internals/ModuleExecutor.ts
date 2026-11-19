@@ -64,6 +64,8 @@ export interface ModuleExecutorOptions {
 }
 
 export class ModuleExecutor {
+  private static nextRuntimeId = 1;
+  private readonly runtimeId = ModuleExecutor.nextRuntimeId++;
   readonly injectedModuleParameters: ReadonlyArray<string>;
 
   private readonly resolution: Resolution;
@@ -139,7 +141,11 @@ export class ModuleExecutor {
 
       const transformedCode = this.transformCache.transform(filename, options);
 
-      const compiledFunction = this.compile(transformedCode, filename);
+      const compiledFunction = this.compile(
+        transformedCode,
+        filename,
+        options?.isInternalModule,
+      );
       if (compiledFunction === null) {
         return 'env-disposed';
       }
@@ -196,6 +202,7 @@ export class ModuleExecutor {
   private compile(
     scriptSource: string,
     filename: string,
+    isInternalModule = false,
   ): ModuleWrapper | null {
     const vmContext = this.environment.getVmContext();
 
@@ -204,11 +211,17 @@ export class ModuleExecutor {
     }
 
     try {
+      // Suffix internal module filenames per runtime instance so V8's isolate
+      // compilation cache does not share a single SharedFunctionInfo across test
+      // VM contexts (see https://github.com/jestjs/jest/issues/16523).
       const scriptFilename = this.resolution.isCoreModule(filename)
         ? `jest-nodejs-core-${filename}`
         : filename;
+      const compiledFilename = isInternalModule
+        ? `${scriptFilename}#jest-internal-runtime-${this.runtimeId}`
+        : scriptFilename;
       return compileFunction(scriptSource, this.injectedModuleParameters, {
-        filename: scriptFilename,
+        filename: compiledFilename,
         // The fourth argument (the import phase) is missing from
         // @types/node@18's callback type - hence the rest parameter.
         importModuleDynamically: async (
