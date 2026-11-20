@@ -343,7 +343,8 @@ function createRequireEsmError(modulePath: string): NodeJS.ErrnoException {
       '  - If the file is in "node_modules", allow it to be transformed by ' +
       'adjusting "transformIgnorePatterns" (see ' +
       'https://jestjs.io/docs/configuration#transformignorepatterns-arraystring)\n' +
-      '  - Use Node v24.9+ where Jest supports require(esm) natively ' +
+      '  - On Node v24.9+, run Node with --experimental-vm-modules, which ' +
+      'Jest needs to load ES modules from the test runtime ' +
       '(see https://jestjs.io/docs/ecmascript-modules#require-of-esm)',
   );
   error.code = 'ERR_REQUIRE_ESM';

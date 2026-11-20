@@ -274,6 +274,12 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
           ),
         }),
       );
+      // The error must point at the missing flag, not just the Node version:
+      // on Node v24.9+ without --experimental-vm-modules, require(esm) still
+      // fails inside the test runtime.
+      expect(() => runtime.requireModule(FROM, 'esm-marked')).toThrow(
+        '--experimental-vm-modules',
+      );
     },
   );
 
