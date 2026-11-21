@@ -323,7 +323,18 @@ export const printDiffOrStringify = (
   expectedLabel: string,
   receivedLabel: string,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
+  options?: DiffOptions, // options passed through to `jest-diff`
 ): string => {
+  // Call-site defaults first so that custom `options` (e.g. from the `diff`
+  // config option) take precedence over them.
+  const diffOptions: DiffOptions = {
+    aAnnotation: expectedLabel,
+    bAnnotation: receivedLabel,
+    expand,
+    includeChangeCounts: true,
+    ...options,
+  };
+
   if (
     typeof expected === 'string' &&
     typeof received === 'string' &&
@@ -335,13 +346,10 @@ export const printDiffOrStringify = (
   ) {
     if (expected.includes('\n') || received.includes('\n')) {
       return diffStringsUnified(expected, received, {
-        aAnnotation: expectedLabel,
-        bAnnotation: receivedLabel,
         changeLineTrailingSpaceColor: chalk.bgYellow,
         commonLineTrailingSpaceColor: chalk.bgYellow,
         emptyFirstOrLastLinePlaceholder: '↵', // U+21B5
-        expand,
-        includeChangeCounts: true,
+        ...diffOptions,
       });
     }
 
@@ -366,17 +374,24 @@ export const printDiffOrStringify = (
   if (isLineDiffable(expected, received)) {
     const {replacedExpected, replacedReceived} =
       replaceMatchedToAsymmetricMatcher(expected, received, [], []);
-    const difference = diffDefault(replacedExpected, replacedReceived, {
-      aAnnotation: expectedLabel,
-      bAnnotation: receivedLabel,
-      expand,
-      includeChangeCounts: true,
-    });
+    const difference = diffDefault(
+      replacedExpected,
+      replacedReceived,
+      diffOptions,
+    );
+
+    // `aIndicator`/`bIndicator` default to '-'/'+' inside `jest-diff`
+    const aIndicator = diffOptions.aIndicator ?? '-';
+    const bIndicator = diffOptions.bIndicator ?? '+';
 
     if (
       typeof difference === 'string' &&
-      difference.includes(`- ${expectedLabel}`) &&
-      difference.includes(`+ ${receivedLabel}`)
+      difference.includes(
+        `${aIndicator} ${diffOptions.aAnnotation ?? expectedLabel}`,
+      ) &&
+      difference.includes(
+        `${bIndicator} ${diffOptions.bAnnotation ?? receivedLabel}`,
+      )
     ) {
       return difference;
     }

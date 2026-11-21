@@ -68,7 +68,12 @@ const formatNodeAssertErrors = (
         error = errors;
       }
       return isAssertionError(error)
-        ? {message: assertionErrorMessage(error, {expand: state.expand})}
+        ? {
+            message: assertionErrorMessage(error, {
+              expand: state.expand,
+              ...state.diff,
+            }),
+          }
         : errors;
     });
   }

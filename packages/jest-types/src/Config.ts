@@ -9,9 +9,9 @@ import type {ForegroundColor} from 'chalk';
 import type {ReportOptions} from 'istanbul-reports';
 import type {Arguments} from 'yargs';
 import type {TestPathPatterns} from '@jest/pattern';
-import type {InitialOptions, SnapshotFormat} from '@jest/schemas';
+import type {DiffOptions, InitialOptions, SnapshotFormat} from '@jest/schemas';
 
-export type {InitialOptions} from '@jest/schemas';
+export type {DiffOptions, InitialOptions} from '@jest/schemas';
 
 type CoverageProvider = 'babel' | 'v8';
 
@@ -168,6 +168,7 @@ export type DefaultOptions = {
   coverageProvider: CoverageProvider;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
+  diff: DiffOptions;
   errorOnDeprecated: boolean;
   expand: boolean;
   extensionsToTreatAsEsm: Array<string>;
@@ -275,6 +276,7 @@ export type GlobalConfig = {
   coverageThreshold?: CoverageThreshold;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
+  diff: DiffOptions;
   expand: boolean;
   filter?: string;
   findRelatedTests: boolean;
@@ -348,6 +350,7 @@ export type ProjectConfig = {
   dependencyExtractor?: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
+  diff: DiffOptions;
   displayName?: DisplayName;
   errorOnDeprecated: boolean;
   extensionsToTreatAsEsm: Array<string>;

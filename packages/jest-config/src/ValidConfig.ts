@@ -40,6 +40,12 @@ export const initialOptions: Required<Config.InitialOptions> = {
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   detectLeaks: false,
   detectOpenHandles: false,
+  diff: {
+    aAnnotation: 'Expected',
+    bAnnotation: 'Received',
+    contextLines: 5,
+    expand: false,
+  },
   displayName: multipleValidOptions('test-config', {
     color: 'blue',
     name: 'test-config',
@@ -224,6 +230,12 @@ export const initialProjectOptions: Required<Config.InitialProjectOptions> = {
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   detectLeaks: false,
   detectOpenHandles: false,
+  diff: {
+    aAnnotation: 'Expected',
+    bAnnotation: 'Received',
+    contextLines: 5,
+    expand: false,
+  },
   displayName: multipleValidOptions('test-config', {
     color: 'blue',
     name: 'test-config',

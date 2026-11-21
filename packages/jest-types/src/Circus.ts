@@ -6,6 +6,7 @@
  */
 
 import type * as ProcessModule from 'node:process';
+import type {DiffOptions} from './Config';
 import type * as Global from './Global';
 
 type Process = typeof ProcessModule;
@@ -255,6 +256,7 @@ export type State = {
   currentDescribeBlock: DescribeBlock;
   currentlyRunningTest?: TestEntry | null; // including when hooks are being executed
   describeRetryOptions: WeakMap<DescribeBlock, DescribeRetryOptions>;
+  diff?: DiffOptions; // options passed to jest-diff when printing assertion errors
   expand?: boolean; // expand error messages
   hasFocusedTests: boolean; // that are defined using test.only
   hasStarted: boolean; // whether the rootDescribeBlock has started running

@@ -11,6 +11,9 @@ import * as types from './raw-types';
 export const SnapshotFormat = types.SnapshotFormat;
 export type SnapshotFormat = Static<typeof SnapshotFormat>;
 
+export const DiffOptions = types.DiffOptions;
+export type DiffOptions = Static<typeof DiffOptions>;
+
 export const InitialOptions = types.InitialOptions;
 export type InitialOptions = Static<typeof InitialOptions>;
 

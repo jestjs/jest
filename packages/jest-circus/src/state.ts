@@ -25,6 +25,7 @@ const createState = (): Circus.State => {
     currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
     currentlyRunningTest: null,
     describeRetryOptions: new WeakMap(),
+    diff: undefined,
     expand: undefined,
     hasFocusedTests: false,
     hasStarted: false,

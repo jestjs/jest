@@ -80,6 +80,7 @@ export const initialize = async ({
     getRunnerState().testTimeout = globalConfig.testTimeout;
   }
   getRunnerState().maxConcurrency = globalConfig.maxConcurrency;
+  getRunnerState().diff = config.diff;
   getRunnerState().expand = globalConfig.expand;
 
   getRunnerState().randomize = globalConfig.randomize;
@@ -101,7 +102,7 @@ export const initialize = async ({
     addEventHandler(environment.handleTestEvent.bind(environment));
   }
 
-  jestExpect.setState({expand: globalConfig.expand});
+  jestExpect.setState({diff: config.diff, expand: globalConfig.expand});
 
   const runtimeGlobals: RuntimeGlobals = {
     ...globalsObject,

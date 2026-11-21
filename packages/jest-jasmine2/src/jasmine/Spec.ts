@@ -32,7 +32,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import {AssertionError} from 'node:assert';
 import type {FailedAssertion, Status} from '@jest/test-result';
-import type {Circus} from '@jest/types';
+import type {Circus, Config} from '@jest/types';
 import {convertDescriptorToString} from 'jest-util';
 import ExpectationFailed from '../ExpectationFailed';
 import assertionErrorMessage from '../assertionErrorMessage';
@@ -96,6 +96,7 @@ export default class Spec {
   markedTodo?: boolean;
   markedPending?: boolean;
 
+  static diff?: Config.DiffOptions;
   static expand?: boolean;
   static pendingSpecExceptionMessage: string;
 
@@ -240,7 +241,7 @@ export default class Spec {
         expected: '',
         actual: '',
         error: this.isAssertionError(error)
-          ? assertionErrorMessage(error, {expand: Spec.expand})
+          ? assertionErrorMessage(error, {expand: Spec.expand, ...Spec.diff})
           : error,
       },
       true,

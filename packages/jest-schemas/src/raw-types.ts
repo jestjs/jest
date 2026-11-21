@@ -34,6 +34,34 @@ export const SnapshotFormat = Type.Partial(
   }),
 );
 
+// Options of `jest-diff` that are color functions cannot be expressed as a
+// JSON schema, so they are given an explicit type and accept any value.
+const DiffOptionsColor = Type.Unsafe<(arg: string) => string>({});
+const CompareKeys = Type.Unsafe<((a: string, b: string) => number) | null>({});
+
+export const DiffOptions = Type.Partial(
+  Type.Object({
+    aAnnotation: Type.String(),
+    aColor: DiffOptionsColor,
+    aIndicator: Type.String(),
+    bAnnotation: Type.String(),
+    bColor: DiffOptionsColor,
+    bIndicator: Type.String(),
+    changeColor: DiffOptionsColor,
+    changeLineTrailingSpaceColor: DiffOptionsColor,
+    commonColor: DiffOptionsColor,
+    commonIndicator: Type.String(),
+    commonLineTrailingSpaceColor: DiffOptionsColor,
+    compareKeys: CompareKeys,
+    contextLines: Type.Integer({minimum: 0}),
+    emptyFirstOrLastLinePlaceholder: Type.String(),
+    expand: Type.Boolean(),
+    includeChangeCounts: Type.Boolean(),
+    omitAnnotationLines: Type.Boolean(),
+    patchColor: DiffOptionsColor,
+  }),
+);
+
 const CoverageProvider = Type.Union([
   Type.Literal('babel'),
   Type.Literal('v8'),
@@ -247,6 +275,7 @@ export const InitialOptions = Type.Partial(
     dependencyExtractor: Type.String(),
     detectLeaks: Type.Boolean(),
     detectOpenHandles: Type.Boolean(),
+    diff: DiffOptions,
     displayName: Type.Union([Type.String(), DisplayName]),
     expand: Type.Boolean(),
     extensionsToTreatAsEsm: Type.Array(Type.String()),

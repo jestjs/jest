@@ -556,6 +556,9 @@ export default async function normalize(
       // level, there's currently no way we can deal with such config. Denying
       // it in a project config would swallow the global-only warning instead.
       ...(isProjectOptions ? [] : ['coverageThreshold']),
+      // 'diff' accepts arbitrary `jest-diff` options, including color
+      // functions, which cannot be validated against an example.
+      'diff',
       'globals',
       'moduleNameMapper',
       'testEnvironmentOptions',
@@ -967,6 +970,11 @@ export default async function normalize(
         }
 
         value = oldOptions[key];
+        break;
+      }
+      case 'diff': {
+        value = {...DEFAULT_CONFIG.diff, ...oldOptions[key]};
+
         break;
       }
       case 'snapshotFormat': {
