@@ -370,9 +370,13 @@ describe('diff', () => {
   it('does not warn about unknown options inside diff', async () => {
     jest.mocked(console.warn).mockImplementation(() => {});
 
+    // Bound to a variable first: `diff` intentionally accepts arbitrary
+    // `jest-diff` options, so a fresh literal would trip TS excess-property
+    // checking on `customOption`.
+    const diff = {aColor: (arg: string): string => arg, customOption: true};
     const {options} = await normalize(
       {
-        diff: {aColor: (arg: string): string => arg, customOption: true},
+        diff,
         rootDir: '/root/path/foo',
       },
       {} as Config.Argv,
