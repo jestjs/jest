@@ -560,6 +560,46 @@ The `extract` function should return an iterable (`Array`, `Set`, etc.) with the
 
 That module can also contain a `getCacheKey` function to generate a cache key to determine if the logic has changed and any cached artifacts relying on it should be discarded.
 
+### `diff` \[object]
+
+Default: `{}`
+
+Options passed through to [`jest-diff`](https://www.npmjs.com/package/jest-diff) when Jest prints the diff of a failed assertion (for example from `toEqual` or `assert.strictEqual`). This makes it possible to customize the annotations, indicators, colors and context lines of the printed diff — useful for accessibility (e.g. terminals or themes where the default colors are hard to read) or personal preference.
+
+All [options of `jest-diff`](https://github.com/jestjs/jest/tree/main/packages/jest-diff#options) are accepted: `aAnnotation`, `aColor`, `aIndicator`, `bAnnotation`, `bColor`, `bIndicator`, `changeColor`, `changeLineTrailingSpaceColor`, `commonColor`, `commonIndicator`, `commonLineTrailingSpaceColor`, `compareKeys`, `contextLines`, `emptyFirstOrLastLinePlaceholder`, `expand`, `includeChangeCounts`, `omitAnnotationLines` and `patchColor`. Any option that is not set keeps its `jest-diff` default.
+
+```js tab title="jest.config.js"
+const chalk = require('chalk');
+
+module.exports = {
+  diff: {
+    aAnnotation: 'Expected',
+    aColor: chalk.green,
+    aIndicator: '-',
+    bAnnotation: 'Received',
+    bColor: chalk.red,
+    bIndicator: '+',
+    commonIndicator: ' ',
+    contextLines: 5,
+    expand: false,
+    includeChangeCounts: false,
+    patchColor: chalk.yellow,
+  },
+};
+```
+
+```ts tab title="jest.config.ts"
+import {defineConfig} from 'jest';
+
+export default defineConfig({
+  diff: {
+    contextLines: 2,
+  },
+});
+```
+
+Note that the `--expand`/`--no-expand` CLI flags still control whether diffs are expanded by default; setting `expand` inside `diff` takes precedence for the printed diff.
+
 ### `displayName` \[string, object]
 
 default: `undefined`

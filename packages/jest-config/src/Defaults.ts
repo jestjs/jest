@@ -28,6 +28,7 @@ const defaultOptions: Config.DefaultOptions = {
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   detectLeaks: false,
   detectOpenHandles: false,
+  diff: {},
   errorOnDeprecated: false,
   expand: false,
   extensionsToTreatAsEsm: [],

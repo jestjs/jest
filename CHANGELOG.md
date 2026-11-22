@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config, expect, jest-circus, jest-jasmine2]` Add a `diff` config option to pass [options](https://github.com/jestjs/jest/tree/main/packages/jest-diff#options) through to `jest-diff` when printing diffs of failed assertions ([#16574](https://github.com/jestjs/jest/pull/16574))
+
 ### Fixes
 
 - `[jest-circus]` Disable each test file's `AsyncLocalStorage` when the file finishes, so a worker on Node versions before 24 no longer gets slower with every test file it runs ([#16553](https://github.com/jestjs/jest/pull/16553))

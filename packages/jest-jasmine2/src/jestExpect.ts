@@ -8,12 +8,15 @@
 /* eslint-disable local/prefer-spread-eventually */
 
 import {jestExpect} from '@jest/expect';
-import type {Global} from '@jest/types';
+import type {Config, Global} from '@jest/types';
 import type {JasmineMatchersObject} from './types';
 
-export default function jestExpectAdapter(config: {expand: boolean}): void {
+export default function jestExpectAdapter(config: {
+  diff?: Config.DiffOptions;
+  expand: boolean;
+}): void {
   (globalThis as Global.Global).expect = jestExpect;
-  jestExpect.setState({expand: config.expand});
+  jestExpect.setState({diff: config.diff, expand: config.expand});
 
   const jasmine = (globalThis as Global.Global).jasmine;
   jasmine.anything = jestExpect.anything;

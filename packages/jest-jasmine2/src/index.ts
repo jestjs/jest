@@ -272,8 +272,9 @@ export default async function jasmine2(
     .requireInternalModule<typeof import('./jestExpect')>(
       require.resolve('./jestExpect.js'),
     )
-    .default({expand: globalConfig.expand});
+    .default({diff: config.diff, expand: globalConfig.expand});
 
+  jasmine.Spec.diff = config.diff;
   jasmine.Spec.expand = globalConfig.expand;
 
   if (globalConfig.errorOnDeprecated) {

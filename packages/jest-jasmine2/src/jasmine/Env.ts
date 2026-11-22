@@ -693,7 +693,10 @@ export default function jasmineEnv(j$: Jasmine) {
 
         if (isAssertionError(error)) {
           checkIsError = false;
-          message = assertionErrorMessage(error, {expand: j$.Spec.expand});
+          message = assertionErrorMessage(error, {
+            expand: j$.Spec.expand,
+            ...j$.Spec.diff,
+          });
         } else {
           const check = isError(error);
 

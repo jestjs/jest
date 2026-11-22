@@ -185,6 +185,9 @@ const config: Config = {
   // A path to a custom dependency extractor
   // dependencyExtractor: undefined,
 
+  // Options passed to \`jest-diff\` when printing diffs of failed assertions
+  // diff: {},
+
   // Make calling deprecated APIs throw helpful error messages
   // errorOnDeprecated: false,
 
@@ -389,6 +392,9 @@ const config = {
   // A path to a custom dependency extractor
   // dependencyExtractor: undefined,
 
+  // Options passed to \`jest-diff\` when printing diffs of failed assertions
+  // diff: {},
+
   // Make calling deprecated APIs throw helpful error messages
   // errorOnDeprecated: false,
 
@@ -592,6 +598,9 @@ const config = {
 
   // A path to a custom dependency extractor
   // dependencyExtractor: undefined,
+
+  // Options passed to \`jest-diff\` when printing diffs of failed assertions
+  // diff: {},
 
   // Make calling deprecated APIs throw helpful error messages
   // errorOnDeprecated: false,

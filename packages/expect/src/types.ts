@@ -72,6 +72,11 @@ export interface MatcherState {
    */
   currentTestIdentity?: () => object | undefined;
   currentTestName?: string;
+  /**
+   * Options passed through to `jest-diff` when printing diffs of failed
+   * assertions. Set from the `diff` project config option.
+   */
+  diff?: jestMatcherUtils.DiffOptions;
   error?: Error;
   expand?: boolean;
   expectedAssertionsNumber: number | null;

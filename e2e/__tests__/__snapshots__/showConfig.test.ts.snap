@@ -18,6 +18,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "cwd": "<<REPLACED_ROOT_DIR>>",
       "detectLeaks": false,
       "detectOpenHandles": false,
+      "diff": {},
       "errorOnDeprecated": false,
       "extensionsToTreatAsEsm": [],
       "fakeTimers": {
@@ -115,6 +116,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     ],
     "detectLeaks": false,
     "detectOpenHandles": false,
+    "diff": {},
     "errorOnDeprecated": false,
     "expand": false,
     "findRelatedTests": false,
