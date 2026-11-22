@@ -12,7 +12,10 @@ export const SnapshotFormat = types.SnapshotFormat;
 export type SnapshotFormat = Static<typeof SnapshotFormat>;
 
 export const DiffOptions = types.DiffOptions;
-export type DiffOptions = Static<typeof DiffOptions>;
+// `diff` is a pass-through for arbitrary `jest-diff` options (including
+// color functions, which cannot be expressed in the JSON schema above), so
+// the static type allows unknown keys while the runtime schema stays closed.
+export type DiffOptions = Static<typeof DiffOptions> & Record<string, unknown>;
 
 export const InitialOptions = types.InitialOptions;
 export type InitialOptions = Static<typeof InitialOptions>;

@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-config, expect, jest-circus, jest-jasmine2]` Add a `diff` config option to pass [options](https://github.com/jestjs/jest/tree/main/packages/jest-diff#options) through to `jest-diff` when printing diffs of failed assertions ([#12576](https://github.com/jestjs/jest/issues/12576))
+- `[jest-config, expect, jest-circus, jest-jasmine2]` Add a `diff` config option to pass [options](https://github.com/jestjs/jest/tree/main/packages/jest-diff#options) through to `jest-diff` when printing diffs of failed assertions ([#16574](https://github.com/jestjs/jest/pull/16574))
 
 ### Fixes
 
