@@ -5222,6 +5222,63 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@leuria/client@npm:^0.2.0":
+  version: 0.2.1
+  resolution: "@leuria/client@npm:0.2.1"
+  checksum: 10/a393acb62d330922611e3e318bf25c4827fd40503676c2d7460ecbc37979e1aeea973384982ba5cce25e83f7ac2bd4750e5fc418c634973b598dde56a6532c70
+  languageName: node
+  linkType: hard
+
+"@leuria/connect@npm:^0.1.5":
+  version: 0.1.5
+  resolution: "@leuria/connect@npm:0.1.5"
+  peerDependencies:
+    "@leuria/client": ^0.2.0
+  checksum: 10/7383b8d1b5b0e4d55184ddbd59298d737dbcabc95f27828c9a18a49adbec54699d03b16805f5589eaf9e13d781b169e112fc58c500f85622bf850487278e9a63
+  languageName: node
+  linkType: hard
+
+"@leuria/docs@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "@leuria/docs@npm:0.1.2"
+  dependencies:
+    "@leuria/connect": "npm:^0.1.5"
+    "@leuria/store": "npm:^0.1.1"
+    github-slugger: "npm:^2.0.0"
+    marked: "npm:^18.0.0"
+    minisearch: "npm:^7.2.0"
+  peerDependencies:
+    "@leuria/client": ^0.2.0
+  checksum: 10/fb363af1f2905f7793fdc1fd3a7dc327fa84deeb13b28e0751195b2fb9986cd7d7ac9265fa76f51f5de34a2a9bfa6d27f5917112d2629a0ddbe33a3784d01bff
+  languageName: node
+  linkType: hard
+
+"@leuria/docusaurus@npm:0.1.4":
+  version: 0.1.4
+  resolution: "@leuria/docusaurus@npm:0.1.4"
+  dependencies:
+    "@leuria/client": "npm:^0.2.0"
+    "@leuria/connect": "npm:^0.1.5"
+    "@leuria/docs": "npm:^0.1.2"
+  peerDependencies:
+    "@docusaurus/core": ^3.6.0
+    "@leuria/web-embed": ^0.1.2
+  peerDependenciesMeta:
+    "@leuria/web-embed":
+      optional: true
+  checksum: 10/0598a1fdda96a3772febd62329562b9af1932c1bced132206796fe7cb7c937cc24e4619cdcee9afe7c726f6c1831c129372cae5ace84f07c10235d58b18d995b
+  languageName: node
+  linkType: hard
+
+"@leuria/store@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@leuria/store@npm:0.1.1"
+  peerDependencies:
+    "@leuria/client": ^0.2.0
+  checksum: 10/0eb82686c3154d58c47fcee35da88e9da2f9378a0e8d81978700db413ef6f0affe2a948317bafa00d960e1441af01b8806dbb673676b7ea0fad18e1360d6bff4
+  languageName: node
+  linkType: hard
+
 "@mdx-js/mdx@npm:^3.0.0":
   version: 3.1.1
   resolution: "@mdx-js/mdx@npm:3.1.1"
@@ -15328,6 +15385,7 @@ __metadata:
     "@docusaurus/preset-classic": "npm:^3.0.0"
     "@docusaurus/remark-plugin-npm2yarn": "npm:^3.0.0"
     "@docusaurus/tsconfig": "npm:^3.0.0"
+    "@leuria/docusaurus": "npm:0.1.4"
     "@types/react": "npm:^19.2.18"
     clsx: "npm:^2.1.1"
     docusaurus-remark-plugin-tab-blocks: "npm:^4.0.0"
@@ -16041,6 +16099,15 @@ __metadata:
   version: 3.0.4
   resolution: "markdown-table@npm:3.0.4"
   checksum: 10/bc699819e6a15607e5def0f21aa862aa061cf1f49877baa93b0185574f6ab143591afe0e18b94d9b15ea80c6a693894150dbccfacf4f6767160dc32ae393dfe0
+  languageName: node
+  linkType: hard
+
+"marked@npm:^18.0.0":
+  version: 18.2.1
+  resolution: "marked@npm:18.2.1"
+  bin:
+    marked: bin/marked.js
+  checksum: 10/0996e98ccdf3c241cdca607cd6aa1d708033f40d242424ca773f1851fbaa7c50d3b6b88855d380ffdd794298698442316da6e7522348cd5fa29777cdc542632a
   languageName: node
   linkType: hard
 
@@ -17425,6 +17492,13 @@ __metadata:
   version: 7.1.3
   resolution: "minipass@npm:7.1.3"
   checksum: 10/175e4d5e20980c3cd316ae82d2c031c42f6c746467d8b1905b51060a0ba4461441a0c25bb67c025fd9617f9a3873e152c7b543c6b5ac83a1846be8ade80dffd6
+  languageName: node
+  linkType: hard
+
+"minisearch@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "minisearch@npm:7.2.0"
+  checksum: 10/784eef4476442d2c2da2d61ffb3893850fc6c99fc475daa6dceb2c9a224fd6ff030bed7112e01ca8c801f2aeb1692addb1bd0ffd2602666b931110f468fb435d
   languageName: node
   linkType: hard
 
