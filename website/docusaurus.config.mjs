@@ -153,6 +153,17 @@ const config = {
         ],
       }),
     ],
+    [
+      '@leuria/docusaurus',
+      {
+        suggestions: [
+          'How do I mock a module?',
+          'How do I test asynchronous code?',
+          'How do I configure Jest with TypeScript?',
+        ],
+        title: 'Ask the Jest docs',
+      },
+    ],
   ],
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
