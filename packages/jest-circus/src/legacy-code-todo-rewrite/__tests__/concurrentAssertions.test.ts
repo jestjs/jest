@@ -6,75 +6,70 @@
  */
 
 import type {MatcherState} from '@jest/expect';
-import {afterEach, beforeEach, describe, expect, it} from '@jest/globals';
-import type {Circus} from '@jest/types';
+import {afterAll, afterEach, beforeEach, expect, it} from '@jest/globals';
+import {getState} from '../../state';
+import {
+  disableTestExecutionContext,
+  getTestExecutionContext,
+  runInTestExecutionContext,
+} from '../../testExecutionContext';
+import {makeTest} from '../../utils';
 import {eventHandler} from '../jestAdapterInit';
 
-describe('expect.assertions with concurrent test states', () => {
-  let previousGetter: MatcherState['currentConcurrentTestState'];
-  let stateA: MatcherState;
-  let stateB: MatcherState;
-  let activeState: MatcherState | undefined;
+let previousGetter: MatcherState['currentConcurrentTestState'];
 
-  beforeEach(() => {
-    const state = expect.getState();
-    previousGetter = state.currentConcurrentTestState;
-    stateA = {...state, suppressedErrors: []};
-    stateB = {...state, suppressedErrors: []};
-    expect.setState({
-      currentConcurrentTestState: () => activeState ?? previousGetter?.(),
-    });
+beforeEach(() => {
+  previousGetter = expect.getState().currentConcurrentTestState;
+  expect.setState({
+    currentConcurrentTestState: () => getTestExecutionContext()?.matcherState,
   });
+});
 
-  afterEach(() => {
-    activeState = undefined;
-    expect.setState({currentConcurrentTestState: previousGetter});
+afterEach(() => {
+  expect.setState({currentConcurrentTestState: previousGetter});
+});
+
+afterAll(disableTestExecutionContext);
+
+const runConcurrentTest = (assertions: () => void) => {
+  const test = makeTest(
+    assertions,
+    undefined,
+    true,
+    'same title',
+    getState().rootDescribeBlock,
+    undefined,
+    new Error('test definition'),
+    false,
+  );
+  return runInTestExecutionContext({test}, async () => {
+    await eventHandler({name: 'test_started', test});
+    expect.assertions(1);
+    assertions();
+    // Let the sibling make its assertions before collecting either result.
+    await Promise.resolve();
+    await eventHandler({name: 'test_done', test});
+    return test;
   });
+};
 
-  it('does not leak assertion counts across concurrent tests', async () => {
-    const testA = {errors: []} as unknown as Circus.TestEntry;
-    const testB = {errors: []} as unknown as Circus.TestEntry;
+it('does not share assertion counts between concurrent tests', async () => {
+  const [first, second] = await Promise.all([
+    runConcurrentTest(() => expect(1).toBe(1)),
+    runConcurrentTest(() => expect(2).toBe(2)),
+  ]);
+  expect(first.errors).toEqual([]);
+  expect(second.errors).toEqual([]);
+});
 
-    activeState = stateA;
-    expect.assertions(1);
-    expect(1).toBe(1);
-
-    activeState = stateB;
-    expect.assertions(1);
-    expect(1).toBe(1);
-
-    activeState = stateA;
-    await eventHandler({name: 'test_done', test: testA});
-
-    activeState = stateB;
-    await eventHandler({name: 'test_done', test: testB});
-
-    activeState = undefined;
-    expect(testA.errors).toEqual([]);
-    expect(testB.errors).toEqual([]);
-  });
-
-  it('keeps a sibling concurrent test passing when one exceeds its budget', async () => {
-    const testA = {errors: []} as unknown as Circus.TestEntry;
-    const testB = {errors: []} as unknown as Circus.TestEntry;
-
-    activeState = stateA;
-    expect.assertions(1);
-    expect(1).toBe(1);
-    expect(2).toBe(2);
-
-    activeState = stateB;
-    expect.assertions(1);
-    expect(1).toBe(1);
-
-    activeState = stateA;
-    await eventHandler({name: 'test_done', test: testA});
-
-    activeState = stateB;
-    await eventHandler({name: 'test_done', test: testB});
-
-    activeState = undefined;
-    expect(testA.errors).toHaveLength(1);
-    expect(testB.errors).toEqual([]);
-  });
+it('reports an exceeded assertion count only for the test that exceeded it', async () => {
+  const [first, second] = await Promise.all([
+    runConcurrentTest(() => {
+      expect(1).toBe(1);
+      expect(2).toBe(2);
+    }),
+    runConcurrentTest(() => expect(3).toBe(3)),
+  ]);
+  expect(first.errors).toHaveLength(1);
+  expect(second.errors).toEqual([]);
 });
