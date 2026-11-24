@@ -41,13 +41,17 @@ if (!Object.prototype.hasOwnProperty.call(globalThis, JEST_MATCHERS_OBJECT)) {
   });
 }
 
-export const getState = <State extends MatcherState = MatcherState>(): State =>
-  (globalThis as any)[JEST_MATCHERS_OBJECT].state;
+export const getState = <
+  State extends MatcherState = MatcherState,
+>(): State => {
+  const state: MatcherState = (globalThis as any)[JEST_MATCHERS_OBJECT].state;
+  return (state.currentConcurrentTestState?.() ?? state) as State;
+};
 
 export const setState = <State extends MatcherState = MatcherState>(
   state: Partial<State>,
 ): void => {
-  Object.assign((globalThis as any)[JEST_MATCHERS_OBJECT].state, state);
+  Object.assign(getState<State>(), state);
 };
 
 export const getMatchers = (): MatchersObject =>

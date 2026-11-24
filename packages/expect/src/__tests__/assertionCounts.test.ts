@@ -8,6 +8,7 @@
 
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import jestExpect from '../';
+import type {MatcherState} from '../types';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
@@ -43,6 +44,90 @@ describe('.hasAssertions()', () => {
   });
 
   it('hasAssertions not leaking to global state', () => {});
+});
+
+describe('concurrent isolation', () => {
+  let previousGetter: MatcherState['currentConcurrentTestState'];
+  let stateA: MatcherState;
+  let stateB: MatcherState;
+  let activeState: MatcherState | undefined;
+
+  beforeEach(() => {
+    const state = jestExpect.getState();
+    previousGetter = state.currentConcurrentTestState;
+    stateA = {...state, suppressedErrors: []};
+    stateB = {...state, suppressedErrors: []};
+    jestExpect.setState({
+      currentConcurrentTestState: () => activeState ?? previousGetter?.(),
+    });
+  });
+
+  afterEach(() => {
+    activeState = undefined;
+    jestExpect.setState({currentConcurrentTestState: previousGetter});
+    jestExpect.extractExpectedAssertionsErrors();
+  });
+
+  it('does not share assertion counts across concurrent tests', () => {
+    activeState = stateA;
+    jestExpect.assertions(1);
+    jestExpect('a').toBe('a');
+
+    activeState = stateB;
+    jestExpect.assertions(1);
+    jestExpect('b').toBe('b');
+
+    activeState = stateA;
+    const errorsA = jestExpect.extractExpectedAssertionsErrors();
+    activeState = stateB;
+    const errorsB = jestExpect.extractExpectedAssertionsErrors();
+
+    activeState = undefined;
+    expect(errorsA).toEqual([]);
+    expect(errorsB).toEqual([]);
+  });
+
+  it('reports extra assertions only for the concurrent test that made them', () => {
+    activeState = stateA;
+    jestExpect.assertions(1);
+    jestExpect('a').toBe('a');
+    jestExpect('aa').toBe('aa');
+
+    activeState = stateB;
+    jestExpect.assertions(1);
+    jestExpect('b').toBe('b');
+
+    activeState = stateA;
+    const errorsA = jestExpect.extractExpectedAssertionsErrors();
+    activeState = stateB;
+    const errorsB = jestExpect.extractExpectedAssertionsErrors();
+
+    activeState = undefined;
+    expect(errorsA).toHaveLength(1);
+    expect(errorsA[0].actual).toBe('2');
+    expect(errorsA[0].expected).toBe('1');
+    expect(errorsB).toEqual([]);
+  });
+
+  it('does not share hasAssertions across concurrent tests', () => {
+    activeState = stateA;
+    jestExpect.hasAssertions();
+
+    activeState = stateB;
+    jestExpect.hasAssertions();
+    jestExpect('b').toBe('b');
+
+    activeState = stateA;
+    const errorsA = jestExpect.extractExpectedAssertionsErrors();
+    activeState = stateB;
+    const errorsB = jestExpect.extractExpectedAssertionsErrors();
+
+    activeState = undefined;
+    expect(errorsA).toHaveLength(1);
+    expect(errorsA[0].actual).toBe('none');
+    expect(errorsA[0].expected).toBe('at least one');
+    expect(errorsB).toEqual([]);
+  });
 });
 
 describe('numPassingAsserts', () => {
