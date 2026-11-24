@@ -26,6 +26,23 @@ it('serializes regular objects like JSON.stringify', () => {
   expect(serializeToJSON(object)).toEqual(JSON.stringify(object));
 });
 
+it('serializes bigints', () => {
+  const objectWithBigInts = {
+    ...object,
+    matcherResult: {actual: 4n, expected: 10n},
+    weight: -9n,
+  };
+
+  expect(() => JSON.stringify(objectWithBigInts)).toThrow(
+    'Do not know how to serialize a BigInt',
+  );
+
+  expect(JSON.parse(serializeToJSON(objectWithBigInts))).toMatchObject({
+    matcherResult: {actual: '4n', expected: '10n'},
+    weight: '-9n',
+  });
+});
+
 it('serializes errors', () => {
   const objectWithError = {
     ...object,

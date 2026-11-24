@@ -72,6 +72,7 @@ export class V8CoverageCollector {
       throw new Error('You need to call `stopCollectingV8Coverage` first.');
     }
     const sources = this.sources;
+    const loadedFilenames = [...sources.keys()];
     return this.result
       .filter(res => res.url.startsWith('file://'))
       .map(res => ({...res, url: fileURLToPath(res.url)}))
@@ -85,7 +86,7 @@ export class V8CoverageCollector {
             res.url,
             this.coverageOptions,
             this.config,
-            /* loadedFilenames */ [...sources.keys()],
+            loadedFilenames,
           ),
       )
       .map(result => ({
@@ -96,7 +97,7 @@ export class V8CoverageCollector {
 
   reset(): void {
     this.sources?.clear();
-    this.result = [];
+    this.result = undefined;
     this.instrumenter = undefined;
   }
 }

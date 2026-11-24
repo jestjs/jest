@@ -53,4 +53,35 @@ describe('Runtime', () => {
       expect(hasThrown).toBe(true);
     });
   });
+
+  describe('process.getBuiltinModule', () => {
+    const itOnSupportedNodes =
+      typeof process.getBuiltinModule === 'function' ? it : it.skip;
+
+    itOnSupportedNodes('serves the sandbox process and module', async () => {
+      const runtime = await createRuntime(__filename);
+      const sandboxProcess = runtime._environment.global.process;
+      expect(sandboxProcess.getBuiltinModule('process')).toBe(sandboxProcess);
+      expect(sandboxProcess.getBuiltinModule('node:process')).toBe(
+        sandboxProcess,
+      );
+      expect(sandboxProcess.getBuiltinModule('module')).toBe(
+        runtime.requireModule(runtime.__mockRootPath, 'node:module'),
+      );
+    });
+
+    itOnSupportedNodes(
+      'serves builtins and undefined for unknown names',
+      async () => {
+        const runtime = await createRuntime(__filename);
+        const sandboxProcess = runtime._environment.global.process;
+        expect(sandboxProcess.getBuiltinModule('fs')).toBe(
+          runtime.requireModule(runtime.__mockRootPath, 'fs'),
+        );
+        expect(
+          sandboxProcess.getBuiltinModule('not-a-builtin'),
+        ).toBeUndefined();
+      },
+    );
+  });
 });

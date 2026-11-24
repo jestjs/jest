@@ -18,7 +18,7 @@ function loadIsIgnorableFileError(platform: NodeJS.Platform) {
   mockPlatform.mockReturnValue(platform);
   let isIgnorableFileError!: (error: NodeJS.ErrnoException) => boolean;
   jest.isolateModules(() => {
-    ({isIgnorableFileError} = require('../common'));
+    ({isIgnorableFileError} = require('../isIgnorableFileError'));
   });
   return isIgnorableFileError;
 }

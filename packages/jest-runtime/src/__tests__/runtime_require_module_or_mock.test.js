@@ -36,6 +36,14 @@ it('mocks modules by default when using automocking', async () => {
   expect(exports.setModuleStateValue._isMockFunction).toBe(true);
 });
 
+it('maps a core module specifier through moduleNameMapper', async () => {
+  const runtime = await createRuntime(__filename, {
+    moduleNameMapper: {...moduleNameMapper, '^fs$': '<rootDir>/RegularModule'},
+  });
+  const exports = runtime.requireModule(runtime.__mockRootPath, 'fs');
+  expect(exports.isRealModule).toBe(true);
+});
+
 it("doesn't mock modules when explicitly unmocked when using automocking", async () => {
   const runtime = await createRuntime(__filename, {
     automock: true,
@@ -400,9 +408,11 @@ describe('isolateModules', () => {
   describe('can use isolateModules from a beforeEach block', () => {
     let exports;
     beforeEach(() => {
+      // Drop whatever earlier tests loaded into the outer registry, so the
+      // state below is the same no matter which tests ran before this one.
+      jest.resetModules();
       jest.isolateModules(() => {
         exports = require('./test_root/ModuleWithState');
-        exports.set(1); // Ensure idempotency with the isolateModulesAsync test
       });
     });
 
@@ -529,9 +539,11 @@ describe('isolateModulesAsync', () => {
   describe('can use isolateModulesAsync from a beforeEach block', () => {
     let exports;
     beforeEach(async () => {
+      // Drop whatever earlier tests loaded into the outer registry, so the
+      // state below is the same no matter which tests ran before this one.
+      jest.resetModules();
       await jest.isolateModulesAsync(async () => {
         exports = require('./test_root/ModuleWithState');
-        exports.set(1); // Ensure idempotency with the isolateModules test
       });
     });
 
@@ -541,9 +553,9 @@ describe('isolateModulesAsync', () => {
       expect(exports.getState()).toBe(2);
 
       exports = require('./test_root/ModuleWithState');
-      expect(exports.getState()).toBe(2);
+      expect(exports.getState()).toBe(1);
       exports.increment();
-      expect(exports.getState()).toBe(3);
+      expect(exports.getState()).toBe(2);
     });
   });
 });

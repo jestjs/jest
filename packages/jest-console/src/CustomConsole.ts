@@ -15,8 +15,14 @@ import {
   inspect,
 } from 'node:util';
 import chalk from 'chalk';
-import {clearLine, formatTime} from 'jest-util';
-import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
+import {ErrorWithStack, clearLine, formatTime, invariant} from 'jest-util';
+import type {
+  ConsoleBuffer,
+  LogCounters,
+  LogMessage,
+  LogTimers,
+  LogType,
+} from './types';
 
 type Formatter = (type: LogType, message: LogMessage) => string;
 
@@ -24,6 +30,7 @@ export default class CustomConsole extends Console {
   private readonly _stdout: WriteStream;
   private readonly _stderr: WriteStream;
   private readonly _formatBuffer: Formatter;
+  private readonly _buffer: ConsoleBuffer = [];
   private _counters: LogCounters = {};
   private _timers: LogTimers = {};
   private _groupDepth = 0;
@@ -46,6 +53,7 @@ export default class CustomConsole extends Console {
     super.log(
       this._formatBuffer(type, '  '.repeat(this._groupDepth) + message),
     );
+    this._addToBuffer(type, message);
   }
 
   private _logError(type: LogType, message: string) {
@@ -53,7 +61,22 @@ export default class CustomConsole extends Console {
     super.error(
       this._formatBuffer(type, '  '.repeat(this._groupDepth) + message),
     );
+    this._addToBuffer(type, message);
   }
+
+  private readonly _addToBuffer = (type: LogType, message: string) => {
+    const rawStack = new ErrorWithStack(undefined, this._addToBuffer).stack;
+
+    invariant(rawStack != null, 'always have a stack trace');
+
+    const origin = rawStack.split('\n').slice(3).filter(Boolean).join('\n');
+
+    this._buffer.push({
+      message: '  '.repeat(this._groupDepth) + message,
+      origin,
+      type,
+    });
+  };
 
   override assert(value: unknown, message?: string | Error): asserts value {
     try {
@@ -159,7 +182,7 @@ export default class CustomConsole extends Console {
     this._logError('warn', format(firstArg, ...args));
   }
 
-  getBuffer(): undefined {
-    return undefined;
+  getBuffer(): ConsoleBuffer | undefined {
+    return this._buffer.length > 0 ? this._buffer : undefined;
   }
 }

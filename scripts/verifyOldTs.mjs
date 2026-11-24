@@ -23,6 +23,8 @@ const tsconfigBasePackage = Object.keys(rootPackageJson.devDependencies).find(
 );
 /* eslint-enable import-x/order */
 
+const nodeTypesPackage = `@types/node@${rootPackageJson.devDependencies['@types/node']}`;
+
 const baseTsConfig = JSON.parse(
   stripJsonComments(
     fs.readFileSync(require.resolve('../tsconfig.json'), 'utf8'),
@@ -54,12 +56,25 @@ function smoketest() {
   try {
     fs.writeFileSync(
       path.join(cwd, '.yarnrc.yml'),
-      'nodeLinker: node-modules\n',
+      // the CI defaults that protect a real lockfile break the throwaway one,
+      // and the age gate has to match ours or this project resolves versions we never would
+      [
+        'enableHardenedMode: false',
+        'enableImmutableInstalls: false',
+        'nodeLinker: node-modules',
+        'npmMinimalAgeGate: 3d',
+        '',
+      ].join('\n'),
     );
     execa.sync('yarn', ['init', '--yes'], {cwd, stdio: 'inherit'});
     execa.sync(
       'yarn',
-      ['add', `typescript@~${tsVersion}`, tsconfigBasePackage],
+      [
+        'add',
+        `typescript@~${tsVersion}`,
+        tsconfigBasePackage,
+        nodeTypesPackage,
+      ],
       {cwd, stdio: 'inherit'},
     );
     fs.writeFileSync(

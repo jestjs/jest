@@ -118,6 +118,26 @@ test('support re-exports from CJS of core module', () => {
   expect(exitCode).toBe(0);
 });
 
+// `node:sqlite` is the first builtin without a bare counterpart that is stable
+// enough to import here. The range is where it no longer needs
+// `--experimental-sqlite`, so the fixture exercises resolution rather than the
+// flag.
+onNodeVersions('>=22.13.0 <23.0.0 || >=23.4.0', () => {
+  test('supports importing a builtin that only exists prefixed', () => {
+    const {exitCode, stderr, stdout} = runJest(
+      DIR,
+      ['native-esm-prefixed-builtin.test.js'],
+      {nodeOptions: '--experimental-vm-modules --no-warnings'},
+    );
+
+    const {summary} = extractSummary(stderr);
+
+    expect(summary).toMatchSnapshot();
+    expect(stdout).toBe('');
+    expect(exitCode).toBe(0);
+  });
+});
+
 test('runs WebAssembly (Wasm) test with native ESM', () => {
   const {exitCode, stderr, stdout} = runJest(DIR, ['native-esm-wasm.test.js'], {
     nodeOptions: '--experimental-vm-modules --no-warnings',

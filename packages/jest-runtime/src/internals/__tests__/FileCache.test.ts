@@ -32,6 +32,16 @@ describe('FileCache', () => {
     expect(readFileSync).toHaveBeenCalledWith('/a.js');
   });
 
+  test('readFile caches an empty file instead of decoding it again', () => {
+    readFileSync.mockReturnValue(Buffer.from(''));
+    const cache = new FileCache(new Map());
+    const readFileBuffer = jest.spyOn(cache, 'readFileBuffer');
+
+    expect(cache.readFile('/empty.js')).toBe('');
+    expect(cache.readFile('/empty.js')).toBe('');
+    expect(readFileBuffer).toHaveBeenCalledTimes(1);
+  });
+
   test('readFile decodes the buffer and caches the string', () => {
     readFileSync.mockReturnValue(Buffer.from('hello'));
     const cache = new FileCache(new Map());

@@ -205,7 +205,9 @@ function emitAccessWarning(obj: object, key: string | symbol): void {
         'Jest deletes objects that were set on the global scope between test files to reduce memory leaks.',
         'Currently it only "soft" deletes them and emits this warning if those objects were accessed after their deletion.',
         'In future versions of Jest, this behavior will change to "on", which will likely fail tests.',
-        'You can change the behavior in your test configuration now to reduce memory usage.',
+        'Set `testEnvironmentOptions.globalsCleanup` to "on" to delete them now and reduce memory usage,',
+        'or to "off" to disable the cleanup and this warning.',
+        'See https://jestjs.io/docs/configuration#testenvironmentoptions-object',
       ]
         .map(s => `  ${s}`)
         .join('\n'),

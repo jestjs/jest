@@ -18,12 +18,9 @@ export const createOutsideJestVmPath = (path: string): string =>
 export const decodePossibleOutsideJestVmPath = (
   outsideJestVmPath: string,
 ): string | undefined => {
-  if (outsideJestVmPath.startsWith(OUTSIDE_JEST_VM_PROTOCOL)) {
+  if (outsideJestVmPath.startsWith(`${OUTSIDE_JEST_VM_PROTOCOL}//`)) {
     return decodeURIComponent(
-      outsideJestVmPath.replace(
-        new RegExp(`^${OUTSIDE_JEST_VM_PROTOCOL}//`),
-        '',
-      ),
+      outsideJestVmPath.slice(OUTSIDE_JEST_VM_PROTOCOL.length + 2),
     );
   }
   return undefined;

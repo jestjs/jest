@@ -15,7 +15,8 @@ const testEventHandler: Circus.EventHandler = (event, state) => {
       break;
     }
     case 'run_describe_start':
-    case 'run_describe_finish': {
+    case 'run_describe_finish':
+    case 'describe_retry': {
       console.log(`${event.name}:`, event.describeBlock.name);
       break;
     }

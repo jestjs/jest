@@ -230,7 +230,7 @@ export const callAsyncCircusFn = (
           }
           reject(errorAtDone);
           throw errorAtDone;
-        } else {
+        } else if (!completed) {
           testOrHook.seenDone = true;
         }
 
@@ -272,7 +272,7 @@ export const callAsyncCircusFn = (
 
     let returnedValue: Global.TestReturnValue;
     if (isGeneratorFunction(fn)) {
-      returnedValue = co.wrap(fn).call({});
+      returnedValue = co.wrap(fn).call(testContext);
     } else {
       try {
         returnedValue = fn.call(testContext);
@@ -416,10 +416,19 @@ const makeTestResults = (
 
 // Return a string that identifies the test (concat of parent describe block
 // names + test title)
+const testIds = new WeakMap<Circus.TestEntry, string>();
+
 export const getTestID = (test: Circus.TestEntry): string => {
+  const cachedTestId = testIds.get(test);
+  if (cachedTestId !== undefined) {
+    return cachedTestId;
+  }
+
   const testNamesPath = getTestNamesPath(test);
   testNamesPath.shift(); // remove TOP_DESCRIBE_BLOCK_NAME
-  return testNamesPath.join(' ');
+  const testId = testNamesPath.join(' ');
+  testIds.set(test, testId);
+  return testId;
 };
 
 const _getError = (
@@ -442,8 +451,8 @@ const _getError = (
   }
 
   if (asyncError) {
-    asyncError.message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
-    return asyncError;
+    const message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
+    return new Error(message, {cause: asyncError});
   }
 
   return new Error(`thrown: ${prettyFormat(error, {maxDepth: 3})}`);
@@ -452,7 +461,7 @@ const _getError = (
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,
   error: Circus.Exception,
-  asyncError: Circus.Exception,
+  asyncError?: Circus.Exception,
 ): void => {
   for (const child of describeBlock.children) {
     switch (child.type) {
@@ -460,7 +469,7 @@ export const addErrorToEachTestUnderDescribe = (
         addErrorToEachTestUnderDescribe(child, error, asyncError);
         break;
       case 'test':
-        child.errors.push([error, asyncError]);
+        child.errors.push(asyncError ? [error, asyncError] : error);
         break;
     }
   }

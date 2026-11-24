@@ -1,0 +1,10 @@
+{
+  "name": "custom-resolver-esm",
+  "jest": {
+    "resolver": "./resolver.mjs",
+    "transformIgnorePatterns": [
+      "/node_modules/",
+      "/packages/"
+    ]
+  }
+}

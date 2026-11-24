@@ -240,7 +240,7 @@ describe('V8CoverageCollector', () => {
     expect(collector.getResult()).toHaveLength(0);
   });
 
-  test('reset() drops sources and produces an empty result', async () => {
+  test('reset() drops the result, so getResult() reports it was never stopped', async () => {
     mockStopInstrumenting.mockResolvedValue([
       {functions: [], scriptId: '3', url: insideUrl},
     ]);
@@ -249,8 +249,11 @@ describe('V8CoverageCollector', () => {
     const collector = new V8CoverageCollector(v8Options, config, cache);
     await collector.start();
     await collector.stop();
+    expect(collector.getResult()).toHaveLength(1);
 
     collector.reset();
-    expect(collector.getResult()).toEqual([]);
+    expect(() => collector.getResult()).toThrow(
+      'You need to call `stopCollectingV8Coverage` first.',
+    );
   });
 });

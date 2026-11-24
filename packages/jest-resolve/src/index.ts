@@ -17,6 +17,7 @@ export type {
   ResolveModuleConfig,
   ResolverObject as JestResolver,
 } from './resolver';
+export {preloadResolver} from './resolver';
 export type {PackageJSON} from './types';
 export * from './utils';
 

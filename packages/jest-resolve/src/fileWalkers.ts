@@ -11,21 +11,63 @@ import type {ResolverFactory} from 'unrs-resolver';
 import {tryRealpath} from 'jest-util';
 import type {PackageJSON} from './types';
 
-let unrsResolver: ResolverFactory | undefined;
+// One factory per resolve-options shape (~2 per run: cjs/esm conditions).
+// Creating a factory is a ~5µs NAPI construction, so reuse beats a
+// clone-per-resolution; clones share one underlying fs cache.
+const unrsResolvers = new Map<string, ResolverFactory>();
 
-export function getResolver(): ResolverFactory | undefined {
-  return unrsResolver;
+export function getResolver(key: string): ResolverFactory | undefined {
+  return unrsResolvers.get(key);
 }
 
-export function setResolver(nextResolver: ResolverFactory): void {
-  unrsResolver = nextResolver;
+export function getAnyResolver(): ResolverFactory | undefined {
+  const [firstResolver] = unrsResolvers.values();
+  return firstResolver;
+}
+
+export function setResolver(key: string, resolver: ResolverFactory): void {
+  unrsResolvers.set(key, resolver);
 }
 
 export function clearFsCache(): void {
-  unrsResolver?.clearCache();
+  // The factories share one underlying cache, but clearing each keeps this
+  // correct if that ever changes.
+  for (const resolver of unrsResolvers.values()) {
+    resolver.clearCache();
+  }
+  unrsResolvers.clear();
+  preserveSymlinks = undefined;
   checkedPaths.clear();
   checkedRealpathPaths.clear();
   packageContents.clear();
+}
+
+let preserveSymlinks: boolean | undefined;
+
+/**
+ * Whether Node was started with `--preserve-symlinks` / `NODE_PRESERVE_SYMLINKS`.
+ *
+ * @see https://nodejs.org/api/cli.html#--preserve-symlinks
+ */
+export function shouldPreserveSymlinks(): boolean {
+  preserveSymlinks ??= detectPreserveSymlinks();
+  return preserveSymlinks;
+}
+
+function detectPreserveSymlinks(): boolean {
+  // on only when exactly `1`
+  if (process.env.NODE_PRESERVE_SYMLINKS === '1') {
+    return true;
+  }
+
+  // matched exactly so `--preserve-symlinks-main` (entry point only) is excluded
+  if (process.execArgv.includes('--preserve-symlinks')) {
+    return true;
+  }
+
+  return (process.env.NODE_OPTIONS ?? '')
+    .split(/\s+/)
+    .includes('--preserve-symlinks');
 }
 
 enum IPathType {

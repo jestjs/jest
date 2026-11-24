@@ -6,6 +6,7 @@
  *
  */
 
+import * as nodeModule from 'node:module';
 import * as path from 'node:path';
 import {Writable} from 'node:stream';
 import {stripVTControlCharacters as stripAnsi} from 'node:util';
@@ -20,6 +21,13 @@ import {ErrorWithStack} from 'jest-util';
 
 // @ts-expect-error: Type assertion can be removed once @types/node is updated to 23 https://nodejs.org/api/process.html#processfeaturestypescript
 export const useNativeTypeScript = Boolean(process.features.typescript);
+
+// `module.stripTypeScriptTypes` landed in Node 22.13/23.2 and works regardless
+// of `--no-experimental-strip-types`, so it is a wider gate than
+// `process.features.typescript`.
+export const supportsTypeStripping =
+  // @ts-expect-error: not yet typed in @types/node@18
+  typeof nodeModule.stripTypeScriptTypes === 'function';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 

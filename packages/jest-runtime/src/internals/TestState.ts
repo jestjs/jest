@@ -19,10 +19,6 @@ export class TestState {
     return this.state === 'tornDown';
   }
 
-  isBetweenTests(): boolean {
-    return this.state === 'betweenTests';
-  }
-
   /**
    * Logs a post-teardown reference error and sets `process.exitCode = 1` if
    * the runtime has been torn down. Returns `true` if the caller should bail

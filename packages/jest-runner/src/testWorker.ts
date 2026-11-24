@@ -15,7 +15,7 @@ import type {
 import type {Config} from '@jest/types';
 import HasteMap, {type SerializableModuleMap} from 'jest-haste-map';
 import {separateMessageFromStack} from 'jest-message-util';
-import type Resolver from 'jest-resolve';
+import {type default as Resolver, preloadResolver} from 'jest-resolve';
 import Runtime from 'jest-runtime';
 import {messageParent} from 'jest-worker';
 import runTest from './runTest';
@@ -70,9 +70,9 @@ const getResolver = (config: Config.ProjectConfig) => {
   return resolver;
 };
 
-export function setup(setupData: {
+export async function setup(setupData: {
   serializableResolvers: Array<SerializableResolver>;
-}): void {
+}): Promise<void> {
   // Module maps that will be needed for the test runs are passed.
   for (const {
     config,
@@ -81,6 +81,9 @@ export function setup(setupData: {
     const moduleMap = HasteMap.getStatic(config).getModuleMapFromJSON(
       serializableModuleMap,
     );
+    // `normalize` ran in the main process, so this worker has the resolver's
+    // path but has never loaded it. Do that now, while we can still await.
+    await preloadResolver(config.resolver);
     resolvers.set(config.id, Runtime.createResolver(config, moduleMap));
   }
 }

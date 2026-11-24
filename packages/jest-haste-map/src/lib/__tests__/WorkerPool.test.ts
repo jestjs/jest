@@ -50,6 +50,25 @@ describe('WorkerPool', () => {
     expect(MockWorker).toHaveBeenCalledTimes(1);
   });
 
+  it('honors forceInBand after a Worker has already been created', () => {
+    const pool = new WorkerPool({maxWorkers: 2, workerPath: '/fake/worker.js'});
+    const farm = pool.get();
+    const inBand = pool.get(true);
+
+    expect(inBand).not.toBe(farm);
+    expect(typeof inBand.worker).toBe('function');
+    expect(MockWorker).toHaveBeenCalledTimes(1);
+  });
+
+  it('still returns the Worker for non-in-band gets after an in-band get', () => {
+    const pool = new WorkerPool({maxWorkers: 2, workerPath: '/fake/worker.js'});
+    pool.get(true);
+    const farm = pool.get();
+
+    expect(farm).toBe(pool.get());
+    expect(MockWorker).toHaveBeenCalledTimes(1);
+  });
+
   it('end() calls .end() on the jest-worker instance', () => {
     const mockEnd = jest.fn();
     MockWorker.mockImplementation(() => ({end: mockEnd}) as any);

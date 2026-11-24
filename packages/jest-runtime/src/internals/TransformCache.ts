@@ -69,9 +69,7 @@ export class TransformCache {
       this.getFullTransformationOptions(options),
       source,
     );
-    if (this.transforms.get(filename)?.code !== transformedFile.code) {
-      this.transforms.set(filename, transformedFile);
-    }
+    this.transforms.set(filename, transformedFile);
     if (transformedFile.sourceMapPath) {
       this.sourceMaps.set(filename, transformedFile.sourceMapPath);
     }

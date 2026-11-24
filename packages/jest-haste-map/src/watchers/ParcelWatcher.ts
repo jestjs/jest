@@ -15,13 +15,13 @@ import type {
 } from '@parcel/watcher';
 import anymatch from 'anymatch';
 import * as fs from 'graceful-fs';
+import {isIgnorableFileError} from '../lib/isIgnorableFileError';
 import {
   ADD_EVENT,
   ALL_EVENT,
   CHANGE_EVENT,
   DELETE_EVENT,
   isFileIncluded,
-  isIgnorableFileError,
 } from './common';
 import type {IWatcher, WatcherOptions} from './types';
 

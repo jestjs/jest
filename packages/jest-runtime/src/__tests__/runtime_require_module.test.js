@@ -11,6 +11,7 @@
 import {builtinModules, createRequire} from 'module';
 import * as path from 'path';
 import {pathToFileURL} from 'url';
+import {testWithSyncEsm} from '@jest/test-utils';
 import slash from 'slash';
 
 let createRuntime;
@@ -153,6 +154,17 @@ describe('Runtime requireModule', () => {
       const mainModule = runtime.requireModule(__filename, modulePath);
       expect(mainModule).toBe(module);
     }
+  });
+
+  it('reflects a main module assigned after `require` was built', async () => {
+    const runtime = await createRuntime(__filename);
+    const lazy = runtime.requireModule(
+      __filename,
+      './test_root/modules_with_main/lazy_main.js',
+    );
+    expect(lazy.getMain()).toBeNull();
+    runtime.testMainModule.current = module;
+    expect(lazy.getMain()).toBe(module);
   });
 
   it('throws on non-existent haste modules', async () => {
@@ -396,4 +408,82 @@ describe('Runtime requireModule', () => {
     expect(exports.syncBuiltinESMExports).not.toThrow();
     expect(exports.builtinModules).toEqual(builtinModules);
   });
+});
+describe('Runtime requireModule module.children', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  it('records loaded modules on the requiring parent, deduplicated', async () => {
+    const runtime = await createRuntime(__filename);
+    const parentModule = runtime.requireModule(
+      runtime.__mockRootPath,
+      'ChildrenParentModule',
+    );
+    expect(parentModule.children).toHaveLength(1);
+    expect(parentModule.children[0].exports).toBe(
+      runtime.requireModule(runtime.__mockRootPath, 'RegularModule'),
+    );
+  });
+
+  it('does not record core modules', async () => {
+    const runtime = await createRuntime(__filename);
+    const parentModule = runtime.requireModule(
+      runtime.__mockRootPath,
+      'ChildrenParentModule',
+    );
+    expect(
+      parentModule.children.map(childModule => childModule.id),
+    ).not.toContain('node:path');
+  });
+
+  it('records a registry hit on the second parent as well', async () => {
+    const runtime = await createRuntime(__filename);
+    const firstParent = runtime.requireModule(
+      runtime.__mockRootPath,
+      'ChildrenParentModule',
+    );
+    const secondParent = runtime.requireModule(
+      runtime.__mockRootPath,
+      'ChildrenSecondParentModule',
+    );
+    expect(secondParent.children).toHaveLength(1);
+    expect(secondParent.children[0]).toBe(firstParent.children[0]);
+  });
+
+  it('removes a child again when its load throws', async () => {
+    const runtime = await createRuntime(__filename);
+    const parentModule = runtime.requireModule(
+      runtime.__mockRootPath,
+      'ChildrenFailedChildModule',
+    );
+    expect(parentModule.children).toHaveLength(0);
+  });
+
+  testWithSyncEsm('records a require()d ES module', async () => {
+    const runtime = await createRuntime(__filename);
+    const {esmExports, module: parentModule} = runtime.requireModule(
+      runtime.__mockRootPath,
+      'ChildrenEsmParentModule',
+    );
+    expect(esmExports.childEsmValue).toBe(42);
+    expect(parentModule.children).toHaveLength(1);
+    expect(parentModule.children[0].exports).toBe(esmExports);
+  });
+
+  testWithSyncEsm(
+    'records a require()d ES module inside isolateModules',
+    async () => {
+      const runtime = await createRuntime(__filename);
+      let parentModule;
+      runtime.isolateModules(() => {
+        parentModule = runtime.requireModule(
+          runtime.__mockRootPath,
+          'ChildrenEsmParentModule',
+        ).module;
+      });
+      expect(parentModule.children).toHaveLength(1);
+      expect(parentModule.children[0].exports.childEsmValue).toBe(42);
+    },
+  );
 });

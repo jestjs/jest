@@ -23,6 +23,7 @@ import {buildIgnoreMatcher} from './lib/buildIgnoreMatcher';
 import * as fastPath from './lib/fast_path';
 import getPlatformExtension from './lib/getPlatformExtension';
 import {copyMap, createEmptyMap} from './lib/util';
+import {getWatchmanAvailability} from './lib/watchmanSockname';
 import type {
   DependencyExtractor,
   FileData,
@@ -345,7 +346,9 @@ class HasteMap extends EventEmitter implements IHasteMap {
     id: string,
     ...extra: Array<string>
   ): string {
-    const hash = createHash('sha1').update(extra.join(''));
+    // NUL-delimited so that adjacent fields cannot run together and let two
+    // different option sets hash to the same cache file.
+    const hash = createHash('sha1').update(extra.join('\0'));
     return path.join(
       tmpdir,
       `${id.replaceAll(/\W/g, '-')}-${hash.digest('hex').slice(0, 32)}`,
@@ -469,9 +472,13 @@ class HasteMap extends EventEmitter implements IHasteMap {
 
   private async _crawl(hasteMap: InternalHasteMap) {
     const options = this._options;
+    const watchmanAvailability = options.useWatchman
+      ? await getWatchmanAvailability(options.cacheDirectory)
+      : undefined;
     return crawlFiles(
       {
         computeSha1: options.computeSha1,
+        console: this._console,
         data: hasteMap,
         enableSymlinks: options.enableSymlinks,
         extensions: options.extensions,
@@ -479,9 +486,9 @@ class HasteMap extends EventEmitter implements IHasteMap {
         ignore: this._ignore.bind(this),
         rootDir: options.rootDir,
         roots: options.roots,
+        watchmanSockname: watchmanAvailability?.sockname,
       },
-      await shouldUseWatchman(this._options.useWatchman),
-      this._console,
+      watchmanAvailability?.installed ?? false,
     );
   }
 
@@ -522,7 +529,10 @@ class HasteMap extends EventEmitter implements IHasteMap {
       onError: error =>
         this._console.error(`jest-haste-map: watch error:\n  ${error.stack}\n`),
       roots: this._options.roots,
-      useWatchman: await shouldUseWatchman(this._options.useWatchman),
+      useWatchman: await shouldUseWatchman(
+        this._options.useWatchman,
+        this._options.cacheDirectory,
+      ),
     });
 
     this._changeQueue = new ChangeQueue(hasteMap, this._options.extensions, {

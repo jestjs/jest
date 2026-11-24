@@ -19,6 +19,7 @@ import type {
   Transformer,
   TransformerFactory,
 } from '../types';
+import {supportsTypeStripping} from '../stripTypeScriptTypes';
 
 jest
   .mock('graceful-fs', () => ({
@@ -2185,6 +2186,178 @@ describe('ScriptTransformer', () => {
         .mock.calls.map(([filePath]) => filePath);
 
       expect(new Set(written).size).toBe(2);
+    });
+  });
+
+  (supportsTypeStripping ? describe : describe.skip)('type stripping', () => {
+    beforeEach(() => {
+      mockFs['/fruits/durian.ts'] =
+        'const weight: number = 3;\nmodule.exports = weight;';
+      mockFs['/fruits/durian.tsx'] = 'const node = <div />;';
+      mockFs['/fruits/lychee.ts'] =
+        'enum Size { Small }\nmodule.exports = Size;';
+      mockFs['/node_modules/papaya.ts'] = 'const weight: number = 4;';
+    });
+
+    it('erases types when no transformer claims the file', async () => {
+      const scriptTransformer = await createScriptTransformer({
+        ...config,
+        transform: [],
+      });
+
+      expect(
+        scriptTransformer.transform('/fruits/durian.ts', getCoverageOptions())
+          .code,
+      ).toBe('const weight         = 3;\nmodule.exports = weight;');
+    });
+
+    it('preserves positions rather than emitting a source map', async () => {
+      const scriptTransformer = await createScriptTransformer({
+        ...config,
+        transform: [],
+      });
+
+      const result = scriptTransformer.transform(
+        '/fruits/durian.ts',
+        getCoverageOptions(),
+      );
+
+      expect(result.sourceMapPath).toBeNull();
+      expect(result.code.split('\n')[0]).toHaveLength(
+        mockFs['/fruits/durian.ts'].split('\n')[0].length,
+      );
+    });
+
+    it('leaves `.tsx` alone, since strip-only cannot parse JSX', async () => {
+      const scriptTransformer = await createScriptTransformer({
+        ...config,
+        transform: [],
+      });
+
+      expect(
+        scriptTransformer.transform('/fruits/durian.tsx', getCoverageOptions())
+          .code,
+      ).toBe(mockFs['/fruits/durian.tsx']);
+    });
+
+    it('leaves the file alone when a transformer claims it', async () => {
+      const scriptTransformer = await createScriptTransformer({
+        ...config,
+        transform: [['\\.ts$', 'passthrough-preprocessor', {}]],
+      });
+      jest
+        .mocked(
+          (require('passthrough-preprocessor') as SyncTransformer).process,
+        )
+        .mockImplementation(sourceText => ({code: sourceText}));
+
+      expect(
+        scriptTransformer.transform('/fruits/durian.ts', getCoverageOptions())
+          .code,
+      ).toBe(mockFs['/fruits/durian.ts']);
+    });
+
+    it('honours `transformIgnorePatterns`, like Node refusing `node_modules`', async () => {
+      const scriptTransformer = await createScriptTransformer({
+        ...config,
+        transform: [],
+      });
+
+      expect(
+        scriptTransformer.transform(
+          '/node_modules/papaya.ts',
+          getCoverageOptions(),
+        ).code,
+      ).toBe(mockFs['/node_modules/papaya.ts']);
+    });
+
+    it('points at a real transformer for TypeScript that needs code generation', async () => {
+      const scriptTransformer = await createScriptTransformer({
+        ...config,
+        transform: [],
+      });
+
+      expect(() =>
+        scriptTransformer.transform('/fruits/lychee.ts', getCoverageOptions()),
+      ).toThrow('@babel/preset-typescript');
+    });
+
+    it('keys the cache on the Node version, whose output is not stable', async () => {
+      const scriptTransformer = await createScriptTransformer({
+        ...config,
+        transform: [],
+      });
+      const content = mockFs['/fruits/durian.ts'];
+      const options = getTransformOptions(false);
+
+      scriptTransformer.transformSource('/fruits/durian.ts', content, options);
+
+      const realVersion = process.version;
+      // `process.version` is read-only, so `jest.replaceProperty` cannot restore it.
+      Object.defineProperty(process, 'version', {
+        configurable: true,
+        value: 'v99.0.0',
+      });
+      try {
+        scriptTransformer.transformSource(
+          '/fruits/durian.ts',
+          content,
+          options,
+        );
+      } finally {
+        Object.defineProperty(process, 'version', {
+          configurable: true,
+          value: realVersion,
+        });
+      }
+
+      const written = jest
+        .mocked(writeFileAtomic.sync)
+        .mock.calls.map(([filePath]) => filePath);
+
+      expect(new Set(written).size).toBe(2);
+    });
+
+    it('keys the cache on whether types were stripped', async () => {
+      const content = mockFs['/fruits/durian.ts'];
+      const options = getTransformOptions(false);
+
+      const stripping = await createScriptTransformer({
+        ...config,
+        transform: [],
+      });
+      stripping.transformSource('/fruits/durian.ts', content, options);
+      const [[strippedPath]] = jest.mocked(writeFileAtomic.sync).mock.calls;
+
+      // Stand in for a Node version too old to strip types, which may well be
+      // reading the same cache directory.
+      jest.resetModules();
+      jest.doMock('../stripTypeScriptTypes', () => ({
+        ...jest.requireActual<typeof import('../stripTypeScriptTypes')>(
+          '../stripTypeScriptTypes',
+        ),
+        canStripTypes: () => false,
+      }));
+
+      try {
+        const passingThrough = await (
+          require('../ScriptTransformer') as typeof import('../ScriptTransformer')
+        ).createScriptTransformer({...config, transform: []});
+        passingThrough.transformSource('/fruits/durian.ts', content, options);
+
+        const written = jest
+          .mocked(
+            (require('write-file-atomic') as typeof import('write-file-atomic'))
+              .sync,
+          )
+          .mock.calls.map(([filePath]) => filePath);
+
+        // An empty list would mean it read the stripped file back out of the cache.
+        expect(written).toHaveLength(1);
+        expect(written[0]).not.toBe(strippedPath);
+      } finally {
+        jest.dontMock('../stripTypeScriptTypes');
+      }
     });
   });
 });

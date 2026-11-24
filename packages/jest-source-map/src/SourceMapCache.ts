@@ -8,7 +8,7 @@
 import {
   AnyMap,
   type SectionedSourceMapInput,
-  type TraceMap,
+  TraceMap,
   originalPositionFor,
 } from '@jridgewell/trace-mapping';
 import {mapFileCommentRegex} from 'convert-source-map';
@@ -72,15 +72,58 @@ function rememberMapPath(generatedPath: string, sourceMapPath: string): void {
   );
 }
 
+const WINDOWS_DRIVE_PATH_REGEXP = /^[a-zA-Z]:[\\/]/;
+
+// The tracer resolves `sources` as URLs, which reads a Windows drive path such
+// as `C:/src/input.ts` as relative and appends it to the map's directory.
+function toUrlIfDrivePath<T extends string | null | undefined>(
+  source: T,
+  reader: SourceMapFileReader,
+): T | string {
+  return source != null && WINDOWS_DRIVE_PATH_REGEXP.test(source)
+    ? reader.toUrl(source)
+    : source;
+}
+
+function withDrivePathsAsUrls(
+  map: SectionedSourceMapInput,
+  reader: SourceMapFileReader,
+): SectionedSourceMapInput {
+  if (typeof map === 'string') {
+    return withDrivePathsAsUrls(JSON.parse(map), reader);
+  }
+
+  if (map instanceof TraceMap) {
+    return map;
+  }
+
+  if ('sections' in map) {
+    return {
+      ...map,
+      sections: map.sections.map(section => ({
+        ...section,
+        map: withDrivePathsAsUrls(section.map, reader),
+      })),
+    };
+  }
+
+  return {
+    ...map,
+    sourceRoot: toUrlIfDrivePath(map.sourceRoot, reader),
+    sources: map.sources.map(source => toUrlIfDrivePath(source, reader)),
+  };
+}
+
 // `mapUrl` is what the map's `sources` resolve against.
 function parseMap(
   content: SectionedSourceMapInput,
   mapUrl: string,
+  reader: SourceMapFileReader,
 ): TraceMap | null {
   try {
     // `AnyMap` rather than `TraceMap`, which throws on the indexed maps that
     // bundlers emit as a top-level `sections` array.
-    return AnyMap(content, mapUrl);
+    return AnyMap(withDrivePathsAsUrls(content, reader), mapUrl);
   } catch {
     return null;
   }
@@ -186,7 +229,7 @@ export class SourceMapCache {
     }
 
     const content = this.reader.read(sourceMapPath);
-    const map = content == null ? null : parseMap(content, mapUrl);
+    const map = content == null ? null : parseMap(content, mapUrl, this.reader);
 
     if (content != null && map == null) {
       this.reportUnparsable(sourceMapPath, generatedPath);
@@ -237,7 +280,7 @@ export class SourceMapCache {
     // An inline map's sources are relative to the file carrying it. Every other
     // map resolves them against wherever the map itself lives.
     const mapUrl = isInline ? generatedUrl : resolvedUrl;
-    const map = parseMap(content, mapUrl);
+    const map = parseMap(content, mapUrl, this.reader);
 
     if (map == null) {
       this.reportUnparsable(

@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as os from 'node:os';
 import * as path from 'node:path';
 import type {WorkerMetadata} from '../../types';
 import type * as WorkerModule from '../../worker';
@@ -13,8 +14,26 @@ import {WorkerPool} from '../WorkerPool';
 import {createEmptyMap} from '../util';
 
 jest.mock('../WorkerPool');
+// `isIgnorableFileError` reads the platform once at module load, so the
+// platform-dependent cases have to re-import through `jest.isolateModules`.
+jest.mock('node:os', () => ({
+  ...jest.requireActual<typeof import('node:os')>('node:os'),
+  platform: jest.fn(
+    jest.requireActual<typeof import('node:os')>('node:os').platform,
+  ),
+}));
 
+const mockPlatform = jest.mocked(os.platform);
 const MockWorkerPool = WorkerPool as jest.MockedClass<typeof WorkerPool>;
+
+function loadFileProcessorOn(platform: NodeJS.Platform) {
+  mockPlatform.mockReturnValue(platform);
+  let Loaded!: typeof FileProcessor;
+  jest.isolateModules(() => {
+    ({FileProcessor: Loaded} = require('../FileProcessor'));
+  });
+  return Loaded;
+}
 
 const ROOT = path.join('/', 'root');
 const FAKE_WORKER_PATH = '/fake/worker.js';
@@ -116,9 +135,99 @@ describe('FileProcessor', () => {
       );
     });
 
-    it('silently removes the file on ENOENT worker error', async () => {
+    it.each(['EACCES', 'ENOENT'])(
+      'silently removes the file on a %s worker error',
+      async code => {
+        const hasteMap = createEmptyMap();
+        hasteMap.files.set(path.join('src', 'Locked.js'), [
+          '',
+          1000,
+          42,
+          0,
+          '',
+          null,
+        ]);
+
+        const worker = {
+          getSha1: jest.fn<typeof WorkerModule.getSha1>(),
+          worker: jest
+            .fn<typeof WorkerModule.worker>()
+            .mockRejectedValue(Object.assign(new Error(code), {code})),
+        };
+        const pool = new MockWorkerPool({
+          maxWorkers: 1,
+          workerPath: FAKE_WORKER_PATH,
+        });
+        jest.mocked(pool.get).mockReturnValue(worker);
+
+        const fp = new FileProcessor(makeOptions(), console, pool);
+        await fp.processFile(
+          hasteMap,
+          hasteMap.map,
+          hasteMap.mocks,
+          path.join(ROOT, 'src', 'Locked.js'),
+        );
+
+        expect(hasteMap.files.has(path.join('src', 'Locked.js'))).toBe(false);
+      },
+    );
+
+    // The reason this PR exists: an outside process holding a file open on
+    // Windows surfaces as EPERM, and indexing has to survive it. Asserting it
+    // here (rather than only on the predicate) is what pins `workerError` to
+    // `isIgnorableFileError` — the array check it replaced passes every other
+    // case in this file.
+    it.each([
+      ['win32', false],
+      ['linux', true],
+    ] as const)(
+      'on %s, an EPERM worker error keeps the file: %s',
+      async (platform, stillThrows) => {
+        const hasteMap = createEmptyMap();
+        hasteMap.files.set(path.join('src', 'Held.js'), [
+          '',
+          1000,
+          42,
+          0,
+          '',
+          null,
+        ]);
+
+        const worker = {
+          getSha1: jest.fn<typeof WorkerModule.getSha1>(),
+          worker: jest
+            .fn<typeof WorkerModule.worker>()
+            .mockRejectedValue(
+              Object.assign(new Error('EPERM'), {code: 'EPERM'}),
+            ),
+        };
+        const pool = new MockWorkerPool({
+          maxWorkers: 1,
+          workerPath: FAKE_WORKER_PATH,
+        });
+        jest.mocked(pool.get).mockReturnValue(worker);
+
+        const PlatformFileProcessor = loadFileProcessorOn(platform);
+        const fp = new PlatformFileProcessor(makeOptions(), console, pool);
+        const processing = fp.processFile(
+          hasteMap,
+          hasteMap.map,
+          hasteMap.mocks,
+          path.join(ROOT, 'src', 'Held.js'),
+        );
+
+        if (stillThrows) {
+          await expect(processing).rejects.toThrow('EPERM');
+        } else {
+          await processing;
+          expect(hasteMap.files.has(path.join('src', 'Held.js'))).toBe(false);
+        }
+      },
+    );
+
+    it('rethrows a worker error that is not an ignorable file error', async () => {
       const hasteMap = createEmptyMap();
-      hasteMap.files.set(path.join('src', 'Gone.js'), [
+      hasteMap.files.set(path.join('src', 'Bad.js'), [
         '',
         1000,
         42,
@@ -127,10 +236,13 @@ describe('FileProcessor', () => {
         null,
       ]);
 
-      const enoent = Object.assign(new Error('ENOENT'), {code: 'ENOENT'});
       const worker = {
         getSha1: jest.fn<typeof WorkerModule.getSha1>(),
-        worker: jest.fn<typeof WorkerModule.worker>().mockRejectedValue(enoent),
+        worker: jest
+          .fn<typeof WorkerModule.worker>()
+          .mockRejectedValue(
+            Object.assign(new Error('EISDIR'), {code: 'EISDIR'}),
+          ),
       };
       const pool = new MockWorkerPool({
         maxWorkers: 1,
@@ -139,14 +251,50 @@ describe('FileProcessor', () => {
       jest.mocked(pool.get).mockReturnValue(worker);
 
       const fp = new FileProcessor(makeOptions(), console, pool);
-      await fp.processFile(
-        hasteMap,
-        hasteMap.map,
-        hasteMap.mocks,
-        path.join(ROOT, 'src', 'Gone.js'),
-      );
 
-      expect(hasteMap.files.has(path.join('src', 'Gone.js'))).toBe(false);
+      await expect(
+        fp.processFile(
+          hasteMap,
+          hasteMap.map,
+          hasteMap.mocks,
+          path.join(ROOT, 'src', 'Bad.js'),
+        ),
+      ).rejects.toThrow('EISDIR');
+    });
+
+    it('records every file claiming a mock name, keeping the last as resolved', async () => {
+      const first = path.join('a', '__mocks__', 'foo.js');
+      const second = path.join('b', '__mocks__', 'foo.js');
+      const hasteMap = createEmptyMap();
+      hasteMap.files.set(first, ['', 1000, 42, 0, '', null]);
+      hasteMap.files.set(second, ['', 2000, 42, 0, '', null]);
+
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
+      jest.mocked(pool.get).mockReturnValue(makeWorker());
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const fp = new FileProcessor(
+        makeOptions({mocksPattern: /__mocks__/}),
+        console,
+        pool,
+      );
+      for (const relativeFilePath of [first, second]) {
+        await fp.processFile(
+          hasteMap,
+          hasteMap.map,
+          hasteMap.mocks,
+          path.join(ROOT, relativeFilePath),
+        );
+      }
+
+      expect(hasteMap.mockDuplicates.get('foo')).toEqual(
+        new Set([first, second]),
+      );
+      // Resolution stays last-wins; only the recovery path is new.
+      expect(hasteMap.mocks.get('foo')).toBe(second);
     });
 
     it('throws DuplicateError when throwOnModuleCollision is true', async () => {
@@ -278,6 +426,76 @@ describe('FileProcessor', () => {
       );
       expect(result).toBeNull();
     });
+
+    it('does not re-run the worker for a visited file whose ID is a known duplicate', () => {
+      const relativeFilePath = path.join('src', 'Dup.js');
+      const hasteMap = createEmptyMap();
+      hasteMap.files.set(relativeFilePath, ['Dup', 1000, 42, 1, '', null]);
+      // A collided name is removed from `map` and recorded in `duplicates`.
+      hasteMap.duplicates.set(
+        'Dup',
+        new Map([
+          [
+            'g',
+            new Map([
+              [relativeFilePath, 0],
+              [path.join('other', 'Dup.js'), 0],
+            ]),
+          ],
+        ]),
+      );
+
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
+      const workerInstance = makeWorker();
+      jest.mocked(pool.get).mockReturnValue(workerInstance);
+
+      const fp = new FileProcessor(makeOptions(), console, pool);
+      const result = fp.processFile(
+        hasteMap,
+        new Map(),
+        hasteMap.mocks,
+        path.join(ROOT, relativeFilePath),
+      );
+
+      expect(result).toBeNull();
+      expect(workerInstance.worker).not.toHaveBeenCalled();
+    });
+
+    it('still runs the worker for a visited file absent from the duplicates set', () => {
+      const hasteMap = createEmptyMap();
+      hasteMap.files.set(path.join('src', 'Dup.js'), [
+        'Dup',
+        1000,
+        42,
+        1,
+        '',
+        null,
+      ]);
+      hasteMap.duplicates.set(
+        'Dup',
+        new Map([['g', new Map([[path.join('other', 'Dup.js'), 0]])]]),
+      );
+
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
+      const workerInstance = makeWorker();
+      jest.mocked(pool.get).mockReturnValue(workerInstance);
+
+      const fp = new FileProcessor(makeOptions(), console, pool);
+      fp.processFile(
+        hasteMap,
+        new Map(),
+        hasteMap.mocks,
+        path.join(ROOT, 'src', 'Dup.js'),
+      );
+
+      expect(workerInstance.worker).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('buildHasteMap', () => {
@@ -351,6 +569,47 @@ describe('FileProcessor', () => {
         jest.fn(),
       );
 
+      expect(pool.end).toHaveBeenCalledTimes(1);
+    });
+
+    it('ends the worker pool when a duplicate mock throws synchronously', () => {
+      const hasteMap = createEmptyMap();
+      hasteMap.files.set(path.join('__mocks__', 'a.js'), [
+        '',
+        1000,
+        42,
+        0,
+        '',
+        null,
+      ]);
+      hasteMap.files.set(path.join('nested', '__mocks__', 'a.js'), [
+        '',
+        2000,
+        42,
+        0,
+        '',
+        null,
+      ]);
+
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
+      jest.mocked(pool.get).mockReturnValue(makeWorker());
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      const fp = new FileProcessor(
+        makeOptions({
+          mocksPattern: /__mocks__/,
+          throwOnModuleCollision: true,
+        }),
+        console,
+        pool,
+      );
+
+      expect(() =>
+        fp.buildHasteMap({hasteMap, removedFiles: new Map()}, jest.fn()),
+      ).toThrow(DuplicateError);
       expect(pool.end).toHaveBeenCalledTimes(1);
     });
   });

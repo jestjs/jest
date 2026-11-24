@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve",
-  "version": "30.4.1",
+  "version": "30.5.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -25,7 +25,7 @@
     "jest-util": "workspace:*",
     "jest-validate": "workspace:*",
     "slash": "^3.0.0",
-    "unrs-resolver": "^1.12.1"
+    "unrs-resolver": "^1.13.0"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.9",

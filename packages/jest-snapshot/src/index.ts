@@ -287,9 +287,11 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     context.dontThrow();
   }
 
-  const {currentConcurrentTestName, isNot, snapshotState} = context;
+  const {currentConcurrentTestName, currentTestIdentity, isNot, snapshotState} =
+    context;
   const currentTestName =
     currentConcurrentTestName?.() ?? context.currentTestName;
+  const testIdentity = currentTestIdentity?.();
 
   if (isNot) {
     throw new Error(
@@ -339,7 +341,12 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     if (propertyPass) {
       received = deepMerge(received, properties);
     } else {
-      const key = snapshotState.fail(fullTestName, received);
+      const key = snapshotState.fail(
+        fullTestName,
+        received,
+        undefined,
+        testIdentity,
+      );
       const matched = /(\d+)$/.exec(key);
       const count = matched === null ? 1 : Number(matched[1]);
 
@@ -354,11 +361,15 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
           snapshotState.expand,
         )}`;
 
-      return {
+      const matcherResult = {
         message,
         name: matcherName,
         pass: false,
       };
+
+      return isInline
+        ? matcherResult
+        : {...matcherResult, snapshotPath: snapshotState.snapshotPath};
     }
   }
 
@@ -368,6 +379,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     isInline,
     received,
     testFailing,
+    testIdentity,
     testName: fullTestName,
   });
   const {actual, count, expected, pass} = result;
@@ -407,13 +419,17 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
   // Passing the actual and expected objects so that a custom reporter
   // could access them, for example in order to display a custom visual diff,
   // or create a different error message
-  return {
+  const matcherResult = {
     actual,
     expected,
     message,
     name: matcherName,
     pass: false,
   };
+
+  return isInline
+    ? matcherResult
+    : {...matcherResult, snapshotPath: snapshotState.snapshotPath};
 };
 
 export const toThrowErrorMatchingSnapshot: MatcherFunctionWithContext<
