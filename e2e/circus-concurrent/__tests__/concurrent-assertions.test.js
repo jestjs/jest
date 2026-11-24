@@ -47,3 +47,20 @@ test.concurrent.each([1, 2])('same title', async value => {
   }
   await bothAsserted;
 });
+
+describe('assertions in hooks', () => {
+  beforeAll(() => {
+    expect('setup').toBe('setup');
+  });
+
+  test.concurrent('includes the assertion from beforeAll', () => {
+    expect.assertions(2);
+    expect('test').toBe('test');
+  });
+
+  afterAll(() => {
+    expect(expect.getState().currentTestName).toBe(
+      'assertions in hooks includes the assertion from beforeAll',
+    );
+  });
+});

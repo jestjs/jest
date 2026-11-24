@@ -5,45 +5,51 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {MatcherState} from '@jest/expect';
 import {afterEach, beforeEach, describe, expect, it} from '@jest/globals';
 import type {Circus} from '@jest/types';
 import {eventHandler} from '../jestAdapterInit';
 
-describe('expect.assertions with concurrent test names', () => {
-  const previousGetter = expect.getState().currentConcurrentTestName;
-  let activeTest: string | undefined;
+describe('expect.assertions with concurrent test states', () => {
+  let previousGetter: MatcherState['currentConcurrentTestState'];
+  let stateA: MatcherState;
+  let stateB: MatcherState;
+  let activeState: MatcherState | undefined;
 
   beforeEach(() => {
-    activeTest = undefined;
+    const state = expect.getState();
+    previousGetter = state.currentConcurrentTestState;
+    stateA = {...state, suppressedErrors: []};
+    stateB = {...state, suppressedErrors: []};
     expect.setState({
-      currentConcurrentTestName: () => activeTest ?? previousGetter?.(),
+      currentConcurrentTestState: () => activeState ?? previousGetter?.(),
     });
   });
 
   afterEach(() => {
-    activeTest = undefined;
-    expect.setState({currentConcurrentTestName: previousGetter});
+    activeState = undefined;
+    expect.setState({currentConcurrentTestState: previousGetter});
   });
 
   it('does not leak assertion counts across concurrent tests', async () => {
     const testA = {errors: []} as unknown as Circus.TestEntry;
     const testB = {errors: []} as unknown as Circus.TestEntry;
 
-    activeTest = 'A';
+    activeState = stateA;
     expect.assertions(1);
     expect(1).toBe(1);
 
-    activeTest = 'B';
+    activeState = stateB;
     expect.assertions(1);
     expect(1).toBe(1);
 
-    activeTest = 'A';
+    activeState = stateA;
     await eventHandler({name: 'test_done', test: testA});
 
-    activeTest = 'B';
+    activeState = stateB;
     await eventHandler({name: 'test_done', test: testB});
 
-    activeTest = undefined;
+    activeState = undefined;
     expect(testA.errors).toEqual([]);
     expect(testB.errors).toEqual([]);
   });
@@ -52,22 +58,22 @@ describe('expect.assertions with concurrent test names', () => {
     const testA = {errors: []} as unknown as Circus.TestEntry;
     const testB = {errors: []} as unknown as Circus.TestEntry;
 
-    activeTest = 'A';
+    activeState = stateA;
     expect.assertions(1);
     expect(1).toBe(1);
     expect(2).toBe(2);
 
-    activeTest = 'B';
+    activeState = stateB;
     expect.assertions(1);
     expect(1).toBe(1);
 
-    activeTest = 'A';
+    activeState = stateA;
     await eventHandler({name: 'test_done', test: testA});
 
-    activeTest = 'B';
+    activeState = stateB;
     await eventHandler({name: 'test_done', test: testB});
 
-    activeTest = undefined;
+    activeState = undefined;
     expect(testA.errors).toHaveLength(1);
     expect(testB.errors).toEqual([]);
   });

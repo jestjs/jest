@@ -59,6 +59,7 @@ const run = async (): Promise<Circus.RunResult> => {
       const test = getTestExecutionContext()?.test;
       return test ? getTestID(test) : undefined;
     },
+    currentConcurrentTestState: () => getTestExecutionContext()?.matcherState,
     currentTestIdentity: () => {
       return getTestExecutionContext()?.test;
     },

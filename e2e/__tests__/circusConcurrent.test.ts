@@ -56,8 +56,8 @@ describe('expect.assertions', () => {
     ]);
 
     expect(exitCode).toBe(0);
-    expect(json.numTotalTests).toBe(6);
-    expect(json.numPassedTests).toBe(6);
+    expect(json.numTotalTests).toBe(7);
+    expect(json.numPassedTests).toBe(7);
     expect(json.numFailedTests).toBe(0);
     expect(
       json.testResults[0].assertionResults.filter(

@@ -32,6 +32,7 @@ import globals from '..';
 import run from '../run';
 import {addEventHandler, dispatch, getState as getRunnerState} from '../state';
 import testCaseReportHandler from '../testCaseReportHandler';
+import {getTestExecutionContext} from '../testExecutionContext';
 import {RETRY_TIMES_SETTER} from '../types';
 import {unhandledRejectionHandler} from '../unhandledRejectionHandler';
 import {getTestID, parseSingleTestResult} from '../utils';
@@ -358,6 +359,28 @@ export const eventHandler = async (event: Circus.Event): Promise<void> => {
         currentTestName: getTestID(event.test),
         testFailing: event.test.failing,
       });
+      break;
+    }
+    case 'test_started': {
+      const context = event.test.concurrent && getTestExecutionContext();
+      if (context) {
+        // The first runnable test consumes any assertions made in beforeAll.
+        const matcherState = {
+          ...jestExpect.getState(),
+          currentTestName: getTestID(event.test),
+          testFailing: event.test.failing,
+        };
+        jestExpect.setState({
+          assertionCalls: 0,
+          expectedAssertionsNumber: null,
+          expectedAssertionsNumberError: undefined,
+          isExpectingAssertions: false,
+          isExpectingAssertionsError: undefined,
+          numPassingAsserts: 0,
+          suppressedErrors: [],
+        });
+        context.matcherState = matcherState;
+      }
       break;
     }
     case 'test_done': {
