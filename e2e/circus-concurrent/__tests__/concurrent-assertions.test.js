@@ -32,3 +32,18 @@ test('sequential assertions', async () => {
   await setTimeout(50);
   expect('seq').toBe('seq');
 });
+
+let release;
+const bothAsserted = new Promise(resolve => {
+  release = resolve;
+});
+let assertionsMade = 0;
+
+test.concurrent.each([1, 2])('same title', async value => {
+  expect.assertions(1);
+  expect(value).toBeGreaterThan(0);
+  if (++assertionsMade === 2) {
+    release();
+  }
+  await bothAsserted;
+});

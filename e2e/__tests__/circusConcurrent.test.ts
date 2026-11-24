@@ -50,15 +50,20 @@ describe('with skip', () => {
 });
 
 describe('expect.assertions', () => {
-  it('passes when each concurrent test meets its own assertion budget', () => {
+  it('passes when each concurrent test meets its own assertion budget, including duplicate titles', () => {
     const {json, exitCode} = runWithJson('circus-concurrent', [
       'concurrent-assertions.test.js',
     ]);
 
     expect(exitCode).toBe(0);
-    expect(json.numTotalTests).toBe(4);
-    expect(json.numPassedTests).toBe(4);
+    expect(json.numTotalTests).toBe(6);
+    expect(json.numPassedTests).toBe(6);
     expect(json.numFailedTests).toBe(0);
+    expect(
+      json.testResults[0].assertionResults.filter(
+        result => result.fullName === 'same title',
+      ),
+    ).toHaveLength(2);
   });
 
   it('fails only the concurrent test that exceeded its assertion budget', () => {
