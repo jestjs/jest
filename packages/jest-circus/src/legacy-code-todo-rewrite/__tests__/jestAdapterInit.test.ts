@@ -48,26 +48,26 @@ it("omits hasAssertion() errors if there's already an error", () => {
   expect(expect.getState().isExpectingAssertions).toBe(false);
 });
 
-it('applies config.testTimeout over globalConfig.testTimeout in initialize', async () => {
+const runInitialize = async (testTimeout?: number) => {
   const config = {
     injectGlobals: false,
     prettierPath: 'prettier',
     rootDir: __dirname,
     snapshotFormat: {},
     snapshotSerializers: [],
-    testTimeout: 2000,
+    ...(testTimeout === undefined ? {} : {testTimeout}),
   } as unknown as Config.ProjectConfig;
   const globalConfig = {
     expand: false,
     maxConcurrency: 5,
-    testTimeout: 10000,
+    testTimeout: 10_000,
   } as unknown as Config.GlobalConfig;
 
   await initialize({
     config,
     environment: {global: {}} as unknown as JestEnvironment,
     globalConfig,
-    localRequire: jest.fn(),
+    localRequire: jest.fn() as unknown as <T = unknown>(path: string) => T,
     parentProcess: process,
     runtime: {
       enterTestCode: jest.fn(),
@@ -76,37 +76,16 @@ it('applies config.testTimeout over globalConfig.testTimeout in initialize', asy
     setGlobalsForRuntime: jest.fn(),
     testPath: __filename,
   });
+};
+
+it('applies config.testTimeout over globalConfig.testTimeout in initialize', async () => {
+  await runInitialize(2000);
 
   expect(getRunnerState().testTimeout).toBe(2000);
 });
 
 it('falls back to globalConfig.testTimeout when config.testTimeout is not set', async () => {
-  const config = {
-    injectGlobals: false,
-    prettierPath: 'prettier',
-    rootDir: __dirname,
-    snapshotFormat: {},
-    snapshotSerializers: [],
-  } as unknown as Config.ProjectConfig;
-  const globalConfig = {
-    expand: false,
-    maxConcurrency: 5,
-    testTimeout: 10000,
-  } as unknown as Config.GlobalConfig;
+  await runInitialize();
 
-  await initialize({
-    config,
-    environment: {global: {}} as unknown as JestEnvironment,
-    globalConfig,
-    localRequire: jest.fn(),
-    parentProcess: process,
-    runtime: {
-      enterTestCode: jest.fn(),
-      leaveTestCode: jest.fn(),
-    } as unknown as Runtime,
-    setGlobalsForRuntime: jest.fn(),
-    testPath: __filename,
-  });
-
-  expect(getRunnerState().testTimeout).toBe(10000);
+  expect(getRunnerState().testTimeout).toBe(10_000);
 });
