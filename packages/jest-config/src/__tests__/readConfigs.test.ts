@@ -4,7 +4,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import * as path from 'path';
+import * as os from 'node:os';
+import * as path from 'node:path';
+import * as fs from 'graceful-fs';
 import {readConfigs} from '../';
 
 jest.mock('graceful-fs', () => ({
@@ -52,4 +54,48 @@ test('readConfigs() resolves multiple projects when configPath is supplied and h
   );
 
   expect(result.configs).toHaveLength(2);
+});
+
+test('readConfigs() identifies the root configPath across multiple project config paths', async () => {
+  const actualFs = jest.requireActual<typeof import('fs')>('fs');
+  const tmpDir = actualFs.mkdtempSync(
+    path.join(os.tmpdir(), 'jest-read-configs-'),
+  );
+  const rootConfig = path.join(tmpDir, 'jest.config.json');
+  const subConfig = path.join(tmpDir, 'sub.config.json');
+  const missingConfig = path.join(tmpDir, 'missing.config.json');
+
+  actualFs.writeFileSync(rootConfig, JSON.stringify({testTimeout: 5000}));
+  actualFs.writeFileSync(subConfig, JSON.stringify({displayName: 'sub'}));
+
+  try {
+    const result = await readConfigs(
+      {
+        $0: 'jest',
+        _: [],
+        config: rootConfig,
+      },
+      [rootConfig, subConfig],
+    );
+
+    expect(result.configs).toHaveLength(2);
+    expect(result.globalConfig.testTimeout).toBe(5000);
+
+    jest
+      .mocked(fs.existsSync)
+      .mockImplementation(filePath => filePath !== missingConfig);
+    await expect(
+      readConfigs(
+        {
+          $0: 'jest',
+          _: [],
+          config: rootConfig,
+        },
+        [rootConfig, missingConfig],
+      ),
+    ).rejects.toThrow("Can't find a root directory");
+  } finally {
+    jest.mocked(fs.existsSync).mockImplementation(() => true);
+    actualFs.rmSync(tmpDir, {force: true, recursive: true});
+  }
 });
