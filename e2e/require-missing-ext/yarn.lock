@@ -85,10 +85,10 @@ __metadata:
   linkType: hard
 
 "ws@npm:^6.0.0":
-  version: 6.2.6
-  resolution: "ws@npm:6.2.6"
+  version: 6.2.7
+  resolution: "ws@npm:6.2.7"
   dependencies:
     async-limiter: "npm:~1.0.0"
-  checksum: 10/2a3cb5d0a96c5792f0dc230f6f5c696c996e2a83caef4593190128f92bcc1eeaa11f6acc80c7f6196bad044c94348caea705b36cbefc420fbff43858226958f9
+  checksum: 10/e4805ce12aec8d0ce55b4fb2660936a6a536a0f3fb4a26e3790ae95f773a906cafba15260d4921f458248648bd1d0faec02caa1653548dea2ce68dfe4767efd8
   languageName: node
   linkType: hard
