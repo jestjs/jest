@@ -418,6 +418,20 @@ function testPathArray(key: keyof AllOptions) {
 
     expect(options[key]).toEqual([expectedPathFooBar]);
   });
+
+  it('falls back to defaults when explicitly undefined', async () => {
+  const {options} = await normalize(
+    {
+      coveragePathIgnorePatterns: undefined,
+      rootDir: '/root/path/foo',
+    },
+    {} as Config.Argv,
+  );
+
+  expect(options.coveragePathIgnorePatterns).toEqual(
+    Defaults.coveragePathIgnorePatterns,
+  );
+});
 }
 
 describe('roots', () => {
