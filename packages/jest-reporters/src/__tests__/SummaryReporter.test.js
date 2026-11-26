@@ -90,6 +90,46 @@ test('snapshots needs update with yarn test', () => {
   expect(results.join('')).toMatchSnapshot();
 });
 
+test('snapshots needs update when launched through npx', () => {
+  const aggregatedResults = {
+    numFailedTestSuites: 1,
+    numFailedTests: 1,
+    numPassedTestSuites: 0,
+    numTotalTestSuites: 1,
+    numTotalTests: 1,
+    snapshot: {
+      filesUnmatched: 1,
+      total: 1,
+      uncheckedKeysByFile: [],
+      unmatched: 1,
+    },
+    startTime: 0,
+    testResults: [],
+  };
+
+  // npx sets the lifecycle event to "npx" and the script to the jest binary.
+  // The suite aliases process.env to one object, so put the agent back.
+  const previousUserAgent = process.env.npm_config_user_agent;
+  process.env.npm_lifecycle_event = 'npx';
+  process.env.npm_lifecycle_script =
+    '/tmp/project/node_modules/.bin/jest obs.test.js';
+  process.env.npm_config_user_agent = 'npm';
+  try {
+    requireReporter();
+    const testReporter = new SummaryReporter(globalConfig);
+    testReporter.onRunComplete(new Set(), aggregatedResults);
+    const output = results.join('');
+    expect(output).toContain('re-run jest with `-u`');
+    expect(output).not.toContain('npm run npx');
+  } finally {
+    if (previousUserAgent === undefined) {
+      delete process.env.npm_config_user_agent;
+    } else {
+      process.env.npm_config_user_agent = previousUserAgent;
+    }
+  }
+});
+
 test('snapshots all have results (no update)', () => {
   const aggregatedResults = {
     numFailedTestSuites: 1,

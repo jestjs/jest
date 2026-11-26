@@ -163,7 +163,9 @@ export default class SummaryReporter extends BaseReporter {
 
       if (globalConfig.watch || globalConfig.watchAll) {
         updateCommand = 'press `u`';
-      } else if (event && scriptUsesJest) {
+      } else if (event && event !== 'npx' && scriptUsesJest) {
+        // npx sets the lifecycle event to "npx". That is not a package script,
+        // so `npm run npx -- -u` can never update the snapshots.
         updateCommand = `run \`${`${client} ${prefix}${event}${
           isYarn ? '' : ' --'
         }`} -u\``;
