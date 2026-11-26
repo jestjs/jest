@@ -492,7 +492,6 @@ describe('onRunComplete', () => {
 
     await testReporter.onRunComplete(
       new Set([first, second]),
-      {},
       mockAggResults,
     );
 
@@ -561,7 +560,6 @@ describe('onRunComplete', () => {
 
     await testReporter.onRunComplete(
       new Set([firstContext, secondContext]),
-      {},
       mockAggResults,
     );
 
