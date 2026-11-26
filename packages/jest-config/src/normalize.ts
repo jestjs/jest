@@ -336,15 +336,13 @@ const normalizeCollectCoverageFrom = (
 
 const normalizeUnmockedModulePathPatterns = (
   options: Config.InitialOptionsWithRootDir,
-  key: keyof Pick<
-    Config.InitialOptions,
+  key:
     | 'coveragePathIgnorePatterns'
     | 'modulePathIgnorePatterns'
     | 'testPathIgnorePatterns'
     | 'transformIgnorePatterns'
     | 'watchPathIgnorePatterns'
     | 'unmockedModulePathPatterns'
-  >,
 ) =>
   // _replaceRootDirTags is specifically well-suited for substituting
   // <rootDir> in paths (it deals with properly interpreting relative path
@@ -642,7 +640,7 @@ export default async function normalize(
 
   optionKeys.reduce((newOptions, key: keyof Config.InitialOptions) => {
     // The resolver has been resolved separately; skip it
-    if (key === 'resolver') {
+    if (key === 'resolver' || options[key] === undefined) {
       return newOptions;
     }
 
