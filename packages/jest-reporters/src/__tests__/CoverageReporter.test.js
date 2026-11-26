@@ -490,10 +490,7 @@ describe('onRunComplete', () => {
     const first = makeContext('/path/to/project-a', '**/*.js');
     const second = makeContext('/path/to/project-b', '**/*.ts');
 
-    await testReporter.onRunComplete(
-      new Set([first, second]),
-      mockAggResults,
-    );
+    await testReporter.onRunComplete(new Set([first, second]), mockAggResults);
 
     expect(first.hasteFS.matchFilesWithGlob).toHaveBeenCalledWith(
       ['**/*.js'],
