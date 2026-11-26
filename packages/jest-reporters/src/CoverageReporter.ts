@@ -129,26 +129,43 @@ export default class CoverageReporter extends BaseReporter {
   private async _addUntestedFiles(
     testContexts: Set<TestContext>,
   ): Promise<void> {
-    const files: Array<{config: Config.ProjectConfig; path: string}> = [];
+    const candidateConfigsByPath = new Map<
+      string,
+      Array<Config.ProjectConfig>
+    >();
 
     for (const context of testContexts) {
       const config = context.config;
-      if (
+      const hasGlobalCollect =
         this._globalConfig.collectCoverageFrom &&
-        this._globalConfig.collectCoverageFrom.length > 0
-      ) {
+        this._globalConfig.collectCoverageFrom.length > 0;
+
+      const globs = hasGlobalCollect
+        ? this._globalConfig.collectCoverageFrom!
+        : config.collectCoverageFrom;
+
+      const rootDir = hasGlobalCollect
+        ? this._globalConfig.rootDir
+        : config.rootDir;
+
+      if (globs && globs.length > 0) {
         for (const filePath of context.hasteFS.matchFilesWithGlob(
-          this._globalConfig.collectCoverageFrom,
-          this._globalConfig.rootDir,
-        ))
-          files.push({
-            config,
-            path: filePath,
-          });
+          globs,
+          rootDir,
+        )) {
+          let configs = candidateConfigsByPath.get(filePath);
+          if (!configs) {
+            configs = [];
+            candidateConfigsByPath.set(filePath, configs);
+          }
+          if (!configs.includes(config)) {
+            configs.push(config);
+          }
+        }
       }
     }
 
-    if (files.length === 0) {
+    if (candidateConfigsByPath.size === 0) {
       return;
     }
 
@@ -173,57 +190,60 @@ export default class CoverageReporter extends BaseReporter {
       }) as JestWorkerFarm<CoverageWorker>;
     }
 
-    const instrumentation = files.map(async fileObj => {
-      const filename = fileObj.path;
-      const config = fileObj.config;
+    const instrumentation = [...candidateConfigsByPath.entries()].map(
+      async ([filename, configs]) => {
+        const hasCoverageData = this._v8CoverageResults.some(v8Res =>
+          v8Res.some(innerRes => innerRes.result.url === filename),
+        );
 
-      const hasCoverageData = this._v8CoverageResults.some(v8Res =>
-        v8Res.some(innerRes => innerRes.result.url === filename),
-      );
+        if (
+          !hasCoverageData &&
+          (!this._coverageMap.data || !this._coverageMap.data[filename]) &&
+          'worker' in worker
+        ) {
+          for (const config of configs) {
+            try {
+              const result = await worker.worker({
+                config,
+                context: {
+                  changedFiles: this._context.changedFiles && [
+                    ...this._context.changedFiles,
+                  ],
+                  sourcesRelatedToTestsInChangedFiles: this._context
+                    .sourcesRelatedToTestsInChangedFiles && [
+                    ...this._context.sourcesRelatedToTestsInChangedFiles,
+                  ],
+                },
+                globalConfig: this._globalConfig,
+                path: filename,
+              });
 
-      if (
-        !hasCoverageData &&
-        !this._coverageMap.data[filename] &&
-        'worker' in worker
-      ) {
-        try {
-          const result = await worker.worker({
-            config,
-            context: {
-              changedFiles: this._context.changedFiles && [
-                ...this._context.changedFiles,
-              ],
-              sourcesRelatedToTestsInChangedFiles: this._context
-                .sourcesRelatedToTestsInChangedFiles && [
-                ...this._context.sourcesRelatedToTestsInChangedFiles,
-              ],
-            },
-            globalConfig: this._globalConfig,
-            path: filename,
-          });
-
-          if (result) {
-            if (result.kind === 'V8Coverage') {
-              this._v8CoverageResults.push([
-                {codeTransformResult: undefined, result: result.result},
-              ]);
-            } else {
-              this._coverageMap.addFileCoverage(result.coverage);
+              if (result) {
+                if (result.kind === 'V8Coverage') {
+                  this._v8CoverageResults.push([
+                    {codeTransformResult: undefined, result: result.result},
+                  ]);
+                } else {
+                  this._coverageMap.addFileCoverage(result.coverage);
+                }
+                break;
+              }
+            } catch (error: any) {
+              console.error(
+                chalk.red(
+                  [
+                    `Failed to collect coverage from ${filename}`,
+                    `ERROR: ${error.message}`,
+                    `STACK: ${error.stack}`,
+                  ].join('\n'),
+                ),
+              );
+              break;
             }
           }
-        } catch (error: any) {
-          console.error(
-            chalk.red(
-              [
-                `Failed to collect coverage from ${filename}`,
-                `ERROR: ${error.message}`,
-                `STACK: ${error.stack}`,
-              ].join('\n'),
-            ),
-          );
         }
-      }
-    });
+      },
+    );
 
     try {
       await Promise.all(instrumentation);
