@@ -10,6 +10,7 @@ import {totalmem} from 'node:os';
 import mergeStream from 'merge-stream';
 import {stdout as stdoutSupportsColor} from 'supports-color';
 import {
+  CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
   type ChildMessage,
@@ -62,6 +63,7 @@ export default class ChildProcessWorker
   private readonly _options: WorkerOptions;
 
   private _request: ChildMessage | null;
+  private _childHasNoWork = false;
   private _retries!: number;
   private _onProcessEnd!: OnEnd;
   private _onCustomMessage!: OnCustomMessage;
@@ -366,6 +368,13 @@ export default class ChildProcessWorker
 
       this._shutdown();
     } else if (
+      this.state === WorkerStates.RESTARTING &&
+      this._request?.[0] === CHILD_MESSAGE_END
+    ) {
+      // The pool ended this worker while it was restarting, so a new child
+      // would only start up to exit.
+      this._shutdown();
+    } else if (
       (exitCode !== 0 &&
         exitCode !== null &&
         exitCode !== SIGTERM_EXIT_CODE &&
@@ -379,6 +388,8 @@ export default class ChildProcessWorker
 
       if (this._request) {
         this._child.send(this._request);
+      } else {
+        this._childHasNoWork = true;
       }
     } else {
       // At this point, it's not clear why the child process exited. There could
@@ -431,6 +442,15 @@ export default class ChildProcessWorker
     onProcessEnd: OnEnd,
     onCustomMessage: OnCustomMessage,
   ): void {
+    if (request[0] === CHILD_MESSAGE_END && this._childHasNoWork) {
+      // The child hasn't run anything since it replaced the last one and may
+      // still be starting. Ending it gracefully would wait for it to start and
+      // load the worker module only to run its teardown.
+      this.forceExit();
+      return;
+    }
+
+    this._childHasNoWork = false;
     this._stderrBuffer = [];
 
     onProcessStart(this);
