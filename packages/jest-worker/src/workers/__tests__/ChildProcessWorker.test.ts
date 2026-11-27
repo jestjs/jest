@@ -10,6 +10,7 @@ import {PassThrough, type Stream} from 'stream';
 import getStream from 'get-stream';
 import {
   CHILD_MESSAGE_CALL,
+  CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
   type ChildMessage,
@@ -714,4 +715,46 @@ it('should restart immediately when limit is 0 without checking memory', () => {
   );
   expect(worker.state).toBe(WorkerStates.RESTARTING);
   expect(forkInterface.kill).toHaveBeenCalledTimes(1);
+});
+
+describe('ending the worker during an idle memory restart', () => {
+  const noop = () => {};
+  let worker: InstanceType<typeof Worker>;
+
+  beforeEach(() => {
+    worker = new Worker({
+      forkOptions: {},
+      idleMemoryLimit: 1000,
+      maxRetries: 3,
+      workerPath: '/tmp/foo',
+    } as WorkerOptions);
+
+    // The last call finishes, so the worker asks the child for its memory.
+    worker.send([CHILD_MESSAGE_CALL, false, 'foo', []], noop, noop, noop);
+    forkInterface.emit('message', [PARENT_MESSAGE_OK]);
+  });
+
+  it('does not start a new child when the end message comes first', async () => {
+    const child = forkInterface;
+
+    worker.send([CHILD_MESSAGE_END, false], noop, noop, noop);
+    child.emit('message', [PARENT_MESSAGE_MEM_USAGE, 2000]);
+    child.emit('exit', null, 'SIGTERM');
+
+    expect(child.kill).toHaveBeenCalledWith('SIGTERM');
+    expect(childProcess.fork).toHaveBeenCalledTimes(1);
+    await worker.waitForExit();
+  });
+
+  it('does not start a new child when the restart comes first', async () => {
+    const child = forkInterface;
+
+    child.emit('message', [PARENT_MESSAGE_MEM_USAGE, 2000]);
+    worker.send([CHILD_MESSAGE_END, false], noop, noop, noop);
+    child.emit('exit', null, 'SIGTERM');
+
+    expect(child.kill).toHaveBeenCalledWith('SIGTERM');
+    expect(childProcess.fork).toHaveBeenCalledTimes(1);
+    await worker.waitForExit();
+  });
 });
