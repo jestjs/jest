@@ -734,7 +734,7 @@ describe('ending the worker during an idle memory restart', () => {
     forkInterface.emit('message', [PARENT_MESSAGE_OK]);
   });
 
-  it('does not start a new child when the end message comes first', async () => {
+  it('does not start a new child when the end message comes before the memory reply', async () => {
     const child = forkInterface;
 
     worker.send([CHILD_MESSAGE_END, false], noop, noop, noop);
@@ -746,7 +746,7 @@ describe('ending the worker during an idle memory restart', () => {
     await worker.waitForExit();
   });
 
-  it('does not start a new child when the restart comes first', async () => {
+  it('does not start a new child when the end message comes before the old child exits', async () => {
     const child = forkInterface;
 
     child.emit('message', [PARENT_MESSAGE_MEM_USAGE, 2000]);
@@ -756,5 +756,32 @@ describe('ending the worker during an idle memory restart', () => {
     expect(child.kill).toHaveBeenCalledWith('SIGTERM');
     expect(childProcess.fork).toHaveBeenCalledTimes(1);
     await worker.waitForExit();
+  });
+
+  it('kills the new child without waiting for it when the end message comes after the old child exits', async () => {
+    forkInterface.emit('message', [PARENT_MESSAGE_MEM_USAGE, 2000]);
+    forkInterface.emit('exit', null, 'SIGTERM');
+    const newChild = forkInterface;
+
+    worker.send([CHILD_MESSAGE_END, false], noop, noop, noop);
+    newChild.emit('exit', null, 'SIGTERM');
+
+    expect(newChild.kill).toHaveBeenCalledWith('SIGTERM');
+    expect(newChild.send).not.toHaveBeenCalledWith(
+      [CHILD_MESSAGE_END, false],
+      expect.any(Function),
+    );
+    await worker.waitForExit();
+  });
+
+  it('sends the next call to the new child', () => {
+    const request: ChildMessageCall = [CHILD_MESSAGE_CALL, false, 'bar', []];
+
+    forkInterface.emit('message', [PARENT_MESSAGE_MEM_USAGE, 2000]);
+    forkInterface.emit('exit', null, 'SIGTERM');
+    worker.send(request, noop, noop, noop);
+
+    expect(childProcess.fork).toHaveBeenCalledTimes(2);
+    expect(jest.mocked(forkInterface.send).mock.calls[1][0]).toEqual(request);
   });
 });
