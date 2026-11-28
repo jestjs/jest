@@ -90,6 +90,70 @@ test('snapshots needs update with yarn test', () => {
   expect(results.join('')).toMatchSnapshot();
 });
 
+test('snapshots needs update when running via npx', () => {
+  const aggregatedResults = {
+    numFailedTestSuites: 1,
+    numFailedTests: 1,
+    numPassedTestSuites: 0,
+    numTotalTestSuites: 1,
+    numTotalTests: 1,
+    snapshot: {
+      filesUnmatched: 1,
+      total: 2,
+      uncheckedKeysByFile: [],
+      unmatched: 2,
+    },
+    startTime: 0,
+    testResults: [],
+  };
+
+  process.env = {
+    ...env,
+    npm_command: 'exec',
+    npm_config_user_agent: 'npm/10.9.4 node/v22.0.0 linux x64',
+    npm_lifecycle_event: 'npx',
+    npm_lifecycle_script: 'jest',
+  };
+  requireReporter();
+  const testReporter = new SummaryReporter(globalConfig);
+  testReporter.onRunComplete(new Set(), aggregatedResults);
+  const output = results.join('');
+  expect(output).toContain('re-run jest with `-u`');
+  expect(output).not.toContain('npm run npx');
+});
+
+test('snapshots needs update when npm_lifecycle_event is npx without npm_command', () => {
+  const aggregatedResults = {
+    numFailedTestSuites: 1,
+    numFailedTests: 1,
+    numPassedTestSuites: 0,
+    numTotalTestSuites: 1,
+    numTotalTests: 1,
+    snapshot: {
+      filesUnmatched: 1,
+      total: 2,
+      uncheckedKeysByFile: [],
+      unmatched: 2,
+    },
+    startTime: 0,
+    testResults: [],
+  };
+
+  process.env = {
+    ...env,
+    npm_config_user_agent: 'npm',
+    npm_lifecycle_event: 'npx',
+    npm_lifecycle_script: 'jest',
+  };
+  delete process.env.npm_command;
+  requireReporter();
+  const testReporter = new SummaryReporter(globalConfig);
+  testReporter.onRunComplete(new Set(), aggregatedResults);
+  const output = results.join('');
+  expect(output).toContain('re-run jest with `-u`');
+  expect(output).not.toContain('npm run npx');
+});
+
 test('snapshots all have results (no update)', () => {
   const aggregatedResults = {
     numFailedTestSuites: 1,
