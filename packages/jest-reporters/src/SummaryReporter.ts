@@ -45,8 +45,12 @@ const NPM_EVENTS = new Set([
   'postrestart',
 ]);
 
-const {npm_config_user_agent, npm_lifecycle_event, npm_lifecycle_script} =
-  process.env;
+const {
+  npm_command,
+  npm_config_user_agent,
+  npm_lifecycle_event,
+  npm_lifecycle_script,
+} = process.env;
 
 export type SummaryReporterOptions = {
   summaryThreshold?: number;
@@ -157,13 +161,14 @@ export default class SummaryReporter extends BaseReporter {
         typeof npm_config_user_agent === 'string' &&
         npm_config_user_agent.includes('yarn');
       const client = isYarn ? 'yarn' : 'npm';
+      const isNpx = npm_command === 'exec' || event === 'npx';
       const scriptUsesJest =
         typeof npm_lifecycle_script === 'string' &&
         npm_lifecycle_script.includes('jest');
 
       if (globalConfig.watch || globalConfig.watchAll) {
         updateCommand = 'press `u`';
-      } else if (event && scriptUsesJest) {
+      } else if (event && !isNpx && scriptUsesJest) {
         updateCommand = `run \`${`${client} ${prefix}${event}${
           isYarn ? '' : ' --'
         }`} -u\``;
